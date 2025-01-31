@@ -4,8 +4,10 @@ from sqlmodel import Session, select
 from app.core.config import settings
 from app.models import User
 
+import uuid
 
-def test_create_user(client: TestClient, session: Session) -> None:
+
+def test_create_user(client: TestClient, db: Session) -> None:
     r = client.post(
         f"{settings.API_V1_STR}/private/users/",
         json={
@@ -18,8 +20,9 @@ def test_create_user(client: TestClient, session: Session) -> None:
     assert r.status_code == 200
 
     data = r.json()
+    user_id = data["id"]
 
-    user = session.exec(select(User).where(User.id == data["id"])).first()
+    user = db.exec(select(User).where(User.id == user_id)).first()
 
     assert user
     assert user.email == "pollo@listo.com"

@@ -4,11 +4,14 @@ from app.core.config import settings
 from app.models import User, UserCreate
 from app.crud import crud_user
 
+from sqlmodel import Session
+
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
-def create_db_and_tables(session):
+def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
-    
+
+def init_db(session: Session):
     user = session.exec(
         select(User).where(User.email == settings.FIRST_SUPERUSER)
     ).first()

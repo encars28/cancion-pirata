@@ -2,41 +2,39 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session
-import sqlalchemy as sa
+from sqlmodel import Session, SQLModel, create_engine
 
 from app.core.config import settings
-from app.core.db import engine
+from app.core.db import init_db
 from app.main import app
+from app.api.deps import get_db
 from app.tests.utils.user import authentication_token_from_email
 from app.tests.utils.utils import get_superuser_token_headers
 
 
 @pytest.fixture(scope="session", autouse=True)
-def session() -> Generator[Session, None, None]:
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = Session(bind=connection)
-
-    nested = connection.begin_nested()
-
-    @sa.event.listens_for(session, "after_transaction_end")
-    def end_savepoint(session, transaction):
-        nonlocal nested
-        if not nested.is_active:
-            nested = connection.begin_nested()
-
-    yield session
-
-    session.close()
-    transaction.rollback()
-    connection.close()
+def db() -> Generator[Session, None, None]:
+    engine = create_engine(str(settings.SQLALCHEMY_TEST_DATABASE_URI))
+    SQLModel.metadata.create_all(engine)
+    
+    with Session(engine) as session:
+        init_db(session)
+        yield session
+        
+    SQLModel.metadata.drop_all(engine)               
 
 
 @pytest.fixture(scope="module")
-def client() -> Generator[TestClient, None, None]:
-    with TestClient(app) as c:
-        yield c
+def client(db: Session) -> Generator[TestClient, None, None]:
+    def get_session_override():  
+        return db
+
+    app.dependency_overrides[get_db] = get_session_override
+    
+    client = TestClient(app)  
+    yield client
+        
+    app.dependency_overrides.clear() 
 
 
 @pytest.fixture(scope="module")
@@ -45,7 +43,7 @@ def superuser_token_headers(client: TestClient) -> dict[str, str]:
 
 
 @pytest.fixture(scope="module")
-def normal_user_token_headers(client: TestClient, session: Session) -> dict[str, str]:
+def normal_user_token_headers(client: TestClient, db: Session) -> dict[str, str]:
     return authentication_token_from_email(
-        client=client, email=settings.EMAIL_TEST_USER, db=session
+        client=client, email=settings.EMAIL_TEST_USER, db=db
     )

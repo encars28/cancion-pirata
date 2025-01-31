@@ -2,7 +2,7 @@ import logging
 
 from sqlmodel import Session
 
-from app.core.db import engine, create_db_and_tables
+from app.core.db import engine, create_db_and_tables, init_db
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -10,7 +10,8 @@ logger = logging.getLogger(__name__)
 
 def init() -> None:
     with Session(engine) as session:
-        create_db_and_tables(session)
+        create_db_and_tables()
+        init_db(session)
 
 
 def main() -> None:
