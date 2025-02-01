@@ -4,56 +4,84 @@ from typing import List, Optional
 
 import uuid
 
-# class Author(SQLModel, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     name: str
+# AUTHOR
 
-#     birth_year: Optional[int]
+class Author(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    name: str
 
-#     poems: List["Poem"] = Relationship(back_populates="author")
+    birth_year: Optional[int]
+
+    original_poems: List["OriginalPoem"] = Relationship(back_populates="author")
+    versions: List["PoemVersion"] = Relationship(back_populates="author")
+    translations: List["PoemTranslation"] = Relationship(back_populates="author")
     
-#     # https://stackoverflow.com/questions/70759112/one-to-one-relationships-with-sqlmodel
-#     user: Optional["User"] = Relationship(sa_relationship_kwargs={'uselist': False}, back_populates="author_info")
+    # https://stackoverflow.com/questions/70759112/one-to-one-relationships-with-sqlmodel
+    user: Optional["User"] = Relationship(sa_relationship_kwargs={'uselist': False}, back_populates="author_info")
 
-# # POEMS
+# POEMS
 
-# class PoemCollectionLink(SQLModel, table=True):
-#     poem_id: Optional[int] = Field(default=None, foreign_key="poem.id", primary_key=True)
-#     collection_id: Optional[int] = Field(default=None, foreign_key="collection.id", primary_key=True)
+class OriginalPoemCollectionLink(SQLModel, table=True):
+    poem_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id", primary_key=True)
+    collection_id: Optional[uuid.UUID] = Field(default=None, foreign_key="collection.id", primary_key=True)
+    
+class PoemVersionCollectionLink(SQLModel, table=True):
+    poem_id: Optional[uuid.UUID] = Field(default=None, foreign_key="poemversion.id", primary_key=True)
+    collection_id: Optional[uuid.UUID] = Field(default=None, foreign_key="collection.id", primary_key=True)
+    
+class PoemTranslationCollectionLink(SQLModel, table=True):
+    poem_id: Optional[uuid.UUID] = Field(default=None, foreign_key="poemtranslation.id", primary_key=True)
+    collection_id: Optional[uuid.UUID] = Field(default=None, foreign_key="collection.id", primary_key=True)
+    
+class Collection(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    title: str
 
-# class Poem(SQLModel):
-#     title: str
-#     content: str
+    publication_year: Optional[int]
 
-#     publication_year: Optional[int]
+    original_poems: List["OriginalPoem"] = Relationship(back_populates="collections", link_model=OriginalPoemCollectionLink)
+    versions: List["PoemVersion"] = Relationship(back_populates="collections", link_model=PoemVersionCollectionLink)
+    translations: List["PoemTranslation"] = Relationship(back_populates="collections", link_model=PoemTranslationCollectionLink)
 
-#     author_id: int = Field(foreign_key="author.id") 
-#     author: Author = Relationship(back_populates="poems")
+# Shared properties
+class Poem(SQLModel):
+    title: str
+    content: str
 
-#     collections: List["Collection"] = Relationship(back_populates="poems", link_model=PoemCollectionLink)
+    publication_year: Optional[int]
 
-# class OriginalPoem(Poem, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     versions: List["PoemVersion"] = Relationship(back_populates="original")
-#     translations: List["PoemTranslation"] = Relationship(back_populates="original")
+class OriginalPoem(Poem, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    
+    versions: List["PoemVersion"] = Relationship(back_populates="original")
+    translations: List["PoemTranslation"] = Relationship(back_populates="original")
+    
+    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
+    author: Optional[Author] = Relationship(back_populates="original_poems")
+    
+    collections: List[Collection] = Relationship(back_populates="original_poems", link_model=OriginalPoemCollectionLink)
 
-# class PoemVersion(Poem, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     original_id: int = Field(foreign_key="originalpoem.id")
-#     original: Poem = Relationship(back_populates="versions")
+class PoemVersion(Poem, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    
+    original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
+    original: OriginalPoem = Relationship(back_populates="versions")
+    
+    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
+    author: Optional[Author] = Relationship(back_populates="versions")
 
-# class PoemTranslation(Poem, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     original_id: int = Field(foreign_key="originalpoem.id")
-#     original: Poem = Relationship(back_populates="translations")
+    collections: List[Collection] = Relationship(back_populates="versions", link_model=PoemVersionCollectionLink)
 
-# class Collection(SQLModel, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     title: str
+class PoemTranslation(Poem, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    
+    original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
+    original: OriginalPoem = Relationship(back_populates="translations")
+    
+    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
+    author: Optional[Author] = Relationship(back_populates="translations")
 
-#     publication_year: Optional[int]
-
-#     poems: List[Poem] = Relationship(back_populates="collection", link_model=PoemCollectionLink)
+    collections: List[Collection] = Relationship(back_populates="translations", link_model=PoemTranslationCollectionLink)
 
 # USER
 
@@ -62,7 +90,7 @@ class UserBase(SQLModel):
     email: EmailStr = Field(unique=True, index=True, max_length=255)
     is_active: bool = True
     is_superuser: bool = False
-    full_name: str | None = Field(default=None, max_length=255)
+    full_name: Optional[str] = Field(default=None, max_length=255)
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
@@ -71,16 +99,16 @@ class UserCreate(UserBase):
 class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
-    full_name: str | None = Field(default=None, max_length=255)
+    full_name: Optional[str] = Field(default=None, max_length=255)
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
-    email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore
-    password: str | None = Field(default=None, min_length=8, max_length=40)
+    email: Optional[EmailStr] = Field(default=None, max_length=255)  # type: ignore
+    password: Optional[str] = Field(default=None, min_length=8, max_length=40)
 
 class UserUpdateMe(SQLModel):
-    full_name: str | None = Field(default=None, max_length=255)
-    email: EmailStr | None = Field(default=None, max_length=255)
+    full_name: Optional[str] = Field(default=None, max_length=255)
+    email: Optional[EmailStr] = Field(default=None, max_length=255)
 
 class UpdatePassword(SQLModel):
     current_password: str = Field(min_length=8, max_length=40)
@@ -90,6 +118,9 @@ class UpdatePassword(SQLModel):
 class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
+    
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
+    author_info: Optional[Author] = Relationship(back_populates="user")
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):
@@ -112,7 +143,7 @@ class Token(SQLModel):
 
 # Contents of JWT token
 class TokenPayload(SQLModel):
-    sub: str | None = None
+    sub: Optional[str] = None
 
 class NewPassword(SQLModel):
     token: str
