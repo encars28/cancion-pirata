@@ -6,18 +6,28 @@ import uuid
 
 # AUTHOR
 
-class Author(SQLModel, table=True):
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    name: str
+class AuthorBase(SQLModel):
+    name: str = Field(max_length=255)
+    birth_year: Optional[int] = Field(default=None)
 
-    birth_year: Optional[int]
+class Author(AuthorBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
     original_poems: List["OriginalPoem"] = Relationship(back_populates="author")
-    versions: List["PoemVersion"] = Relationship(back_populates="author")
     translations: List["PoemTranslation"] = Relationship(back_populates="author")
     
     # https://stackoverflow.com/questions/70759112/one-to-one-relationships-with-sqlmodel
     user: Optional["User"] = Relationship(sa_relationship_kwargs={'uselist': False}, back_populates="author_info")
+    
+class AuthorCreate(AuthorBase):
+    pass
+
+class AuthorPublic(AuthorBase):
+    id: uuid.UUID
+    
+class AuthorUpdate(AuthorBase):
+    name: Optional[str] = Field(default=None, max_length=255)
+    birth_year: Optional[int] = Field(default=None)
 
 # POEMS
 
@@ -45,40 +55,79 @@ class Collection(SQLModel, table=True):
 
 # Shared properties
 class Poem(SQLModel):
-    title: str
+    title: str = Field(max_length=255)
     content: str
+    publication_year: Optional[int] = Field(default=None)
+    language: Optional[str] = Field(default=None, max_length=255)
 
-    publication_year: Optional[int]
+class OriginalPoemBase(Poem): 
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id") 
+    
+class OriginalPoemCreate(OriginalPoemBase):
+    pass
 
-class OriginalPoem(Poem, table=True):
+class OriginalPoemUpdate(OriginalPoemBase):
+    title: Optional[str] = Field(default=None, max_length=255)
+    content: Optional[str] = Field(default=None)
+    publication_year: Optional[int] = Field(default=None)
+    language: Optional[str] = Field(default=None, max_length=255)
+    
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
+
+class OriginalPoem(OriginalPoemBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     
     versions: List["PoemVersion"] = Relationship(back_populates="original")
     translations: List["PoemTranslation"] = Relationship(back_populates="original")
     
-    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
     author: Optional[Author] = Relationship(back_populates="original_poems")
     
     collections: List[Collection] = Relationship(back_populates="original_poems", link_model=OriginalPoemCollectionLink)
 
-class PoemVersion(Poem, table=True):
+class PoemVersionBase(Poem):
+    original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
+    
+class PoemVersionCreate(PoemVersionBase):
+    pass
+    
+class PoemVersionUpdate(PoemVersionBase):
+    title: Optional[str] = Field(default=None, max_length=255)
+    content: Optional[str] = Field(default=None)
+    publication_year: Optional[int] = Field(default=None)
+    language: Optional[str] = Field(default=None, max_length=255)
+    
+    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id")
+
+class PoemVersion(PoemVersionBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     
     original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
     original: OriginalPoem = Relationship(back_populates="versions")
-    
-    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
-    author: Optional[Author] = Relationship(back_populates="versions")
 
     collections: List[Collection] = Relationship(back_populates="versions", link_model=PoemVersionCollectionLink)
 
-class PoemTranslation(Poem, table=True):
+class PoemTranslationBase(Poem):
+    original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
+
+class PoemTranslationCreate(PoemTranslationBase):
+    pass
+    
+class PoemTranslationUpdate(PoemTranslationBase):
+    title: Optional[str] = Field(default=None, max_length=255)
+    content: Optional[str] = Field(default=None)
+    publication_year: Optional[int] = Field(default=None)
+    language: Optional[str] = Field(default=None, max_length=255)
+    
+    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id")
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
+    
+class PoemTranslation(PoemTranslationBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     
     original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
     original: OriginalPoem = Relationship(back_populates="translations")
     
-    author_id: Optional[uuid.UUID] = Field(foreign_key="author.id") 
     author: Optional[Author] = Relationship(back_populates="translations")
 
     collections: List[Collection] = Relationship(back_populates="translations", link_model=PoemTranslationCollectionLink)
@@ -91,6 +140,8 @@ class UserBase(SQLModel):
     is_active: bool = True
     is_superuser: bool = False
     full_name: Optional[str] = Field(default=None, max_length=255)
+    
+    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
@@ -119,7 +170,6 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     
-    author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
     author_info: Optional[Author] = Relationship(back_populates="user")
 
 # Properties to return via API, id is always required
