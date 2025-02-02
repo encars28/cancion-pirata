@@ -7,7 +7,7 @@ import uuid
 # AUTHOR
 
 class AuthorBase(SQLModel):
-    name: str = Field(max_length=255)
+    name: str = Field(unique=True, index=True, max_length=255)
     birth_year: Optional[int] = Field(default=None)
 
 class Author(AuthorBase, table=True):
@@ -21,15 +21,19 @@ class Author(AuthorBase, table=True):
     
 class AuthorCreate(AuthorBase):
     pass
-
-class AuthorPublic(AuthorBase):
-    id: uuid.UUID
     
 class AuthorUpdate(AuthorBase):
     name: Optional[str] = Field(default=None, max_length=255)
     birth_year: Optional[int] = Field(default=None)
+    
+class AuthorPublic(AuthorBase):
+    id: uuid.UUID
+    
+class AuthorsPublic(SQLModel):
+    data: list[AuthorPublic]
+    count: int
 
-# POEMS
+# COLLECTIONS
 
 class OriginalPoemCollectionLink(SQLModel, table=True):
     poem_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id", primary_key=True)
@@ -52,6 +56,8 @@ class Collection(SQLModel, table=True):
     original_poems: List["OriginalPoem"] = Relationship(back_populates="collections", link_model=OriginalPoemCollectionLink)
     versions: List["PoemVersion"] = Relationship(back_populates="collections", link_model=PoemVersionCollectionLink)
     translations: List["PoemTranslation"] = Relationship(back_populates="collections", link_model=PoemTranslationCollectionLink)
+
+# POEMS
 
 # Shared properties
 class Poem(SQLModel):
