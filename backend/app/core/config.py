@@ -106,6 +106,7 @@ class Settings(BaseSettings):
 
     # TODO: update type to EmailStr when sqlmodel supports it
     EMAIL_TEST_USER: str = "test@example.com"
+    EMAIL_TEST_AUTHOR_USER: str = "author@example.com"
     # TODO: update type to EmailStr when sqlmodel supports it
     FIRST_SUPERUSER: str
     FIRST_SUPERUSER_PASSWORD: str

@@ -8,8 +8,11 @@ from app.core.config import settings
 from app.core.db import init_db
 from app.main import app
 from app.api.deps import get_db
-from app.tests.utils.user import authentication_token_from_email
+from app.tests.utils.user import authentication_token_from_email, get_author_user
 from app.tests.utils.utils import get_superuser_token_headers
+
+from app.models import User
+
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -47,3 +50,7 @@ def normal_user_token_headers(client: TestClient, db: Session) -> dict[str, str]
     return authentication_token_from_email(
         client=client, email=settings.EMAIL_TEST_USER, db=db
     )
+    
+@pytest.fixture(scope="module")
+def user_who_is_author(db: Session) -> User: 
+    return get_author_user(db)

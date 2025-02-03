@@ -66,6 +66,8 @@ class Poem(SQLModel):
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
 
+# Originals
+
 class OriginalPoemBase(Poem): 
     author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id") 
     
@@ -80,6 +82,13 @@ class OriginalPoemUpdate(OriginalPoemBase):
     
     author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
 
+class OriginalPoemPublic(OriginalPoemBase):
+    id: uuid.UUID
+
+class OriginalPoemsPublic(SQLModel):
+    data: list[OriginalPoemPublic]
+    count: int
+
 class OriginalPoem(OriginalPoemBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     
@@ -89,6 +98,8 @@ class OriginalPoem(OriginalPoemBase, table=True):
     author: Optional[Author] = Relationship(back_populates="original_poems")
     
     collections: List[Collection] = Relationship(back_populates="original_poems", link_model=OriginalPoemCollectionLink)
+
+# Versions
 
 class PoemVersionBase(Poem):
     original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
@@ -111,6 +122,15 @@ class PoemVersion(PoemVersionBase, table=True):
     original: OriginalPoem = Relationship(back_populates="versions")
 
     collections: List[Collection] = Relationship(back_populates="versions", link_model=PoemVersionCollectionLink)
+
+class PoemVersionPublic(PoemVersionBase):
+    id: uuid.UUID
+
+class PoemVersionsPublic(SQLModel):
+    data: list[PoemVersionPublic]
+    count: int
+
+# Translations
 
 class PoemTranslationBase(Poem):
     original_id: uuid.UUID = Field(foreign_key="originalpoem.id")
@@ -138,6 +158,13 @@ class PoemTranslation(PoemTranslationBase, table=True):
 
     collections: List[Collection] = Relationship(back_populates="translations", link_model=PoemTranslationCollectionLink)
 
+class PoemTranslationPublic(PoemTranslationBase):
+    id: uuid.UUID
+
+class PoemTranslationsPublic(SQLModel):
+    data: list[PoemTranslationPublic]
+    count: int
+    
 # USER
 
 # Shared properties

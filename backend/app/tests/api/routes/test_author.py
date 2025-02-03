@@ -3,12 +3,13 @@ import uuid
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.crud import crud_author
+from app.crud import crud_author, crud_user
 from app.core.config import settings
 
-from app.models import Author, OriginalPoem, PoemTranslation
+from app.models import Author, OriginalPoem, PoemTranslation, User, UserUpdate, AuthorCreate
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.poem import create_random_author
+from app.tests.utils.user import authentication_token_from_email
 
 
 def test_create_author(
@@ -27,6 +28,94 @@ def test_create_author(
     assert author
     assert author.name == created_author["name"]
 
+def test_get_author_me(
+    client: TestClient, user_who_is_author: User, db: Session
+) -> None:
+    token_headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)
+    
+    r = client.get(f"{settings.API_V1_STR}/authors/me", headers=token_headers)
+    assert r.status_code == 200
+    
+    current_author = r.json()
+    assert current_author
+    assert current_author["id"] == str(user_who_is_author.author_id)
+
+def test_get_author_me_no_author(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    r = client.get(f"{settings.API_V1_STR}/authors/me", headers=normal_user_token_headers)
+    assert r.status_code == 404
+    assert r.json() == {"detail": "Author not found"}
+
+def test_update_author_me(
+    client: TestClient, user_who_is_author: User, db: Session
+) -> None:
+    token_headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)
+    
+    birth_year = 1990
+    data = {"birth_year": birth_year}
+    r = client.patch(
+        f"{settings.API_V1_STR}/authors/me",
+        headers=token_headers,
+        json=data,
+    )
+    assert r.status_code == 200
+    updated_author = r.json()
+    assert updated_author["birth_year"] == birth_year
+
+    author_query = select(Author).where(Author.id == user_who_is_author.author_id)
+    author_db = db.exec(author_query).first()
+    assert author_db
+    assert author_db.birth_year == birth_year
+    
+def test_update_author_me_no_author(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    data = {"birth_year": 1990}
+    r = client.patch(
+        f"{settings.API_V1_STR}/authors/me",
+        headers=normal_user_token_headers,
+        json=data,
+    )
+    assert r.status_code == 404
+    assert r.json() == {"detail": "Author not found"}
+
+def test_update_author_me_author_exists(
+    client: TestClient, user_who_is_author: User, db: Session
+) -> None:
+    author = create_random_author(db)
+    token_headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)  
+
+    data = {"name": author.name}
+    r = client.patch(
+        f"{settings.API_V1_STR}/authors/me",
+        headers=token_headers,
+        json=data,
+    )
+    assert r.status_code == 409
+    assert r.json()["detail"] == "Author with this name already exists"
+    
+def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: User) -> None:
+    headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)
+    author_id = user_who_is_author.author_id
+    
+    author = db.get(Author, author_id)
+    name = author.name
+
+    r = client.delete(
+        f"{settings.API_V1_STR}/authors/me",
+        headers=headers,
+    )
+    
+    assert r.status_code == 200
+    deleted_author = r.json()
+    assert deleted_author["message"] == "Author deleted successfully"
+    result = db.exec(select(Author).where(Author.id == author_id)).first()
+    assert result is None
+    
+    author = crud_author.create_author(session=db, author_in=AuthorCreate(name=name))
+    user_who_is_author = crud_user.update_user(session=db, db_user=user_who_is_author, user_in=UserUpdate(author_id=author.id))
+    
 
 def test_get_existing_author(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -55,6 +144,22 @@ def test_get_existing_author_permissions_error(
     assert r.status_code == 403
     assert r.json() == {"detail": "The user doesn't have enough privileges"}
 
+def test_get_existing_author_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    while True: 
+        author_id = uuid.uuid4()
+        author = db.get(Author, author_id)
+        if not author:
+            break
+        
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/{author_id}",
+        headers=superuser_token_headers,
+    )
+    
+    assert r.status_code == 404
+    assert r.json() == {"detail": "The author with this id does not exist in the system"}
 
 def test_create_author_existing_name(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session

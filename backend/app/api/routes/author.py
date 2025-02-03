@@ -8,6 +8,7 @@ from app.crud import crud_author, crud_poems
 from app.api.deps import (
     get_current_active_superuser,
     SessionDep,
+    CurrentUser,
 )
 
 from app.models import (
@@ -20,7 +21,6 @@ from app.models import (
 )
 
 router = APIRouter(prefix="/authors", tags=["authors"])
-
 
 @router.get(
     "/",
@@ -59,9 +59,69 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
 
     return author
 
-@router.get("/{author_id}", dependencies=[Depends(get_current_active_superuser)], response_model=AuthorPublic)
+@router.patch("/me", response_model=AuthorPublic)
+def update_author_me(
+    *, session: SessionDep, author_in: AuthorUpdate, current_user: CurrentUser
+) -> Any:
+    """
+    Update own author.
+    """
+    
+    author = session.get(Author, current_user.author_id)
+    
+    if not author:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
+
+    if author_in.name:
+        existing_author = crud_author.get_author_by_name(session=session, name=author_in.name)
+        if existing_author and existing_author.id != current_user.id:
+            raise HTTPException(
+                status_code=409, detail="Author with this name already exists"
+            )
+            
+
+    author = crud_author.update_author(session=session, author=author, author_in=author_in)
+    
+    return author
+
+@router.get("/me", response_model=AuthorPublic)
+def read_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
+    """
+    Get current author.
+    """
+    author = session.get(Author, current_user.author_id)
+    
+    if not author:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
+        
+    return author
+
+
+@router.delete("/me", response_model=Message)
+def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
+    """
+    Delete own author.
+    """
+
+    author = session.get(Author, current_user.author_id)
+    if not author:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
+    
+    crud_poems.delete_author_poems(session=session, author_id=current_user.author_id)
+    session.delete(author)
+    session.commit()
+    return Message(message="Author deleted successfully")
+
+
+@router.get("/{author_id}", response_model=AuthorPublic)
 def read_author_by_id(
-    author_id: uuid.UUID, session: SessionDep
+    author_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
 ) -> Any:
     """
     Get a specific Author by id.
@@ -72,8 +132,14 @@ def read_author_by_id(
             status_code=404,
             detail="The author with this id does not exist in the system",
         )
+        
+    if not current_user.is_superuser or author.author_id != current_user.author_id:
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges",
+        )
+        
     return author
-
 
 @router.patch(
     "/{author_id}",
@@ -109,7 +175,7 @@ def update_author(
 
 
 @router.delete("/{author_id}", dependencies=[Depends(get_current_active_superuser)])
-def delete_user(
+def delete_author(
     session: SessionDep, author_id: uuid.UUID
 ) -> Message:
     """
