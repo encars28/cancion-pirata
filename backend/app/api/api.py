@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.api.routes import login, private, users, utils, author
+from app.api.routes import login, private, users, utils, author, poems
 from app.core.config import settings
 
 api_router = APIRouter()
@@ -8,6 +8,7 @@ api_router.include_router(login.router)
 api_router.include_router(users.router)
 api_router.include_router(utils.router)
 api_router.include_router(author.router)
+api_router.include_router(poems.router)
 
 
 if settings.ENVIRONMENT == "local":

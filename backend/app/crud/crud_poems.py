@@ -65,15 +65,34 @@ def get_poem_by_title(*, session: Session, title: str) -> OriginalPoem | PoemTra
     poem = session.exec(statement).first()
     return poem
 
-def delete_author_poems(*, session: Session, author_id: uuid.UUID) -> None:
-    statement1 = select(OriginalPoem, PoemVersion).join(OriginalPoem).where(Author.id == author_id)
-    statement2 = select(PoemTranslation).join(OriginalPoem).where(Author.id == author_id)
+def delete_versions_and_translations(*, session: Session, poem_id: uuid.UUID) -> None:
+    statement1 = select(PoemVersion).where(PoemVersion.original_id == poem_id)
+    statement2 = select(PoemTranslation).where(PoemTranslation.original_id == poem_id)
     results1 = session.exec(statement1)
     results2 = session.exec(statement2)
     
-    for p, v in results1:
+    for v in results1:
         session.delete(v)
-        session.delete(p)
+     
+    for t in results2:
+        session.delete(t)
+        
+    session.commit()
+    
+def delete_original_poem(*, session: Session, poem: OriginalPoem) -> None:
+    poem_id = poem.id
+    delete_versions_and_translations(session=session, poem_id=poem_id)
+    session.delete(poem)
+    session.commit()
+    
+def delete_author_poems(*, session: Session, author_id: uuid.UUID) -> None:
+    statement1 = select(OriginalPoem).where(Author.id == author_id)
+    statement2 = select(PoemTranslation).where(Author.id == author_id)
+    results1 = session.exec(statement1)
+    results2 = session.exec(statement2)
+    
+    for p in results1:
+        delete_original_poem(session=session, poem=p)
      
     for t in results2:
         session.delete(t)

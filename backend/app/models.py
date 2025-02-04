@@ -63,6 +63,7 @@ class Collection(SQLModel, table=True):
 class Poem(SQLModel):
     title: str = Field(max_length=255)
     content: str
+    is_public: bool = False
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
 
@@ -77,6 +78,7 @@ class OriginalPoemCreate(OriginalPoemBase):
 class OriginalPoemUpdate(OriginalPoemBase):
     title: Optional[str] = Field(default=None, max_length=255)
     content: Optional[str] = Field(default=None)
+    is_public: Optional[bool] = Field(default=None)
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
@@ -110,6 +112,7 @@ class PoemVersionCreate(PoemVersionBase):
 class PoemVersionUpdate(PoemVersionBase):
     title: Optional[str] = Field(default=None, max_length=255)
     content: Optional[str] = Field(default=None)
+    is_public: Optional[bool] = Field(default=None)
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
@@ -126,10 +129,6 @@ class PoemVersion(PoemVersionBase, table=True):
 class PoemVersionPublic(PoemVersionBase):
     id: uuid.UUID
 
-class PoemVersionsPublic(SQLModel):
-    data: list[PoemVersionPublic]
-    count: int
-
 # Translations
 
 class PoemTranslationBase(Poem):
@@ -142,6 +141,7 @@ class PoemTranslationCreate(PoemTranslationBase):
 class PoemTranslationUpdate(PoemTranslationBase):
     title: Optional[str] = Field(default=None, max_length=255)
     content: Optional[str] = Field(default=None)
+    is_public: Optional[bool] = Field(default=None)
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
@@ -163,6 +163,10 @@ class PoemTranslationPublic(PoemTranslationBase):
 
 class PoemTranslationsPublic(SQLModel):
     data: list[PoemTranslationPublic]
+    count: int
+    
+class PoemsPublic(SQLModel):
+    data: list[OriginalPoemPublic | PoemVersionPublic | PoemTranslationPublic]
     count: int
     
 # USER
@@ -231,3 +235,4 @@ class TokenPayload(SQLModel):
 class NewPassword(SQLModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+
