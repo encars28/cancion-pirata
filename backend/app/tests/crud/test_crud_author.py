@@ -6,7 +6,6 @@ from app.models import Author, AuthorCreate, AuthorUpdate
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.poem import create_random_author
 
-
 def test_create_author(db: Session) -> None:
     name = random_lower_string()
     author_in = AuthorCreate(name=name)

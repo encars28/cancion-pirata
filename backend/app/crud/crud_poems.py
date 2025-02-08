@@ -60,11 +60,6 @@ def update_poem_translation(*, session: Session, poem: PoemTranslation, poem_in:
     session.refresh(poem)
     return poem
 
-def get_poem_by_title(*, session: Session, title: str) -> OriginalPoem | PoemTranslation | None:
-    statement = select(OriginalPoem, PoemTranslation).join().where(or_(OriginalPoem.title == title, PoemTranslation.title == title))
-    poem = session.exec(statement).first()
-    return poem
-
 def delete_versions_and_translations(*, session: Session, poem_id: uuid.UUID) -> None:
     statement1 = select(PoemVersion).where(PoemVersion.original_id == poem_id)
     statement2 = select(PoemTranslation).where(PoemTranslation.original_id == poem_id)

@@ -25,6 +25,7 @@ def create_random_original_poem(db: Session, author: Author | None = None, is_pu
     poem = crud_poems.create_poem(session=db, poem_in=poem_in)
     return poem
 
+
 def create_random_author(db: Session) -> Author:
     name = random_lower_string()
     author_in = AuthorCreate(name=name)

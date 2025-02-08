@@ -134,4 +134,3 @@ def test_delete_author_poems(db: Session) -> None:
     assert db.get(OriginalPoem, poem_1.id) is None
     assert db.get(PoemVersion, poem_2.id) is None
     assert db.get(PoemTranslation, poem_3.id) is None
-    

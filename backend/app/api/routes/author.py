@@ -38,8 +38,7 @@ def read_authors(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     statement = select(Author).offset(skip).limit(limit)
     authors = session.exec(statement).all()
 
-    return AuthorsPublic(data=authors, count=count)
-
+    return AuthorsPublic(data=authors, count=count) # type: ignore
 
 @router.post(
     "/", dependencies=[Depends(get_current_active_superuser)], response_model=AuthorPublic
@@ -106,7 +105,11 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
     """
     Delete own author.
     """
-
+    if not current_user.author_id:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
+    
     author = session.get(Author, current_user.author_id)
     if not author:
         raise HTTPException(
@@ -133,7 +136,7 @@ def read_author_by_id(
             detail="The author with this id does not exist in the system",
         )
         
-    if not current_user.is_superuser or author.author_id != current_user.author_id:
+    if not current_user.is_superuser and author.id != current_user.author_id:
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
@@ -163,7 +166,7 @@ def update_author(
             detail="The author with this id does not exist in the system",
         )
         
-    if author.name:
+    if author_in.name:
         existing_author = crud_author.get_author_by_name(session=session, name=author_in.name)
         if existing_author and existing_author.id != author_id:
             raise HTTPException(

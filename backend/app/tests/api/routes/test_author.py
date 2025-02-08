@@ -1,4 +1,5 @@
 import uuid
+from venv import create
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
@@ -100,7 +101,7 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     author_id = user_who_is_author.author_id
     
     author = db.get(Author, author_id)
-    name = author.name
+    name = author.name # type: ignore
 
     r = client.delete(
         f"{settings.API_V1_STR}/authors/me",
@@ -135,10 +136,11 @@ def test_get_existing_author(
 
 
 def test_get_existing_author_permissions_error(
-    client: TestClient, normal_user_token_headers: dict[str, str]
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
+    author = create_random_author(db)
     r = client.get(
-        f"{settings.API_V1_STR}/authors/{uuid.uuid4()}",
+        f"{settings.API_V1_STR}/authors/{author.id}",
         headers=normal_user_token_headers,
     )
     assert r.status_code == 403
@@ -147,14 +149,9 @@ def test_get_existing_author_permissions_error(
 def test_get_existing_author_not_found(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    while True: 
-        author_id = uuid.uuid4()
-        author = db.get(Author, author_id)
-        if not author:
-            break
         
     r = client.get(
-        f"{settings.API_V1_STR}/authors/{author_id}",
+        f"{settings.API_V1_STR}/authors/{uuid.uuid4()}",
         headers=superuser_token_headers,
     )
     

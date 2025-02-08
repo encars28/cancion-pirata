@@ -23,7 +23,7 @@ class AuthorCreate(AuthorBase):
     pass
     
 class AuthorUpdate(AuthorBase):
-    name: Optional[str] = Field(default=None, max_length=255)
+    name: Optional[str] = Field(default=None, max_length=255) # type: ignore
     birth_year: Optional[int] = Field(default=None)
     
 class AuthorPublic(AuthorBase):
@@ -76,9 +76,9 @@ class OriginalPoemCreate(OriginalPoemBase):
     pass
 
 class OriginalPoemUpdate(OriginalPoemBase):
-    title: Optional[str] = Field(default=None, max_length=255)
-    content: Optional[str] = Field(default=None)
-    is_public: Optional[bool] = Field(default=None)
+    title: Optional[str] = Field(default=None, max_length=255) # type: ignore
+    content: Optional[str] = Field(default=None) # type: ignore
+    is_public: Optional[bool] = Field(default=None) # type: ignore
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
@@ -110,13 +110,13 @@ class PoemVersionCreate(PoemVersionBase):
     pass
     
 class PoemVersionUpdate(PoemVersionBase):
-    title: Optional[str] = Field(default=None, max_length=255)
-    content: Optional[str] = Field(default=None)
-    is_public: Optional[bool] = Field(default=None)
+    title: Optional[str] = Field(default=None, max_length=255) # type: ignore
+    content: Optional[str] = Field(default=None) # type: ignore
+    is_public: Optional[bool] = Field(default=None) # type: ignore
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
-    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id")
+    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id") # type: ignore
 
 class PoemVersion(PoemVersionBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -128,6 +128,10 @@ class PoemVersion(PoemVersionBase, table=True):
 
 class PoemVersionPublic(PoemVersionBase):
     id: uuid.UUID
+    
+class PoemVersionsPublic(SQLModel):
+    data: list[PoemVersionPublic]
+    count: int
 
 # Translations
 
@@ -139,13 +143,13 @@ class PoemTranslationCreate(PoemTranslationBase):
     pass
     
 class PoemTranslationUpdate(PoemTranslationBase):
-    title: Optional[str] = Field(default=None, max_length=255)
-    content: Optional[str] = Field(default=None)
-    is_public: Optional[bool] = Field(default=None)
+    title: Optional[str] = Field(default=None, max_length=255) # type: ignore
+    content: Optional[str] = Field(default=None) # type: ignore
+    is_public: Optional[bool] = Field(default=None) # type: ignore
     publication_year: Optional[int] = Field(default=None)
     language: Optional[str] = Field(default=None, max_length=255)
     
-    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id")
+    original_id: Optional[uuid.UUID] = Field(default=None, foreign_key="originalpoem.id") # type: ignore
     author_id: Optional[uuid.UUID] = Field(default=None, foreign_key="author.id")
     
 class PoemTranslation(PoemTranslationBase, table=True):
@@ -163,10 +167,6 @@ class PoemTranslationPublic(PoemTranslationBase):
 
 class PoemTranslationsPublic(SQLModel):
     data: list[PoemTranslationPublic]
-    count: int
-    
-class PoemsPublic(SQLModel):
-    data: list[OriginalPoemPublic | PoemVersionPublic | PoemTranslationPublic]
     count: int
     
 # USER

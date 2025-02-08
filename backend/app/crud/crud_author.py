@@ -1,6 +1,7 @@
 from sqlmodel import Session, select
 
-from app.models import Author, AuthorCreate
+from app.models import Author, AuthorCreate, AuthorUpdate
+
 
 def create_author(*, session: Session, author_in: AuthorCreate) -> Author:
     author = Author.model_validate(author_in)
@@ -9,7 +10,7 @@ def create_author(*, session: Session, author_in: AuthorCreate) -> Author:
     session.refresh(author)
     return author
 
-def update_author(*, session: Session, author: Author, author_in: AuthorCreate) -> Author:
+def update_author(*, session: Session, author: Author, author_in: AuthorUpdate) -> Author:
     author_data = author_in.model_dump(exclude_unset=True)
     author.sqlmodel_update(author_data)
     session.add(author)
