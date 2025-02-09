@@ -1,6 +1,6 @@
 import logging
 
-from sqlmodel import Session
+from sqlalchemy import Session
 
 from app.core.db import engine, create_db_and_tables, init_db
 

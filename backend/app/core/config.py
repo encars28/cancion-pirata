@@ -67,8 +67,9 @@ class Settings(BaseSettings):
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_DB,
-        )
-        
+        ) # type: ignore
+    #TODO: check this
+    
     @computed_field  # type: ignore[prop-decorator]
     @property
     def SQLALCHEMY_TEST_DATABASE_URI(self) -> PostgresDsn:
@@ -79,7 +80,7 @@ class Settings(BaseSettings):
             host=self.POSTGRES_SERVER,
             port=self.POSTGRES_PORT,
             path=self.POSTGRES_TEST_DB,
-        )
+        ) # type: ignore
     
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
