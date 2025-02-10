@@ -2,24 +2,18 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import func, select
+from sqlalchemy import func, select
 
-from backend.app.crud import poem
 from app.api.deps import (
     get_current_active_superuser,
     SessionDep,
     CurrentUser,
 )
 
-from app.models import (
-    Message,
-    Author,
-    AuthorCreate,
-    AuthorPublic,
-    AuthorsPublic,
-    AuthorUpdate,
-)
-from backend.app.crud import author
+from app.models.author import Author
+from app.schemas.common import Message
+from app.schemas.author import AuthorCreate, AuthorPublic, AuthorUpdate, AuthorsPublic
+from app.crud.author import author_crud
 
 router = APIRouter(prefix="/authors", tags=["authors"])
 
@@ -34,10 +28,9 @@ def read_authors(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     """
 
     count_statement = select(func.count()).select_from(Author)
-    count = session.exec(count_statement).one()
+    count = session.execute(count_statement).scalar()
 
-    statement = select(Author).offset(skip).limit(limit)
-    authors = session.exec(statement).all()
+    authors = author_crud.get_many(db=session, skip=skip, limit=limit)
 
     return AuthorsPublic(data=authors, count=count) # type: ignore
 
@@ -48,14 +41,14 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     """
     Create new Author.
     """
-    author = author.get_author_by_name(session=session, name=author_in.name)
+    author = author_crud.get_one(session, Author.full_name == author_in.full_name)
     if author:
         raise HTTPException(
             status_code=400,
-            detail="The author with this name already exists in the system.",
+            detail="The author with this full_name already exists in the system.",
         )
 
-    author = author.create_author(session=session, author_in=author_in)
+    author = author_crud.create(db=session, obj_create=author_in)
 
     return author
 
@@ -74,16 +67,15 @@ def update_author_me(
             status_code=404, detail="Author not found"
         )
 
-    if author_in.name:
-        existing_author = author.get_author_by_name(session=session, name=author_in.name)
+    if author_in.full_name:
+        existing_author = author_crud.get_one(session, Author.full_name == author_in.full_name)
         if existing_author and existing_author.id != current_user.id:
             raise HTTPException(
                 status_code=409, detail="Author with this name already exists"
             )
             
 
-    author = author.update_author(session=session, author=author, author_in=author_in)
-    
+    author = author_crud.update(db=session, db_obj=author, obj_update=author_in)
     return author
 
 @router.get("/me", response_model=AuthorPublic)
@@ -117,9 +109,7 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
             status_code=404, detail="Author not found"
         )
     
-    poem.delete_author_poems(session=session, author_id=current_user.author_id)
-    session.delete(author)
-    session.commit()
+    author_crud.delete(db=session, db_obj=author)
     return Message(message="Author deleted successfully")
 
 
@@ -167,14 +157,14 @@ def update_author(
             detail="The author with this id does not exist in the system",
         )
         
-    if author_in.name:
-        existing_author = author.get_author_by_name(session=session, name=author_in.name)
+    if author_in.full_name:
+        existing_author = author_crud.get_one(session, Author.full_name == author_in.full_name)
         if existing_author and existing_author.id != author_id:
             raise HTTPException(
                 status_code=409, detail="Author with this name already exists"
             )
 
-    author = author.update_author(session=session, author=author, author_in=author_in)
+    author = author_crud.update(db=session, db_obj=author, obj_update=author_in)
     return author
 
 
@@ -189,7 +179,5 @@ def delete_author(
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
     
-    poem.delete_author_poems(session=session, author_id=author_id)
-    session.delete(author)
-    session.commit()
+    author_crud.delete(db=session, db_obj=author)
     return Message(message="Author deleted successfully")

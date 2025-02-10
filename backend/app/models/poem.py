@@ -6,6 +6,7 @@ from datetime import datetime
 from app.core.db import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 
 class Poem_Poem(Base):
     __tablename__ = "poem_poem"
@@ -34,6 +35,9 @@ class Poem(Base):
     author: Mapped[List["Author"]] = relationship(secondary="author_poem", back_populates="poems") # type: ignore 
     original: Mapped[Optional[Poem_Poem]] = relationship(back_populates="derived_poem", uselist=False)
     derived_poems: Mapped[List[Poem_Poem]] = relationship(back_populates="original")
+    
+    # proxies
+    author_id: AssociationProxy[List[uuid.UUID]] = association_proxy("author", "id")
     
     def __repr__(self) -> str:
         return f"Poem(id={self.id!r}, title={self.title!r}, is_public={self.is_public!r})"

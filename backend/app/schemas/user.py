@@ -3,9 +3,11 @@ from typing import Optional
 import uuid
 from datetime import datetime
 
+from app.schemas.author import AuthorPublic
+
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
-    full_name: Optional[str] = Field(max_length=255)
+    full_name: Optional[str] = Field(max_length=255, default=None)
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
     full_name: Optional[str] = Field(default=None, max_length=255)
@@ -36,6 +38,8 @@ class UpdatePassword(BaseModel):
 
 class UserPublic(UserBase):
     id: uuid.UUID
+    
+    author: Optional[AuthorPublic] = None
 
 class UsersPublic(BaseModel):
     data: list[UserPublic]

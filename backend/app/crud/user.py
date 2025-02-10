@@ -7,8 +7,8 @@ from app.models.user import User
 from sqlalchemy.orm import Session
 
 class UserRepository(CRUDRepository):
-    def authenticate(self, session: Session, email: str, password: str) -> Optional[User]:
-        db_user = self.get_one(session, User.email == email)
+    def authenticate(self, db: Session, email: str, password: str) -> Optional[User]:
+        db_user = self.get_one(db, User.email == email)
         if not db_user:
             return None
         if not verify_password(password, db_user.hashed_password):
