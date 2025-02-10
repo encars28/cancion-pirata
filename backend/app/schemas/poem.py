@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 import uuid
@@ -5,6 +7,27 @@ from datetime import datetime
 
 from app.schemas.author import AuthorPublic
 
+class PoemPoemBase(BaseModel):
+    original_id: uuid.UUID
+    derived_poem_id: uuid.UUID
+    type: int
+    
+class PoemPoemCreate(PoemPoemBase): 
+    pass
+
+class PoemPoemUpdate(PoemPoemBase): 
+    original_id: Optional[uuid.UUID] = None # type: ignore
+    derived_poem_id: Optional[uuid.UUID] = None # type: ignore
+    type: Optional[int] = None # type: ignore
+    
+class PoemPoemSchema(PoemPoemBase): 
+    model_config = ConfigDict(from_attributes=True)
+    
+# class PoemPoemSchemaPublic(BaseModel): 
+#     original: PoemPublic
+#     derived_poem_id: PoemPublic
+#     type: int
+    
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
     content: str
@@ -14,13 +37,10 @@ class PoemBase(BaseModel):
     updated_at: Optional[datetime] = None
     language: Optional[str] = None
     
-class PoemMeCreate(PoemBase): 
+class PoemCreate(PoemBase): 
     pass
 
-class PoemCreate(PoemBase): 
-    author_id: uuid.UUID
-
-class PoemMeUpdate(PoemBase): 
+class PoemUpdate(PoemBase): 
     title: Optional[str] = Field(max_length=255, default=None) # type: ignore
     content: Optional[str] = None # type: ignore
     is_public: Optional[bool] = None # type: ignore
@@ -28,16 +48,13 @@ class PoemMeUpdate(PoemBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     language: Optional[str] = None
-    
-class PoemUpdate(PoemMeUpdate):
-    author_id: Optional[uuid.UUID] = None
 
 class PoemPublic(PoemBase): 
     id: uuid.UUID
     
     author: List[AuthorPublic] = []
-    original: Optional["PoemPublic"] = None
-    derived_poems: List["PoemPublic"] = []
+    original: Optional[PoemPoemSchema] = None
+    derived_poems: List[PoemPoemSchema] = []
     
 class PoemsPublic(BaseModel): 
     data: list[PoemPublic]
@@ -49,6 +66,6 @@ class PoemSchema(PoemBase):
     id: uuid.UUID
     
     author: List[AuthorPublic] = []
-    original: Optional["PoemPublic"] = None
-    derived_poems: List["PoemPublic"] = []
+    original: Optional[PoemPoemSchema] = None
+    derived_poems: List[PoemPoemSchema] = []
     

@@ -1,4 +1,4 @@
-from email.policy import default
+from __future__ import annotations
 from typing import Optional, List
 import uuid
 from datetime import datetime
@@ -10,8 +10,11 @@ from sqlalchemy import String, ForeignKey
 class Poem_Poem(Base):
     __tablename__ = "poem_poem"
     
-    poem_id1: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
-    poem_id2: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
+    original_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
+    original: Mapped[Poem] = relationship(back_populates="derived_poems")
+    
+    derived_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
+    derived_poem: Mapped[Poem] = relationship(back_populates="original")
     
     type: Mapped[int]
     # 0: translation
@@ -29,8 +32,8 @@ class Poem(Base):
     updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
     author: Mapped[List["Author"]] = relationship(secondary="author_poem", back_populates="poems") # type: ignore 
-    original: Mapped[Optional["Poem"]] = relationship(secondary=Poem_Poem, back_populates="derived_poems", uselist=False)
-    derived_poems: Mapped[List["Poem"]] = relationship(secondary=Poem_Poem, back_populates="original")
+    original: Mapped[Optional[Poem_Poem]] = relationship(back_populates="derived_poem", uselist=False)
+    derived_poems: Mapped[List[Poem_Poem]] = relationship(back_populates="original")
     
     def __repr__(self) -> str:
         return f"Poem(id={self.id!r}, title={self.title!r}, is_public={self.is_public!r})"
