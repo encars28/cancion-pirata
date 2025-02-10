@@ -23,4 +23,4 @@ class Author(Base):
     poems: Mapped[List["Poem"]] = relationship(secondary=write, back_populates="author") # type: ignore
     
     def __repr__(self) -> str:
-        return f"Author(id={self.id!r}, full_name={self.full_name!r}, birth_date={self.birth_date!r}, user={self.user!r}, poems={self.poems!r})"
+        return f"Author(id={self.id!r}, full_name={self.full_name!r})"

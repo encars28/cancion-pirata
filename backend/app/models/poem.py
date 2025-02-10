@@ -1,3 +1,4 @@
+from email.policy import default
 from typing import Optional, List
 import uuid
 from datetime import datetime
@@ -21,14 +22,15 @@ class Poem(Base):
     title: Mapped[str] = mapped_column(String(255), index=True)
     content: Mapped[str]
     is_public: Mapped[bool]
-    publication_date: Mapped[Optional[datetime]]
+    show_author: Mapped[bool]
+    
     language: Mapped[Optional[str]] = mapped_column(String(255))
     created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
-    updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now(), onupdate=datetime.now())
+    updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
     author: Mapped[List["Author"]] = relationship(secondary="author_poem", back_populates="poems") # type: ignore 
     original: Mapped[Optional["Poem"]] = relationship(secondary=Poem_Poem, back_populates="derived_poems", uselist=False)
     derived_poems: Mapped[List["Poem"]] = relationship(secondary=Poem_Poem, back_populates="original")
     
     def __repr__(self) -> str:
-        return f"Poem(id={self.id!r}, title={self.title!r}, content={self.content!r}, is_public={self.is_public!r}, publication_date={self.publication_date!r}, language={self.language!r}, author={self.author!r}, original={self.original!r}, derived_poems={self.derived_poems!r})"
+        return f"Poem(id={self.id!r}, title={self.title!r}, is_public={self.is_public!r})"

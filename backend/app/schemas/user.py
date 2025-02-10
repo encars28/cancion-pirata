@@ -41,13 +41,3 @@ class UsersPublic(BaseModel):
     data: list[UserPublic]
     count: int
     
-class NewPassword(BaseModel):
-    token: str
-    password: str = Field(min_length=8, max_length=40)
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-    
-class TokenPayload(BaseModel):
-    sub: Optional[str] = None

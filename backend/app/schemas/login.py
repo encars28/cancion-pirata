@@ -1,0 +1,13 @@
+from typing import Optional
+from pydantic import BaseModel, Field, EmailStr
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    
+class TokenPayload(BaseModel):
+    sub: Optional[str] = None
+    
+class NewPassword(BaseModel):
+    token: str
+    password: str = Field(min_length=8, max_length=40)
