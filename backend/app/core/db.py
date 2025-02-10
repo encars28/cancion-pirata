@@ -1,7 +1,7 @@
 from app.core.config import settings
 
 from app.models import User, UserCreate
-from app.crud import crud_user
+from backend.app.crud import user
 
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session, declarative_base

@@ -4,7 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import func, select
 
-from app.crud import crud_author, crud_poems
+from backend.app.crud import poem
 from app.api.deps import (
     get_current_active_superuser,
     SessionDep,
@@ -19,6 +19,7 @@ from app.models import (
     AuthorsPublic,
     AuthorUpdate,
 )
+from backend.app.crud import author
 
 router = APIRouter(prefix="/authors", tags=["authors"])
 
@@ -47,14 +48,14 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     """
     Create new Author.
     """
-    author = crud_author.get_author_by_name(session=session, name=author_in.name)
+    author = author.get_author_by_name(session=session, name=author_in.name)
     if author:
         raise HTTPException(
             status_code=400,
             detail="The author with this name already exists in the system.",
         )
 
-    author = crud_author.create_author(session=session, author_in=author_in)
+    author = author.create_author(session=session, author_in=author_in)
 
     return author
 
@@ -74,14 +75,14 @@ def update_author_me(
         )
 
     if author_in.name:
-        existing_author = crud_author.get_author_by_name(session=session, name=author_in.name)
+        existing_author = author.get_author_by_name(session=session, name=author_in.name)
         if existing_author and existing_author.id != current_user.id:
             raise HTTPException(
                 status_code=409, detail="Author with this name already exists"
             )
             
 
-    author = crud_author.update_author(session=session, author=author, author_in=author_in)
+    author = author.update_author(session=session, author=author, author_in=author_in)
     
     return author
 
@@ -116,7 +117,7 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
             status_code=404, detail="Author not found"
         )
     
-    crud_poems.delete_author_poems(session=session, author_id=current_user.author_id)
+    poem.delete_author_poems(session=session, author_id=current_user.author_id)
     session.delete(author)
     session.commit()
     return Message(message="Author deleted successfully")
@@ -167,13 +168,13 @@ def update_author(
         )
         
     if author_in.name:
-        existing_author = crud_author.get_author_by_name(session=session, name=author_in.name)
+        existing_author = author.get_author_by_name(session=session, name=author_in.name)
         if existing_author and existing_author.id != author_id:
             raise HTTPException(
                 status_code=409, detail="Author with this name already exists"
             )
 
-    author = crud_author.update_author(session=session, author=author, author_in=author_in)
+    author = author.update_author(session=session, author=author, author_in=author_in)
     return author
 
 
@@ -188,7 +189,7 @@ def delete_author(
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
     
-    crud_poems.delete_author_poems(session=session, author_id=author_id)
+    poem.delete_author_poems(session=session, author_id=author_id)
     session.delete(author)
     session.commit()
     return Message(message="Author deleted successfully")

@@ -1,7 +1,7 @@
 from fastapi.encoders import jsonable_encoder
 from sqlmodel import Session
 
-from app.crud import crud_poems
+from backend.app.crud import poem
 from app.models import (
     OriginalPoem, 
     PoemVersion,
@@ -22,7 +22,7 @@ def test_create_poem(db: Session) -> None:
     content = random_lower_string()
     
     poem_in = OriginalPoemCreate(title=title, content=content)
-    poem = crud_poems.create_poem(session=db, poem_in=poem_in)
+    poem = poem.create_poem(session=db, poem_in=poem_in)
     assert poem.title == title
     assert poem.content == content
     
@@ -33,7 +33,7 @@ def test_create_poem_version(db: Session) -> None:
     content = random_lower_string()
     
     poem_in = PoemVersionCreate(title=title, content=content, original_id=original.id)
-    poem = crud_poems.create_poem_version(session=db, poem_in=poem_in)
+    poem = poem.create_poem_version(session=db, poem_in=poem_in)
     assert poem.title == title
     assert poem.content == content
     assert poem.original_id == original.id
@@ -45,7 +45,7 @@ def test_create_poem_translation(db: Session) -> None:
     content = random_lower_string()
     
     poem_in = PoemTranslationCreate(title=title, content=content, original_id=original.id)
-    poem = crud_poems.create_poem_translation(session=db, poem_in=poem_in)
+    poem = poem.create_poem_translation(session=db, poem_in=poem_in)
     assert poem.title == title
     assert poem.content == content
     assert poem.original_id == original.id
@@ -88,7 +88,7 @@ def test_update_original_poem(db: Session) -> None:
     poem_in_update = OriginalPoemUpdate(content=new_content)
     
     if poem.id is not None:
-        crud_poems.update_poem(session=db, poem=poem, poem_in=poem_in_update)
+        poem.update_poem(session=db, poem=poem, poem_in=poem_in_update)
         
     poem_2 = db.get(OriginalPoem, poem.id)
     assert poem_2
@@ -102,7 +102,7 @@ def test_update_poem_version(db: Session) -> None:
     poem_in_update = PoemVersionUpdate(content=new_content)
     
     if poem.id is not None:
-        crud_poems.update_poem_version(session=db, poem=poem, poem_in=poem_in_update)
+        poem.update_poem_version(session=db, poem=poem, poem_in=poem_in_update)
         
     poem_2 = db.get(PoemVersion, poem.id)
     assert poem_2
@@ -116,7 +116,7 @@ def test_update_poem_translation(db: Session) -> None:
     poem_in_update = PoemTranslationUpdate(content=new_content)
     
     if poem.id is not None:
-        crud_poems.update_poem_translation(session=db, poem=poem, poem_in=poem_in_update)
+        poem.update_poem_translation(session=db, poem=poem, poem_in=poem_in_update)
         
     poem_2 = db.get(PoemTranslation, poem.id)
     assert poem_2
@@ -128,7 +128,7 @@ def test_delete_author_poems(db: Session) -> None:
     poem_2 = create_random_version_poem(db, poem_1)
     poem_3 = create_random_translation_poem(db, poem_1)
     
-    crud_poems.delete_author_poems(session=db, author_id=author.id)
+    poem.delete_author_poems(session=db, author_id=author.id)
     
     assert author
     assert db.get(OriginalPoem, poem_1.id) is None

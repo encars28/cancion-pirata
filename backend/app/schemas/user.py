@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from typing import Optional
 import uuid
 from datetime import datetime
@@ -40,4 +40,8 @@ class UserPublic(UserBase):
 class UsersPublic(BaseModel):
     data: list[UserPublic]
     count: int
+    
+class UserSchema(UserBase): 
+    model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID
     

@@ -9,9 +9,10 @@ from app.models import (
     PoemTranslationCreate,
 )
 from sqlmodel import Session
-from app.crud import crud_poems, crud_author
+from backend.app.crud import poem
 
 from app.tests.utils.utils import random_lower_string
+from backend.app.crud import author
 
 def create_random_original_poem(db: Session, author: Author | None = None, is_public: bool = True) -> OriginalPoem:
     title = random_lower_string()
@@ -22,14 +23,14 @@ def create_random_original_poem(db: Session, author: Author | None = None, is_pu
     else: 
         poem_in = OriginalPoemCreate(title=title, is_public=is_public, content=content)
         
-    poem = crud_poems.create_poem(session=db, poem_in=poem_in)
+    poem = poem.create_poem(session=db, poem_in=poem_in)
     return poem
 
 
 def create_random_author(db: Session) -> Author:
     name = random_lower_string()
     author_in = AuthorCreate(name=name)
-    author = crud_author.create_author(session=db, author_in=author_in)
+    author = author.create_author(session=db, author_in=author_in)
     return author
 
 def create_random_version_poem(db: Session, original: OriginalPoem, is_public: bool = True) -> PoemVersion:
@@ -37,7 +38,7 @@ def create_random_version_poem(db: Session, original: OriginalPoem, is_public: b
     content = random_lower_string()
     
     poem_in = PoemVersionCreate(title=title, content=content, is_public=is_public, original_id=original.id)
-    poem = crud_poems.create_poem_version(session=db, poem_in=poem_in)
+    poem = poem.create_poem_version(session=db, poem_in=poem_in)
     return poem
 
 def create_random_translation_poem(db: Session, original: OriginalPoem, author: Author | None = None, is_public: bool = True) -> PoemTranslation:
@@ -49,5 +50,5 @@ def create_random_translation_poem(db: Session, original: OriginalPoem, author: 
     else: 
         poem_in = PoemTranslationCreate(title=title, content=content, is_public=is_public, original_id=original.id)
         
-    poem = crud_poems.create_poem_translation(session=db, poem_in=poem_in)
+    poem = poem.create_poem_translation(session=db, poem_in=poem_in)
     return poem

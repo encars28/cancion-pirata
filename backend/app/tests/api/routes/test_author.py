@@ -4,13 +4,14 @@ from venv import create
 from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
-from app.crud import crud_author, crud_user
+from backend.app.crud import user
 from app.core.config import settings
 
 from app.models import Author, OriginalPoem, PoemTranslation, User, UserUpdate, AuthorCreate
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.poem import create_random_author
 from app.tests.utils.user import authentication_token_from_email
+from backend.app.crud import author
 
 
 def test_create_author(
@@ -25,7 +26,7 @@ def test_create_author(
     )
     assert 200 <= r.status_code < 300
     created_author = r.json()
-    author = crud_author.get_author_by_name(session=db, name=name)
+    author = author.get_author_by_name(session=db, name=name)
     assert author
     assert author.name == created_author["name"]
 
@@ -114,8 +115,8 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     result = db.exec(select(Author).where(Author.id == author_id)).first()
     assert result is None
     
-    author = crud_author.create_author(session=db, author_in=AuthorCreate(name=name))
-    user_who_is_author = crud_user.update_user(session=db, db_user=user_who_is_author, user_in=UserUpdate(author_id=author.id))
+    author = author.create_author(session=db, author_in=AuthorCreate(name=name))
+    user_who_is_author = user.update_user(session=db, db_user=user_who_is_author, user_in=UserUpdate(author_id=author.id))
     
 
 def test_get_existing_author(
@@ -130,7 +131,7 @@ def test_get_existing_author(
     assert 200 <= r.status_code < 300
     api_author = r.json()
     
-    existing_author = crud_author.get_author_by_name(session=db, name=author.name)
+    existing_author = author.get_author_by_name(session=db, name=author.name)
     assert existing_author
     assert existing_author.name == api_author["name"]
 

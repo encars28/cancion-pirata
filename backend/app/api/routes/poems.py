@@ -27,7 +27,8 @@ from app.models import (
     Message,
 )
 
-from app.crud import crud_poems, crud_author, crud_user
+from backend.app.crud import user
+from backend.app.crud import author, poem
 
 router = APIRouter(prefix="/poems", tags=["poems"])
 
@@ -206,14 +207,14 @@ def create_poem(
                 name = current_user.email
             
             author_in = AuthorCreate(name=name)
-            author = crud_author.create_author(session=session, author_in=author_in)
+            author = author.create_author(session=session, author_in=author_in)
 
             user_in = UserUpdate(author_id=author.id)
-            current_user = crud_user.update_user(session=session, db_user=current_user, user_in=user_in)
+            current_user = user.update_user(session=session, db_user=current_user, user_in=user_in)
 
             poem_in.author_id = author.id
             
-    poem = crud_poems.create_poem(session=session, poem_in=poem_in)
+    poem = poem.create_poem(session=session, poem_in=poem_in)
     
     return poem
 
@@ -237,14 +238,14 @@ def create_translation(
                 name = current_user.email
             
             author_in = AuthorCreate(name=name)
-            author = crud_author.create_author(session=session, author_in=author_in)
+            author = author.create_author(session=session, author_in=author_in)
             
             user_in = UserUpdate(author_id=author.id)
-            current_user = crud_user.update_user(session=session, db_user=current_user, user_in=user_in)
+            current_user = user.update_user(session=session, db_user=current_user, user_in=user_in)
             
             poem_in.author_id = author.id
             
-    poem = crud_poems.create_poem_translation(session=session, poem_in=poem_in)
+    poem = poem.create_poem_translation(session=session, poem_in=poem_in)
     
     return poem
 
@@ -263,7 +264,7 @@ def create_version(
         if original.author_id is None or original.author_id != current_user.author_id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
             
-    poem = crud_poems.create_poem_version(session=session, poem_in=poem_in)
+    poem = poem.create_poem_version(session=session, poem_in=poem_in)
     
     return poem
 
@@ -286,7 +287,7 @@ def update_poem(
         if current_user.author_id is None or current_user.author_id != poem.author_id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
     
-    poem = crud_poems.update_poem(session=session, poem=poem, poem_in=poem_in)
+    poem = poem.update_poem(session=session, poem=poem, poem_in=poem_in)
     
     return poem
 
@@ -309,7 +310,7 @@ def update_translation(
         if current_user.author_id is None or current_user.author_id != poem.author_id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
     
-    poem = crud_poems.update_poem_translation(session=session, poem=poem, poem_in=poem_in)
+    poem = poem.update_poem_translation(session=session, poem=poem, poem_in=poem_in)
     
     return poem
 
@@ -332,7 +333,7 @@ def update_version(
         if current_user.author_id is None or current_user.author_id != poem.original.author_id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
     
-    poem = crud_poems.update_poem_version(session=session, poem=poem, poem_in=poem_in)
+    poem = poem.update_poem_version(session=session, poem=poem, poem_in=poem_in)
     
     return poem
 
@@ -351,7 +352,7 @@ def delete_poem(
         if current_user.author_id is None or poem.author_id != current_user.id:
             raise HTTPException(status_code=400, detail="Not enough permissions")
     
-    crud_poems.delete_original_poem(session=session, poem=poem)
+    poem.delete_original_poem(session=session, poem=poem)
     return Message(message="Poem deleted successfully")
 
 @router.delete("/translations/{poem_id}")
