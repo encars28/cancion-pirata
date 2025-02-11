@@ -24,7 +24,7 @@ from app.schemas.user import (
     UsersPublic,
 )
 
-from app.utils.email import generate_new_account_email, send_email
+from app.external.email import generate_new_account_email, send_email
 
 router = APIRouter(prefix="/users", tags=["users"])
 

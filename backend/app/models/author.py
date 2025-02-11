@@ -15,6 +15,8 @@ write = Table(
 )
 
 class Author(Base): 
+    __tablename__ = "author"
+    
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     full_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     birth_date: Mapped[Optional[datetime]]

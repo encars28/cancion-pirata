@@ -3,7 +3,7 @@ from pydantic.networks import EmailStr
 
 from app.api.deps import get_current_active_superuser
 from app.schemas.common import Message
-from app.utils.email import generate_test_email, send_email
+from app.external.email import generate_test_email, send_email
 
 router = APIRouter(prefix="/utils", tags=["utils"])
 

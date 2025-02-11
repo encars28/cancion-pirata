@@ -22,11 +22,13 @@ class Poem_Poem(Base):
     # 1: version
     
 class Poem(Base): 
+    __tablename__ = "poem"
+    
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), index=True)
     content: Mapped[str]
-    is_public: Mapped[bool]
-    show_author: Mapped[bool]
+    is_public: Mapped[bool] = mapped_column(default=True)
+    show_author: Mapped[bool] = mapped_column(default=True)
     
     language: Mapped[Optional[str]] = mapped_column(String(255))
     created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())

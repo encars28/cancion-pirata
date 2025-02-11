@@ -14,12 +14,12 @@ from app.schemas.login import NewPassword, Token
 from app.schemas.user import UserPublic
 from app.models.user import User
 from app.schemas.common import Message
-from app.utils.utils import (
+from app.utils import (
     generate_password_reset_token,
     verify_password_reset_token,
 )
 
-from app.utils.email import generate_reset_password_email, send_email
+from app.external.email import generate_reset_password_email, send_email
 
 router = APIRouter(tags=["login"])
 

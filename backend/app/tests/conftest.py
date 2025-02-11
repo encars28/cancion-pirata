@@ -10,20 +10,20 @@ from app.main import app
 from app.api.deps import get_db
 from app.tests.utils.user import authentication_token_from_email, get_author_user, get_superuser_token_headers
 
-from app.models import User
-
+from app.models.user import User
+from app.core.db import Base
 
 
 @pytest.fixture(scope="session", autouse=True)
 def db() -> Generator[Session, None, None]:
     engine = create_engine(str(settings.SQLALCHEMY_TEST_DATABASE_URI))
-    SQLModel.metadata.create_all(engine)
+    Base.metadata.create_all(engine)
     
     with Session(engine) as session:
         init_db(session)
         yield session
         
-    SQLModel.metadata.drop_all(engine)               
+    Base.metadata.drop_all(engine)               
 
 
 @pytest.fixture(scope="module")

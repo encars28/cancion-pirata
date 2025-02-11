@@ -1,11 +1,12 @@
 from fastapi.testclient import TestClient
-from sqlmodel import Session
+from sqlalchemy.orm import Session
 
-from backend.app.crud import user
+from app.crud.user import user_crud
 from app.core.config import settings
-from app.models import User, UserCreate, UserUpdate
+from app.models.user import User
+from app.schemas.user import UserCreate, UserUpdate
 from app.tests.utils.utils import random_email, random_lower_string
-from app.tests.utils.poem import create_random_author
+from app.tests.utils.author import create_random_author
 
 
 def user_authentication_headers(
@@ -24,21 +25,21 @@ def create_random_user(db: Session) -> User:
     email = random_email()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
-    user = user.create_user(session=db, user_create=user_in)
+    user = user_crud.create(db=db, obj_in=user_in)
     return user
 
 def get_author_user(db: Session) -> User:
     email = settings.EMAIL_TEST_AUTHOR_USER
-    user = user.get_user_by_email(session=db, email=email)
+    user = user_crud.get_one(db, User.email == email)
     
     if not user:
         user_in_create = UserCreate(email=email, password=random_lower_string())
-        user = user.create_user(session=db, user_create=user_in_create)
+        user = user_crud.create(db=db, obj_in=user_in_create)
         
     if user.author_id is None:
         author = create_random_author(db)
         user_in_update = UserUpdate(author_id=author.id)
-        user = user.update_user(session=db, db_user=user, user_in=user_in_update)
+        user = user_crud.update(db=db, db_obj=user, obj_in=user_in_update)
         
     return user
         
@@ -51,15 +52,15 @@ def authentication_token_from_email(
     If the user doesn't exist it is created first.
     """
     password = random_lower_string()
-    user = user.get_user_by_email(session=db, email=email)
+    user = user_crud.get_one(db, User.email == email)
     if not user:
         user_in_create = UserCreate(email=email, password=password)
-        user = user.create_user(session=db, user_create=user_in_create)
+        user = user_crud.create(db=db, obj_in=user_in_create)
     else:
         user_in_update = UserUpdate(password=password)
         if not user.id:
             raise Exception("User id not set")
-        user = user.update_user(session=db, db_user=user, user_in=user_in_update)
+        user = user_crud.update(db=db, db_obj=user, obj_in=user_in_update)
 
     return user_authentication_headers(client=client, email=email, password=password)
 

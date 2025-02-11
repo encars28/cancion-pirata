@@ -1,11 +1,14 @@
 from __future__ import annotations
+from enum import Enum
 
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Optional, List
 import uuid
 from datetime import datetime
 
-from app.schemas.author import AuthorPublic
+class PoemType(Enum): 
+    TRANSLATION = 0
+    VERSION = 1
 
 class PoemPoemBase(BaseModel):
     original_id: uuid.UUID
@@ -52,7 +55,7 @@ class PoemUpdate(PoemBase):
 class PoemPublic(PoemBase): 
     id: uuid.UUID
     
-    author: List[AuthorPublic] = []
+    author: List["AuthorPublic"] = [] # type: ignore
     original: Optional[PoemPoemSchema] = None
     derived_poems: List[PoemPoemSchema] = []
     
@@ -65,7 +68,7 @@ class PoemSchema(PoemBase):
     
     id: uuid.UUID
     
-    author: List[AuthorPublic] = []
+    author: List["AuthorPublic"] = [] # type: ignore
     original: Optional[PoemPoemSchema] = None
     derived_poems: List[PoemPoemSchema] = []
     

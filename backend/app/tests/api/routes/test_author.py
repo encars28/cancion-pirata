@@ -1,17 +1,22 @@
 import uuid
-from venv import create
 
 from fastapi.testclient import TestClient
-from sqlmodel import Session, select
+from sqlalchemy.orm import Session
+from sqlalchemy import select
 
-from backend.app.crud import user
+from app.crud.user import user_crud
+from app.crud.author import author_crud
 from app.core.config import settings
 
-from app.models import Author, OriginalPoem, PoemTranslation, User, UserUpdate, AuthorCreate
+from app.models.author import Author
+from app.schemas.author import AuthorCreate
+from app.models.poem import Poem
+from app.models.user import User
+from app.schemas.user import UserUpdate
+
 from app.tests.utils.utils import random_lower_string
-from app.tests.utils.poem import create_random_author
+from app.tests.utils.author import create_random_author
 from app.tests.utils.user import authentication_token_from_email
-from backend.app.crud import author
 
 
 def test_create_author(
@@ -26,7 +31,7 @@ def test_create_author(
     )
     assert 200 <= r.status_code < 300
     created_author = r.json()
-    author = author.get_author_by_name(session=db, name=name)
+    author = author_crud.get_one(db, Author.full_name == name)
     assert author
     assert author.name == created_author["name"]
 
@@ -65,8 +70,7 @@ def test_update_author_me(
     updated_author = r.json()
     assert updated_author["birth_year"] == birth_year
 
-    author_query = select(Author).where(Author.id == user_who_is_author.author_id)
-    author_db = db.exec(author_query).first()
+    author_db = db.get(Author, user_who_is_author.author_id)
     assert author_db
     assert author_db.birth_year == birth_year
     
@@ -112,11 +116,13 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     assert r.status_code == 200
     deleted_author = r.json()
     assert deleted_author["message"] == "Author deleted successfully"
-    result = db.exec(select(Author).where(Author.id == author_id)).first()
+    result = db.get(Author, author_id)
     assert result is None
     
-    author = author.create_author(session=db, author_in=AuthorCreate(name=name))
-    user_who_is_author = user.update_user(session=db, db_user=user_who_is_author, user_in=UserUpdate(author_id=author.id))
+    author_in = AuthorCreate(full_name=name)
+    author = author_crud.create(db=db, obj_create=author_in)
+    user_in = UserUpdate(author_id=author.id)
+    user_who_is_author = user_crud.update(db=db, db_obj=user_who_is_author, obj_update=user_in)
     
 
 def test_get_existing_author(
@@ -131,7 +137,7 @@ def test_get_existing_author(
     assert 200 <= r.status_code < 300
     api_author = r.json()
     
-    existing_author = author.get_author_by_name(session=db, name=author.name)
+    existing_author = author_crud.get_one(db, Author.full_name == author.name)
     assert existing_author
     assert existing_author.name == api_author["name"]
 
@@ -219,8 +225,7 @@ def test_update_author(
 
     assert updated_author["birth_year"] == 2000
 
-    author_query = select(Author).where(Author.name == author.name)
-    author_db = db.exec(author_query).first()
+    author_db = author_crud.get_one(db, Author.full_name == author.name)
     db.refresh(author_db)
     assert author_db
     assert author_db.birth_year == 2000
@@ -266,12 +271,9 @@ def test_delete_author_super_user(
     assert r.status_code == 200
     deleted_author = r.json()
     assert deleted_author["message"] == "Author deleted successfully"
-    result = db.exec(select(Author).where(Author.id == author_id)).first()
+    result = db.get(Author, author_id)
     assert result is None
-    poems = db.exec(select(OriginalPoem).where(OriginalPoem.author_id == author_id)).all()
-    assert poems == []
-    translations = db.exec(select(PoemTranslation).where(PoemTranslation.author_id == author_id)).all()
-    assert translations == []
+    #TODO: Check if poems are deleted as well
 
 
 def test_delete_author_not_found(

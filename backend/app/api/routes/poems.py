@@ -1,5 +1,5 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import func, select, or_
@@ -8,7 +8,7 @@ from app.api.deps import CurrentUser, SessionDep
 
 from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
-from app.schemas.poem import PoemCreate, PoemUpdate, PoemPublic, PoemsPublic
+from app.schemas.poem import PoemCreate, PoemPoemCreate, PoemUpdate, PoemPublic, PoemsPublic, PoemPoemCreate
 from app.schemas.author import AuthorCreate
 from app.schemas.user import UserUpdate
 from app.schemas.common import Message
@@ -19,24 +19,29 @@ from app.crud.poem import poem_crud, poem_poem_crud
 
 router = APIRouter(prefix="/poems", tags=["poems"])
 
-#TODO
 @router.get("/", response_model=PoemsPublic)
 def read_poems(
     session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
 ) -> Any:
     """
-    Retrieve original poems.
+    Retrieve poems.
     """
     
     if not current_user.is_superuser and current_user.author_id is None:
         count_statement = select(func.count()).select_from(Poem).where((Poem.is_public == True))
         count = session.execute(count_statement).scalar()
         poems = poem_crud.get_many(session, Poem.is_public == True, Poem.author.id == current_user.author_id, skip=skip, limit=limit)
+        for poem in poems: 
+            if not poem.show_author: 
+                poem.author = []
         
     elif not current_user.is_superuser and current_user.author_id:
         count_statement = select(func.count()).select_from(Poem).where(or_(Poem.is_public == True, current_user.author_id in Poem.author_id)) # type: ignore
         count = session.execute(count_statement).scalar()
         poems = poem_crud.get_many(session, or_(Poem.is_public == True, current_user.author_id in Poem.author_id), skip=skip, limit=limit) # type: ignore
+        for poem in poems: 
+            if not poem.show_author: 
+                poem.author = []
         
     else:  
         count_statement = select(func.count()).select_from(Poem)
@@ -45,7 +50,6 @@ def read_poems(
 
     return OriginalPoemsPublic(data=poems, count=count) # type: ignore
 
-#TODO
 @router.get("/me", response_model=PoemsPublic)
 def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
     """
@@ -58,6 +62,9 @@ def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
         count_statement = select(func.count()).select_from(Poem).where(current_user.author_id in Poem.author_id) # type: ignore
         count = session.execute(count_statement).scalar()
         poems = poem_crud.get_many(session, current_user.author_id in Poem.author_id) # type: ignore
+        for poem in poems: 
+            if not poem.show_author: 
+                poem.author = []
         
     else: 
         count_statement = select(func.count()).select_from(Poem)
@@ -89,7 +96,11 @@ def read_poem(session: SessionDep, current_user: CurrentUser, poem_id: uuid.UUID
 
 @router.post("/", response_model=PoemPublic)
 def create_poem(
-    *, session: SessionDep, current_user: CurrentUser, poem_in: PoemCreate, author: Author | None = None
+    *, session: SessionDep, 
+    current_user: CurrentUser, 
+    poem_in: PoemCreate, 
+    author: Optional[Author] = None,
+    poem_poem_in: Optional[PoemPoemCreate] = None
 ) -> Any:
     """
     Create new poem.
@@ -114,6 +125,9 @@ def create_poem(
     poem = poem_crud.create(db=session, obj_create=poem_in)
     if author: 
         poem = poem_crud.update_author(db=session, db_obj=poem, author=author)
+        
+    if poem_poem_in:
+        poem_poem_crud.create(db=session, obj_create=poem_poem_in)
     
     return poem
 
@@ -124,10 +138,10 @@ def update_poem(
     current_user: CurrentUser,
     poem_id: uuid.UUID,
     poem_in: PoemUpdate,
-    author: Author | None = None
+    author: Optional[Author] = None
 ) -> Any:
     """
-    Update an poem.
+    Update a poem.
     """
     poem = session.get(Poem, poem_id)
     if not poem:
@@ -148,7 +162,7 @@ def delete_poem(
     session: SessionDep, current_user: CurrentUser, poem_id: uuid.UUID
 ) -> Message:
     """
-    Delete an poem.
+    Delete a poem.
     """
     poem = session.get(Poem, poem_id)
     if not poem:
