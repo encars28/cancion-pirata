@@ -10,38 +10,22 @@ class PoemType(Enum):
     TRANSLATION = 0
     VERSION = 1
 
-class PoemPoemBase(BaseModel):
-    original_id: uuid.UUID
-    derived_poem_id: uuid.UUID
-    type: int
-    
-class PoemPoemCreate(PoemPoemBase): 
-    pass
+# POEM 
 
-class PoemPoemUpdate(PoemPoemBase): 
-    original_id: Optional[uuid.UUID] = None # type: ignore
-    derived_poem_id: Optional[uuid.UUID] = None # type: ignore
-    type: Optional[int] = None # type: ignore
-    
-class PoemPoemSchema(PoemPoemBase): 
-    model_config = ConfigDict(from_attributes=True)
-    
-# class PoemPoemSchemaPublic(BaseModel): 
-#     original: PoemPublic
-#     derived_poem_id: PoemPublic
-#     type: int
-    
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
     content: str
     is_public: bool = False
     show_author: bool = True
+    
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     language: Optional[str] = None
     
 class PoemCreate(PoemBase): 
-    pass
+    author_ids: Optional[List[uuid.UUID]] = None
+    type: Optional[int] = None
+    original_id: Optional[uuid.UUID] = None 
 
 class PoemUpdate(PoemBase): 
     title: Optional[str] = Field(max_length=255, default=None) # type: ignore
@@ -51,24 +35,51 @@ class PoemUpdate(PoemBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
     language: Optional[str] = None
+    author_ids: Optional[List[uuid.UUID]] = None 
+    type: Optional[int] = None
+    original_id: Optional[uuid.UUID] = None 
 
 class PoemPublic(PoemBase): 
     id: uuid.UUID
-    
-    author: List["AuthorPublic"] = [] # type: ignore
-    original: Optional[PoemPoemSchema] = None
-    derived_poems: List[PoemPoemSchema] = []
-    
-class PoemsPublic(BaseModel): 
-    data: list[PoemPublic]
-    count: int
 
+class PoemPublicWithAuthorNames(PoemPublic): 
+    author_names: List[str] = []
+
+class PoemPublicWithDerivedAndOriginal(PoemPublicWithAuthorNames):
+    model_config = ConfigDict(from_attributes=True)
+    derived_poems: List[PoemPoemPublicWithDerived] = []
+    original: Optional[PoemPoemPublicWithOriginal] = None
+    
 class PoemSchema(PoemBase): 
     model_config = ConfigDict(from_attributes=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
     
-    id: uuid.UUID
+class PoemsPublic(BaseModel): 
+    data: List[PoemPublicWithDerivedAndOriginal]
+    count: int
     
-    author: List["AuthorPublic"] = [] # type: ignore
-    original: Optional[PoemPoemSchema] = None
-    derived_poems: List[PoemPoemSchema] = []
+# POEM_POEM
+
+class PoemPoemBase(BaseModel):
+    type: int
+    
+class PoemPoemCreate(PoemPoemBase): 
+    original_id: uuid.UUID
+    derived_poem_id: uuid.UUID
+
+class PoemPoemUpdate(PoemPoemBase): 
+    original_id: Optional[uuid.UUID] = None # type: ignore
+    derived_poem_id: Optional[uuid.UUID] = None # type: ignore
+    type: Optional[int] = None # type: ignore
+
+class PoemPoemPublicWithOriginal(PoemPoemBase):
+    original_poem: PoemPublic
+    
+class PoemPoemPublicWithDerived(PoemPoemBase):
+    derived_poem: PoemPublic
+    
+class PoemPoemSchema(PoemPoemBase): 
+    model_config = ConfigDict(from_attributes=True)
+    original_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    derived_poem_id: uuid.UUID
     

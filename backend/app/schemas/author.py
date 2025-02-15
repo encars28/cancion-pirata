@@ -19,15 +19,19 @@ class AuthorUpdate(AuthorBase):
 class AuthorPublic(AuthorBase): 
     id: uuid.UUID
     
-class AuthorsPublic(BaseModel):
-    data: list[AuthorPublic]
-    count: int
+class AuthorPublicWithPoems(AuthorPublic): 
+    model_config = ConfigDict(from_attributes=True)
+    
+    poems: List[PoemPublic] = []
     
 class AuthorSchema(AuthorBase): 
     model_config = ConfigDict(from_attributes=True)
     
-    id: uuid.UUID
-    poems: List[PoemPublic] = []
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    
+class AuthorsPublic(BaseModel):
+    data: list[AuthorPublicWithPoems]
+    count: int
     
     
     

@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field, EmailStr
+from pydantic import BaseModel, Field
 
 class Token(BaseModel):
     access_token: str
@@ -10,4 +10,4 @@ class TokenPayload(BaseModel):
     
 class NewPassword(BaseModel):
     token: str
-    password: str = Field(min_length=8, max_length=40)
+    new_password: str = Field(min_length=8, max_length=40)

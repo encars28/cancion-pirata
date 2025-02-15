@@ -1,29 +1,28 @@
 from typing import Optional
 import uuid
-from datetime import date, datetime
+from datetime import datetime
 
 from pydantic import EmailStr
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String, UniqueConstraint
+from sqlalchemy import ForeignKey, String, UniqueConstraint, Uuid
 
-from app.core.db import Base
+from app.core.base_class import Base
+from app.models.author import Author
 
 class User(Base):
     __tablename__ = "user"
 
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[EmailStr] = mapped_column(String(255), unique=True, index=True)
     hashed_password: Mapped[str]
-    is_active: Mapped[bool]
-    is_superuser: Mapped[bool]
+    is_active: Mapped[bool] = mapped_column(default=True)
+    is_superuser: Mapped[bool] = mapped_column(default=False)
     
-    full_name: Mapped[Optional[str]] = mapped_column(String(255))
+    full_name: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
-    author_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("author.id"))
+    author_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("author.id"), default=None, unique=True)
     author: Mapped[Optional["Author"]] = relationship(back_populates="user") # type: ignore
-    
-    __table_args__ = (UniqueConstraint("author_id"),)
     
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, email={self.email!r}, is_superuser={self.is_superuser!r}, author_id={self.author_id!r})"

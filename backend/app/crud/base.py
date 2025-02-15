@@ -8,12 +8,13 @@ import logging
 import uuid
 
 from pydantic import BaseModel
-from app.core.db import Base
+from app.core.base_class import Base
 from sqlalchemy.orm import Session
 
 ORMModel = TypeVar("ORMModel", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
+SchemaType = TypeVar("SchemaType", bound=BaseModel)
 OwnerIDType = uuid.UUID
 
 log = logging.getLogger(__name__)
@@ -21,7 +22,7 @@ log = logging.getLogger(__name__)
 class CRUDRepository:
     """Base interface for CRUD operations."""
 
-    def __init__(self, model: Type[ORMModel]) -> None:
+    def __init__(self, model: Type[ORMModel], schema: Type[SchemaType]) -> None:
         """Initialize the CRUD repository.
 
         Parameters:
@@ -29,6 +30,7 @@ class CRUDRepository:
             To see models go to gymhero.models module.
         """
         self._model = model
+        self._schema = schema
         self._name = model.__name__
 
     def get_one(self, db: Session, *args, **kwargs) -> Optional[ORMModel]:
@@ -103,7 +105,10 @@ class CRUDRepository:
             obj_create.model_dump(),
         )
         obj_create_data = obj_create.model_dump(exclude_none=True, exclude_unset=True)
-        db_obj = self._model(**obj_create_data)
+        obj = self._schema.model_validate(obj_create_data)
+        obj_data = obj.model_dump(exclude_unset=True, exclude_none=True)
+        
+        db_obj = self._model(**obj_data)
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)

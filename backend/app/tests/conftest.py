@@ -2,16 +2,17 @@ from collections.abc import Generator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session, SQLModel, create_engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.base_class import Base
 from app.core.db import init_db
 from app.main import app
 from app.api.deps import get_db
 from app.tests.utils.user import authentication_token_from_email, get_author_user, get_superuser_token_headers
 
 from app.models.user import User
-from app.core.db import Base
 
 
 @pytest.fixture(scope="session", autouse=True)

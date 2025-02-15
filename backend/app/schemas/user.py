@@ -1,19 +1,16 @@
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 import uuid
 from datetime import datetime
-
-from app.schemas.author import AuthorPublic
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
     full_name: Optional[str] = Field(max_length=255, default=None)
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
+    
     full_name: Optional[str] = Field(default=None, max_length=255)
     created_at: Optional[datetime] = Field(default=None)
-    
-    author_id: Optional[uuid.UUID] = Field(default=None)
     
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=40)
@@ -37,15 +34,17 @@ class UpdatePassword(BaseModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 class UserPublic(UserBase):
+    model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
-    
-    author: Optional[AuthorPublic] = None
-
-class UsersPublic(BaseModel):
-    data: list[UserPublic]
-    count: int
+    author_id: Optional[uuid.UUID] = None
     
 class UserSchema(UserBase): 
     model_config = ConfigDict(from_attributes=True)
-    id: uuid.UUID
     
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    author_id: Optional[uuid.UUID] = None
+    hashed_password: str
+    
+class UsersPublic(BaseModel):
+    data: list[UserPublic]
+    count: int 

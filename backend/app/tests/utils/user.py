@@ -25,7 +25,7 @@ def create_random_user(db: Session) -> User:
     email = random_email()
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
-    user = user_crud.create(db=db, obj_in=user_in)
+    user = user_crud.create(db=db, obj_create=user_in)
     return user
 
 def get_author_user(db: Session) -> User:
@@ -34,12 +34,12 @@ def get_author_user(db: Session) -> User:
     
     if not user:
         user_in_create = UserCreate(email=email, password=random_lower_string())
-        user = user_crud.create(db=db, obj_in=user_in_create)
+        user = user_crud.create(db=db, obj_create=user_in_create)
         
     if user.author_id is None:
         author = create_random_author(db)
         user_in_update = UserUpdate(author_id=author.id)
-        user = user_crud.update(db=db, db_obj=user, obj_in=user_in_update)
+        user = user_crud.update(db=db, db_obj=user, obj_update=user_in_update)
         
     return user
         
@@ -55,12 +55,12 @@ def authentication_token_from_email(
     user = user_crud.get_one(db, User.email == email)
     if not user:
         user_in_create = UserCreate(email=email, password=password)
-        user = user_crud.create(db=db, obj_in=user_in_create)
+        user = user_crud.create(db=db, obj_create=user_in_create)
     else:
         user_in_update = UserUpdate(password=password)
         if not user.id:
             raise Exception("User id not set")
-        user = user_crud.update(db=db, db_obj=user, obj_in=user_in_update)
+        user = user_crud.update(db=db, db_obj=user, obj_update=user_in_update)
 
     return user_authentication_headers(client=client, email=email, password=password)
 

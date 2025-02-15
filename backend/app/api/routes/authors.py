@@ -12,7 +12,7 @@ from app.api.deps import (
 
 from app.models.author import Author
 from app.schemas.common import Message
-from app.schemas.author import AuthorCreate, AuthorPublic, AuthorUpdate, AuthorsPublic
+from app.schemas.author import AuthorCreate, AuthorPublicWithPoems, AuthorUpdate, AuthorsPublic
 from app.crud.author import author_crud
 
 router = APIRouter(prefix="/authors", tags=["authors"])
@@ -35,7 +35,7 @@ def read_authors(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     return AuthorsPublic(data=authors, count=count) # type: ignore
 
 @router.post(
-    "/", dependencies=[Depends(get_current_active_superuser)], response_model=AuthorPublic
+    "/", dependencies=[Depends(get_current_active_superuser)], response_model=AuthorPublicWithPoems
 )
 def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     """
@@ -52,13 +52,17 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
 
     return author
 
-@router.patch("/me", response_model=AuthorPublic)
+@router.patch("/me", response_model=AuthorPublicWithPoems)
 def update_author_me(
     *, session: SessionDep, author_in: AuthorUpdate, current_user: CurrentUser
 ) -> Any:
     """
     Update own author.
     """
+    if current_user.author_id is None:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
     
     author = session.get(Author, current_user.author_id)
     
@@ -78,13 +82,18 @@ def update_author_me(
     author = author_crud.update(db=session, db_obj=author, obj_update=author_in)
     return author
 
-@router.get("/me", response_model=AuthorPublic)
+@router.get("/me", response_model=AuthorPublicWithPoems)
 def read_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
     """
     Get current author.
     """
-    author = session.get(Author, current_user.author_id)
     
+    if current_user.author_id is None:
+        raise HTTPException(
+            status_code=404, detail="Author not found"
+        )
+        
+    author = session.get(Author, current_user.author_id)
     if not author:
         raise HTTPException(
             status_code=404, detail="Author not found"
@@ -113,7 +122,7 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
     return Message(message="Author deleted successfully")
 
 
-@router.get("/{author_id}", response_model=AuthorPublic)
+@router.get("/{author_id}", response_model=AuthorPublicWithPoems)
 def read_author_by_id(
     author_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
 ) -> Any:
@@ -138,7 +147,7 @@ def read_author_by_id(
 @router.patch(
     "/{author_id}",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=AuthorPublic,
+    response_model=AuthorPublicWithPoems,
 )
 def update_author(
     *,

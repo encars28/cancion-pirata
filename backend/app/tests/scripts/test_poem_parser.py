@@ -1,4 +1,4 @@
-from app.parser import PoemParser
+from app.poem_parser import PoemParser
 
 def test_parser_align() -> None:
     input_text = """<center>

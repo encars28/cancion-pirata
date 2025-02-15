@@ -1,4 +1,7 @@
+import json
 import uuid
+from datetime import datetime
+from fastapi.encoders import jsonable_encoder
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -23,7 +26,7 @@ def test_create_author(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     name = random_lower_string()
-    data = {"name": name}
+    data = {"full_name": name}
     r = client.post(
         f"{settings.API_V1_STR}/authors/",
         headers=superuser_token_headers,
@@ -33,7 +36,7 @@ def test_create_author(
     created_author = r.json()
     author = author_crud.get_one(db, Author.full_name == name)
     assert author
-    assert author.name == created_author["name"]
+    assert author.full_name == created_author["full_name"]
 
 def test_get_author_me(
     client: TestClient, user_who_is_author: User, db: Session
@@ -59,8 +62,8 @@ def test_update_author_me(
 ) -> None:
     token_headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)
     
-    birth_year = 1990
-    data = {"birth_year": birth_year}
+    birth_date = datetime.now()
+    data = jsonable_encoder({"birth_date": birth_date})
     r = client.patch(
         f"{settings.API_V1_STR}/authors/me",
         headers=token_headers,
@@ -68,16 +71,17 @@ def test_update_author_me(
     )
     assert r.status_code == 200
     updated_author = r.json()
-    assert updated_author["birth_year"] == birth_year
+    assert updated_author["birth_date"] == jsonable_encoder(birth_date)
 
     author_db = db.get(Author, user_who_is_author.author_id)
     assert author_db
-    assert author_db.birth_year == birth_year
+    assert author_db.birth_date == birth_date
     
 def test_update_author_me_no_author(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
-    data = {"birth_year": 1990}
+    birth_date = datetime.now()
+    data = jsonable_encoder({"birth_date": birth_date})
     r = client.patch(
         f"{settings.API_V1_STR}/authors/me",
         headers=normal_user_token_headers,
@@ -92,7 +96,7 @@ def test_update_author_me_author_exists(
     author = create_random_author(db)
     token_headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)  
 
-    data = {"name": author.name}
+    data = {"full_name": author.full_name}
     r = client.patch(
         f"{settings.API_V1_STR}/authors/me",
         headers=token_headers,
@@ -106,7 +110,7 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     author_id = user_who_is_author.author_id
     
     author = db.get(Author, author_id)
-    name = author.name # type: ignore
+    name = author.full_name # type: ignore
 
     r = client.delete(
         f"{settings.API_V1_STR}/authors/me",
@@ -137,9 +141,9 @@ def test_get_existing_author(
     assert 200 <= r.status_code < 300
     api_author = r.json()
     
-    existing_author = author_crud.get_one(db, Author.full_name == author.name)
+    existing_author = author_crud.get_one(db, Author.full_name == author.full_name)
     assert existing_author
-    assert existing_author.name == api_author["name"]
+    assert existing_author.full_name == api_author["full_name"]
 
 
 def test_get_existing_author_permissions_error(
@@ -169,7 +173,7 @@ def test_create_author_existing_name(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    data = {"name": author.name}
+    data = {"full_name": author.full_name}
     r = client.post(
         f"{settings.API_V1_STR}/authors/",
         headers=superuser_token_headers,
@@ -184,7 +188,7 @@ def test_create_author_by_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
     name = random_lower_string()
-    data = {"name": name}
+    data = {"full_name": name}
     r = client.post(
         f"{settings.API_V1_STR}/authors/",
         headers=normal_user_token_headers,
@@ -206,7 +210,7 @@ def test_retrieve_authors(
     assert len(all_authors["data"]) > 1
     assert "count" in all_authors
     for item in all_authors["data"]:
-        assert "name" in item
+        assert "full_name" in item
 
 
 def test_update_author(
@@ -214,7 +218,8 @@ def test_update_author(
 ) -> None:
     author = create_random_author(db)
 
-    data = {"birth_year": 2000}
+    birth_date = datetime.now()
+    data = jsonable_encoder({"birth_date": birth_date})
     r = client.patch(
         f"{settings.API_V1_STR}/authors/{author.id}",
         headers=superuser_token_headers,
@@ -223,12 +228,12 @@ def test_update_author(
     assert r.status_code == 200
     updated_author = r.json()
 
-    assert updated_author["birth_year"] == 2000
+    assert updated_author["birth_date"] == jsonable_encoder(birth_date)
 
-    author_db = author_crud.get_one(db, Author.full_name == author.name)
+    author_db = author_crud.get_one(db, Author.full_name == author.full_name)
     db.refresh(author_db)
     assert author_db
-    assert author_db.birth_year == 2000
+    assert author_db.birth_date == birth_date
 
 def test_update_author_not_exists(
     client: TestClient, superuser_token_headers: dict[str, str]
@@ -249,7 +254,7 @@ def test_update_author_name_exists(
     author = create_random_author(db)
     author2 = create_random_author(db)
 
-    data = {"name": author2.name}
+    data = {"full_name": author2.full_name}
     r = client.patch(
         f"{settings.API_V1_STR}/authors/{author.id}",
         headers=superuser_token_headers,

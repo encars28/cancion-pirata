@@ -1,13 +1,15 @@
+import random
 import uuid
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.core.config import settings
-from app.tests.utils.poem import create_random_poem, create_random_translation, create_random_version
+from app.tests.utils.poem import create_random_poem
 from app.tests.utils.user import authentication_token_from_email
 
 from app.models.user import User
+from app.tests.utils.utils import random_lower_string
 
 def test_read_poems(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -67,8 +69,8 @@ def test_read_poems_me(
     client: TestClient, user_who_is_author: User, db: Session
 ) -> None: 
     token = authentication_token_from_email(client=client, db=db, email=user_who_is_author.email)
-    create_random_poem(db, author=user_who_is_author.author)
-    create_random_poem(db, author=user_who_is_author.author)
+    create_random_poem(db, authors=[user_who_is_author.author])
+    create_random_poem(db, authors=[user_who_is_author.author])
     
     response = client.get(
         f"{settings.API_V1_STR}/poems/me",
@@ -81,7 +83,7 @@ def test_read_poems_me(
 def test_create_poem(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"title": "Foo", "content": "Fighters"}
+    data = {"title": random_lower_string(), "content": random_lower_string()}
     response = client.post(
         f"{settings.API_V1_STR}/poems/",
         headers=superuser_token_headers,
@@ -97,7 +99,7 @@ def test_create_derived_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     original = create_random_poem(db)
-    data = {"title": "Foo", "content": "Fighters", "original_id": str(original.id)}
+    data = {"title": random_lower_string(), "content": random_lower_string(), "original_id": str(original.id), "type": 0}
     response = client.post(
         f"{settings.API_V1_STR}/poems",
         headers=superuser_token_headers,
@@ -108,13 +110,12 @@ def test_create_derived_poem(
     assert content["title"] == data["title"]
     assert content["content"] == data["content"]
     assert "id" in content
-    assert content["original_id"] == str(original.id)
     
 def test_update_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     poem = create_random_poem(db)
-    data = {"title": "Updated title", "content": "Updated content"}
+    data = {"title": random_lower_string(), "content": random_lower_string()}
     response = client.put(
         f"{settings.API_V1_STR}/poems/{poem.id}",
         headers=superuser_token_headers,
@@ -129,7 +130,7 @@ def test_update_poem(
 def test_update_poem_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    data = {"title": "Updated title", "content": "Updated content"}
+    data = {"title": random_lower_string(), "content": random_lower_string()}
     response = client.put(
         f"{settings.API_V1_STR}/poems/{uuid.uuid4()}",
         headers=superuser_token_headers,
@@ -143,7 +144,7 @@ def test_update_poem_not_enough_permissions(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     poem = create_random_poem(db, is_public=False)
-    data = {"title": "Updated title", "content": "Updated content"}
+    data = {"title": random_lower_string(), "content": random_lower_string()}
     response = client.put(
         f"{settings.API_V1_STR}/poems/{poem.id}",
         headers=normal_user_token_headers,

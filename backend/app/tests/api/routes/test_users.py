@@ -39,7 +39,7 @@ def test_create_user_new_email(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     with (
-        patch("app.utils.send_email", return_value=None),
+        patch("app.external.email.send_email", return_value=None),
         patch("app.core.config.settings.SMTP_HOST", "smtp.example.com"),
         patch("app.core.config.settings.SMTP_USER", "admin@example.com"),
     ):
@@ -78,7 +78,7 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
     username = random_email()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
-    user = user_crud.create(db, obj_in=user_in)
+    user = user_crud.create(db=db, obj_create=user_in)
     user_id = user.id
 
     login_data = {
@@ -118,7 +118,7 @@ def test_create_user_existing_username(
     username = random_email()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
-    user_crud.create(db, obj_in=user_in)
+    user_crud.create(db=db, obj_create=user_in)
     data = {"email": username, "password": password}
     r = client.post(
         f"{settings.API_V1_STR}/users/",
@@ -360,7 +360,7 @@ def test_delete_user_me(client: TestClient, db: Session) -> None:
     username = random_email()
     password = random_lower_string()
     user_in = UserCreate(email=username, password=password)
-    user = user_crud.create(db, obj_in=user_in)
+    user = user_crud.create(db=db, obj_create=user_in)
     user_id = user.id
 
     login_data = {
