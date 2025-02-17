@@ -2,7 +2,6 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from sqlalchemy import func, select
 
 from app.api.deps import CurrentUser, SessionDep
 
@@ -12,7 +11,7 @@ from app.schemas.poem import (
     PoemCreate, 
     PoemPoemCreate, 
     PoemUpdate, 
-    PoemPublicWithDerivedAndOriginal, 
+    PoemPublicWithAllTheInfo, 
     PoemsPublic, 
     PoemPoemCreate,
     PoemPoemUpdate
@@ -37,8 +36,7 @@ def read_poems(
     """
     # Retrieve public poems
     if not current_user.is_superuser:
-        count_statement = select(func.count()).select_from(Poem).where((Poem.is_public == True))
-        count = session.execute(count_statement).scalar()
+        count = poem_crud.get_count(session, Poem.is_public == True)
         public_poems = poem_crud.get_many(session, Poem.is_public == True, skip=skip, limit=limit)
         for poem in public_poems: 
             if not poem.show_author and current_user.author_id not in poem.author_ids: 
@@ -46,8 +44,7 @@ def read_poems(
 
     else:  
         # retrieve all poems
-        count_statement = select(func.count()).select_from(Poem)
-        count = session.execute(count_statement).scalar()
+        count = poem_crud.get_count(session)
         poems = poem_crud.get_many(session, skip=skip, limit=limit)
 
     return PoemsPublic(data=poems, count=count) # type: ignore
@@ -65,13 +62,12 @@ def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
         count = len(poems)
         
     else: 
-        count_statement = select(func.count()).select_from(Poem)
-        count = session.execute(count_statement).one()
+        count = poem_crud.get_count(session)
         poems = poem_crud.get_many(session, skip=0, limit=100)
     
     return PoemsPublic(data=poems, count=count) # type: ignore
 
-@router.get("/{poem_id}", response_model=PoemPublicWithDerivedAndOriginal)
+@router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(session: SessionDep, current_user: CurrentUser, poem_id: uuid.UUID) -> Any:
     """
     Get poem by ID.
@@ -92,7 +88,7 @@ def read_poem(session: SessionDep, current_user: CurrentUser, poem_id: uuid.UUID
         
     return poem
 
-@router.post("/", response_model=PoemPublicWithDerivedAndOriginal)
+@router.post("/", response_model=PoemPublicWithAllTheInfo)
 def create_poem(
     *, session: SessionDep, 
     current_user: CurrentUser, 
@@ -127,17 +123,17 @@ def create_poem(
 
         poem = poem_crud.update_authors(db=session, db_obj=poem, authors=authors)
         
-    if poem_in.type and poem_in.original_id:
+    if poem_in.type is not None and poem_in.original_poem_id:
         poem_poem_in = PoemPoemCreate(
             type=poem_in.type, 
-            original_id=poem_in.original_id, 
+            original_poem_id=poem_in.original_poem_id, 
             derived_poem_id=poem.id
         )
-        poem_poem_crud.create(db=session, obj_create=poem_poem_in)
+        poem_poem = poem_poem_crud.create(db=session, obj_create=poem_poem_in)
     
     return poem
 
-@router.put("/{poem_id}", response_model=PoemPublicWithDerivedAndOriginal)
+@router.put("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def update_poem(
     *,
     session: SessionDep,
@@ -155,23 +151,37 @@ def update_poem(
     if not current_user.is_superuser:
         if current_user.author_id is None or current_user.author_id not in poem.author_ids:
             raise HTTPException(status_code=400, detail="Not enough permissions")
-    
-    poem = poem_crud.update(db=session, db_obj=poem, obj_update=poem_in)
     if poem_in.author_ids:
         authors = author_crud.get_many(session, Author.id.in_(poem_in.author_ids))
         if None in authors:
             raise HTTPException(status_code=404, detail="Author not found")
             
         poem = poem_crud.update_authors(db=session, db_obj=poem, authors=authors)
-            
-    if current_user.is_superuser and poem_in.type and poem_in.original_id:
-        poem_poem = poem_poem_crud.get_one(session, Poem_Poem.derived_poem_id == poem_id)
-        poem_poem_in = PoemPoemUpdate(
-            type=poem_in.type, 
-            original_id=poem_in.original_id, 
-        )
         
-        poem_poem_crud.update(db=session, db_obj=poem_poem, obj_update=poem_poem_in)
+        poem_in_data = poem_in.model_dump(exclude_unset=True)
+        del poem_in_data["author_ids"]
+        poem_in = PoemUpdate(**poem_in_data)
+        
+    poem = poem_crud.update(db=session, db_obj=poem, obj_update=poem_in)
+            
+    if current_user.is_superuser and poem_in.type is not None and poem_in.original_poem_id:
+        poem_poem = poem_poem_crud.get_one(session, Poem_Poem.derived_poem_id == poem_id)
+        
+        if not poem_poem:
+            poem_poem_in = PoemPoemCreate(
+                type=poem_in.type, 
+                original_poem_id=poem_in.original_poem_id, 
+                derived_poem_id=poem.id
+            )
+            poem_poem = poem_poem_crud.create(db=session, obj_create=poem_poem_in)
+            
+        else:
+            poem_poem_in = PoemPoemUpdate(
+                type=poem_in.type, 
+                original_poem_id=poem_in.original_poem_id, 
+            )
+
+            poem_poem_crud.update(db=session, db_obj=poem_poem, obj_update=poem_poem_in)
     
     return poem
 

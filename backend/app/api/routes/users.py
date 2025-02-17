@@ -2,7 +2,6 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func, select
 
 from app.crud.user import user_crud
 from app.api.deps import (
@@ -38,9 +37,7 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     """
     Retrieve users.
     """
-    count_statement = select(func.count()).select_from(User)
-    count = session.execute(count_statement).scalar()
-
+    count = user_crud.get_count(db=session)
     users = user_crud.get_many(db=session, skip=skip, limit=limit)
 
     return UsersPublic(data=users, count=count) # type: ignore

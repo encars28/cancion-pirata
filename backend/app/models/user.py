@@ -22,7 +22,5 @@ class User(Base):
     created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
     author_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("author.id"), default=None, unique=True)
-    author: Mapped[Optional["Author"]] = relationship(back_populates="user") # type: ignore
+    author: Mapped[Optional["Author"]] = relationship(back_populates="user")
     
-    def __repr__(self) -> str:
-        return f"User(id={self.id!r}, email={self.email!r}, is_superuser={self.is_superuser!r}, author_id={self.author_id!r})"

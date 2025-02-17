@@ -10,6 +10,7 @@ from app.tests.utils.user import authentication_token_from_email
 
 from app.models.user import User
 from app.tests.utils.utils import random_lower_string
+from app.tests.utils.author import create_random_author
 
 def test_read_poems(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -99,7 +100,12 @@ def test_create_derived_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     original = create_random_poem(db)
-    data = {"title": random_lower_string(), "content": random_lower_string(), "original_id": str(original.id), "type": 0}
+    data = {
+        "title": random_lower_string(), 
+        "content": random_lower_string(), 
+        "original_poem_id": str(original.id), 
+        "type": 0
+    }
     response = client.post(
         f"{settings.API_V1_STR}/poems",
         headers=superuser_token_headers,
@@ -110,12 +116,22 @@ def test_create_derived_poem(
     assert content["title"] == data["title"]
     assert content["content"] == data["content"]
     assert "id" in content
+    assert content["original"]["id"] == str(original.id)
     
 def test_update_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
+    original = create_random_poem(db)
     poem = create_random_poem(db)
-    data = {"title": random_lower_string(), "content": random_lower_string()}
+    author = create_random_author(db)
+    data = {
+        "title": random_lower_string(), 
+        "content": random_lower_string(),
+        "author_ids": [str(author.id)],
+        "original_poem_id": str(original.id),
+        "type": 0
+    }
+    
     response = client.put(
         f"{settings.API_V1_STR}/poems/{poem.id}",
         headers=superuser_token_headers,
@@ -126,6 +142,9 @@ def test_update_poem(
     assert content["title"] == data["title"]
     assert content["content"] == data["content"]
     assert content["id"] == str(poem.id)
+    assert author.full_name in content["author_names"]
+    assert content["original"]["type"] == 0
+    assert content["original"]["id"] == str(original.id)
 
 def test_update_poem_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]

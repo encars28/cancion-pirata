@@ -6,7 +6,6 @@ from app.core.base_class import Base
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey, Column, Uuid, Table
-from app.models.poem import Poem
 
 class Author(Base): 
     __tablename__ = "author"
@@ -16,10 +15,11 @@ class Author(Base):
     birth_date: Mapped[Optional[datetime]]
     
     user: Mapped[Optional["User"]] = relationship(back_populates="author") # type: ignore
-    poems: Mapped[List["Poem"]] = relationship(secondary="author_poem", back_populates="authors") # type: ignore
-    
-    def __repr__(self) -> str:
-        return f"Author(id={self.id!r}, full_name={self.full_name!r})"
+    poems: Mapped[List["Poem"]] = relationship(  # type: ignore
+        secondary="author_poem", 
+        back_populates="authors",
+        cascade="all, delete"
+    )
     
 author_poem = Table(
     "author_poem",

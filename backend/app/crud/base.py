@@ -3,13 +3,14 @@ This module contains the base interface for CRUD
 (Create, Read, Update, Delete) operations.
 """
 from ast import TypeVar
-from typing import List, Optional, TypeVar, TypeAlias, Type
+from typing import List, Optional, Sequence, TypeVar, Type
 import logging
 import uuid
 
 from pydantic import BaseModel
 from app.core.base_class import Base
 from sqlalchemy.orm import Session
+from sqlalchemy import select, func
 
 ORMModel = TypeVar("ORMModel", bound=Base)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
@@ -27,7 +28,6 @@ class CRUDRepository:
 
         Parameters:
             model (Type[ORMModel]): The ORM model to use for CRUD operations.
-            To see models go to gymhero.models module.
         """
         self._model = model
         self._schema = schema
@@ -51,7 +51,8 @@ class CRUDRepository:
             "retrieving one record for %s",
             self._model.__name__,
         )
-        return db.query(self._model).filter(*args).filter_by(**kwargs).first()
+        statement = select(self._model).where(*args).filter_by(**kwargs)
+        return db.scalars(statement).first()
 
     def get_many(
         self, db: Session, *args, skip: int = 0, limit: int = 100, **kwargs
@@ -78,14 +79,29 @@ class CRUDRepository:
             skip,
             limit,
         )
-        return (
-            db.query(self._model)
-            .filter(*args)
-            .filter_by(**kwargs)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        ) # type:ignore
+        statement = select(self._model).where(*args).filter_by(**kwargs).offset(skip).limit(limit)
+        return db.scalars(statement).all() # type: ignore
+    
+    def get_count(self, db: Session, *args, **kwargs) -> Optional[int]:
+        """
+        Retrieves the count of records from the database.
+
+        Parameters:
+            db (Session): The database session.
+            *args: Variable number of arguments. For example: filter
+                db.query(MyClass).filter(MyClass.name == 'some name', MyClass.id > 5)
+            **kwargs: Variable number of keyword arguments. For example: filter_by
+                db.query(MyClass).filter_by(name='some name', id > 5)
+
+        Returns:
+            int: The count of records.
+        """
+        log.debug(
+            "retrieving count of records for %s",
+            self._model.__name__,
+        )
+        statement = select(func.count()).select_from(self._model).where(*args).filter_by(**kwargs)
+        return db.execute(statement).scalar()
 
     def create(self, db: Session, obj_create: CreateSchemaType) -> ORMModel:
         """
@@ -143,7 +159,7 @@ class CRUDRepository:
         # do not update fields with None
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
-        db.add(db_obj)
+
         db.commit()
         db.refresh(db_obj)
         return db_obj

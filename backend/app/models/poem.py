@@ -6,6 +6,8 @@ from app.core.base_class import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
+
+from app.models.author import Author
     
 class Poem(Base): 
     __tablename__ = "poem"
@@ -21,38 +23,39 @@ class Poem(Base):
     updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
     authors: Mapped[List["Author"]] = relationship(secondary="author_poem", back_populates="poems") # type: ignore 
-    
-    original: Mapped[Optional["Poem_Poem"]] = relationship(
-        back_populates="derived_poem", 
-        foreign_keys="Poem_Poem.original_poem_id",
+
+    original_reference: Mapped[Optional["Poem_Poem"]] = relationship(
+        back_populates="derived_poem",
+        primaryjoin="Poem.id == foreign(Poem_Poem.derived_poem_id)",
+        viewonly=True
     )
-    derived_poems: Mapped[List["Poem_Poem"]] = relationship(
-        back_populates="original_poem", 
-        foreign_keys="Poem_Poem.derived_poem_id",
+    derived_poems_references: Mapped[List["Poem_Poem"]] = relationship(
+        back_populates="original_poem",
+        primaryjoin="Poem.id == Poem_Poem.original_poem_id",
+        viewonly=True
     )
     
     # proxies
     author_ids: AssociationProxy[List[uuid.UUID]] = association_proxy("authors", "id")
     author_names: AssociationProxy[List[str]] = association_proxy("authors", "full_name")
     
-    def __repr__(self) -> str:
-        return f"Poem(id={self.id!r}, title={self.title!r}, is_public={self.is_public!r})"
+    original: AssociationProxy[Optional["Poem"]] = association_proxy("original_reference", "original_poem")
+    derived_poems: AssociationProxy[List["Poem"]] = association_proxy("derived_poems_references", "derived_poem")
+    derived_types: AssociationProxy[List[int]] = association_proxy("derived_poems_references", "type")
     
 class Poem_Poem(Base):
     __tablename__ = "poem_poem"
     
     original_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
-    original_poem: Mapped[Poem] = relationship(
-        back_populates="derived_poems", 
-        foreign_keys=[original_poem_id],
-        overlaps="original"
-    )
-    
     derived_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
+    type: Mapped[int]
+    
+    original_poem: Mapped[Poem] = relationship(
+        back_populates="derived_poems_references",
+        primaryjoin="Poem_Poem.original_poem_id == Poem.id"
+    )
     derived_poem: Mapped[Poem] = relationship(
-        back_populates="original", 
-        foreign_keys=[derived_poem_id],
-        overlaps="derived_poems"
+        back_populates="original_reference",
+        primaryjoin="Poem_Poem.derived_poem_id == Poem.id"
     )
     
-    type: Mapped[int]

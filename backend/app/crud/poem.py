@@ -10,12 +10,10 @@ from app.schemas.poem import PoemPoemSchema, PoemSchema
 class PoemRepository(CRUDRepository):
     def update_authors(self, db: Session, db_obj: Poem, authors: List[Author]) -> Poem:
         db_obj.authors += authors
-        db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        return db_obj
+        return db_obj  
         
-    
 poem_crud = PoemRepository(model=Poem, schema=PoemSchema)
 
 poem_poem_crud = PoemRepository(model=Poem_Poem, schema=PoemPoemSchema)

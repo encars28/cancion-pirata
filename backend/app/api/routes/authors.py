@@ -2,7 +2,6 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func, select
 
 from app.api.deps import (
     get_current_active_superuser,
@@ -27,9 +26,7 @@ def read_authors(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     Retrieve authors.
     """
 
-    count_statement = select(func.count()).select_from(Author)
-    count = session.execute(count_statement).scalar()
-
+    count = author_crud.get_count(db=session)
     authors = author_crud.get_many(db=session, skip=skip, limit=limit)
 
     return AuthorsPublic(data=authors, count=count) # type: ignore
