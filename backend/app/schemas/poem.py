@@ -49,10 +49,11 @@ class PoemPublic(PoemBase):
 class PoemPublicWithAuthor(PoemPublic): 
     author_names: List[str] = []
     
-class PoemPublicWithAllTheInfo(PoemPublic):
-    derived_poems: List[PoemPublicWithAuthor] = []
-    derived_types: List[int] = []
+class PoemPublicWithAuthorAndType(PoemPublicWithAuthor):
+    type: Optional[int] = None
     
+class PoemPublicWithAllTheInfo(PoemPublicWithAuthorAndType):
+    derived_poems: List[PoemPublicWithAuthorAndType] = []
     original: Optional[PoemPublicWithAuthor] = None
     
 class PoemSchema(PoemBase): 

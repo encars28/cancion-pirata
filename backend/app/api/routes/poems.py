@@ -55,15 +55,16 @@ def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
     Get current user poems.
     """
     if current_user.author_id is None or current_user.author is None:
-        return PoemsPublic(data=[], count=0)
-    
-    if not current_user.is_superuser:
-        poems = current_user.author.poems
-        count = len(poems)
-        
+        poems = []
+        count = 0
     else: 
-        count = poem_crud.get_count(session)
-        poems = poem_crud.get_many(session, skip=0, limit=100)
+        if not current_user.is_superuser:
+            poems = current_user.author.poems
+            count = len(poems)
+
+        else: 
+            count = poem_crud.get_count(session)
+            poems = poem_crud.get_many(session, skip=0, limit=100)
     
     return PoemsPublic(data=poems, count=count) # type: ignore
 

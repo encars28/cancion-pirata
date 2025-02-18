@@ -5,7 +5,6 @@ from fastapi.encoders import jsonable_encoder
 
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
-from sqlalchemy import select
 
 from app.crud.user import user_crud
 from app.crud.author import author_crud
@@ -13,7 +12,6 @@ from app.core.config import settings
 
 from app.models.author import Author
 from app.schemas.author import AuthorCreate
-from app.models.poem import Poem
 from app.models.user import User
 from app.schemas.user import UserUpdate
 
@@ -77,7 +75,7 @@ def test_update_author_me(
     assert author_db
     assert author_db.birth_date == birth_date
     
-def test_update_author_me_no_author(
+def test_update_author_me_no_me_author(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
     birth_date = datetime.now()
@@ -90,7 +88,8 @@ def test_update_author_me_no_author(
     assert r.status_code == 404
     assert r.json() == {"detail": "Author not found"}
 
-def test_update_author_me_author_exists(
+
+def test_update_author_me_author_already_exists(
     client: TestClient, user_who_is_author: User, db: Session
 ) -> None:
     author = create_random_author(db)

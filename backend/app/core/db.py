@@ -4,10 +4,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
 from app.crud.user import user_crud
-from app.models.user import User
 from app.schemas.user import UserCreate
 from app.core.base_class import Base
 
+import app.models.user
+import app.models.author
+import app.models.poem
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
@@ -15,7 +17,7 @@ def create_db_and_tables():
     Base.metadata.create_all(engine)
     
 def init_db(session: Session):
-    user = user_crud.get_one(session, User.email == settings.FIRST_SUPERUSER)
+    user = user_crud.get_one(session, app.models.user.User.email == settings.FIRST_SUPERUSER)
     if not user:
         user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,

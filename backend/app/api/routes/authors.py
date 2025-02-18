@@ -56,11 +56,6 @@ def update_author_me(
     """
     Update own author.
     """
-    if current_user.author_id is None:
-        raise HTTPException(
-            status_code=404, detail="Author not found"
-        )
-    
     author = session.get(Author, current_user.author_id)
     
     if not author:
@@ -84,12 +79,6 @@ def read_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
     """
     Get current author.
     """
-    
-    if current_user.author_id is None:
-        raise HTTPException(
-            status_code=404, detail="Author not found"
-        )
-        
     author = session.get(Author, current_user.author_id)
     if not author:
         raise HTTPException(
@@ -104,10 +93,6 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
     """
     Delete own author.
     """
-    if not current_user.author_id:
-        raise HTTPException(
-            status_code=404, detail="Author not found"
-        )
     
     author = session.get(Author, current_user.author_id)
     if not author:

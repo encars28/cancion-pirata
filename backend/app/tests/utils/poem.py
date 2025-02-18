@@ -5,7 +5,7 @@ from app.crud.poem import poem_crud, poem_poem_crud
 
 from app.tests.utils.utils import random_lower_string
 
-from app.models.poem import Poem, Poem_Poem
+from app.models.poem import Poem
 from app.models.author import Author
 from app.schemas.poem import PoemCreate, PoemPoemCreate, PoemType
 
@@ -35,7 +35,7 @@ def create_random_version(
 ) -> Poem:
     
     poem = create_random_poem(db=db, authors=authors, is_public=is_public, show_author=show_author)
-    poem_poem_in = PoemPoemCreate(original_id=original_id, derived_poem_id=poem.id, type=PoemType.VERSION.value)
+    poem_poem_in = PoemPoemCreate(original_poem_id=original_id, derived_poem_id=poem.id, type=PoemType.VERSION.value)
     poem_poem_crud.create(db=db, obj_create=poem_poem_in)
     
     return poem
@@ -49,7 +49,7 @@ def create_random_translation(
 ) -> Poem:
         
     poem = create_random_poem(db=db, authors=authors, is_public=is_public, show_author=show_author)
-    poem_poem_in = PoemPoemCreate(original_id=original_id, derived_poem_id=poem.id, type=PoemType.TRANSLATION.value)
+    poem_poem_in = PoemPoemCreate(original_poem_id=original_id, derived_poem_id=poem.id, type=PoemType.TRANSLATION.value)
     poem_poem_crud.create(db=db, obj_create=poem_poem_in)
     
     return poem

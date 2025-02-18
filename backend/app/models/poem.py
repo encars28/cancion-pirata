@@ -6,8 +6,6 @@ from app.core.base_class import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey
 from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
-
-from app.models.author import Author
     
 class Poem(Base): 
     __tablename__ = "poem"
@@ -22,7 +20,11 @@ class Poem(Base):
     created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
     
-    authors: Mapped[List["Author"]] = relationship(secondary="author_poem", back_populates="poems") # type: ignore 
+    authors: Mapped[List["Author"]] = relationship( # type: ignore
+        secondary="author_poem", 
+        back_populates="poems",
+        passive_deletes=True
+    )
 
     original_reference: Mapped[Optional["Poem_Poem"]] = relationship(
         back_populates="derived_poem",
@@ -32,6 +34,7 @@ class Poem(Base):
     derived_poems_references: Mapped[List["Poem_Poem"]] = relationship(
         back_populates="original_poem",
         primaryjoin="Poem.id == Poem_Poem.original_poem_id",
+        cascade="all",
         viewonly=True
     )
     
@@ -41,21 +44,22 @@ class Poem(Base):
     
     original: AssociationProxy[Optional["Poem"]] = association_proxy("original_reference", "original_poem")
     derived_poems: AssociationProxy[List["Poem"]] = association_proxy("derived_poems_references", "derived_poem")
-    derived_types: AssociationProxy[List[int]] = association_proxy("derived_poems_references", "type")
+    type: AssociationProxy[Optional[int]] = association_proxy("original_reference", "type", creator=lambda x: Poem_Poem(type=x))
     
 class Poem_Poem(Base):
     __tablename__ = "poem_poem"
     
-    original_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
-    derived_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id"), primary_key=True)
+    original_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id", ondelete="CASCADE"), primary_key=True)
+    derived_poem_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("poem.id", ondelete="CASCADE"), primary_key=True)
     type: Mapped[int]
     
     original_poem: Mapped[Poem] = relationship(
         back_populates="derived_poems_references",
-        primaryjoin="Poem_Poem.original_poem_id == Poem.id"
+        primaryjoin="Poem_Poem.original_poem_id == Poem.id",
+        passive_deletes=True,
     )
     derived_poem: Mapped[Poem] = relationship(
         back_populates="original_reference",
-        primaryjoin="Poem_Poem.derived_poem_id == Poem.id"
+        primaryjoin="Poem_Poem.derived_poem_id == Poem.id",
     )
     

@@ -1,22 +1,43 @@
 import random
 import uuid
+from venv import create
 
 from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from app.core.config import settings
-from app.tests.utils.poem import create_random_poem
+from app.tests.utils.poem import create_random_poem, create_random_translation
 from app.tests.utils.user import authentication_token_from_email
 
 from app.models.user import User
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 
-def test_read_poems(
+def test_read_poems_as_normal_user(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    
+    poem = create_random_poem(db, is_public=True, show_author=False)
+    create_random_poem(db, is_public=False)
+    
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/",
+        headers=normal_user_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content["data"]) >= 1
+    
+    for p in content["data"]:
+        if p["id"] == str(poem.id):
+            assert p["show_author"] == False
+            assert p["authors_names"] == []
+    
+def test_read_poems_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    create_random_poem(db)
-    create_random_poem(db)
+    create_random_poem(db, is_public=False)
+    create_random_poem(db, is_public=False)
     
     response = client.get(
         f"{settings.API_V1_STR}/poems/",
@@ -42,6 +63,27 @@ def test_read_poem(
     assert content["is_public"] == poem.is_public
     assert content["show_author"] == poem.show_author
     assert content["id"] == str(poem.id)
+    
+def test_read_anonymous_poem(
+    client: TestClient, db: Session, normal_user_token_headers: dict[str, str]
+) -> None:
+    
+    poem = create_random_poem(db, is_public=True, show_author=False)
+    poem2 = create_random_translation(db, original_id=poem.id)
+    
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/{poem.id}",
+        headers=normal_user_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert content["title"] == poem.title
+    assert content["content"] == poem.content
+    assert content["is_public"] == poem.is_public
+    assert content["show_author"] == poem.show_author
+    assert content["id"] == str(poem.id)
+    assert content["derived_poems"][0]["id"] == str(poem2.id)
+    assert content["authors_names"] == []
 
 def test_read_poem_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]
@@ -76,6 +118,20 @@ def test_read_poems_me(
     response = client.get(
         f"{settings.API_V1_STR}/poems/me",
         headers=token,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content["data"]) >= 2
+
+def test_read_poems_me_as_superuser(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None: 
+    create_random_poem(db)
+    create_random_poem(db)
+    
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/me",
+        headers=superuser_token_headers,
     )
     assert response.status_code == 200
     content = response.json()
@@ -143,8 +199,8 @@ def test_update_poem(
     assert content["content"] == data["content"]
     assert content["id"] == str(poem.id)
     assert author.full_name in content["author_names"]
-    assert content["original"]["type"] == 0
     assert content["original"]["id"] == str(original.id)
+    assert content["type"] == 0
 
 def test_update_poem_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]

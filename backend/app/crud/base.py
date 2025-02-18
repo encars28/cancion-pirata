@@ -164,7 +164,7 @@ class CRUDRepository:
         db.refresh(db_obj)
         return db_obj
 
-    def delete(self, db: Session, db_obj: ORMModel) -> ORMModel:
+    def delete(self, db: Session, db_obj: ORMModel):
         """
         Deletes a record from the database.
 
@@ -179,4 +179,3 @@ class CRUDRepository:
         log.debug("deleting record for %s with id %s", self._model.__name__, db_obj.id)
         db.delete(db_obj)
         db.commit()
-        return db_obj
