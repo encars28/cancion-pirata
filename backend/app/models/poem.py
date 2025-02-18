@@ -43,7 +43,7 @@ class Poem(Base):
     author_names: AssociationProxy[List[str]] = association_proxy("authors", "full_name")
     
     original: AssociationProxy[Optional["Poem"]] = association_proxy("original_reference", "original_poem")
-    derived_poems: AssociationProxy[List["Poem"]] = association_proxy("derived_poems_references", "derived_poem")
+    derived_poems: AssociationProxy[List["Poem"]] = association_proxy("derived_poems_references", "derived_poem", creator=lambda x: Poem_Poem(derived_poem=x))
     type: AssociationProxy[Optional[int]] = association_proxy("original_reference", "type", creator=lambda x: Poem_Poem(type=x))
     
 class Poem_Poem(Base):

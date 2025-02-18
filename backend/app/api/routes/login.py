@@ -9,9 +9,8 @@ from app.crud.user import user_crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
 from app.core import security
 from app.core.config import settings
-from app.core.security import get_password_hash
 from app.schemas.login import NewPassword, Token
-from app.schemas.user import UserPublic
+from app.schemas.user import UserPublic, UserUpdate
 from app.models.user import User
 from app.schemas.common import Message
 from app.utils import (
@@ -94,10 +93,10 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
         )
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    hashed_password = get_password_hash(password=body.new_password)
-    user.hashed_password = hashed_password
-    session.add(user)
-    session.commit()
+    
+    user_update = UserUpdate(password=body.new_password)
+    user = user_crud.update(db=session, db_obj=user, obj_update=user_update)
+    
     return Message(message="Password updated successfully")
 
 

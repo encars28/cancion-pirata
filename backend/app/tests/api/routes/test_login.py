@@ -1,3 +1,4 @@
+from operator import is_
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -8,6 +9,10 @@ from app.core.security import verify_password
 from app.models.user import User
 from app.crud.user import user_crud
 from app.utils import generate_password_reset_token
+from app.schemas.user import UserUpdate, UserCreate
+
+from app.tests.utils.user import create_random_user
+from app.tests.utils.utils import random_email, random_lower_string
 
 
 def test_get_access_token(client: TestClient) -> None:
@@ -30,6 +35,20 @@ def test_get_access_token_incorrect_password(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
     assert r.status_code == 400
 
+def test_get_access_token_inactive_user(client: TestClient, db: Session) -> None:
+    email = random_email()
+    password = random_lower_string()
+    user_create = UserCreate(email=email, password=password, is_active=False)
+    user = user_crud.create(db, obj_create=user_create)
+    
+    login_data = {
+        "username": email,
+        "password": password,
+    }
+    
+    r = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
+    assert r.status_code == 400
+    assert r.json() == {"detail": "Inactive user"}
 
 def test_use_access_token(
     client: TestClient, superuser_token_headers: dict[str, str]
@@ -111,3 +130,60 @@ def test_reset_password_invalid_token(
     assert "detail" in response
     assert r.status_code == 400
     assert response["detail"] == "Invalid token"
+
+def test_reset_password_no_user(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    token = generate_password_reset_token(email=random_email())
+    data = {"new_password": "changethis", "token": token}
+    
+    r = client.post(
+        f"{settings.API_V1_STR}/reset-password/",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    
+    assert r.status_code == 404
+    assert r.json() == {"detail": "The user with this email does not exist in the system."}
+    
+def test_reset_password_user_not_active(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    user_in = UserUpdate(is_active=False)
+    user = user_crud.update(db=db, db_obj=user, obj_update=user_in)
+    
+    token = generate_password_reset_token(email=user.email)
+    data = {"new_password": "changethis", "token": token}
+    
+    r = client.post(
+        f"{settings.API_V1_STR}/reset-password/",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    
+    assert r.status_code == 400
+    assert r.json() == {"detail": "Inactive user"}
+    
+def test_password_recovery_html_content_invalid_user(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    r = client.post(
+        f"{settings.API_V1_STR}/password-recovery-html-content/{random_email()}",
+        headers=superuser_token_headers,
+    )
+    
+    assert r.status_code == 404
+    assert r.json() == {"detail": "The user with this username does not exist in the system."}
+    
+def test_password_recovery_html_content(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    r = client.post(
+        f"{settings.API_V1_STR}/password-recovery-html-content/{settings.FIRST_SUPERUSER}",
+        headers=superuser_token_headers,
+    )
+    
+    assert r.status_code == 200
+    assert r.headers["subject:"]
+    

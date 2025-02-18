@@ -262,6 +262,15 @@ def test_update_author_name_exists(
     assert r.status_code == 409
     assert r.json()["detail"] == "Author with this name already exists"
 
+def test_delete_author_me_no_author(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    r = client.delete(
+        f"{settings.API_V1_STR}/authors/me",
+        headers=normal_user_token_headers,
+    )
+    assert r.status_code == 404
+    assert r.json() == {"detail": "Author not found"}
 
 def test_delete_author_super_user(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session

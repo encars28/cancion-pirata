@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -21,10 +22,14 @@ def user_authentication_headers(
     return headers
 
 
-def create_random_user(db: Session) -> User:
+def create_random_user(db: Session, full_name: Optional[str] = None) -> User:
     email = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=email, password=password)
+    
+    if full_name: 
+        user_in = UserCreate(email=email, password=password, full_name=full_name)
+    else:
+        user_in = UserCreate(email=email, password=password)
     user = user_crud.create(db=db, obj_create=user_in)
     return user
 

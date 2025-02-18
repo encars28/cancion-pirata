@@ -26,30 +26,17 @@ def create_random_poem(
     
     return poem
 
-def create_random_version(
-    db: Session, 
-    original_id: uuid.UUID, 
-    authors: List[Author] = [], 
-    is_public: bool = True,
-    show_author: bool = True
-) -> Poem:
-    
-    poem = create_random_poem(db=db, authors=authors, is_public=is_public, show_author=show_author)
-    poem_poem_in = PoemPoemCreate(original_poem_id=original_id, derived_poem_id=poem.id, type=PoemType.VERSION.value)
-    poem_poem_crud.create(db=db, obj_create=poem_poem_in)
-    
-    return poem
-
-def create_random_translation(
+def create_random_derived_poem(
     db: Session, 
     original_id: uuid.UUID,
     authors: List[Author] = [], 
     is_public: bool = True,
-    show_author: bool = True
+    show_author: bool = True,
+    type: int = PoemType.TRANSLATION.value
 ) -> Poem:
         
     poem = create_random_poem(db=db, authors=authors, is_public=is_public, show_author=show_author)
-    poem_poem_in = PoemPoemCreate(original_poem_id=original_id, derived_poem_id=poem.id, type=PoemType.TRANSLATION.value)
+    poem_poem_in = PoemPoemCreate(original_poem_id=original_id, derived_poem_id=poem.id, type=type)
     poem_poem_crud.create(db=db, obj_create=poem_poem_in)
     
     return poem

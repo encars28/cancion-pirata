@@ -32,7 +32,6 @@ class UserRepository(CRUDRepository):
         for key, value in user_data.items():
             setattr(db_obj, key, value)
     
-        db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
         return db_obj
