@@ -1,7 +1,9 @@
 venv
 .coverage
 .env
+.gitignore
 .pytest_cache
 __pycache__
 htmlcov
 .vscode
+me_podeis_comer_la_polla.py

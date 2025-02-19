@@ -12,6 +12,7 @@ from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.user import create_random_user
 from app.schemas.poem import PoemType
+from app.crud.poem import poem_crud
 
 def test_read_poems_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
@@ -201,28 +202,7 @@ def test_create_poem_as_normal_user(
     assert "id" in content
     assert content["author_names"][0] == user_who_is_author.author.full_name # type: ignore
 
-def test_create_poem_for_the_first_time_with_name(
-    client: TestClient, db: Session
-) -> None:
-    
-    user = create_random_user(db, full_name="pedro")
-    token = authentication_token_from_email(client=client, db=db, email=user.email)
-    
-    data = {"title": random_lower_string(), "content": random_lower_string()}
-    response = client.post(
-        f"{settings.API_V1_STR}/poems/",
-        headers=token,
-        json=data,
-    )
-    
-    assert response.status_code == 200
-    content = response.json()
-    assert content["title"] == data["title"]
-    assert content["content"] == data["content"]
-    assert "id" in content
-    assert content["author_names"][0] == user.full_name
-    
-def test_create_poem_for_the_first_time_without_name(
+def test_create_poem_for_the_first_time(
     client: TestClient, db: Session
 ) -> None:
     
@@ -241,7 +221,7 @@ def test_create_poem_for_the_first_time_without_name(
     assert content["title"] == data["title"]
     assert content["content"] == data["content"]
     assert "id" in content
-    assert content["author_names"][0] == user.email
+    assert content["author_names"][0] == user.username
 
 def test_create_derived_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -366,6 +346,9 @@ def test_delete_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     poem = create_random_poem(db)
+    poem_id = poem.id
+    translation = create_random_derived_poem(db, original_id=poem.id)
+    translation_id = translation.id
     response = client.delete(
         f"{settings.API_V1_STR}/poems/{poem.id}",
         headers=superuser_token_headers,
@@ -373,6 +356,10 @@ def test_delete_poem(
     assert response.status_code == 200
     content = response.json()
     assert content["message"] == "Poem deleted successfully"
+    result = poem_crud.get(db, poem_id)
+    assert result is None
+    result = poem_crud.get(db, translation_id)
+    assert result is None
 
 def test_delete_poem_not_found(
     client: TestClient, superuser_token_headers: dict[str, str]

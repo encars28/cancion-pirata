@@ -1,3 +1,4 @@
+import random
 from typing import Optional
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
@@ -22,14 +23,12 @@ def user_authentication_headers(
     return headers
 
 
-def create_random_user(db: Session, full_name: Optional[str] = None) -> User:
+def create_random_user(db: Session) -> User:
     email = random_email()
     password = random_lower_string()
+    username = random_lower_string()
     
-    if full_name: 
-        user_in = UserCreate(email=email, password=password, full_name=full_name)
-    else:
-        user_in = UserCreate(email=email, password=password)
+    user_in = UserCreate(email=email, password=password, username=username)
     user = user_crud.create(db=db, obj_create=user_in)
     return user
 
@@ -38,7 +37,7 @@ def get_author_user(db: Session) -> User:
     user = user_crud.get_one(db, User.email == email)
     
     if not user:
-        user_in_create = UserCreate(email=email, password=random_lower_string())
+        user_in_create = UserCreate(email=email, password=random_lower_string(), username=random_lower_string())
         user = user_crud.create(db=db, obj_create=user_in_create)
         
     if user.author_id is None:
@@ -57,9 +56,10 @@ def authentication_token_from_email(
     If the user doesn't exist it is created first.
     """
     password = random_lower_string()
+    username = random_lower_string()
     user = user_crud.get_one(db, User.email == email)
     if not user:
-        user_in_create = UserCreate(email=email, password=password)
+        user_in_create = UserCreate(email=email, password=password, username=username)
         user = user_crud.create(db=db, obj_create=user_in_create)
     else:
         user_in_update = UserUpdate(password=password)

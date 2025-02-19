@@ -6,6 +6,7 @@ from datetime import datetime
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
     full_name: Optional[str] = Field(max_length=255, default=None)
+    username: str = Field(max_length=255)
     is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
     
@@ -18,16 +19,19 @@ class UserCreate(UserBase):
 class UserRegister(BaseModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
+    username: str = Field(max_length=255)
     full_name: Optional[str] = Field(default=None, max_length=255)
     
 class UserUpdate(UserBase):
     email: Optional[EmailStr] = Field(default=None, max_length=255) # type: ignore
     password: Optional[str] = Field(default=None, min_length=8, max_length=40)
+    username: Optional[str] = Field(default=None, max_length=255) # type: ignore
     author_id: Optional[uuid.UUID] = Field(default=None)
     
 class UserUpdateMe(BaseModel):
     full_name: Optional[str] = Field(default=None, max_length=255)
     email: Optional[EmailStr] = Field(default=None, max_length=255)
+    username: Optional[str] = Field(default=None, max_length=255)
     
 class UpdatePassword(BaseModel):
     current_password: str = Field(min_length=8, max_length=40)

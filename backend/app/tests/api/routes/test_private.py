@@ -1,11 +1,9 @@
 from fastapi.testclient import TestClient
-from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.models.user import User
-
-import uuid
+from app.crud.user import user_crud
 
 
 def test_create_user(client: TestClient, db: Session) -> None:
@@ -15,6 +13,7 @@ def test_create_user(client: TestClient, db: Session) -> None:
             "email": "pollo@listo.com",
             "password": "password123",
             "full_name": "Pollo Listo",
+            "username": "pollo",
         },
     )
 
@@ -23,7 +22,7 @@ def test_create_user(client: TestClient, db: Session) -> None:
     data = r.json()
     user_id = data["id"]
 
-    user = db.get(User, user_id)
+    user = user_crud.get(db, user_id)
 
     assert user
     assert user.email == "pollo@listo.com"

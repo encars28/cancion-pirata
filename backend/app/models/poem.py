@@ -34,7 +34,7 @@ class Poem(Base):
     derived_poems_references: Mapped[List["Poem_Poem"]] = relationship(
         back_populates="original_poem",
         primaryjoin="Poem.id == Poem_Poem.original_poem_id",
-        cascade="all",
+        cascade="all, delete-orphan",
         viewonly=True
     )
     
@@ -61,5 +61,6 @@ class Poem_Poem(Base):
     derived_poem: Mapped[Poem] = relationship(
         back_populates="original_reference",
         primaryjoin="Poem_Poem.derived_poem_id == Poem.id",
+        cascade="all"
     )
     

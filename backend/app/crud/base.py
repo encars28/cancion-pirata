@@ -3,7 +3,7 @@ This module contains the base interface for CRUD
 (Create, Read, Update, Delete) operations.
 """
 from ast import TypeVar
-from typing import List, Optional, Sequence, TypeVar, Type
+from typing import List, Optional, TypeVar, Type
 import logging
 import uuid
 
@@ -33,6 +33,20 @@ class CRUDRepository:
         self._schema = schema
         self._name = model.__name__
 
+    def get(self, db: Session, obj_id: Optional[uuid.UUID]) -> Optional[ORMModel]: 
+        """
+        Retrieves a record from the database.
+
+        Parameters:
+            db (Session): The database session.
+            obj_id (uuid.UUID): The id of the record to retrieve.
+
+        Returns:
+            ORMModel: The retrieved record.
+        """
+        log.debug("retrieving record for %s with id %s", self._model.__name__, obj_id)
+        return db.get(self._model, obj_id)
+    
     def get_one(self, db: Session, *args, **kwargs) -> Optional[ORMModel]:
         """
         Retrieves one record from the database.

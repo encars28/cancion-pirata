@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.crud.user import user_crud
 from app.crud.author import author_crud
+from app.crud.poem import poem_crud
 from app.core.config import settings
 
 from app.models.author import Author
@@ -17,6 +18,7 @@ from app.schemas.user import UserUpdate
 
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
+from app.tests.utils.poem import create_random_poem
 from app.tests.utils.user import authentication_token_from_email
 
 
@@ -71,7 +73,7 @@ def test_update_author_me(
     updated_author = r.json()
     assert updated_author["birth_date"] == jsonable_encoder(birth_date)
 
-    author_db = db.get(Author, user_who_is_author.author_id)
+    author_db = author_crud.get(db, user_who_is_author.author_id)
     assert author_db
     assert author_db.birth_date == birth_date
     
@@ -108,7 +110,7 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     headers = authentication_token_from_email(client=client, email=user_who_is_author.email, db=db)
     author_id = user_who_is_author.author_id
     
-    author = db.get(Author, author_id)
+    author = author_crud.get(db, author_id)
     name = author.full_name # type: ignore
 
     r = client.delete(
@@ -119,7 +121,7 @@ def test_delete_author_me(client: TestClient, db: Session, user_who_is_author: U
     assert r.status_code == 200
     deleted_author = r.json()
     assert deleted_author["message"] == "Author deleted successfully"
-    result = db.get(Author, author_id)
+    result = author_crud.get(db, author_id)
     assert result is None
     
     author_in = AuthorCreate(full_name=name)
@@ -276,6 +278,8 @@ def test_delete_author_super_user(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
+    poem = create_random_poem(db, authors=[author])
+    poem_id = poem.id
     author_id = author.id
     r = client.delete(
         f"{settings.API_V1_STR}/authors/{author_id}",
@@ -284,9 +288,10 @@ def test_delete_author_super_user(
     assert r.status_code == 200
     deleted_author = r.json()
     assert deleted_author["message"] == "Author deleted successfully"
-    result = db.get(Author, author_id)
+    result = author_crud.get(db, author_id)
     assert result is None
-    #TODO: Check if poems are deleted as well
+    result = poem_crud.get(db, poem_id)
+    assert result is None
 
 
 def test_delete_author_not_found(

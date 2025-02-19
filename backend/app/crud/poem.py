@@ -12,7 +12,15 @@ class PoemRepository(CRUDRepository):
         db_obj.authors += authors
         db.commit()
         db.refresh(db_obj)
-        return db_obj  
+        return db_obj
+    
+    def delete(self, db: Session, db_obj: Poem) -> None:
+        if db_obj.derived_poems: 
+            for poem in db_obj.derived_poems:
+                db.delete(poem)
+                
+        db.delete(db_obj)
+        db.commit()
         
 poem_crud = PoemRepository(model=Poem, schema=PoemSchema)
 

@@ -104,12 +104,7 @@ def create_poem(
             author = session.get(Author, current_user.author_id)
             
         else: 
-            if current_user.full_name:
-                name = current_user.full_name
-            else: 
-                name = current_user.email
-            
-            author_in = AuthorCreate(full_name=name)
+            author_in = AuthorCreate(full_name=current_user.username)
             author = author_crud.create(db=session, obj_create=author_in)
 
             user_in = UserUpdate(author_id=author.id) # type: ignore

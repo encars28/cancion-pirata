@@ -38,7 +38,8 @@ def test_get_access_token_incorrect_password(client: TestClient) -> None:
 def test_get_access_token_inactive_user(client: TestClient, db: Session) -> None:
     email = random_email()
     password = random_lower_string()
-    user_create = UserCreate(email=email, password=password, is_active=False)
+    username = random_lower_string()
+    user_create = UserCreate(email=email, password=password, is_active=False, username=username)
     user = user_crud.create(db, obj_create=user_create)
     
     login_data = {
