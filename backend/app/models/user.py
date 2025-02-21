@@ -4,7 +4,7 @@ from datetime import datetime
 
 from pydantic import EmailStr
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, String, func, DateTime
 
 from app.core.base_class import Base
 
@@ -19,8 +19,8 @@ class User(Base):
     is_superuser: Mapped[bool] = mapped_column(default=False)
     
     full_name: Mapped[Optional[str]] = mapped_column(String(255), default=None)
-    created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now())
     
     author_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("author.id"), default=None, unique=True)
-    author: Mapped[Optional["Author"]] = relationship(back_populates="user") # type: ignore
+    author: Mapped[Optional["Author"]] = relationship(back_populates="user") # type: ignore  # noqa: F821
     

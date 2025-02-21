@@ -4,7 +4,7 @@ from datetime import datetime
 
 from app.core.base_class import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, ForeignKey
+from sqlalchemy import String, ForeignKey, func, DateTime
 from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
     
 class Poem(Base): 
@@ -17,10 +17,10 @@ class Poem(Base):
     show_author: Mapped[bool] = mapped_column(default=True)
     
     language: Mapped[Optional[str]] = mapped_column(String(255))
-    created_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
-    updated_at: Mapped[Optional[datetime]] = mapped_column(default=datetime.now())
+    created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
     
-    authors: Mapped[List["Author"]] = relationship( # type: ignore
+    authors: Mapped[List["Author"]] = relationship( # type: ignore  # noqa: F821
         secondary="author_poem", 
         back_populates="poems",
         passive_deletes=True

@@ -1,12 +1,9 @@
-import random
-from typing import Optional
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.crud.user import user_crud
 from app.core.config import settings
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
+from app.schemas.user import UserCreate, UserUpdate, UserSchema
 from app.tests.utils.utils import random_email, random_lower_string
 from app.tests.utils.author import create_random_author
 
@@ -23,30 +20,34 @@ def user_authentication_headers(
     return headers
 
 
-def create_random_user(db: Session) -> User:
+def create_random_user(db: Session) -> UserSchema:
     email = random_email()
     password = random_lower_string()
     username = random_lower_string()
-    
+
     user_in = UserCreate(email=email, password=password, username=username)
     user = user_crud.create(db=db, obj_create=user_in)
     return user
 
-def get_author_user(db: Session) -> User:
+
+def get_author_user(db: Session) -> UserSchema:
     email = settings.EMAIL_TEST_AUTHOR_USER
-    user = user_crud.get_one(db, User.email == email)
-    
+    user = user_crud.get_by_email(db, email=email)
+
     if not user:
-        user_in_create = UserCreate(email=email, password=random_lower_string(), username=random_lower_string())
+        user_in_create = UserCreate(
+            email=email, password=random_lower_string(), username=random_lower_string()
+        )
         user = user_crud.create(db=db, obj_create=user_in_create)
-        
+
     if user.author_id is None:
         author = create_random_author(db)
         user_in_update = UserUpdate(author_id=author.id)
-        user = user_crud.update(db=db, db_obj=user, obj_update=user_in_update)
-        
-    return user
-        
+        user = user_crud.update(db=db, obj_id=user.id, obj_update=user_in_update)
+
+    return user  # type: ignore
+
+
 def authentication_token_from_email(
     *, client: TestClient, email: str, db: Session
 ) -> dict[str, str]:
@@ -57,7 +58,7 @@ def authentication_token_from_email(
     """
     password = random_lower_string()
     username = random_lower_string()
-    user = user_crud.get_one(db, User.email == email)
+    user = user_crud.get_by_email(db, email=email)
     if not user:
         user_in_create = UserCreate(email=email, password=password, username=username)
         user = user_crud.create(db=db, obj_create=user_in_create)
@@ -65,9 +66,10 @@ def authentication_token_from_email(
         user_in_update = UserUpdate(password=password)
         if not user.id:
             raise Exception("User id not set")
-        user = user_crud.update(db=db, db_obj=user, obj_update=user_in_update)
+        user = user_crud.update(db=db, obj_id=user.id, obj_update=user_in_update)
 
     return user_authentication_headers(client=client, email=email, password=password)
+
 
 def get_superuser_token_headers(client: TestClient) -> dict[str, str]:
     login_data = {

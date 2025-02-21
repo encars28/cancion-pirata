@@ -13,16 +13,18 @@ import app.models.poem
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 
+
 def create_db_and_tables():
     Base.metadata.create_all(engine)
-    
+
+
 def init_db(session: Session):
-    user = user_crud.get_one(session, app.models.user.User.email == settings.FIRST_SUPERUSER)
+    user = user_crud.get_by_email(db=session, email=settings.FIRST_SUPERUSER)
     if not user:
         user_in = UserCreate(
             email=settings.FIRST_SUPERUSER,
             password=settings.FIRST_SUPERUSER_PASSWORD,
-            username=settings.FIRST_SUPERUSER,
+            username="admin1",
             is_superuser=True,
         )
         user = user_crud.create(db=session, obj_create=user_in)

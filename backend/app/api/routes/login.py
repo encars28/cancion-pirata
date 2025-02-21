@@ -11,7 +11,6 @@ from app.core import security
 from app.core.config import settings
 from app.schemas.login import NewPassword, Token
 from app.schemas.user import UserPublic, UserUpdate
-from app.models.user import User
 from app.schemas.common import Message
 from app.utils import (
     generate_password_reset_token,
@@ -58,7 +57,7 @@ def recover_password(email: str, session: SessionDep) -> Message:
     """
     Password Recovery
     """
-    user = user_crud.get_one(session, User.email == email)
+    user = user_crud.get_by_email(session, email)
 
     if not user:
         raise HTTPException(
@@ -85,7 +84,7 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
     email = verify_password_reset_token(token=body.token)
     if not email:
         raise HTTPException(status_code=400, detail="Invalid token")
-    user = user_crud.get_one(session, User.email == email)
+    user = user_crud.get_by_email(session, email)
     if not user:
         raise HTTPException(
             status_code=404,
@@ -93,10 +92,10 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
         )
     elif not user.is_active:
         raise HTTPException(status_code=400, detail="Inactive user")
-    
+
     user_update = UserUpdate(password=body.new_password)
-    user = user_crud.update(db=session, db_obj=user, obj_update=user_update)
-    
+    user = user_crud.update(db=session, obj_id=user.id, obj_update=user_update)
+
     return Message(message="Password updated successfully")
 
 
@@ -109,7 +108,7 @@ def recover_password_html_content(email: str, session: SessionDep) -> Any:
     """
     HTML Content for Password Recovery
     """
-    user = user_crud.get_one(session, User.email == email)
+    user = user_crud.get_by_email(session, email)
 
     if not user:
         raise HTTPException(
@@ -124,4 +123,3 @@ def recover_password_html_content(email: str, session: SessionDep) -> Any:
     return HTMLResponse(
         content=email_data.html_content, headers={"subject:": email_data.subject}
     )
-    

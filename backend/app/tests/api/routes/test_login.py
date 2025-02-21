@@ -1,4 +1,3 @@
-from operator import is_
 from unittest.mock import patch
 
 from fastapi.testclient import TestClient
@@ -6,7 +5,6 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.security import verify_password
-from app.models.user import User
 from app.crud.user import user_crud
 from app.utils import generate_password_reset_token
 from app.schemas.user import UserUpdate, UserCreate
@@ -35,21 +33,25 @@ def test_get_access_token_incorrect_password(client: TestClient) -> None:
     r = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
     assert r.status_code == 400
 
+
 def test_get_access_token_inactive_user(client: TestClient, db: Session) -> None:
     email = random_email()
     password = random_lower_string()
     username = random_lower_string()
-    user_create = UserCreate(email=email, password=password, is_active=False, username=username)
-    user = user_crud.create(db, obj_create=user_create)
-    
+    user_create = UserCreate(
+        email=email, password=password, is_active=False, username=username
+    )
+    user_crud.create(db, obj_create=user_create)
+
     login_data = {
         "username": email,
         "password": password,
     }
-    
+
     r = client.post(f"{settings.API_V1_STR}/login/access-token", data=login_data)
     assert r.status_code == 400
     assert r.json() == {"detail": "Inactive user"}
+
 
 def test_use_access_token(
     client: TestClient, superuser_token_headers: dict[str, str]
@@ -103,10 +105,10 @@ def test_reset_password(
     assert r.status_code == 200
     assert r.json() == {"message": "Password updated successfully"}
 
-    user = user_crud.get_one(db, User.email == settings.FIRST_SUPERUSER)
+    user = user_crud.get_by_email(db, email=settings.FIRST_SUPERUSER)
     assert user
     assert verify_password(data["new_password"], user.hashed_password)
-    
+
     token = generate_password_reset_token(email=settings.FIRST_SUPERUSER)
     data = {"new_password": settings.FIRST_SUPERUSER_PASSWORD, "token": token}
     r = client.post(
@@ -114,9 +116,10 @@ def test_reset_password(
         headers=superuser_token_headers,
         json=data,
     )
-    
+
     assert r.status_code == 200
-    
+
+
 def test_reset_password_invalid_token(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
@@ -132,40 +135,45 @@ def test_reset_password_invalid_token(
     assert r.status_code == 400
     assert response["detail"] == "Invalid token"
 
+
 def test_reset_password_no_user(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     token = generate_password_reset_token(email=random_email())
     data = {"new_password": "changethis", "token": token}
-    
+
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
         headers=superuser_token_headers,
         json=data,
     )
-    
+
     assert r.status_code == 404
-    assert r.json() == {"detail": "The user with this email does not exist in the system."}
-    
+    assert r.json() == {
+        "detail": "The user with this email does not exist in the system."
+    }
+
+
 def test_reset_password_user_not_active(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     user = create_random_user(db)
     user_in = UserUpdate(is_active=False)
-    user = user_crud.update(db=db, db_obj=user, obj_update=user_in)
-    
-    token = generate_password_reset_token(email=user.email)
+    user = user_crud.update(db=db, obj_id=user.id, obj_update=user_in)
+
+    token = generate_password_reset_token(email=user.email)  # type: ignore
     data = {"new_password": "changethis", "token": token}
-    
+
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
         headers=superuser_token_headers,
         json=data,
     )
-    
+
     assert r.status_code == 400
     assert r.json() == {"detail": "Inactive user"}
-    
+
+
 def test_password_recovery_html_content_invalid_user(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
@@ -173,10 +181,13 @@ def test_password_recovery_html_content_invalid_user(
         f"{settings.API_V1_STR}/password-recovery-html-content/{random_email()}",
         headers=superuser_token_headers,
     )
-    
+
     assert r.status_code == 404
-    assert r.json() == {"detail": "The user with this username does not exist in the system."}
-    
+    assert r.json() == {
+        "detail": "The user with this username does not exist in the system."
+    }
+
+
 def test_password_recovery_html_content(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
@@ -184,7 +195,6 @@ def test_password_recovery_html_content(
         f"{settings.API_V1_STR}/password-recovery-html-content/{settings.FIRST_SUPERUSER}",
         headers=superuser_token_headers,
     )
-    
+
     assert r.status_code == 200
     assert r.headers["subject:"]
-    
