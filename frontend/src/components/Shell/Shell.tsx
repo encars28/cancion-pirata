@@ -1,8 +1,10 @@
-import { AppShell, Container, Group, RemoveScroll, Button, ActionIcon, rem } from '@mantine/core';
-import classes from './Shell.module.css';
-import { SearchControl, SearchMobileControl } from '../Search/SearchControl';
+import { AppShell, Container, Group, RemoveScroll, Button } from '@mantine/core';
+import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 
-import { IconUser } from '@tabler/icons-react';
+import { IconUser} from '@tabler/icons-react';
+import classes from './Shell.module.css';
+import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
+import { LoginControl } from '../Header/LoginControl/LoginControl';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -17,23 +19,20 @@ export function Shell({ children }: ShellProps) {
             Tremendo Logo
           </a>
 
-          <Group visibleFrom="sm">
+          <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            <Button variant="outline" leftSection={<IconUser size={14} />}> 
+            <Button 
+              size="xs" 
+              variant="filled" 
+              leftSection={<IconUser size={14} />}
+            > 
               Login
             </Button>
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
-            <SearchMobileControl />
-            <ActionIcon
-              component="a"
-              variant='outline'
-              // href='/'
-              size={rem(40)}
-            >
-              <IconUser stroke={1}/>
-            </ActionIcon>
+            <SearchControlMobile />
+            <LoginControl />
           </Group>
 
         </Container>

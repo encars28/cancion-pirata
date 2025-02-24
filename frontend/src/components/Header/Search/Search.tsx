@@ -9,6 +9,7 @@ export function Search({ data }: { data: any[] }) {
     id: item.component,
     label: item.component,
     description: item.attributes.title,
+    onClick: () => {},
   }));
 
   return (
@@ -19,7 +20,7 @@ export function Search({ data }: { data: any[] }) {
       highlightQuery
       clearQueryOnClose
       radius="md"
-      limit={7}
+      limit={5}
       nothingFound="No se ha encontrado nada..."
       searchProps={{
         leftSection: <IconSearch size={20} />,
