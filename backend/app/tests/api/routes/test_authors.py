@@ -211,7 +211,8 @@ def test_create_author_by_normal_user(
 def test_retrieve_authors(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    create_random_author(db)
+    author = create_random_author(db)
+    create_random_poem(db, author_ids=[author.id], is_public=False)
     create_random_author(db)
 
     r = client.get(f"{settings.API_V1_STR}/authors/", headers=superuser_token_headers)
@@ -221,6 +222,26 @@ def test_retrieve_authors(
     assert "count" in all_authors
     for item in all_authors["data"]:
         assert "full_name" in item
+        if item["id"] == str(author.id):
+            assert len(item["poems"]) > 0
+
+
+def test_retrieve_authors_normal_user(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    author = create_random_author(db)
+    create_random_poem(db, author_ids=[author.id], is_public=False)
+    create_random_author(db)
+
+    r = client.get(f"{settings.API_V1_STR}/authors/", headers=normal_user_token_headers)
+    all_authors = r.json()
+
+    assert len(all_authors["data"]) > 1
+    assert "count" in all_authors
+    for item in all_authors["data"]:
+        assert "full_name" in item
+        if item["id"] == str(author.id):
+            assert len(item["poems"]) == 0
 
 
 def test_update_author(

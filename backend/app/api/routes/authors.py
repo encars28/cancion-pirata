@@ -23,18 +23,23 @@ router = APIRouter(prefix="/authors", tags=["authors"])
 
 @router.get(
     "/",
-    dependencies=[Depends(get_current_active_superuser)],
     response_model=AuthorsPublic,
 )
-def read_authors(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read_authors(session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100) -> Any:
     """
     Retrieve all authors.
     """
 
     count = author_crud.get_count(db=session)
+    authors = author_crud.get_all(db=session, skip=skip, limit=limit)
+    
+    if not current_user.is_superuser:
+        for author in authors: 
+            author.poems = [ poem for poem in author.poems if poem.is_public and poem.show_author ]
+        
     authors = [
         AuthorPublicWithPoems.model_validate(author)
-        for author in author_crud.get_all(db=session, skip=skip, limit=limit)
+        for author in authors
     ]
 
     return AuthorsPublic(data=authors, count=count)
