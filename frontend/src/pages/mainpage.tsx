@@ -21,15 +21,29 @@ function ShowQuote() {
     )
 }
 
-export default function MainPage() {
+export function MainPage() {
     return (
       <Shell>
         <Stack justify='center' gap="xl">
           <ShowQuote />
           <Space h="lg" />
           <Group justify='center' gap="xl">
-            <Button variant='default' w={200}>Ver Poemas</Button>
-            <Button variant='default' w={200}>Ver Autores</Button>
+            <Button 
+              variant='default' 
+              w={200} 
+              component='a' 
+              href='/poems'
+            >
+              Ver Poemas
+            </Button>
+            <Button 
+              variant='default' 
+              component='a'
+              href='/authors'
+              w={200}
+            >
+              Ver Autores
+            </Button>
           </Group>
         </Stack>
       </Shell>

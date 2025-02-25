@@ -1,9 +1,9 @@
 import { Shell } from "../components/Shell/Shell"
 
-export function PoemsPage() {
+export function AuthorsPage() {
   return (
     <Shell>
-      <h1>Poems Page</h1>
+      <h1>Authors Page</h1>
     </Shell>
   )
 }

@@ -8,6 +8,16 @@ import {
 
 import AllRoutes from './routes';
 import { Search } from './components/Header/Search/Search';
+import { client } from './client/client.gen';
+
+// configure internal service client
+client.setConfig({
+  baseUrl: import.meta.env.API_URL,
+  // set default headers for requests
+  // headers: {
+  //   Authorization: 'Bearer <token_from_service_client>',
+  // },
+});
 
 function App() {
   return (
