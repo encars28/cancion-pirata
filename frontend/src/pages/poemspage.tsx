@@ -1,9 +1,10 @@
-import { Shell } from "../components/Shell/Shell"
+import { Title } from "@mantine/core"
+import { Shell } from "../components/UI/Shell/Shell"
 
 export function PoemsPage() {
   return (
     <Shell>
-      <h1>Poems Page</h1>
+      <Title order={1}>Poems Page</Title>
     </Shell>
   )
 }

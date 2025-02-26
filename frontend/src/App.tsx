@@ -7,7 +7,7 @@ import {
 } from '@mantine/core';
 
 import AllRoutes from './routes';
-import { Search } from './components/Header/Search/Search';
+import { Search } from './components/UI/Header/Search/Search';
 import { client } from './client/client.gen';
 
 // configure internal service client
