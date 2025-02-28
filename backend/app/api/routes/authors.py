@@ -4,6 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import (
+    OptionalCurrentUser,
     get_current_active_superuser,
     SessionDep,
     CurrentUser,
@@ -25,7 +26,7 @@ router = APIRouter(prefix="/authors", tags=["authors"])
     "/",
     response_model=AuthorsPublic,
 )
-def read_authors(session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100) -> Any:
+def read_authors(session: SessionDep, current_user: OptionalCurrentUser, skip: int = 0, limit: int = 100) -> Any:
     """
     Retrieve all authors.
     """
@@ -33,7 +34,7 @@ def read_authors(session: SessionDep, current_user: CurrentUser, skip: int = 0, 
     count = author_crud.get_count(db=session)
     authors = author_crud.get_all(db=session, skip=skip, limit=limit)
     
-    if not current_user.is_superuser:
+    if current_user and not current_user.is_superuser:
         for author in authors: 
             author.poems = [ poem for poem in author.poems if poem.is_public and poem.show_author ]
         
@@ -116,7 +117,7 @@ def delete_author_me(session: SessionDep, current_user: CurrentUser) -> Any:
 
 @router.get("/{author_id}", response_model=AuthorPublicWithPoems)
 def read_author_by_id(
-    author_id: uuid.UUID, session: SessionDep
+    author_id: uuid.UUID, session: SessionDep, current_user: OptionalCurrentUser
 ) -> Any:
     """
     Get a specific Author by id.
@@ -127,6 +128,9 @@ def read_author_by_id(
             status_code=404,
             detail="The author with this id does not exist in the system",
         )
+        
+    if current_user and not current_user.is_superuser:
+        author.poems = [ poem for poem in author.poems if poem.is_public and poem.show_author ]
 
     return author
 

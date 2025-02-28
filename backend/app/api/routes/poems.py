@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.deps import CurrentUser, SessionDep
+from app.api.deps import CurrentUser, OptionalCurrentUser, SessionDep
 
 from app.schemas.poem import (
     PoemCreate,
@@ -26,13 +26,13 @@ router = APIRouter(prefix="/poems", tags=["poems"])
 
 @router.get("/", response_model=PoemsPublic)
 def read_poems(
-    session: SessionDep, current_user: CurrentUser, skip: int = 0, limit: int = 100
+    session: SessionDep, current_user: OptionalCurrentUser, skip: int = 0, limit: int = 100
 ) -> Any:
     """
     Retrieve all poems.
     """
     # Retrieve public poems
-    if not current_user.is_superuser:
+    if current_user and not current_user.is_superuser:
         count = poem_crud.get_public_count(session)
         poems = poem_crud.get_all_public(session, skip=skip, limit=limit)
 
@@ -73,7 +73,7 @@ def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(
-    session: SessionDep, current_user: CurrentUser, poem_id: uuid.UUID
+    session: SessionDep, current_user: OptionalCurrentUser, poem_id: uuid.UUID
 ) -> Any:
     """
     Get poem by ID.
@@ -82,11 +82,11 @@ def read_poem(
     if not poem:
         raise HTTPException(status_code=404, detail="Poem not found")
 
-    if not current_user.is_superuser and not poem.is_public:
+    if current_user and not current_user.is_superuser and not poem.is_public:
         if current_user.author_id is None or current_user.author_id != poem.author_ids:
             raise HTTPException(status_code=400, detail="Not enough permissions")
 
-    elif not current_user.is_superuser and poem.is_public:
+    elif current_user and not current_user.is_superuser and poem.is_public:
         poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
 
         if not poem.show_author:
