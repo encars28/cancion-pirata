@@ -1,33 +1,46 @@
 import { Shell } from "../components/UI/Shell/Shell";
-import { AuthorCard } from "../components/UI/AuthorCard";
-import { SimpleGrid, Space, Title } from "@mantine/core";
+import { AuthorCard } from "../components/UI/Cards/AuthorCard";
+import { CardGrid } from "../components/UI/Cards/CardGrid";
+import { Title } from "@mantine/core";
 import { authorsReadAuthors } from "../client/sdk.gen";
+import { useQuery } from '@tanstack/react-query'
+import { handleError, handleSuccess, getQuery } from "../utils";
+import { Loading } from "../components/Loading";
+import { AuthorPublicWithPoems } from "../client";
 
-const example = () => {
-  const content = [];
-  for (let index = 0; index < 8; index++) {
-    content.push(<AuthorCard path="/" name="Autor" />);
-  }
-
-  return content;
-}
 
 export function AuthorsPage() {
+  const { isPending, isError, isSuccess, data, error } = useQuery({
+    ...getQuery('authors', authorsReadAuthors),
+    placeholderData: (prevData) => prevData,
+  })
 
-  const authors = authorsReadAuthors();
+  if (isPending) {
+    return (<Loading />)
+  }
+
+  if (isError) {
+    handleError(error as any);
+  }
+
+  if (isSuccess) {
+    handleSuccess();
+  }
+
+  const authors: AuthorPublicWithPoems[] = data?.data ?? [];
+  const authorCount: number = data?.count ?? 0;
 
   return (
     <Shell>
-      <Title order={1}>Lista de autores</Title>
-      <Space h="xl" />
-      <SimpleGrid 
-        cols={{ base: 3, xs: 4, sm: 5, md: 6, lg: 7, xl: 8}}
-        spacing="xl" 
-        verticalSpacing="xl"
-        mt="xl"
-      >
-        {example()}
-      </SimpleGrid>
+      <Title mt={40} order={1}>Lista de autores</Title>
+      <Title order={2} c="dimmed" fw="inherit">Total: {authorCount}</Title>
+      <CardGrid>
+        { 
+          authors.map((author) => {
+            return <AuthorCard path={`/authors/${author.id}`} name={author.full_name} />
+          }) 
+        }
+      </CardGrid>
     </Shell>
   )
 }
