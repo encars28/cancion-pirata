@@ -32,11 +32,9 @@ def db() -> Generator[Session, None, None]:
 
 
 @pytest.fixture(scope="module")
-def client(db: Session) -> Generator[TestClient, None, None]:
-    def get_session_override():
-        return db
+def client() -> Generator[TestClient, None, None]:
 
-    app.dependency_overrides[get_db] = get_session_override
+    app.dependency_overrides[get_db] = db
 
     client = TestClient(app)
     yield client

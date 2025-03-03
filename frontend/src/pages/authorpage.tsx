@@ -1,16 +1,35 @@
 import { useQuery } from '@tanstack/react-query';
-import { handleError, handleSuccess, getQueryWithParams } from '../utils';
+import { handleError, handleSuccess } from '../utils';
 import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
+
+function getAuthorQuery(authorId: string) {
+  return {
+    queryKey: ['author', authorId],
+    queryFn: async () => {
+      const result = await authorsReadAuthorById(
+        {
+          path: {author_id: authorId},
+        }
+      );
+
+      if (result.error) {
+        throw result.error;
+      }
+
+      return result.data;
+    }
+  }
+}
 
 export function AuthorPage() {
   const params = useParams();
   const authorId = params.id;
 
   const { isPending, isError, isSuccess, data, error } = useQuery({
-    ...getQueryWithParams(`authors/${authorId}`, authorsReadAuthorById, authorId!),
+    ...getAuthorQuery(authorId!),
     placeholderData: (prevData) => prevData,
   })
 

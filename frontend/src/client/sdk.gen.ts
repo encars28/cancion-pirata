@@ -3,6 +3,7 @@
 import { type Options as ClientOptions, type TDataShape, type Client, urlSearchParamsBodySerializer } from '@hey-api/client-fetch';
 import type { LoginLoginAccessTokenData, LoginLoginAccessTokenResponse, LoginLoginAccessTokenError, LoginTestTokenData, LoginTestTokenResponse, LoginRecoverPasswordData, LoginRecoverPasswordResponse, LoginRecoverPasswordError, LoginResetPasswordData, LoginResetPasswordResponse, LoginResetPasswordError, LoginRecoverPasswordHtmlContentData, LoginRecoverPasswordHtmlContentResponse, LoginRecoverPasswordHtmlContentError, UsersReadUsersData, UsersReadUsersResponse, UsersReadUsersError, UsersCreateUserData, UsersCreateUserResponse, UsersCreateUserError, UsersDeleteUserMeData, UsersDeleteUserMeResponse, UsersReadUserMeData, UsersReadUserMeResponse, UsersUpdateUserMeData, UsersUpdateUserMeResponse, UsersUpdateUserMeError, UsersUpdatePasswordMeData, UsersUpdatePasswordMeResponse, UsersUpdatePasswordMeError, UsersRegisterUserData, UsersRegisterUserResponse, UsersRegisterUserError, UsersDeleteUserData, UsersDeleteUserResponse, UsersDeleteUserError, UsersReadUserByIdData, UsersReadUserByIdResponse, UsersReadUserByIdError, UsersUpdateUserData, UsersUpdateUserResponse, UsersUpdateUserError, UtilsTestEmailData, UtilsTestEmailResponse, UtilsTestEmailError, UtilsHealthCheckData, UtilsHealthCheckResponse, AuthorsReadAuthorsData, AuthorsReadAuthorsResponse, AuthorsReadAuthorsError, AuthorsCreateAuthorData, AuthorsCreateAuthorResponse, AuthorsCreateAuthorError, AuthorsDeleteAuthorMeData, AuthorsDeleteAuthorMeResponse, AuthorsReadAuthorMeData, AuthorsReadAuthorMeResponse, AuthorsUpdateAuthorMeData, AuthorsUpdateAuthorMeResponse, AuthorsUpdateAuthorMeError, AuthorsDeleteAuthorData, AuthorsDeleteAuthorResponse, AuthorsDeleteAuthorError, AuthorsReadAuthorByIdData, AuthorsReadAuthorByIdResponse, AuthorsReadAuthorByIdError, AuthorsUpdateAuthorData, AuthorsUpdateAuthorResponse, AuthorsUpdateAuthorError, PoemsReadPoemsData, PoemsReadPoemsResponse, PoemsReadPoemsError, PoemsCreatePoemData, PoemsCreatePoemResponse, PoemsCreatePoemError, PoemsReadPoemsMeData, PoemsReadPoemsMeResponse, PoemsDeletePoemData, PoemsDeletePoemResponse, PoemsDeletePoemError, PoemsReadPoemData, PoemsReadPoemResponse, PoemsReadPoemError, PoemsUpdatePoemData, PoemsUpdatePoemResponse, PoemsUpdatePoemError, PrivateCreateUserData, PrivateCreateUserResponse, PrivateCreateUserError } from './types.gen';
 import { client as _heyApiClient } from './client.gen';
+import { loginTestTokenResponseTransformer, usersReadUsersResponseTransformer, usersCreateUserResponseTransformer, usersReadUserMeResponseTransformer, usersUpdateUserMeResponseTransformer, usersRegisterUserResponseTransformer, usersReadUserByIdResponseTransformer, usersUpdateUserResponseTransformer, authorsReadAuthorsResponseTransformer, authorsCreateAuthorResponseTransformer, authorsReadAuthorMeResponseTransformer, authorsUpdateAuthorMeResponseTransformer, authorsReadAuthorByIdResponseTransformer, authorsUpdateAuthorResponseTransformer, poemsReadPoemsResponseTransformer, poemsCreatePoemResponseTransformer, poemsReadPoemsMeResponseTransformer, poemsReadPoemResponseTransformer, poemsUpdatePoemResponseTransformer, privateCreateUserResponseTransformer } from './transformers.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = ClientOptions<TData, ThrowOnError> & {
     /**
@@ -46,6 +47,7 @@ export const loginTestToken = <ThrowOnError extends boolean = false>(options?: O
                 type: 'http'
             }
         ],
+        responseTransformer: loginTestTokenResponseTransformer,
         url: '/api/v1/login/test-token',
         ...options
     });
@@ -106,6 +108,7 @@ export const usersReadUsers = <ThrowOnError extends boolean = false>(options?: O
                 type: 'http'
             }
         ],
+        responseTransformer: usersReadUsersResponseTransformer,
         url: '/api/v1/users/',
         ...options
     });
@@ -123,6 +126,7 @@ export const usersCreateUser = <ThrowOnError extends boolean = false>(options: O
                 type: 'http'
             }
         ],
+        responseTransformer: usersCreateUserResponseTransformer,
         url: '/api/v1/users/',
         ...options,
         headers: {
@@ -161,6 +165,7 @@ export const usersReadUserMe = <ThrowOnError extends boolean = false>(options?: 
                 type: 'http'
             }
         ],
+        responseTransformer: usersReadUserMeResponseTransformer,
         url: '/api/v1/users/me',
         ...options
     });
@@ -178,6 +183,7 @@ export const usersUpdateUserMe = <ThrowOnError extends boolean = false>(options:
                 type: 'http'
             }
         ],
+        responseTransformer: usersUpdateUserMeResponseTransformer,
         url: '/api/v1/users/me',
         ...options,
         headers: {
@@ -214,6 +220,7 @@ export const usersUpdatePasswordMe = <ThrowOnError extends boolean = false>(opti
  */
 export const usersRegisterUser = <ThrowOnError extends boolean = false>(options: Options<UsersRegisterUserData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<UsersRegisterUserResponse, UsersRegisterUserError, ThrowOnError>({
+        responseTransformer: usersRegisterUserResponseTransformer,
         url: '/api/v1/users/signup',
         ...options,
         headers: {
@@ -252,6 +259,7 @@ export const usersReadUserById = <ThrowOnError extends boolean = false>(options:
                 type: 'http'
             }
         ],
+        responseTransformer: usersReadUserByIdResponseTransformer,
         url: '/api/v1/users/{user_id}',
         ...options
     });
@@ -269,6 +277,7 @@ export const usersUpdateUser = <ThrowOnError extends boolean = false>(options: O
                 type: 'http'
             }
         ],
+        responseTransformer: usersUpdateUserResponseTransformer,
         url: '/api/v1/users/{user_id}',
         ...options,
         headers: {
@@ -317,6 +326,7 @@ export const authorsReadAuthors = <ThrowOnError extends boolean = false>(options
                 type: 'http'
             }
         ],
+        responseTransformer: authorsReadAuthorsResponseTransformer,
         url: '/api/v1/authors/',
         ...options
     });
@@ -334,6 +344,7 @@ export const authorsCreateAuthor = <ThrowOnError extends boolean = false>(option
                 type: 'http'
             }
         ],
+        responseTransformer: authorsCreateAuthorResponseTransformer,
         url: '/api/v1/authors/',
         ...options,
         headers: {
@@ -372,6 +383,7 @@ export const authorsReadAuthorMe = <ThrowOnError extends boolean = false>(option
                 type: 'http'
             }
         ],
+        responseTransformer: authorsReadAuthorMeResponseTransformer,
         url: '/api/v1/authors/me',
         ...options
     });
@@ -389,6 +401,7 @@ export const authorsUpdateAuthorMe = <ThrowOnError extends boolean = false>(opti
                 type: 'http'
             }
         ],
+        responseTransformer: authorsUpdateAuthorMeResponseTransformer,
         url: '/api/v1/authors/me',
         ...options,
         headers: {
@@ -421,6 +434,7 @@ export const authorsDeleteAuthor = <ThrowOnError extends boolean = false>(option
  */
 export const authorsReadAuthorById = <ThrowOnError extends boolean = false>(options: Options<AuthorsReadAuthorByIdData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).get<AuthorsReadAuthorByIdResponse, AuthorsReadAuthorByIdError, ThrowOnError>({
+        responseTransformer: authorsReadAuthorByIdResponseTransformer,
         url: '/api/v1/authors/{author_id}',
         ...options
     });
@@ -438,6 +452,7 @@ export const authorsUpdateAuthor = <ThrowOnError extends boolean = false>(option
                 type: 'http'
             }
         ],
+        responseTransformer: authorsUpdateAuthorResponseTransformer,
         url: '/api/v1/authors/{author_id}',
         ...options,
         headers: {
@@ -459,6 +474,7 @@ export const poemsReadPoems = <ThrowOnError extends boolean = false>(options?: O
                 type: 'http'
             }
         ],
+        responseTransformer: poemsReadPoemsResponseTransformer,
         url: '/api/v1/poems/',
         ...options
     });
@@ -476,6 +492,7 @@ export const poemsCreatePoem = <ThrowOnError extends boolean = false>(options: O
                 type: 'http'
             }
         ],
+        responseTransformer: poemsCreatePoemResponseTransformer,
         url: '/api/v1/poems/',
         ...options,
         headers: {
@@ -497,6 +514,7 @@ export const poemsReadPoemsMe = <ThrowOnError extends boolean = false>(options?:
                 type: 'http'
             }
         ],
+        responseTransformer: poemsReadPoemsMeResponseTransformer,
         url: '/api/v1/poems/me',
         ...options
     });
@@ -531,6 +549,7 @@ export const poemsReadPoem = <ThrowOnError extends boolean = false>(options: Opt
                 type: 'http'
             }
         ],
+        responseTransformer: poemsReadPoemResponseTransformer,
         url: '/api/v1/poems/{poem_id}',
         ...options
     });
@@ -548,6 +567,7 @@ export const poemsUpdatePoem = <ThrowOnError extends boolean = false>(options: O
                 type: 'http'
             }
         ],
+        responseTransformer: poemsUpdatePoemResponseTransformer,
         url: '/api/v1/poems/{poem_id}',
         ...options,
         headers: {
@@ -563,6 +583,7 @@ export const poemsUpdatePoem = <ThrowOnError extends boolean = false>(options: O
  */
 export const privateCreateUser = <ThrowOnError extends boolean = false>(options: Options<PrivateCreateUserData, ThrowOnError>) => {
     return (options.client ?? _heyApiClient).post<PrivateCreateUserResponse, PrivateCreateUserError, ThrowOnError>({
+        responseTransformer: privateCreateUserResponseTransformer,
         url: '/api/v1/private/users/',
         ...options,
         headers: {
