@@ -14,6 +14,7 @@ openapi.json
 requirements.txt
 db_data
 db_data/*
+*.sql
 
 # Logs
 logs
