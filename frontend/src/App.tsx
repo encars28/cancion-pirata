@@ -15,7 +15,7 @@ import { client } from './client/client.gen';
 // configure internal service client
 client.setConfig({
   // set default base url for requests
-  baseUrl: 'http://localhost:8001',
+  baseUrl: 'http://localhost:8000',
   // set default headers for requests
   // headers: {
   //   Authorization: 'Bearer <token_from_service_client>',

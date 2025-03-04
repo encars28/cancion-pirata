@@ -1,27 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
-import { handleError, handleSuccess } from '../utils';
+import { handleError, handleSuccess, getQueryWithParams } from '../utils';
 import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
+import { Avatar, Flex, Title } from '@mantine/core';
+import { Shell } from '../components/UI/Shell/Shell';
+import { TableSort } from '../components/UI/Tables/TableSort/TableSort';
 
-function getAuthorQuery(authorId: string) {
-  return {
-    queryKey: ['author', authorId],
-    queryFn: async () => {
-      const result = await authorsReadAuthorById(
-        {
-          path: {author_id: authorId},
-        }
-      );
-
-      if (result.error) {
-        throw result.error;
-      }
-
-      return result.data;
-    }
-  }
+interface RowData {
+  title: string;
+  created_at: string;
+  language: string;
 }
 
 export function AuthorPage() {
@@ -29,7 +19,7 @@ export function AuthorPage() {
   const authorId = params.id;
 
   const { isPending, isError, isSuccess, data, error } = useQuery({
-    ...getAuthorQuery(authorId!),
+    ...getQueryWithParams(['authors', authorId], authorsReadAuthorById, {path: {author_id: authorId}}),
     placeholderData: (prevData) => prevData,
   })
 
@@ -46,11 +36,34 @@ export function AuthorPage() {
   }
 
   const author: AuthorPublicWithPoems = data!;
+  if (!author.poems) {
+    author.poems = [];
+  }
+
+  const poemData: RowData[] = author.poems.map(poem => {
+    return {
+      title: poem.title,
+      created_at: poem.created_at ?? 'Unknown',
+      language: poem.language ?? 'Unknown',	
+    }
+  })
+
 
   return (
-    <div>
-      <h1>Author Page</h1>
-      <p>{author.full_name}</p>
-    </div>
+    <Shell>
+      <Flex
+        wrap="wrap"
+        justify="flex-start"
+        align="center"
+        gap="xl"
+        mt={{base: 'xl', md: 50}}
+        mb="xl"
+        ml={{base: 'xl', xs: 40, sm: 50, md: 60, lg: 80, xl:100}}
+      >
+        <Avatar size="xl" />
+        <Title order={1}>{author.full_name}</Title>
+      </Flex>
+      <TableSort data={poemData} />
+    </Shell>
   )
 }

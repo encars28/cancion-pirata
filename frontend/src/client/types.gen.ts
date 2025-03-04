@@ -2,19 +2,19 @@
 
 export type AuthorCreate = {
     full_name: string;
-    birth_date?: Date | null;
+    birth_date?: string | null;
 };
 
 export type AuthorPublicWithPoems = {
     full_name: string;
-    birth_date?: Date | null;
+    birth_date?: string | null;
     id: string;
     poems?: Array<PoemPublic>;
 };
 
 export type AuthorUpdate = {
     full_name?: string | null;
-    birth_date?: Date | null;
+    birth_date?: string | null;
 };
 
 export type AuthorsPublic = {
@@ -62,8 +62,8 @@ export type PoemPublic = {
     show_author?: boolean;
     language?: string | null;
     id: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at?: string | null;
+    updated_at?: string | null;
 };
 
 export type PoemPublicWithAllTheInfo = {
@@ -73,8 +73,8 @@ export type PoemPublicWithAllTheInfo = {
     show_author?: boolean;
     language?: string | null;
     id: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at?: string | null;
+    updated_at?: string | null;
     author_names?: Array<string>;
     type?: number | null;
     derived_poems?: Array<PoemPublicWithAuthorAndType>;
@@ -88,8 +88,8 @@ export type PoemPublicWithAuthor = {
     show_author?: boolean;
     language?: string | null;
     id: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at?: string | null;
+    updated_at?: string | null;
     author_names?: Array<string>;
 };
 
@@ -100,8 +100,8 @@ export type PoemPublicWithAuthorAndType = {
     show_author?: boolean;
     language?: string | null;
     id: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at?: string | null;
+    updated_at?: string | null;
     author_names?: Array<string>;
     type?: number | null;
 };
@@ -156,7 +156,7 @@ export type UserPublic = {
     is_active?: boolean;
     is_superuser?: boolean;
     id: string;
-    created_at?: Date | null;
+    created_at?: string | null;
     author_id?: string | null;
 };
 

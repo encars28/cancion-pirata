@@ -43,3 +43,17 @@ export function getQuery(key: string, service: () => Promise<any>) {
     }
   }
 }
+
+export function getQueryWithParams(key: [string, any], service: (path?: any) => Promise<any>, params: any) {
+  return {
+    queryKey: key,
+    queryFn: async () => {
+      const result = await service(params)
+      if (result.error) {
+        throw result.error;
+      }
+
+      return result.data;
+    }
+  }
+}
