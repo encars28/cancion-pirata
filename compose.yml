@@ -18,6 +18,8 @@ services:
     restart: on-failure
     env_file:
       - .env 
+    environment:
+      - POSTGRES_SERVER=postgres
     ports:
       - "8001:8000"
     depends_on:

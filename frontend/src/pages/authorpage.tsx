@@ -45,7 +45,7 @@ export function AuthorPage() {
     handleSuccess();
   }
 
-  const author: AuthorPublicWithPoems = data ?? [];
+  const author: AuthorPublicWithPoems = data!;
 
   return (
     <div>
