@@ -6,12 +6,26 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { Th } from './Th/Th';
-import { sortData } from './sort';
+import { Th } from '../Th/Th';
+import { sortData } from '../sort';
+import { To, useNavigate } from 'react-router';
+import classes from './TablePoems.module.css';
 
-export function TableSort({data}: {data: any[]}) {
-  type RowData = typeof data[0]
+export interface RowData {
+  title: string;
+  created_at: string;
+  language: string;
+  link?: To;
+}
 
+const headers:RowData = {
+  title: 'Título',
+  created_at: 'Fecha de creación',
+  language: 'Idioma',
+}
+
+export function TablePoems({ data }: { data: RowData[] }) {
+  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
@@ -31,15 +45,22 @@ export function TableSort({data}: {data: any[]}) {
   };
 
   const rows = sortedData.map((row) => (
-    <Table.Tr key={Object.values(row)[0] as string}>
-      { Object.values(row).map(value => (  
-        <Table.Td>{value as string}</Table.Td> 
-      ))}
+    <Table.Tr 
+      key={row.title}
+      ta="left"
+    >
+      {row.link ? (
+        <Table.Td onClick={() => navigate(row.link!)} className={classes.link}>{row.title}</Table.Td>
+      ) : (
+        <Table.Td>{row.title}</Table.Td>
+      )}
+      <Table.Td>{row.created_at}</Table.Td>
+      <Table.Td>{row.language}</Table.Td>
     </Table.Tr>
   ));
 
   return (
-    <ScrollArea m="xl">
+    <ScrollArea>
       <TextInput
         placeholder="Buscar"
         mb="md"
@@ -51,18 +72,19 @@ export function TableSort({data}: {data: any[]}) {
       <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
         <Table.Tbody>
           <Table.Tr>
-            { Object.keys(data[0]).map(key => (
-              <Th 
+            {Object.entries(headers).map(([key, value]) => (
+              <Th
                 sorted={sortBy === key}
                 reversed={reverseSortDirection}
-                onSort={() => setSorting(key)}
+                onSort={() => setSorting(key as keyof RowData)}
               >
-                {key}
+                {value}
               </Th>
-              ))
+            ))
             }
           </Table.Tr>
         </Table.Tbody>
+
         <Table.Tbody>
           {rows.length > 0 ? (
             rows

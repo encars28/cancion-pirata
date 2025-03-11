@@ -15,7 +15,7 @@ export function Th({ children, reversed, sorted, onSort }: ThProps) {
     <Table.Th className={classes.th}>
       <UnstyledButton onClick={onSort} className={classes.control}>
         <Group justify="space-between">
-          <Text fw={500} fz="sm">
+          <Text fw="bold" fz="sm">
             {children}
           </Text>
           <Center className={classes.icon}>
