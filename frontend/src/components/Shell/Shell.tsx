@@ -1,6 +1,6 @@
-import { AppShell, Container, Group, RemoveScroll, Button } from '@mantine/core';
+import { AppShell, Container, Group, RemoveScroll, Button, UnstyledButton } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
-
+import { useNavigate } from 'react-router';
 import { IconUser} from '@tabler/icons-react';
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
@@ -11,13 +11,14 @@ interface ShellProps {
 }
 
 export function Shell({ children }: ShellProps) {
+  const navigate = useNavigate();
   return (
     <AppShell header={{ height: 60 }}>
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" px="md" className={classes.inner}>
-          <a href="/" className={classes.link}>
+          <UnstyledButton onClick={() => navigate("/")} className={classes.link}>
             Tremendo Logo
-          </a>
+          </UnstyledButton>
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
@@ -25,6 +26,7 @@ export function Shell({ children }: ShellProps) {
               size="xs" 
               variant="filled" 
               leftSection={<IconUser size={14} />}
+              onClick={() => navigate("/login")}
             > 
               Login
             </Button>
