@@ -17,7 +17,7 @@ export default function AllRoutes() {
         <Route path="/poems/:id" element={<PoemPage />} />
         <Route path="/authors" element={<AuthorsPage />} />
         <Route path="/authors/:id" element={<AuthorPage />} />
-        <Route path="/login" element={isLoggedIn() ? (<LoginPage />) : (<MainPage/>)} />
+        <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
         <Route path="*" element={<NothingFound />} />
       </Routes>
     </BrowserRouter>
