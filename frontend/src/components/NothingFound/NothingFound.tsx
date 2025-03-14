@@ -1,6 +1,6 @@
 import { Button, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import classes from './NothingFound.module.css';
-import { Shell } from '../UI/Shell/Shell';
+import { Shell } from '../Shell/Shell';
 
 export function NothingFound() {
   return (
@@ -13,7 +13,7 @@ export function NothingFound() {
           404
         </Text>
       </Flex>
-      <Stack className={classes.content} justify='center' align='center' h='100vh' gap="xl">
+      <Stack className={classes.content} justify='center' align='center' h='100%' gap="xl">
         <Title className={classes.title}>Tú ves algo? Porque yo no</Title>
         <Text c="dimmed" size="lg" ta="center" maw={550}>
           La página a la que estás intentando acceder no existe.

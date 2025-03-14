@@ -1,12 +1,12 @@
-import { Shell } from "../components/UI/Shell/Shell";
-import { CardGrid } from "../components/UI/Cards/CardGrid";
+import { Shell } from "../components/Shell/Shell";
+import { CardGrid } from "../components/Cards/CardGrid";
 import { Title } from "@mantine/core";
 import { useQuery } from '@tanstack/react-query'
 import { handleError, handleSuccess, getQuery } from "../utils";
 import { Loading } from "../components/Loading";
 import { poemsReadPoems } from "../client/sdk.gen";
 import { PoemPublicWithAllTheInfo } from "../client";
-import { PoemCard } from "../components/UI/Cards/PoemCard";
+import { PoemCard } from "../components/Cards/PoemCard";
 
 
 export function PoemsPage() {

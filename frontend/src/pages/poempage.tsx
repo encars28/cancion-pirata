@@ -1,12 +1,12 @@
-import { Shell } from '../components/UI/Shell/Shell';
+import { Shell } from '../components/Shell/Shell';
 import { handleError, handleSuccess, getQueryWithParams } from '../utils';
 import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { poemsReadPoem } from '../client/sdk.gen';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Flex, Title, Container, Blockquote, Text, Anchor, Stack, Center } from '@mantine/core';
-import { IconInfoCircle } from '@tabler/icons-react';
+import { Flex, Title, Container, Stack, List, Text, Anchor, Space } from '@mantine/core';
+import { InfoBox } from '../components/InfoBox';
 
 export function PoemPage() {
   const params = useParams();
@@ -41,58 +41,69 @@ export function PoemPage() {
       <Flex
         justify="center"
         wrap='wrap'
-        gap="xl"
-        m="xl"
+        mt="xl"
       >
         <Flex
           justify="center"
           align="center"
           direction="column"
           gap="xl"
-          m="xl"
+          mt="xl"
+          w={{ base: "100%", sm: "60%" }}
         >
           <Container fluid>
             <Title order={1}>{poem.title}</Title>
             <Title order={3} c="dimmed" fw="lighter">Autor: {poem.author_names}</Title>
           </Container>
           <Container fluid>{poem.content}</Container>
+          <Space h="xl" />
         </Flex>
-        {
-          poem.original && (
-            <Blockquote
-              color="blue"
-              radius="xl"
-              iconSize={60}
-              icon={<IconInfoCircle />}
-              m="xl"
-              miw={200}>
-              {poem.type == PoemType.TRANSLATION && (
-                <Stack
-                  justify='center'
-                  h="100%"
-                >
-                  <Text>
-                    Este poema es una traducción.
-                  </Text>
-                  <Anchor href={`/poems/${poem.original.id}`}>
-                    Ver poema original
-                  </Anchor>
-                </Stack>
-              )}
-
-              {poem.type == PoemType.VERSION && (
-                <>
-                  <Text>
-                    Este poema es una versión.
-                  </Text>
-                  <Anchor href={`/poems/${poem.original.id}`}>
-                    Ver poema original
-                  </Anchor>
-                </>
-              )}
-            </Blockquote>
-          )
-        }
+        <Stack>
+          {
+            (poem.original && poem.type == PoemType.TRANSLATION) &&
+            (
+              <InfoBox>
+                <Text>
+                  Este poema es una traducción.
+                </Text>
+                <Anchor href={`/poems/${poem.original.id}`}>
+                  Ver poema original
+                </Anchor>
+              </InfoBox>
+            )
+          }
+          {
+            (poem.original && poem.type == PoemType.VERSION) &&
+            (
+              <InfoBox>
+                <Text>
+                  Este poema es una versión.
+                </Text>
+                <Anchor href={`/poems/${poem.original.id}`}>
+                  Ver poema original
+                </Anchor>
+              </InfoBox>
+            )
+          }
+          {
+            (poem.derived_poems && poem.derived_poems.length > 0) && (
+              <InfoBox>
+                <Text>
+                  Este poema tiene derivados.
+                </Text>
+                <List ta="left" withPadding>
+                  {poem.derived_poems.map((derivedPoem) => (
+                    <List.Item key={derivedPoem.id}>
+                      <Anchor href={`/poems/${derivedPoem.id}`}>
+                        {derivedPoem.title}
+                      </Anchor>
+                    </List.Item>
+                  ))}
+                </List>
+              </InfoBox>
+            )
+          }
+        </Stack>
       </Flex>
     </Shell>
   )

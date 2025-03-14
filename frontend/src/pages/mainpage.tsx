@@ -6,7 +6,7 @@ import {
     Stack
 } from '@mantine/core';
 
-import { Shell } from '../components/UI/Shell/Shell';
+import { Shell } from '../components/Shell/Shell';
 
 function ShowQuote() {
     return (  

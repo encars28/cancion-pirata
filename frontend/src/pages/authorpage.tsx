@@ -5,8 +5,8 @@ import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
 import { Avatar, Flex, Space, Tabs, Title, Container } from '@mantine/core';
-import { Shell } from '../components/UI/Shell/Shell';
-import { TablePoems, RowData} from '../components/UI/Tables/TablePoems/TablePoems';
+import { Shell } from '../components/Shell/Shell';
+import { TablePoems, RowData} from '../components/Tables/TablePoems/TablePoems';
 import { IconVocabulary } from '@tabler/icons-react';
 
 export function AuthorPage() {

@@ -1,6 +1,6 @@
-import { Shell } from "../components/UI/Shell/Shell";
-import { AuthorCard } from "../components/UI/Cards/AuthorCard";
-import { CardGrid } from "../components/UI/Cards/CardGrid";
+import { Shell } from "../components/Shell/Shell";
+import { AuthorCard } from "../components/Cards/AuthorCard";
+import { CardGrid } from "../components/Cards/CardGrid";
 import { Title } from "@mantine/core";
 import { authorsReadAuthors } from "../client/sdk.gen";
 import { useQuery } from '@tanstack/react-query'
