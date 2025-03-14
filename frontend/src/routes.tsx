@@ -6,6 +6,7 @@ import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
 import { LoginPage } from "./pages/loginpage";
 import { NothingFound } from "./components/NothingFound/NothingFound";
+import { isLoggedIn } from "./hooks/useAuth";
 
 export default function AllRoutes() {
   return (
@@ -16,7 +17,7 @@ export default function AllRoutes() {
         <Route path="/poems/:id" element={<PoemPage />} />
         <Route path="/authors" element={<AuthorsPage />} />
         <Route path="/authors/:id" element={<AuthorPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={isLoggedIn() ? (<LoginPage />) : (<MainPage/>)} />
         <Route path="*" element={<NothingFound />} />
       </Routes>
     </BrowserRouter>

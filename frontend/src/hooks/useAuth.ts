@@ -4,7 +4,7 @@ import { useNavigate } from "react-router"
 import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
 import { UserRegister } from "../client/types.gen"
 import { handleError, getQuery } from "../utils"
-
+import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
 
 const isLoggedIn = () => {
@@ -41,6 +41,11 @@ const useAuth = () => {
       throw response.error
     }
 
+    client.setConfig({
+      headers: {
+        "Authorization": `Bearer ${response.data.access_token}`
+      }
+    })
     localStorage.setItem("access_token", response.data.access_token)
     return response.data
   }
@@ -57,6 +62,7 @@ const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem("access_token")
+    client.setConfig( { headers: { "Authorization": "" } } )
     navigate("/login")
   }
 
