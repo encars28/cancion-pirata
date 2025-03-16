@@ -63,13 +63,13 @@ export function AuthorPage() {
             <Avatar size="xl" />
             <Title order={1}>{author.full_name}</Title>
           </Flex>
-          {currentUser && <Button
-            variant="light"
+          { (currentUser?.author_id == authorId) && <Button
+            variant="outline"
           >
             Modificar datos
           </Button> }
         </Group>
-        <Space mt="xl" />
+        <Space mt={100} />
         <Tabs variant="pills" defaultValue="poems">
           <Tabs.List>
             <Tabs.Tab value="poems" leftSection={<IconVocabulary size={12} />}>

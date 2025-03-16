@@ -90,7 +90,7 @@ export function TablePoems({ data }: { data: RowData[] }) {
             rows
           ) : (
             <Table.Tr>
-              <Table.Td colSpan={Object.keys(data[0]).length}>
+              <Table.Td colSpan={Object.keys(headers).length}>
                 <Text fw={500} ta="center">
                   No hay nada aquí...
                 </Text>

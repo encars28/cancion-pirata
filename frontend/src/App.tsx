@@ -18,11 +18,20 @@ import { PoemPublicWithAllTheInfo } from './client';
 import { authorsReadAuthors } from './client/sdk.gen';
 import { AuthorPublicWithPoems } from './client';
 import { getQuery } from './utils';
+import { isLoggedIn } from './hooks/useAuth';
 
 // configure internal service client
 client.setConfig({
   baseUrl: 'http://localhost:8000',
 });
+
+if (isLoggedIn()) {
+  client.setConfig({
+    headers: {
+      "Authorization": `Bearer ${localStorage.getItem("access_token")}`
+    }
+  })
+}
 
 function App() {
   const { data: poemsData } = useQuery({
