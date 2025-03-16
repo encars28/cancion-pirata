@@ -27,21 +27,20 @@ const headers:RowData = {
 export function TablePoems({ data }: { data: RowData[] }) {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-  const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
+
+  const sortedData = sortData(data, { sortBy, reversed: reverseSortDirection, search });
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-    setSortedData(sortData(data, { sortBy: field, reversed, search }));
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget;
     setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
   const rows = sortedData.map((row) => (
@@ -74,6 +73,7 @@ export function TablePoems({ data }: { data: RowData[] }) {
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) => (
               <Th
+                key={key}
                 sorted={sortBy === key}
                 reversed={reverseSortDirection}
                 onSort={() => setSorting(key as keyof RowData)}

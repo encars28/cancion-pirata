@@ -1,9 +1,9 @@
 import { Shell } from '../components/Shell/Shell';
-import { handleError, handleSuccess, getQueryWithParams } from '../utils';
+import { handleError, getQueryWithParams } from '../utils';
 import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { poemsReadPoem } from '../client/sdk.gen';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { Flex, Title, Container, Stack, List, Text, Anchor, Space } from '@mantine/core';
 import { InfoBox } from '../components/InfoBox';
@@ -12,7 +12,7 @@ export function PoemPage() {
   const params = useParams();
   const poemId = params.id;
 
-  const { isPending, isError, isSuccess, data, error } = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     ...getQueryWithParams(['poems', poemId], poemsReadPoem, { path: { poem_id: poemId } }),
     placeholderData: (prevData) => prevData,
   })
@@ -23,10 +23,6 @@ export function PoemPage() {
 
   if (isError) {
     handleError(error as any);
-  }
-
-  if (isSuccess) {
-    handleSuccess();
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;
@@ -66,9 +62,9 @@ export function PoemPage() {
                 <Text>
                   Este poema es una traducción.
                 </Text>
-                <Anchor href={`/poems/${poem.original.id}`}>
+                <Link to={`/poems/${poem.original.id}`}>
                   Ver poema original
-                </Anchor>
+                </Link>
               </InfoBox>
             )
           }
@@ -79,9 +75,9 @@ export function PoemPage() {
                 <Text>
                   Este poema es una versión.
                 </Text>
-                <Anchor href={`/poems/${poem.original.id}`}>
+                <Link to={`/poems/${poem.original.id}`}>
                   Ver poema original
-                </Anchor>
+                </Link>
               </InfoBox>
             )
           }
@@ -94,9 +90,9 @@ export function PoemPage() {
                 <List ta="left" withPadding>
                   {poem.derived_poems.map((derivedPoem) => (
                     <List.Item key={derivedPoem.id}>
-                      <Anchor href={`/poems/${derivedPoem.id}`}>
+                      <Link to={`/poems/${derivedPoem.id}`}>
                         {derivedPoem.title}
-                      </Anchor>
+                      </Link>
                     </List.Item>
                   ))}
                 </List>

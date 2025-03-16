@@ -12,23 +12,49 @@ import AllRoutes from './routes';
 import { Search } from './components/Header/Search/Search';
 import { client } from './client/client.gen';
 
+import { poemsReadPoems } from "./client/sdk.gen";
+import { useQuery } from '@tanstack/react-query';
+import { PoemPublicWithAllTheInfo } from './client';
+import { authorsReadAuthors } from './client/sdk.gen';
+import { AuthorPublicWithPoems } from './client';
+import { getQuery } from './utils';
+
 // configure internal service client
 client.setConfig({
-  // set default base url for requests
   baseUrl: 'http://localhost:8000',
-  // set default headers for requests
-  // headers: {
-  //   Authorization: 'Bearer <token_from_service_client>',
-  // },
 });
 
 function App() {
+  const { data: poemsData } = useQuery({
+    ...getQuery('poems', poemsReadPoems),
+  })
+
+  const { data: authorsData } = useQuery({
+    ...getQuery('authors', authorsReadAuthors),
+  })
+
+  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? [];
+  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? [];
+
+  const searchData = authors.map(
+    (author) => ({
+      label: author.full_name,
+      description: "Autor",
+      url: `/authors/${author.id}`
+    })).concat(
+  poems.map(
+    (poem) => ({
+      label: poem.title,
+      description: "Poema",
+      url: `/poems/${poem.id}`
+  })))
+
   return (
     <MantineProvider>
       {
         <>
           <AllRoutes />
-          <Search data={[]} />
+          <Search data={searchData} />
           <Notifications />
         </>
       }

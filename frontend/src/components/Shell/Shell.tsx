@@ -5,6 +5,7 @@ import { IconUser} from '@tabler/icons-react';
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
+import { isLoggedIn } from '../../hooks/useAuth';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -22,19 +23,27 @@ export function Shell({ children }: ShellProps) {
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            <Button 
-              size="xs" 
-              variant="filled" 
-              leftSection={<IconUser size={14} />}
-              onClick={() => navigate("/login")}
-            > 
-              Login
-            </Button>
+            { isLoggedIn() ? (
+              <Button
+                size="xs"
+                variant="filled"
+              >Logout</Button>
+            ) : (
+              <Button
+                size="xs"
+                variant="filled"
+                leftSection={<IconUser size={14} />}
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </Button>
+              )
+            }
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
             <SearchControlMobile />
-            <LoginControl />
+            { !isLoggedIn() && <LoginControl /> }
           </Group>
 
         </Container>

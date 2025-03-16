@@ -1,15 +1,16 @@
 import { IconSearch } from '@tabler/icons-react';
 import { Spotlight, createSpotlight } from '@mantine/spotlight';
+import { useNavigate } from 'react-router';
 
 export const [searchStore, searchHandlers] = createSpotlight();
 
 export function Search({ data }: { data: any[] }) {
-
+  const navigate = useNavigate();
   const actions = data?.map((item) => ({
-    id: item.component,
-    label: item.component,
-    description: item.attributes.title,
-    onClick: () => {},
+    id: item.label,
+    label: item.label,
+    description: item.description,
+    onClick: () => {navigate(item.url)},
   }));
 
   return (
@@ -20,7 +21,7 @@ export function Search({ data }: { data: any[] }) {
       highlightQuery
       clearQueryOnClose
       radius="md"
-      limit={5}
+      limit={8}
       nothingFound="No se ha encontrado nada..."
       searchProps={{
         leftSection: <IconSearch size={20} />,

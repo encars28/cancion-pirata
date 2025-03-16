@@ -2,7 +2,7 @@ import { Shell } from "../components/Shell/Shell";
 import { CardGrid } from "../components/Cards/CardGrid";
 import { Title } from "@mantine/core";
 import { useQuery } from '@tanstack/react-query'
-import { handleError, handleSuccess, getQuery } from "../utils";
+import { handleError, getQuery } from "../utils";
 import { Loading } from "../components/Loading";
 import { poemsReadPoems } from "../client/sdk.gen";
 import { PoemPublicWithAllTheInfo } from "../client";
@@ -10,7 +10,7 @@ import { PoemCard } from "../components/Cards/PoemCard";
 
 
 export function PoemsPage() {
-  const { isPending, isError, isSuccess, data, error } = useQuery({
+  const { isPending, isError, data, error } = useQuery({
     ...getQuery('poems', poemsReadPoems),
     placeholderData: (prevData) => prevData,
   })
@@ -21,10 +21,6 @@ export function PoemsPage() {
 
   if (isError) {
     handleError(error as any);
-  }
-
-  if (isSuccess) {
-    handleSuccess();
   }
 
   const poems: PoemPublicWithAllTheInfo[] = data?.data ?? [];

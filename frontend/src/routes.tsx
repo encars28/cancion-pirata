@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { Route, Routes } from "react-router";
 import { MainPage } from "./pages/mainpage";
 import { PoemsPage } from "./pages/poemspage";
 import { PoemPage } from "./pages/poempage";
@@ -10,16 +10,14 @@ import { isLoggedIn } from "./hooks/useAuth";
 
 export default function AllRoutes() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/poems" element={<PoemsPage />} />
-        <Route path="/poems/:id" element={<PoemPage />} />
-        <Route path="/authors" element={<AuthorsPage />} />
-        <Route path="/authors/:id" element={<AuthorPage />} />
-        <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
-        <Route path="*" element={<NothingFound />} />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+      <Route path="/poems" element={<PoemsPage />} />
+      <Route path="/poems/:id" element={<PoemPage />} />
+      <Route path="/authors" element={<AuthorsPage />} />
+      <Route path="/authors/:id" element={<AuthorPage />} />
+      <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
+      <Route path="*" element={<NothingFound />} />
+    </Routes>
   )
 }
