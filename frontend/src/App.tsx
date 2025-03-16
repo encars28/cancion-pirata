@@ -20,6 +20,10 @@ import { authorsReadAuthors } from './client/sdk.gen';
 import { AuthorPublicWithPoems } from './client';
 import { getQuery } from './utils';
 import { isLoggedIn } from './hooks/useAuth';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
 
 // configure internal service client
 client.setConfig({

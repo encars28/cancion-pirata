@@ -1,5 +1,5 @@
 import { notifications } from "@mantine/notifications"
-import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo, PoemPublic } from "./client/types.gen"
+import { HttpValidationError } from "./client/types.gen"
 import classes from "./notifications.module.css"
 
 export const handleError = (error: HttpValidationError) => {
@@ -25,7 +25,7 @@ export const handleSuccess = () => {
   notifications.show({
     color: 'green',
     title: 'Éxito',
-    message: 'Los datos ya están aquí 🎉',
+    message: 'La operación se ha completado!',
     classNames: classes,
   })
 }
@@ -55,20 +55,5 @@ export function getQueryWithParams(key: [string, any], service: (path?: any) => 
 
       return result.data;
     }
-  }
-}
-
-export function formatAuthor(author: AuthorPublicWithPoems) {
-  return {
-    ...author,
-    formatedBirthDate: author.birth_date ? new Date(author.birth_date).toLocaleDateString() : 'Unknown',
-    formatedPoems: (author.poems) ? author.poems.map(formatPoem) : []
-  }
-}
-
-export function formatPoem(poem: PoemPublic | PoemPublicWithAllTheInfo) {
-  return {
-    ...poem,
-    formatedCreatedAt: poem.created_at  ? new Date(poem.created_at).toLocaleDateString() : 'Unknown'
   }
 }

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { handleError, getQueryWithParams, formatAuthor } from '../utils';
+import { handleError, getQueryWithParams } from '../utils';
 import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
@@ -31,20 +31,7 @@ export function AuthorPage() {
     handleError(error as any);
   }
 
-  // const author = formatAuthor(data as AuthorPublicWithPoems);
-
-  // const poemData: RowData[] = author.formatedPoems.map(poem => {
-  //   return {
-  //     title: poem.title,
-  //     created_at: poem.formatedCreatedAt,
-  //     language: poem.language ?? 'Unknown',
-  //     link: `/poems/${poem.id}`
-  //   }
-  // })
-
   const author: AuthorPublicWithPoems = data;
-  console.log(author);
-
   const poemData: RowData[] = author.poems!.map(poem => {
     return {
       title: poem.title,
@@ -74,7 +61,7 @@ export function AuthorPage() {
             <Avatar size="xl" />
             <Title order={1}>{author.full_name}</Title>
           </Flex>
-          {(currentUser?.author_id == authorId) && (
+          {(currentUser?.author_id == authorId || currentUser?.is_superuser == true || true) && (
             <>
               <Button
                 variant="outline"
@@ -91,7 +78,7 @@ export function AuthorPage() {
                 }}
                 closeOnClickOutside={false}
                 centered>
-                  <EditAuthor name={author.full_name} date={author.formatedBirthDate} />
+                  <EditAuthor author={author} close={close}/>
               </Modal>
             </>
           )}
