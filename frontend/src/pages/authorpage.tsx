@@ -9,11 +9,14 @@ import { Shell } from '../components/Shell/Shell';
 import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems';
 import { IconVocabulary } from '@tabler/icons-react';
 import useAuth from '../hooks/useAuth';
+import { useDisclosure } from '@mantine/hooks';
+import { UpdateAuthor } from '../components/Author/UpdateAuthor';
 
 export function AuthorPage() {
   const params = useParams();
   const authorId = params.id;
   const { user: currentUser } = useAuth();
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { isPending, isError, data, error } = useQuery({
     ...getQueryWithParams(['authors', authorId], authorsReadAuthorById, { path: { author_id: authorId } }),
@@ -63,11 +66,17 @@ export function AuthorPage() {
             <Avatar size="xl" />
             <Title order={1}>{author.full_name}</Title>
           </Flex>
-          { (currentUser?.author_id == authorId) && <Button
-            variant="outline"
-          >
-            Modificar datos
-          </Button> }
+          {(currentUser?.author_id == authorId) && (
+            <>
+              <Button
+                variant="outline"
+                onClick={open}
+              >
+                Modificar datos
+              </Button>
+              <UpdateAuthor opened={opened} open={open} close={close} />
+            </>
+          )}
         </Group>
         <Space mt={100} />
         <Tabs variant="pills" defaultValue="poems">
