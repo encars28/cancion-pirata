@@ -1,5 +1,5 @@
 import { notifications } from "@mantine/notifications"
-import { HttpValidationError } from "./client/types.gen"
+import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo, PoemPublic } from "./client/types.gen"
 import classes from "./notifications.module.css"
 
 export const handleError = (error: HttpValidationError) => {

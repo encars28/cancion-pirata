@@ -4,13 +4,13 @@ import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
-import { Avatar, Flex, Space, Tabs, Title, Container, Group, Button } from '@mantine/core';
+import { Avatar, Flex, Space, Tabs, Title, Modal, Container, Group, Button } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
 import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems';
 import { IconVocabulary } from '@tabler/icons-react';
 import useAuth from '../hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
-import { UpdateAuthor } from '../components/Author/UpdateAuthor';
+import { UpdateAuthorForm } from '../components/Author/UpdateAuthorForm';
 
 export function AuthorPage() {
   const params = useParams();
@@ -32,11 +32,16 @@ export function AuthorPage() {
   }
 
   const author: AuthorPublicWithPoems = data!;
-  if (!author.poems) {
-    author.poems = [];
-  }
 
-  const poemData: RowData[] = author.poems.map(poem => {
+  const poemData: RowData[] = author.poems!.map(poem => {
+    // let date: string;
+    // poem.created_at ? date = new Date(poem.created_at).toLocaleDateString() : date = 'Unknown';
+
+    if (poem.created_at) {
+      console.log("fecha", poem.created_at)
+      poem.created_at = new Date(poem.created_at).toLocaleDateString();
+    }
+
     return {
       title: poem.title,
       created_at: poem.created_at ?? 'Unknown',
@@ -74,7 +79,16 @@ export function AuthorPage() {
               >
                 Modificar datos
               </Button>
-              <UpdateAuthor opened={opened} open={open} close={close} />
+              <Modal
+                opened={opened}
+                onClose={close}
+                title="Modificar datos"
+                overlayProps={{
+                  blur: 3,
+                }}
+                centered>
+                  <UpdateAuthorForm name={author.full_name} date={author.birth_date} />
+              </Modal>
             </>
           )}
         </Group>
