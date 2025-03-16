@@ -1,5 +1,5 @@
 import { Blockquote, Stack } from "@mantine/core"
-import { IconVocabulary } from '@tabler/icons-react';
+import { TbVocabulary } from "react-icons/tb";
 
 export function InfoBox({children}: {children: React.ReactNode}) {
     return (
@@ -7,7 +7,7 @@ export function InfoBox({children}: {children: React.ReactNode}) {
         color="blue"
         radius="xl"
         iconSize={60}
-        icon={<IconVocabulary />}
+        icon={<TbVocabulary />}
         m="xl"
         miw={200}
         maw={{base: 250, lg: 300}}>

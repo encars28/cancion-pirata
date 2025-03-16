@@ -1,8 +1,7 @@
-import { IconSearch } from '@tabler/icons-react';
+import { TbSearch } from "react-icons/tb";
 import { HeaderControl } from '../../HeaderControl';
 import { searchHandlers } from '../Search';
 import classes from './SearchControlMobile.module.css';
-import { rem } from '@mantine/core';
 
 export function SearchControlMobile() {
   return (
@@ -11,7 +10,7 @@ export function SearchControlMobile() {
       className={classes.control}
       onClick={searchHandlers.open}
     >
-      <IconSearch size={rem(22)} stroke={1.5} />
+      <TbSearch size={22} />
     </HeaderControl>
   );
 }

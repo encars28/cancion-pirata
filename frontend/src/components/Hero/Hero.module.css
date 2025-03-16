@@ -1,0 +1,74 @@
+.wrapper {
+  position: relative;
+  padding-top: 180px;
+  padding-bottom: 130px;
+  background-image: url(/src/assets/bookshelves.jpg);
+  background-size: cover;
+  background-position: center;
+  padding-left: var(--mantine-spacing-lg);
+  padding-right: var(--mantine-spacing-lg);
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    padding-top: 80px;
+    padding-bottom: 50px;
+  }
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+}
+
+.title {
+  font-weight: 800;
+  font-size: 50px;
+  letter-spacing: -1px;
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+  color: var(--mantine-color-white);
+  margin-bottom: var(--mantine-spacing-xs);
+  text-align: center;
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: 28px;
+    text-align: left;
+  }
+}
+
+.highlight {
+  color: var(--mantine-color-blue-2);
+}
+
+.description {
+  color: var(--mantine-color-gray-0);
+  text-align: center;
+  margin-left: var(--mantine-spacing-lg);
+  margin-right: var(--mantine-spacing-lg);
+  font-size: var(--mantine-spacing-lg);
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    font-size: var(--mantine-font-size-md);
+    text-align: left;
+  }
+}
+
+.controls {
+  margin-top: calc(var(--mantine-spacing-xl) * 1.5);
+  display: flex;
+  justify-content: center;
+  padding-left: var(--mantine-spacing-md);
+  padding-right: var(--mantine-spacing-md);
+
+  @media (max-width: $mantine-breakpoint-xs) {
+    flex-direction: column;
+  }
+}
+
+.control {
+  height: 42px;
+  width: 200px;
+  font-size: var(--mantine-font-size-md);
+}

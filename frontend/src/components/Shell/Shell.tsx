@@ -1,11 +1,12 @@
 import { AppShell, Container, Group, RemoveScroll, Button, UnstyledButton } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useNavigate } from 'react-router';
-import { IconUser} from '@tabler/icons-react';
+import { TbUser } from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
 import { isLoggedIn } from '../../hooks/useAuth';
+import useAuth from '../../hooks/useAuth';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ interface ShellProps {
 
 export function Shell({ children }: ShellProps) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
     <AppShell header={{ height: 60 }}>
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
@@ -27,12 +29,13 @@ export function Shell({ children }: ShellProps) {
               <Button
                 size="xs"
                 variant="filled"
+                onClick={() => logout()}
               >Logout</Button>
             ) : (
               <Button
                 size="xs"
                 variant="filled"
-                leftSection={<IconUser size={14} />}
+                leftSection={<TbUser size={14} />}
                 onClick={() => navigate("/login")}
               >
                 Login

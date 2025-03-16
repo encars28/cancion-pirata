@@ -5,7 +5,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 
-import { IconSearch } from '@tabler/icons-react';
+import { TbSearch } from "react-icons/tb";
 import { searchHandlers } from '../Search';
 import classes from './SearchControl.module.css';
 
@@ -16,7 +16,7 @@ export function SearchControl() {
       className={classes.root}
     >
       <Group gap="xs">
-        <IconSearch style={{ width: rem(15), height: rem(15) }} stroke={1.5} />
+        <TbSearch style={{ width: rem(15), height: rem(15) }} />
         <Text fz="sm" c="dimmed" pr={200}>
           Buscar
         </Text>

@@ -13,7 +13,7 @@ import {
 } from '@mantine/core';
 import classes from './LoginForm.module.css';
 
-import { IconAt } from '@tabler/icons-react';
+import { TbAt } from "react-icons/tb";
 import useAuth from '../../hooks/useAuth';
 import { useForm, isEmail } from '@mantine/form'
 import { Form } from '@mantine/form';
@@ -71,7 +71,7 @@ export function LoginForm() {
               label="Email"
               placeholder="ejemplo@ejemplo.com"
               rightSectionPointerEvents="none"
-              rightSection={<IconAt size={15} />}
+              rightSection={<TbAt size={15} />}
               {...form.getInputProps('email')}
               required
             />

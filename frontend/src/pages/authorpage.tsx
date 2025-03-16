@@ -7,7 +7,7 @@ import { useParams } from 'react-router';
 import { Avatar, Flex, Space, Tabs, Title, Modal, Container, Group, Button } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
 import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems';
-import { IconVocabulary } from '@tabler/icons-react';
+import { TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
 import { EditAuthor } from '../components/Author/EditAuthor';
@@ -61,7 +61,7 @@ export function AuthorPage() {
             <Avatar size="xl" />
             <Title order={1}>{author.full_name}</Title>
           </Flex>
-          {(currentUser?.author_id == authorId || currentUser?.is_superuser == true || true) && (
+          {( currentUser?.author_id == authorId || currentUser?.is_superuser) && (
             <>
               <Button
                 variant="outline"
@@ -86,7 +86,7 @@ export function AuthorPage() {
         <Space mt={100} />
         <Tabs variant="pills" defaultValue="poems">
           <Tabs.List>
-            <Tabs.Tab value="poems" leftSection={<IconVocabulary size={12} />}>
+            <Tabs.Tab value="poems" leftSection={<TbVocabulary size={12} />}>
               Poemas
             </Tabs.Tab>
           </Tabs.List>

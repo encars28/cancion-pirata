@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconSearch } from '@tabler/icons-react';
+import { TbSearch } from "react-icons/tb";
 import {
   ScrollArea,
   Table,
@@ -63,7 +63,7 @@ export function TablePoems({ data }: { data: RowData[] }) {
       <TextInput
         placeholder="Buscar"
         mb="md"
-        leftSection={<IconSearch size={16} stroke={1.5} />}
+        leftSection={<TbSearch size={16} />}
         value={search}
         onChange={handleSearchChange}
       />

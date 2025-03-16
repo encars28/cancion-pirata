@@ -1,4 +1,4 @@
-import { IconSearch } from '@tabler/icons-react';
+import { TbSearch } from "react-icons/tb";
 import { Spotlight, createSpotlight } from '@mantine/spotlight';
 import { useNavigate } from 'react-router';
 
@@ -24,7 +24,7 @@ export function Search({ data }: { data: any[] }) {
       limit={8}
       nothingFound="No se ha encontrado nada..."
       searchProps={{
-        leftSection: <IconSearch size={20} />,
+        leftSection: <TbSearch size={20} />,
         placeholder: 'Buscando...',
       }}
     />

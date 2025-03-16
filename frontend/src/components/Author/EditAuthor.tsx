@@ -1,7 +1,7 @@
 import { Stack, TextInput, Group, Button } from '@mantine/core';
 import { Form, useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
-import { IconCalendar } from '@tabler/icons-react';
+import { TbCalendar } from "react-icons/tb";
 import { AuthorUpdate, AuthorPublicWithPoems, HttpValidationError } from '../../client/types.gen';
 import { handleError, handleSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -68,7 +68,7 @@ export function EditAuthor({ author, close }: { author: AuthorPublicWithPoems, c
           clearable
           name='birth_date'
           key={form.key('birth_date')}
-          leftSection={<IconCalendar size={18} stroke={1.5} />}
+          leftSection={<TbCalendar size={18} />}
           leftSectionPointerEvents="none"
           label="Fecha de nacimiento"
           placeholder="Fecha de nacimiento"
