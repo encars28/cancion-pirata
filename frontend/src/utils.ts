@@ -57,3 +57,18 @@ export function getQueryWithParams(key: [string, any], service: (path?: any) => 
     }
   }
 }
+
+export function formatAuthor(author: AuthorPublicWithPoems) {
+  return {
+    ...author,
+    formatedBirthDate: author.birth_date ? new Date(author.birth_date).toLocaleDateString() : 'Unknown',
+    formatedPoems: (author.poems) ? author.poems.map(formatPoem) : []
+  }
+}
+
+export function formatPoem(poem: PoemPublic | PoemPublicWithAllTheInfo) {
+  return {
+    ...poem,
+    formatedCreatedAt: poem.created_at  ? new Date(poem.created_at).toLocaleDateString() : 'Unknown'
+  }
+}

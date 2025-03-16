@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { handleError, getQueryWithParams } from '../utils';
+import { handleError, getQueryWithParams, formatAuthor } from '../utils';
 import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
@@ -10,7 +10,7 @@ import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems'
 import { IconVocabulary } from '@tabler/icons-react';
 import useAuth from '../hooks/useAuth';
 import { useDisclosure } from '@mantine/hooks';
-import { UpdateAuthorForm } from '../components/Author/UpdateAuthorForm';
+import { EditAuthor } from '../components/Author/EditAuthor';
 
 export function AuthorPage() {
   const params = useParams();
@@ -31,25 +31,28 @@ export function AuthorPage() {
     handleError(error as any);
   }
 
-  const author: AuthorPublicWithPoems = data!;
+  // const author = formatAuthor(data as AuthorPublicWithPoems);
+
+  // const poemData: RowData[] = author.formatedPoems.map(poem => {
+  //   return {
+  //     title: poem.title,
+  //     created_at: poem.formatedCreatedAt,
+  //     language: poem.language ?? 'Unknown',
+  //     link: `/poems/${poem.id}`
+  //   }
+  // })
+
+  const author: AuthorPublicWithPoems = data;
+  console.log(author);
 
   const poemData: RowData[] = author.poems!.map(poem => {
-    // let date: string;
-    // poem.created_at ? date = new Date(poem.created_at).toLocaleDateString() : date = 'Unknown';
-
-    if (poem.created_at) {
-      console.log("fecha", poem.created_at)
-      poem.created_at = new Date(poem.created_at).toLocaleDateString();
-    }
-
     return {
       title: poem.title,
-      created_at: poem.created_at ?? 'Unknown',
+      created_at: poem.created_at?.toLocaleDateString() ?? 'Unknown',
       language: poem.language ?? 'Unknown',
       link: `/poems/${poem.id}`
     }
   })
-
 
   return (
     <Shell>
@@ -86,8 +89,9 @@ export function AuthorPage() {
                 overlayProps={{
                   blur: 3,
                 }}
+                closeOnClickOutside={false}
                 centered>
-                  <UpdateAuthorForm name={author.full_name} date={author.birth_date} />
+                  <EditAuthor name={author.full_name} date={author.formatedBirthDate} />
               </Modal>
             </>
           )}

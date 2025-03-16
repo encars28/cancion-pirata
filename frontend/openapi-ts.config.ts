@@ -6,5 +6,10 @@ export default {
   plugins: [
     ...defaultPlugins,
     '@hey-api/client-fetch',
+    '@hey-api/transformers',
+    {
+      name: '@hey-api/sdk', 
+      transformer: true, 
+    },
   ],
 };
