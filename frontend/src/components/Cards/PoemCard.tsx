@@ -1,4 +1,4 @@
-import { Avatar, Image, Text } from '@mantine/core';
+import { Image, Text } from '@mantine/core';
 import { ItemCard } from './ItemCard';
 
 export function PoemCard({ path, name }: { path: string, name: string }) {
