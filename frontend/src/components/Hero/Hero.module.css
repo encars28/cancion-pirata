@@ -1,16 +1,19 @@
 .wrapper {
   position: relative;
-  padding-top: 180px;
-  padding-bottom: 130px;
+  height: calc(100vh - var(--app-shell-header-height, 0px) - var(--app-shell-footer-height, 0px) - var(--app-shell-padding) * 2);
+  padding-top: 160px;
   background-image: url(/src/assets/bookshelves.jpg);
   background-size: cover;
   background-position: center;
-  padding-left: var(--mantine-spacing-lg);
-  padding-right: var(--mantine-spacing-lg);
+  padding-left: var(--mantine-spacing-xl);
+  padding-right: var(--mantine-spacing-xl);
 
   @media (max-width: $mantine-breakpoint-xs) {
-    padding-top: 80px;
-    padding-bottom: 50px;
+    padding-top: 120px;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    padding-top: 90px;
   }
 }
 
