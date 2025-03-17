@@ -1,24 +1,19 @@
 import {
   Anchor,
   Button,
-  Checkbox,
   Container,
-  Group,
   Paper,
   PasswordInput,
   Text,
   TextInput,
   Title,
-  Stack,
-  Flex,
-  SimpleGrid,
   Grid,
 } from '@mantine/core';
 import classes from './RegisterForm.module.css';
 
 import { TbAt, TbWriting } from "react-icons/tb";
 import useAuth from '../../../hooks/useAuth';
-import { useForm, isEmail } from '@mantine/form'
+import { useForm, isEmail, hasLength, isNotEmpty } from '@mantine/form'
 import { Form } from '@mantine/form';
 import { useNavigate } from 'react-router';
 import { UserRegister } from '../../../client';
@@ -31,7 +26,9 @@ export function RegisterForm() {
   const form = useForm<UserRegister>({
     mode: 'uncontrolled',
     validate: {
-      email: isEmail('Correo inválido')
+      email: isEmail('Correo inválido'),
+      password: hasLength({ min: 6 }, 'La contraseña debe tener al menos 6 caracteres'),
+      username: isNotEmpty('El nombre de usuario no es válido'),
     },
     initialValues: {
       email: '',
@@ -43,8 +40,17 @@ export function RegisterForm() {
 
   // Form submission
   const handleSubmit = async () => {
+    const values = form.getValues()
+
+    if (values.full_name != undefined) {
+      values.full_name = values.full_name.trim()
+      if (values.full_name === '') {
+        values.full_name = undefined
+      }
+    }
+
     try {
-      await signUpMutation.mutateAsync(form.getValues());
+      await signUpMutation.mutateAsync(values);
     } catch {
       // error is handled by loginMutation
       // form.setErrors()
@@ -66,7 +72,7 @@ export function RegisterForm() {
 
         <Paper withBorder className={classes.paper}>
           <Grid grow gutter="lg">
-            <Grid.Col span={12}>
+            <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
                 name='full_name'
                 key={form.key('full_name')}
@@ -77,6 +83,18 @@ export function RegisterForm() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
 
+              <TextInput
+                name='username'
+                key={form.key('username')}
+                label="Nombre de usuario"
+                placeholder="Tu nombre de usuario"
+                rightSectionPointerEvents="none"
+                rightSection={<TbWriting size={15} />}
+                {...form.getInputProps('username')}
+                required
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
                 name='email'
                 key={form.key('email')}
@@ -98,20 +116,8 @@ export function RegisterForm() {
                 required
               />
             </Grid.Col>
-            <Grid.Col span={{ base: 12, sm: 6 }}>
-              <TextInput
-                name='username'
-                key={form.key('username')}
-                label="Nombre de usuario"
-                placeholder="Tu nombre de usuario"
-                rightSectionPointerEvents="none"
-                rightSection={<TbWriting size={15} />}
-                {...form.getInputProps('username')}
-                required
-              />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, sm: 6 }} >
-              <Button fullWidth mt={25}type='submit'>
+            <Grid.Col span={12}>
+              <Button fullWidth mt={30} type='submit'>
                 Crear cuenta
               </Button>
             </Grid.Col>

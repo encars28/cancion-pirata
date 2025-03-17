@@ -1,6 +1,6 @@
 
 import { Shell } from "../components/Shell/Shell";
-import { PasswordForm } from "../components/AuthForm/PasswordForm/PasswordForm";
+import { PasswordForm } from "../components/Auth/PasswordForm/PasswordForm";
 
 export function PasswordPage() {
   return (

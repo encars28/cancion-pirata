@@ -1,4 +1,4 @@
-import { RegisterForm } from "../components/AuthForm/RegisterForm/RegisterForm";
+import { RegisterForm } from "../components/Auth/RegisterForm/RegisterForm";
 import { Shell } from "../components/Shell/Shell";
 
 export function RegisterPage() {
