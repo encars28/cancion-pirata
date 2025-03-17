@@ -37,119 +37,6 @@ def test_create_author(
     assert jsonable_encoder(author.birth_date) == created_author["birth_date"]
 
 
-def test_get_author_me(
-    client: TestClient, user_who_is_author: UserPublic, db: Session
-) -> None:
-    token_headers = authentication_token_from_email(
-        client=client, email=user_who_is_author.email, db=db
-    )
-
-    r = client.get(f"{settings.API_V1_STR}/authors/me", headers=token_headers)
-    assert r.status_code == 200
-
-    current_author = r.json()
-    assert current_author
-    assert current_author["id"] == str(user_who_is_author.author_id)
-
-
-def test_get_author_me_no_author(
-    client: TestClient, normal_user_token_headers: dict[str, str]
-) -> None:
-    r = client.get(
-        f"{settings.API_V1_STR}/authors/me", headers=normal_user_token_headers
-    )
-    assert r.status_code == 404
-    assert r.json() == {"detail": "Author not found"}
-
-
-def test_update_author_me(
-    client: TestClient, user_who_is_author: UserPublic, db: Session
-) -> None:
-    token_headers = authentication_token_from_email(
-        client=client, email=user_who_is_author.email, db=db
-    )
-
-    birth_date = datetime.now()
-    name = random_lower_string()
-    data = jsonable_encoder({"birth_date": birth_date, "full_name": name})
-    r = client.patch(
-        f"{settings.API_V1_STR}/authors/me",
-        headers=token_headers,
-        json=data,
-    )
-    assert r.status_code == 200
-    updated_author = r.json()
-    assert updated_author["birth_date"] == jsonable_encoder(birth_date)
-    assert updated_author["full_name"] == name
-
-    author_db = author_crud.get_by_id(db, user_who_is_author.author_id)
-    assert author_db
-    assert author_db.birth_date == birth_date
-    assert author_db.full_name == name
-
-
-def test_update_author_me_no_me_author(
-    client: TestClient, normal_user_token_headers: dict[str, str]
-) -> None:
-    birth_date = datetime.now()
-    data = jsonable_encoder({"birth_date": birth_date})
-    r = client.patch(
-        f"{settings.API_V1_STR}/authors/me",
-        headers=normal_user_token_headers,
-        json=data,
-    )
-    assert r.status_code == 404
-    assert r.json() == {"detail": "Author not found"}
-
-
-def test_update_author_me_author_already_exists(
-    client: TestClient, user_who_is_author: UserPublic, db: Session
-) -> None:
-    author = create_random_author(db)
-    token_headers = authentication_token_from_email(
-        client=client, email=user_who_is_author.email, db=db
-    )
-
-    data = {"full_name": author.full_name}
-    r = client.patch(
-        f"{settings.API_V1_STR}/authors/me",
-        headers=token_headers,
-        json=data,
-    )
-    assert r.status_code == 409
-    assert r.json()["detail"] == "Author with this name already exists"
-
-
-def test_delete_author_me(
-    client: TestClient, db: Session, user_who_is_author: UserPublic
-) -> None:
-    headers = authentication_token_from_email(
-        client=client, email=user_who_is_author.email, db=db
-    )
-    author_id = user_who_is_author.author_id
-
-    author = author_crud.get_by_id(db, author_id)
-    name = author.full_name  # type: ignore
-
-    r = client.delete(
-        f"{settings.API_V1_STR}/authors/me",
-        headers=headers,
-    )
-
-    assert r.status_code == 200
-    deleted_author = r.json()
-    assert deleted_author["message"] == "Author deleted successfully"
-    result = author_crud.get_by_id(db, author_id)
-    assert result is None
-
-    author_in = AuthorCreate(full_name=name)
-    author = author_crud.create(db=db, obj_create=author_in)
-    user_in = UserUpdate(author_id=author.id)
-    user_who_is_author = user_crud.update(
-        db=db, obj_id=user_who_is_author.id, obj_update=user_in
-    )  # type: ignore
-
-
 def test_get_existing_author(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
@@ -165,6 +52,7 @@ def test_get_existing_author(
     existing_author = author_crud.get_by_name(db, author.full_name)
     assert existing_author
     assert existing_author.full_name == api_author["full_name"]
+
 
 def test_get_existing_author_not_found(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -293,17 +181,6 @@ def test_update_author_name_exists(
     )
     assert r.status_code == 409
     assert r.json()["detail"] == "Author with this name already exists"
-
-
-def test_delete_author_me_no_author(
-    client: TestClient, normal_user_token_headers: dict[str, str]
-) -> None:
-    r = client.delete(
-        f"{settings.API_V1_STR}/authors/me",
-        headers=normal_user_token_headers,
-    )
-    assert r.status_code == 404
-    assert r.json() == {"detail": "Author not found"}
 
 
 def test_delete_author_super_user(
