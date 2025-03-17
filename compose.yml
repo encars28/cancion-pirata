@@ -15,20 +15,15 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: on-failure
+    restart: always
     env_file:
       - .env 
     environment:
       - POSTGRES_SERVER=postgres
     ports:
-      - "8001:8000"
+      - "8000:8000"
     depends_on:
       - postgres
 
 volumes:
   db_data:
-    driver: local
-    driver_opts: 
-      type: none
-      device: /home/encar/tfg/db_data
-      o: bind
