@@ -1,0 +1,15 @@
+.title {
+  font-family:
+    Greycliff CF,
+    var(--mantine-font-family);
+  font-weight: 900;
+}
+
+.paper {
+  padding: 40px;
+  margin-top: 30px;
+  padding-bottom: 50px;
+  border-radius: var(--mantine-radius-md);
+  box-shadow: var(--mantine-shadow-md);
+  text-align: left;
+}

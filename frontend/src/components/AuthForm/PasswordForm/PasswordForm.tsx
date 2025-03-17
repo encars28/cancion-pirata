@@ -15,8 +15,8 @@ import { isEmail, useForm } from "@mantine/form";
 import { TbArrowLeft, TbAt } from "react-icons/tb";
 import classes from "./PasswordForm.module.css"
 import { Form } from "@mantine/form";
-import { HttpValidationError, loginRecoverPassword } from '../../client';
-import { handleError, handleSuccess } from '../../utils';
+import { HttpValidationError, loginRecoverPassword } from '../../../client';
+import { handleError, handleSuccess } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 
@@ -35,7 +35,6 @@ export function PasswordForm() {
   const mutation = useMutation({
     mutationFn: async (data: string) => {
       const response = await loginRecoverPassword({ path: { email: data } })
-      console.log(response)
       if (response.error) {
         throw response.error
       }

@@ -8,6 +8,7 @@ import { LoginPage } from "./pages/loginpage";
 import { NothingFound } from "./components/NothingFound/NothingFound";
 import { isLoggedIn } from "./hooks/useAuth";
 import { PasswordPage } from "./pages/passwordpage";
+import { RegisterPage } from "./pages/registerpage";
 
 export default function AllRoutes() {
   return (
@@ -18,6 +19,7 @@ export default function AllRoutes() {
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/:id" element={<AuthorPage />} />
       <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
+      <Route path="/signup" element={<RegisterPage />} />
       <Route path="/password-recovery" element={<PasswordPage/>} />
       <Route path="*" element={<NothingFound />} />
     </Routes>

@@ -14,12 +14,14 @@ import {
 import classes from './LoginForm.module.css';
 
 import { TbAt } from "react-icons/tb";
-import useAuth from '../../hooks/useAuth';
+import useAuth from '../../../hooks/useAuth';
 import { useForm, isEmail } from '@mantine/form'
 import { Form } from '@mantine/form';
+import { useNavigate } from 'react-router';
 
 export function LoginForm() {
   const { loginMutation } = useAuth()
+  const navigate = useNavigate()
 
   interface FormValues {
     email: string;
@@ -58,7 +60,7 @@ export function LoginForm() {
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           ¿No tienes cuenta?{' '}
-          <Anchor size="sm" component="button">
+          <Anchor onClick={() => navigate("/signup")} size="sm" component="button">
             Regístrate
           </Anchor>
         </Text>
@@ -86,7 +88,7 @@ export function LoginForm() {
           </Stack>
           <Group justify="space-between" mt="lg">
             <Checkbox label="Recuérdame" />
-            <Anchor component="button" size="sm">
+            <Anchor onClick={() => navigate("/password-recovery")} component="button" size="sm">
               ¿Olvidaste tu contraseña?
             </Anchor>
           </Group>
