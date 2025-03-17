@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router';
 
 export function PasswordForm() {
   const navigate = useNavigate()
-  const form = useForm({
+  const form = useForm<{email: string}>({
     mode: 'uncontrolled',
     validate: {
       email: isEmail("Correo inválido")
@@ -35,6 +35,7 @@ export function PasswordForm() {
   const mutation = useMutation({
     mutationFn: async (data: string) => {
       const response = await loginRecoverPassword({ path: { email: data } })
+      console.log(response)
       if (response.error) {
         throw response.error
       }
@@ -62,7 +63,7 @@ export function PasswordForm() {
     <Flex
       justify="center"
       align="center"
-      h="70%"
+      h="80%"
     >
       <Form form={form} onSubmit={handleSubmit}>
         <Title className={classes.title} ta="center">
@@ -103,7 +104,5 @@ export function PasswordForm() {
         </Paper>
       </Form>
     </Flex>
-
-
   )
 }
