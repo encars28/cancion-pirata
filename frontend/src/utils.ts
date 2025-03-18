@@ -1,6 +1,7 @@
 import { notifications } from "@mantine/notifications"
 import { HttpValidationError } from "./client/types.gen"
 import classes from "./notifications.module.css"
+import { RequestResult } from "@hey-api/client-fetch";
 
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
@@ -29,8 +30,11 @@ export const handleSuccess = () => {
   })
 }
 
-export async function callService(service: (params?: any) => Promise<any>, params?: any) {
-  const result = await service(params)
+export async function callService<R, E, P=undefined>(
+  service: P extends undefined ? () => RequestResult<R, E> : (params: P) => RequestResult<R, E>,
+  ...args: (P extends undefined ? [] : [P])
+): Promise<R> {
+  const result = await (service as any)(args[0]);
   if (result.error) {
     throw result.error;
   }

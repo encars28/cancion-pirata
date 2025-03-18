@@ -42,18 +42,18 @@ function App() {
   const { data: poemsData } = useQuery(
     {
       queryKey: ['poems'],
-      queryFn: async () => {callService(poemsReadPoems)},
+      queryFn: async () => {callService(poemsReadPoems, {})},
     }
   )
 
   const { data: authorsData } = useQuery(
     {
       queryKey: ['authors'],
-      queryFn: async () => {callService(authorsReadAuthors)},
+      queryFn: async () => callService(authorsReadAuthors),
     }
   )
 
-  const authors: AuthorPublicWithPoems[] = (authorsData as unknown as AuthorsPublic)?.data ?? [];
+  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? [];
   const poems: PoemPublicWithAllTheInfo[] = (poemsData as unknown as PoemsPublic)?.data ?? [];
 
   const searchData = authors.map(
