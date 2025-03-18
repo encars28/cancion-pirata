@@ -25,11 +25,11 @@ export function RegisterForm() {
   // Form validation
   const form = useForm<UserRegister>({
     mode: 'uncontrolled',
-    validate: {
-      email: isEmail('Correo inválido'),
-      password: hasLength({ min: 6 }, 'La contraseña debe tener al menos 6 caracteres'),
-      username: isNotEmpty('El nombre de usuario no es válido'),
-    },
+    // validate: {
+    //   email: isEmail('Correo inválido'),
+    //   password: hasLength({ min: 6 }, 'La contraseña debe tener al menos 6 caracteres'),
+    //   username: isNotEmpty('El nombre de usuario no es válido'),
+    // },
     initialValues: {
       email: '',
       password: '',
@@ -53,12 +53,12 @@ export function RegisterForm() {
       await signUpMutation.mutateAsync(values);
     } catch {
       // error is handled by loginMutation
-      // form.setErrors()
+      form.setErrors({email: "Correo incorrecto o usuario incorrecto", username: "Correo incorrecto o usuario incorrecto"})
     }
   }
 
   return (
-    <Container my={80} size={750}>
+    <Container my={80} maw={{base: 420, sm: 700, md: 800}}>
       <Form form={form} onSubmit={handleSubmit}>
         <Title ta="center" className={classes.title}>
           Regístrate
@@ -91,7 +91,7 @@ export function RegisterForm() {
                 rightSectionPointerEvents="none"
                 rightSection={<TbWriting size={15} />}
                 {...form.getInputProps('username')}
-                required
+                // required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
@@ -103,7 +103,7 @@ export function RegisterForm() {
                 rightSectionPointerEvents="none"
                 rightSection={<TbAt size={15} />}
                 {...form.getInputProps('email')}
-                required
+                // required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
@@ -113,7 +113,7 @@ export function RegisterForm() {
                 label="Contraseña"
                 placeholder="Tu contraseña"
                 {...form.getInputProps('password')}
-                required
+                // required
               />
             </Grid.Col>
             <Grid.Col span={12}>

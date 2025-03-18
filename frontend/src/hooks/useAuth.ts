@@ -2,8 +2,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 
 import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
-import { UserRegister } from "../client/types.gen"
-import { handleError, getQuery } from "../utils"
+import { UserRegister, UserPublic} from "../client/types.gen"
+import { handleError, handleSuccess, callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
 
@@ -15,16 +15,19 @@ const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { data: user } = useQuery({
-    ...getQuery("currentUser", usersReadUserMe),
+  const { data } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: async () => {callService(usersReadUserMe)},
     enabled: isLoggedIn(),
   })
+  const user: UserPublic | null = data as any
 
   const signUpMutation = useMutation({
-    mutationFn: (data: UserRegister) =>
-      usersRegisterUser({body: data}),
-
+    mutationFn: async (data: UserRegister) => {
+      await callService(usersRegisterUser, { body: data })
+    },
     onSuccess: () => {
+      handleSuccess()
       navigate("/login")
     },
     onError: (error) => {
@@ -36,7 +39,7 @@ const useAuth = () => {
   })
 
   const login = async (login_data: AccessToken) => {
-    const response = await loginLoginAccessToken({body: login_data})
+    const response = await loginLoginAccessToken({ body: login_data })
     if (response.error) {
       throw response.error
     }
@@ -62,7 +65,7 @@ const useAuth = () => {
 
   const logout = () => {
     localStorage.removeItem("access_token")
-    client.setConfig( { headers: { "Authorization": "" } } )
+    client.setConfig({ headers: { "Authorization": "" } })
     navigate("/login")
   }
 

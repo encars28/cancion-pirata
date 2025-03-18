@@ -29,30 +29,11 @@ export const handleSuccess = () => {
   })
 }
 
-export function getQuery(key: string, service: () => Promise<any>) {
-  return {
-    queryKey: [key],
-    queryFn: async () => {
-      const result = await service()
-      if (result.error) {
-        throw result.error;
-      }
-
-      return result.data;
-    }
+export async function callService(service: (params?: any) => Promise<any>, params?: any) {
+  const result = await service(params)
+  if (result.error) {
+    throw result.error;
   }
-}
 
-export function getQueryWithParams(key: [string, any], service: (path?: any) => Promise<any>, params: any) {
-  return {
-    queryKey: key,
-    queryFn: async () => {
-      const result = await service(params)
-      if (result.error) {
-        throw result.error;
-      }
-
-      return result.data;
-    }
-  }
+  return result.data;
 }

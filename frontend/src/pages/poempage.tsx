@@ -1,11 +1,11 @@
 import { Shell } from '../components/Shell/Shell';
-import { handleError, getQueryWithParams } from '../utils';
+import { callService, handleError } from '../utils';
 import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { poemsReadPoem } from '../client/sdk.gen';
 import { Link, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Flex, Title, Container, Stack, List, Text, Anchor, Space } from '@mantine/core';
+import { Flex, Title, Container, Stack, List, Text, Space } from '@mantine/core';
 import { InfoBox } from '../components/InfoBox';
 
 export function PoemPage() {
@@ -13,7 +13,8 @@ export function PoemPage() {
   const poemId = params.id;
 
   const { isPending, isError, data, error } = useQuery({
-    ...getQueryWithParams(['poems', poemId], poemsReadPoem, { path: { poem_id: poemId } }),
+    queryKey: ['poems', poemId],
+    queryFn: async () => {callService(poemsReadPoem, { path: { poem_id: poemId } })},
     placeholderData: (prevData) => prevData,
   })
 

@@ -2,16 +2,17 @@ import { Shell } from "../components/Shell/Shell";
 import { CardGrid } from "../components/Cards/CardGrid";
 import { Title } from "@mantine/core";
 import { useQuery } from '@tanstack/react-query'
-import { handleError, getQuery } from "../utils";
+import { callService, handleError } from "../utils";
 import { Loading } from "../components/Loading";
 import { poemsReadPoems } from "../client/sdk.gen";
-import { PoemPublicWithAllTheInfo } from "../client";
+import { PoemPublicWithAllTheInfo, PoemsPublic } from "../client";
 import { PoemCard } from "../components/Cards/PoemCard";
 
 
 export function PoemsPage() {
   const { isPending, isError, data, error } = useQuery({
-    ...getQuery('poems', poemsReadPoems),
+    queryKey: ['poems'],
+    queryFn: async () => {callService(poemsReadPoems)},
     placeholderData: (prevData) => prevData,
   })
 
@@ -23,8 +24,8 @@ export function PoemsPage() {
     handleError(error as any);
   }
 
-  const poems: PoemPublicWithAllTheInfo[] = data?.data ?? [];
-  const authorCount: number = data?.count ?? 0;
+  const poems: PoemPublicWithAllTheInfo[] = (data as unknown as PoemsPublic)?.data ?? [];
+  const authorCount: number = (data as unknown as PoemsPublic)?.count ?? 0;
 
   return (
     <Shell>

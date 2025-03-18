@@ -1,25 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
-import { handleError, getQueryWithParams } from '../utils';
+import { callService, handleError } from '../utils';
 import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
-import { Avatar, Flex, Space, Tabs, Title, Modal, Container, Group, Button } from '@mantine/core';
+import { Avatar, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
 import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems';
 import { TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
-import { useDisclosure } from '@mantine/hooks';
 import { EditAuthor } from '../components/Author/EditAuthor';
+import { DeleteAuthor } from '../components/Author/DeleteAuthor';
 
 export function AuthorPage() {
   const params = useParams();
   const authorId = params.id;
   const { user: currentUser } = useAuth();
-  const [opened, { open, close }] = useDisclosure(false);
 
   const { isPending, isError, data, error } = useQuery({
-    ...getQueryWithParams(['authors', authorId], authorsReadAuthorById, { path: { author_id: authorId } }),
+    queryKey: ['authors', authorId],
+    queryFn: async () => {callService(authorsReadAuthorById, { path: { author_id: authorId } })},
     placeholderData: (prevData) => prevData,
   })
 
@@ -29,9 +29,10 @@ export function AuthorPage() {
 
   if (isError) {
     handleError(error as any);
+    // return <NothingFound />;
   }
 
-  const author: AuthorPublicWithPoems = data;
+  const author: AuthorPublicWithPoems = data as any;
   const poemData: RowData[] = author.poems!.map(poem => {
     return {
       title: poem.title,
@@ -61,26 +62,12 @@ export function AuthorPage() {
             <Avatar size="xl" />
             <Title order={1}>{author.full_name}</Title>
           </Flex>
-          {( currentUser?.author_id == authorId || currentUser?.is_superuser) && (
-            <>
-              <Button
-                variant="outline"
-                onClick={open}
-              >
-                Modificar datos
-              </Button>
-              <Modal
-                opened={opened}
-                onClose={close}
-                title="Modificar datos"
-                overlayProps={{
-                  blur: 3,
-                }}
-                closeOnClickOutside={false}
-                centered>
-                  <EditAuthor author={author} close={close}/>
-              </Modal>
-            </>
+          {(currentUser?.author_id == author.id || currentUser?.is_superuser) && (
+            <Group>
+              <EditAuthor author={author} />
+              <DeleteAuthor author_id={author.id} />
+            </Group>
+
           )}
         </Group>
         <Space mt={100} />
