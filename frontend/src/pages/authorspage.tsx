@@ -12,7 +12,7 @@ import { AuthorPublicWithPoems, AuthorsPublic } from "../client";
 export function AuthorsPage() {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['authors'],
-    queryFn: async () => {callService(authorsReadAuthors)},
+    queryFn: async () => callService(authorsReadAuthors),
     placeholderData: (prevData) => prevData,
   })
 

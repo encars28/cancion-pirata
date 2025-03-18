@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 
 import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
-import { UserRegister, UserPublic} from "../client/types.gen"
+import { UserRegister} from "../client/types.gen"
 import { handleError, handleSuccess, callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
@@ -15,17 +15,14 @@ const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const { data } = useQuery({
+  const { data: user } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: async () => {callService(usersReadUserMe)},
+    queryFn: async () => callService(usersReadUserMe),
     enabled: isLoggedIn(),
   })
-  const user: UserPublic | null = data as any
 
   const signUpMutation = useMutation({
-    mutationFn: async (data: UserRegister) => {
-      await callService(usersRegisterUser, { body: data })
-    },
+    mutationFn: async (data: UserRegister) => callService(usersRegisterUser, { body: data }),
     onSuccess: () => {
       handleSuccess()
       navigate("/login")

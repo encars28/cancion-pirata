@@ -14,7 +14,7 @@ export function PoemPage() {
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['poems', poemId],
-    queryFn: async () => {callService(poemsReadPoem, { path: { poem_id: poemId } })},
+    queryFn: async () => callService(poemsReadPoem, { path: { poem_id: poemId! } }),
     placeholderData: (prevData) => prevData,
   })
 

@@ -21,9 +21,8 @@ export function EditAuthor({ author }: { author: AuthorPublicWithPoems }) {
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (data: AuthorUpdate) => {
-      callService(authorsUpdateAuthor, { path: { author_id: author.id }, body: data })
-    },
+    mutationFn: async (data: AuthorUpdate) => 
+      callService(authorsUpdateAuthor, { path: { author_id: author.id }, body: data }),
     onSuccess: () => {
       handleSuccess()
       close()

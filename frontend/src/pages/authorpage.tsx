@@ -19,7 +19,7 @@ export function AuthorPage() {
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['authors', authorId],
-    queryFn: async () => {callService(authorsReadAuthorById, { path: { author_id: authorId } })},
+    queryFn: async () => callService(authorsReadAuthorById, { path: { author_id: authorId! } }),
     placeholderData: (prevData) => prevData,
   })
 

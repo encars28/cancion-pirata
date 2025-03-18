@@ -25,11 +25,11 @@ export function RegisterForm() {
   // Form validation
   const form = useForm<UserRegister>({
     mode: 'uncontrolled',
-    // validate: {
-    //   email: isEmail('Correo inválido'),
-    //   password: hasLength({ min: 6 }, 'La contraseña debe tener al menos 6 caracteres'),
-    //   username: isNotEmpty('El nombre de usuario no es válido'),
-    // },
+    validate: {
+      email: isEmail('Correo inválido'),
+      password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 6 caracteres'),
+      username: isNotEmpty('El nombre de usuario no es válido'),
+    },
     initialValues: {
       email: '',
       password: '',
@@ -91,7 +91,7 @@ export function RegisterForm() {
                 rightSectionPointerEvents="none"
                 rightSection={<TbWriting size={15} />}
                 {...form.getInputProps('username')}
-                // required
+                required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
@@ -103,7 +103,7 @@ export function RegisterForm() {
                 rightSectionPointerEvents="none"
                 rightSection={<TbAt size={15} />}
                 {...form.getInputProps('email')}
-                // required
+                required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
@@ -113,7 +113,7 @@ export function RegisterForm() {
                 label="Contraseña"
                 placeholder="Tu contraseña"
                 {...form.getInputProps('password')}
-                // required
+                required
               />
             </Grid.Col>
             <Grid.Col span={12}>

@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Box,
   Button,
   Center,
@@ -33,9 +32,8 @@ export function PasswordForm() {
   })
 
   const mutation = useMutation({
-    mutationFn: async (data: string) => {
-      callService(loginRecoverPassword, {path: { email: data }})
-    },
+    mutationFn: async (data: string) =>
+      callService(loginRecoverPassword, {path: { email: data }}),
     onSuccess: () => {
       handleSuccess()
     },

@@ -11,7 +11,7 @@ export function DeleteAuthor({ author_id }: { author_id: string}) {
   const navigate = useNavigate()
 
   const mutation = useMutation({
-    mutationFn: async (id: string) => {callService(authorsDeleteAuthor, { path: { author_id: id } })},
+    mutationFn: async () => callService(authorsDeleteAuthor, { path: { author_id: author_id } }),
     onSuccess: () => {
       handleSuccess()
       close()
@@ -28,7 +28,7 @@ export function DeleteAuthor({ author_id }: { author_id: string}) {
 
   const deleteAuthor = async () => {
     try {
-      await mutation.mutateAsync(author_id)
+      await mutation.mutateAsync()
     } catch {
       // error is handled by deleteAuthor
     }
@@ -52,8 +52,8 @@ export function DeleteAuthor({ author_id }: { author_id: string}) {
           blur: 3,
         }}
         centered>
-        <Text>¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.</Text>
-        <Group mt="xl" justify="flex-end" mb="md">
+        <Text mt="sm">¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.</Text>
+        <Group mt={40} justify="flex-end" mb="md">
           <Button onClick={close} variant="default">
             Cancel
           </Button>

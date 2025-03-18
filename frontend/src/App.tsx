@@ -15,7 +15,7 @@ import { client } from './client/client.gen';
 
 import { poemsReadPoems } from "./client/sdk.gen";
 import { useQuery } from '@tanstack/react-query';
-import { AuthorsPublic, PoemPublicWithAllTheInfo, PoemsPublic } from './client';
+import { PoemPublicWithAllTheInfo } from './client';
 import { authorsReadAuthors } from './client/sdk.gen';
 import { AuthorPublicWithPoems } from './client';
 import { isLoggedIn } from './hooks/useAuth';
@@ -42,7 +42,7 @@ function App() {
   const { data: poemsData } = useQuery(
     {
       queryKey: ['poems'],
-      queryFn: async () => {callService(poemsReadPoems, {})},
+      queryFn: async () => callService(poemsReadPoems),
     }
   )
 
@@ -54,7 +54,7 @@ function App() {
   )
 
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? [];
-  const poems: PoemPublicWithAllTheInfo[] = (poemsData as unknown as PoemsPublic)?.data ?? [];
+  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? [];
 
   const searchData = authors.map(
     (author) => ({

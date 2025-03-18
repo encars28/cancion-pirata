@@ -12,7 +12,7 @@ import { PoemCard } from "../components/Cards/PoemCard";
 export function PoemsPage() {
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['poems'],
-    queryFn: async () => {callService(poemsReadPoems)},
+    queryFn: async () => callService(poemsReadPoems),
     placeholderData: (prevData) => prevData,
   })
 
