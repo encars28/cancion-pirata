@@ -6,10 +6,9 @@ import {
   Text,
   TextInput,
 } from '@mantine/core';
-import { Th } from '../Th/Th';
-import { sortData } from '../sort';
+import { Th } from './Th/Th';
+import { sortData } from './sort';
 import { To, useNavigate } from 'react-router';
-import classes from './TablePoems.module.css';
 
 export interface RowData {
   title: string;
@@ -18,7 +17,7 @@ export interface RowData {
   link?: To;
 }
 
-const headers:RowData = {
+const headers: RowData = {
   title: 'Título',
   created_at: 'Fecha de creación',
   language: 'Idioma',
@@ -44,15 +43,13 @@ export function TablePoems({ data }: { data: RowData[] }) {
   };
 
   const rows = sortedData.map((row) => (
-    <Table.Tr 
+    <Table.Tr
       key={row.title}
       ta="left"
+      onClick={row.link ? () => navigate(row.link) : () => { }}
+      style={row.link ? { cursor: 'pointer' } : {}}
     >
-      {row.link ? (
-        <Table.Td onClick={() => navigate(row.link!)} className={classes.link}>{row.title}</Table.Td>
-      ) : (
-        <Table.Td>{row.title}</Table.Td>
-      )}
+      <Table.Td>{row.title}</Table.Td>
       <Table.Td>{row.created_at}</Table.Td>
       <Table.Td>{row.language}</Table.Td>
     </Table.Tr>

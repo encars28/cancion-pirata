@@ -6,15 +6,17 @@ import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
 import { Avatar, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
-import { TablePoems, RowData } from '../components/Tables/TablePoems/TablePoems';
+import { TablePoems, RowData } from '../components/Tables/TablePoems';
 import { TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
 import { EditAuthor } from '../components/Author/EditAuthor';
 import { DeleteAuthor } from '../components/Author/DeleteAuthor';
+import { useNavigate } from 'react-router';
 
 export function AuthorPage() {
   const params = useParams();
   const authorId = params.id;
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
 
   const { isPending, isError, data, error } = useQuery({
@@ -28,8 +30,8 @@ export function AuthorPage() {
   }
 
   if (isError) {
+    navigate("/authors")
     handleError(error as any);
-    // return <NothingFound />;
   }
 
   const author: AuthorPublicWithPoems = data as any;

@@ -3,14 +3,20 @@ import { callService, handleError } from '../utils';
 import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { poemsReadPoem } from '../client/sdk.gen';
-import { Link, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { Flex, Title, Container, Stack, List, Text, Space } from '@mantine/core';
-import { InfoBox } from '../components/InfoBox';
+import useAuth from '../hooks/useAuth';
+import { ShowPoem } from '../components/Poem/ShowPoem';
+import { EditPoem } from '../components/Poem/EditPoem';
+import { Button, Stack, Group } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 
 export function PoemPage() {
   const params = useParams();
   const poemId = params.id;
+  const navigate = useNavigate()
+  const { user: currentUser } = useAuth();
+  const [opened, { open, close }] = useDisclosure()
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['poems', poemId],
@@ -23,85 +29,33 @@ export function PoemPage() {
   }
 
   if (isError) {
+    navigate("/poems")
     handleError(error as any);
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;
-
-  enum PoemType {
-    TRANSLATION = 0,
-    VERSION = 1,
-  }
-
   return (
     <Shell>
-      <Flex
-        justify="center"
-        wrap='wrap'
-        mt="xl"
-      >
-        <Flex
-          justify="center"
-          align="center"
-          direction="column"
-          gap="xl"
-          mt="xl"
-          w={{ base: "100%", sm: "60%" }}
-        >
-          <Container fluid>
-            <Title order={1}>{poem.title}</Title>
-            <Title order={3} c="dimmed" fw="lighter">Autor: {poem.author_names}</Title>
-          </Container>
-          <Container fluid>{poem.content}</Container>
-          <Space h="xl" />
-        </Flex>
+      {!opened && (
         <Stack>
-          {
-            (poem.original && poem.type == PoemType.TRANSLATION) &&
-            (
-              <InfoBox>
-                <Text>
-                  Este poema es una traducción.
-                </Text>
-                <Link to={`/poems/${poem.original.id}`}>
-                  Ver poema original
-                </Link>
-              </InfoBox>
-            )
-          }
-          {
-            (poem.original && poem.type == PoemType.VERSION) &&
-            (
-              <InfoBox>
-                <Text>
-                  Este poema es una versión.
-                </Text>
-                <Link to={`/poems/${poem.original.id}`}>
-                  Ver poema original
-                </Link>
-              </InfoBox>
-            )
-          }
-          {
-            (poem.derived_poems && poem.derived_poems.length > 0) && (
-              <InfoBox>
-                <Text>
-                  Este poema tiene derivados.
-                </Text>
-                <List ta="left" withPadding>
-                  {poem.derived_poems.map((derivedPoem) => (
-                    <List.Item key={derivedPoem.id}>
-                      <Link to={`/poems/${derivedPoem.id}`}>
-                        {derivedPoem.title}
-                      </Link>
-                    </List.Item>
-                  ))}
-                </List>
-              </InfoBox>
-            )
-          }
+          {((poem.author_ids && currentUser?.author_id && (poem.author_ids.includes(currentUser?.author_id))) || currentUser?.is_superuser) && (
+            <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
+              <Button variant="outline" onClick={open}>Editar poema</Button>
+              <Button color="red">Eliminar poema</Button>
+            </Group>
+          )}
+          <ShowPoem poem={poem} />
         </Stack>
-      </Flex>
+      )}
+      {opened && (
+        <Stack>
+          <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
+            <Button onClick={close} variant="outline">Cerrar</Button>
+            <Button>Guardar</Button>
+          </Group>
+          <EditPoem poem={poem} />
+        </Stack>
+      )}
     </Shell>
   )
 }

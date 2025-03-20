@@ -18,6 +18,7 @@ export const handleError = (error: HttpValidationError) => {
     title: 'Error',
     message: errorMessage,
     classNames: classes,
+    autoClose: false,
   })
 }
 

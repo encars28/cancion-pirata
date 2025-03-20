@@ -76,6 +76,7 @@ export type PoemPublicWithAllTheInfo = {
     created_at?: Date | null;
     updated_at?: Date | null;
     author_names?: Array<string>;
+    author_ids?: Array<string>;
     type?: number | null;
     derived_poems?: Array<PoemPublicWithAuthorAndType>;
     original?: PoemPublicWithAuthor | null;
@@ -91,6 +92,7 @@ export type PoemPublicWithAuthor = {
     created_at?: Date | null;
     updated_at?: Date | null;
     author_names?: Array<string>;
+    author_ids?: Array<string>;
 };
 
 export type PoemPublicWithAuthorAndType = {
@@ -103,6 +105,7 @@ export type PoemPublicWithAuthorAndType = {
     created_at?: Date | null;
     updated_at?: Date | null;
     author_names?: Array<string>;
+    author_ids?: Array<string>;
     type?: number | null;
 };
 
@@ -650,63 +653,6 @@ export type AuthorsCreateAuthorResponses = {
 };
 
 export type AuthorsCreateAuthorResponse = AuthorsCreateAuthorResponses[keyof AuthorsCreateAuthorResponses];
-
-export type AuthorsDeleteAuthorMeData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/v1/authors/me';
-};
-
-export type AuthorsDeleteAuthorMeResponses = {
-    /**
-     * Successful Response
-     */
-    200: Message;
-};
-
-export type AuthorsDeleteAuthorMeResponse = AuthorsDeleteAuthorMeResponses[keyof AuthorsDeleteAuthorMeResponses];
-
-export type AuthorsReadAuthorMeData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/v1/authors/me';
-};
-
-export type AuthorsReadAuthorMeResponses = {
-    /**
-     * Successful Response
-     */
-    200: AuthorPublicWithPoems;
-};
-
-export type AuthorsReadAuthorMeResponse = AuthorsReadAuthorMeResponses[keyof AuthorsReadAuthorMeResponses];
-
-export type AuthorsUpdateAuthorMeData = {
-    body: AuthorUpdate;
-    path?: never;
-    query?: never;
-    url: '/api/v1/authors/me';
-};
-
-export type AuthorsUpdateAuthorMeErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AuthorsUpdateAuthorMeError = AuthorsUpdateAuthorMeErrors[keyof AuthorsUpdateAuthorMeErrors];
-
-export type AuthorsUpdateAuthorMeResponses = {
-    /**
-     * Successful Response
-     */
-    200: AuthorPublicWithPoems;
-};
-
-export type AuthorsUpdateAuthorMeResponse = AuthorsUpdateAuthorMeResponses[keyof AuthorsUpdateAuthorMeResponses];
 
 export type AuthorsDeleteAuthorData = {
     body?: never;
