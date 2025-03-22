@@ -1,27 +1,27 @@
 import { Button, Modal, Group, Text } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { authorsDeleteAuthor } from '../../client'
+import { authorsDeleteAuthor, poemsDeletePoem } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
 
-export function DeleteAuthor({ author_id }: { author_id: string}) {
+export function DeleteAuthor({ poem_id }: { poem_id: string}) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
   const navigate = useNavigate()
 
   const mutation = useMutation({
-    mutationFn: async () => callService(authorsDeleteAuthor, { path: { author_id: author_id } }),
+    mutationFn: async () => callService(poemsDeletePoem, { path: { poem_id: poem_id } }),
     onSuccess: () => {
       handleSuccess()
       close()
-      navigate('/authors')
+      navigate('/poems')
     },
     onError: (error) => {
       handleError(error as any)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['authors'] })
+      queryClient.invalidateQueries({ queryKey: ['poems'] })
     }
   })
 

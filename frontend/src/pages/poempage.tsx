@@ -8,8 +8,9 @@ import { useQuery } from '@tanstack/react-query';
 import useAuth from '../hooks/useAuth';
 import { ShowPoem } from '../components/Poem/ShowPoem';
 import { EditPoem } from '../components/Poem/EditPoem';
-import { Button, Stack, Group } from '@mantine/core';
+import { Button, Stack, Group, ActionIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { TbX } from 'react-icons/tb';
 
 export function PoemPage() {
   const params = useParams();
@@ -49,11 +50,7 @@ export function PoemPage() {
       )}
       {opened && (
         <Stack>
-          <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
-            <Button onClick={close} variant="outline">Cerrar</Button>
-            <Button>Guardar</Button>
-          </Group>
-          <EditPoem poem={poem} />
+          <EditPoem poem={poem} close={close} />
         </Stack>
       )}
     </Shell>
