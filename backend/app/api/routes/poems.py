@@ -39,6 +39,12 @@ def read_poems(
         for poem in poems:
             if not poem.show_author and current_user.author_id not in poem.author_ids:
                 poem.author_names = []
+        
+        if current_user.author_id:
+            author = author_crud.get_by_id(session, current_user.author_id)
+            author_poems = [poem for poem in author.poems if not poem.is_public] # type: ignore
+            poems += author_poems
+            count += len(author_poems)
 
     else:
         # retrieve all poems
