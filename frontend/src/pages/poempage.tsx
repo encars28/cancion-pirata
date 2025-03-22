@@ -11,6 +11,7 @@ import { EditPoem } from '../components/Poem/EditPoem';
 import { Button, Stack, Group, ActionIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { TbX } from 'react-icons/tb';
+import { DeletePoem } from '../components/Poem/DeletePoem';
 
 export function PoemPage() {
   const params = useParams();
@@ -42,7 +43,7 @@ export function PoemPage() {
           {((poem.author_ids && currentUser?.author_id && (poem.author_ids.includes(currentUser?.author_id))) || currentUser?.is_superuser) && (
             <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
               <Button variant="outline" onClick={open}>Editar poema</Button>
-              <Button color="red">Eliminar poema</Button>
+              <DeletePoem poem_id={poem.id} />
             </Group>
           )}
           <ShowPoem poem={poem} />

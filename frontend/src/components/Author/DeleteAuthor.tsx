@@ -54,10 +54,10 @@ export function DeleteAuthor({ author_id }: { author_id: string}) {
         <Text mt="sm">¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.</Text>
         <Group mt={40} justify="flex-end" mb="md">
           <Button onClick={close} variant="default">
-            Cancel
+            Cancelar
           </Button>
           <Button onClick={deleteAuthor} color="red">
-            Delete
+            Eliminar
           </Button>
         </Group>
       </Modal>

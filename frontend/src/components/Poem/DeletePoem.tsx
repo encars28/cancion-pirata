@@ -1,11 +1,11 @@
 import { Button, Modal, Group, Text } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { authorsDeleteAuthor, poemsDeletePoem } from '../../client'
+import { poemsDeletePoem } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
 
-export function DeleteAuthor({ poem_id }: { poem_id: string}) {
+export function DeletePoem({ poem_id }: { poem_id: string}) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
   const navigate = useNavigate()
@@ -25,7 +25,7 @@ export function DeleteAuthor({ poem_id }: { poem_id: string}) {
     }
   })
 
-  const deleteAuthor = async () => {
+  const deletePoem = async () => {
     try {
       await mutation.mutateAsync()
     } catch {
@@ -39,12 +39,12 @@ export function DeleteAuthor({ poem_id }: { poem_id: string}) {
         color="red"
         onClick={open}
       >
-        Eliminar autor
+        Eliminar poema
       </Button>
       <Modal
         opened={opened}
         onClose={close}
-        title="Eliminar autor"
+        title="Eliminar poema"
         ta="left"
         padding={30}
         overlayProps={{
@@ -54,10 +54,10 @@ export function DeleteAuthor({ poem_id }: { poem_id: string}) {
         <Text mt="sm">¿Estás seguro de que quieres eliminar este elemento? Esta acción no se puede deshacer.</Text>
         <Group mt={40} justify="flex-end" mb="md">
           <Button onClick={close} variant="default">
-            Cancel
+            Cancelar
           </Button>
-          <Button onClick={deleteAuthor} color="red">
-            Delete
+          <Button onClick={deletePoem} color="red">
+            Eliminar
           </Button>
         </Group>
       </Modal>
