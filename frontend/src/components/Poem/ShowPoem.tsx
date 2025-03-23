@@ -25,7 +25,7 @@ export function ShowPoem({ poem }: { poem: PoemPublicWithAllTheInfo }) {
       >
         <Container fluid>
           <Title order={1}>{poem.title}</Title>
-          <Title order={3} c="dimmed" fw="lighter">Autor: {poem.author_names}</Title>
+          <Title order={3} c="dimmed" fw="lighter">Autor: {poem.author_names?.join(", ")}</Title>
         </Container>
         <Container fluid>{poem.content}</Container>
         <Space h="xl" />

@@ -1,29 +1,72 @@
 import { PoemTextEditor } from "../PoemTextEditor";
-import { Checkbox, Fieldset, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space } from "@mantine/core";
+import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, Autocomplete, MultiSelect, Select } from "@mantine/core";
 import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../client/types.gen";
 import { Form } from "@mantine/form";
 import { useForm } from "@mantine/form";
-import { poemsUpdatePoem } from "../../client";
+import { authorsReadAuthors, poemsReadPoems, poemsUpdatePoem } from "../../client";
 import { callService, handleError, handleSuccess } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-// import useAuth from "../../hooks/useAuth";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import useAuth from "../../hooks/useAuth";
+import { TbChevronRight } from "react-icons/tb";
+import { useDisclosure } from "@mantine/hooks";
+
+enum PoemType {
+  TRANSLATION = 0,
+  VERSION = 1,
+}
 
 export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, close: () => void }) {
+  const [opened, { toggle }] = useDisclosure(false);
+
   const form = useForm<PoemUpdate>({
     mode: 'uncontrolled',
     initialValues: {
       ...poem,
       author_ids: [],
       original_poem_id: undefined,
+      type: undefined,
     }
   });
 
-  // const { user: currentUser } = useAuth()
+  const { data: authorsData } = useQuery(
+    {
+      queryKey: ['authors'],
+      queryFn: async () => callService(authorsReadAuthors),
+    }
+  )
+
+  const { data: poemsData } = useQuery(
+    {
+      queryKey: ['poems'],
+      queryFn: async () => callService(poemsReadPoems),
+    }
+  )
+
+  const author_ids = authorsData?.data?.map(author => author.id) ?? []
+  const poems_ids = poemsData?.data?.map(poem => poem.id) ?? []
+
+  // TODO: put this with author_names when the endpoint is created
+
+  const typeData = [
+    {
+      value: PoemType.TRANSLATION + "",
+      label: "Traducción"
+    },
+    {
+      value: PoemType.VERSION + "",
+      label: "Versión"
+    },
+    {
+      value: -1 + "",
+      label: "Original"
+    }
+  ]
+  const { user: currentUser } = useAuth()
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (data: PoemUpdate) => 
+    mutationFn: async (data: PoemUpdate) =>
       callService(poemsUpdatePoem, { path: { poem_id: poem.id }, body: data }),
     onSuccess: () => {
       handleSuccess()
@@ -55,6 +98,10 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
         return
       }
 
+      if (values.type == -1) {
+        values.type = undefined
+      } 
+
       await mutation.mutateAsync(values)
     } catch {
       // error is handled by mutation
@@ -66,6 +113,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
       <Center
         w="100%"
         mt="xl"
+        mb="xl"
       >
         <Grid
           ml={{ base: "xl", md: 80 }}
@@ -147,22 +195,56 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               </Tabs.Panel>
             </Tabs>
           </Grid.Col>
-          {/* {currentUser?.is_superuser && (
+          {currentUser?.is_superuser && (
             <Grid.Col span={24}>
-              <Input.Label>Opciones administrador</Input.Label>
-              <Fieldset>
-                <Stack gap="xs">
-                  <TextInput
-                    name='author_id'
-                    key={form.key('author_id')}
-                    label="Author ID"
-                    placeholder="3c450272-b7c2-478c-9ec6-5105e6db396d"
-                    {...form.getInputProps('author_id')}
-                  />
-                </Stack>
-              </Fieldset>
+              <NavLink
+                label="Opciones de administrador"
+                rightSection={
+                  <TbChevronRight size={12} className="mantine-rotate-rtl" />
+                }
+                active={opened}
+                onClick={toggle}
+              />
+              <Collapse in={opened}>
+                <Fieldset mt="md">
+                  <Stack gap="xs">
+                    <MultiSelect
+                      searchable
+                      name='author_ids'
+                      key={form.key('author_ids')}
+                      label="Autores"
+                      placeholder="Escribe para buscar un autor"
+                      data={author_ids}
+                      {...form.getInputProps('author_ids')}
+                    />
+                    <Select
+                      allowDeselect
+                      searchable
+                      nothingFoundMessage="No hay nada aquí..."
+                      name='original_poem_id'
+                      key={form.key('original_poem_id')}
+                      label="Poema original"
+                      placeholder="Escribe para buscar un poema"
+                      data={poems_ids}
+                      {...form.getInputProps('original_poem_id')}
+                    />
+                    <Select
+                      allowDeselect
+                      nothingFoundMessage="No hay nada aquí..."
+                      checkIconPosition="right"
+                      name='type'
+                      key={form.key('type')}
+                      label="Tipo de poema"
+                      placeholder="Escribe para buscar un poema"
+                      data={typeData}
+                      {...form.getInputProps('type')}
+                    />
+                  </Stack>
+                </Fieldset>
+              </Collapse>
+
             </Grid.Col>
-          )} */}
+          )}
           <Grid.Col span={24} mt="xl">
             <Group justify="flex-end">
               <Button
