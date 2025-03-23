@@ -179,7 +179,7 @@ def update_poem(
                 derived_poem_id=poem.id,  # type: ignore
             )
             poem_poem = poem_poem_crud.create(db=session, obj_create=poem_poem_in)
-        else:
+        elif poem_poem:
             poem_poem_in = PoemPoemUpdate()
             if poem_in.type is not None:
                 poem_poem_in.type = poem_in.type
