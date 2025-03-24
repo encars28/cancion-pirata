@@ -1,7 +1,9 @@
 import { notifications } from "@mantine/notifications"
-import { HttpValidationError } from "./client/types.gen"
+import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo } from "./client/types.gen"
 import classes from "./notifications.module.css"
 import { RequestResult } from "@hey-api/client-fetch";
+import useAuthors  from "./hooks/useAuthors";
+import usePoems  from "./hooks/usePoems";
 
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
@@ -41,4 +43,26 @@ export async function callService<R, E, P=undefined>(
   }
 
   return result.data;
+}
+
+export function createSearchData() {
+  const { data: poemsData } = usePoems()
+  const { data: authorsData } = useAuthors()
+
+  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
+  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
+
+  return authors.map(
+    (author) => ({
+      label: author.full_name,
+      description: "Autor",
+      url: `/authors/${author.id}`
+    })).concat(
+  poems.map(
+    (poem) => ({
+      label: poem.title,
+      description: "Poema",
+      url: `/poems/${poem.id}`
+  })))
+
 }

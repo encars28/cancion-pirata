@@ -4,7 +4,7 @@ import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
-import { Avatar, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
+import { Avatar, Button, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
 import { TablePoems, RowData } from '../components/Tables/TablePoems';
 import { TbVocabulary } from "react-icons/tb";
@@ -68,6 +68,7 @@ export function AuthorPage() {
             <Group>
               <EditAuthor author={author} />
               <DeleteAuthor author_id={author.id} />
+              <Button onClick={() => navigate("/poems/add")}>Crear poema</Button>
             </Group>
 
           )}

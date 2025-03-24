@@ -13,16 +13,10 @@ import { Notifications } from '@mantine/notifications';
 import AllRoutes from './routes';
 import { Search } from './components/Header/Search/Search';
 import { client } from './client/client.gen';
-
-import { poemsReadPoems } from "./client/sdk.gen";
-import { useQuery } from '@tanstack/react-query';
-import { PoemPublicWithAllTheInfo } from './client';
-import { authorsReadAuthors } from './client/sdk.gen';
-import { AuthorPublicWithPoems } from './client';
 import { isLoggedIn } from './hooks/useAuth';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { callService } from './utils';
+import { createSearchData } from './utils';
 
 dayjs.extend(customParseFormat);
 
@@ -40,36 +34,7 @@ if (isLoggedIn()) {
 }
 
 function App() {
-  const { data: poemsData } = useQuery(
-    {
-      queryKey: ['poems'],
-      queryFn: async () => callService(poemsReadPoems),
-    }
-  )
-
-  const { data: authorsData } = useQuery(
-    {
-      queryKey: ['authors'],
-      queryFn: async () => callService(authorsReadAuthors),
-    }
-  )
-
-  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? [];
-  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? [];
-
-  const searchData = authors.map(
-    (author) => ({
-      label: author.full_name,
-      description: "Autor",
-      url: `/authors/${author.id}`
-    })).concat(
-  poems.map(
-    (poem) => ({
-      label: poem.title,
-      description: "Poema",
-      url: `/poems/${poem.id}`
-  })))
-
+  const searchData = createSearchData()
   return (
     <MantineProvider>
       {

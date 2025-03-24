@@ -1,13 +1,15 @@
 import { PoemTextEditor } from "../PoemTextEditor";
 import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, Autocomplete, MultiSelect, Select } from "@mantine/core";
-import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../client/types.gen";
+import { AuthorPublicWithPoems, PoemCreate, PoemPublicWithAllTheInfo } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
-import { authorsReadAuthors, poemsReadPoems, poemsUpdatePoem } from "../../client";
+import { poemsCreatePoem } from "../../client";
 import { callService, handleError, handleSuccess } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
+import useAuthors  from "../../hooks/useAuthors";
+import usePoems from "../../hooks/usePoems";
 import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -16,39 +18,36 @@ enum PoemType {
   VERSION = 1,
 }
 
-export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, close: () => void }) {
+export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
+  const [adminOpened, { toggle: adminToggle }] = useDisclosure(false);
 
-  const form = useForm<PoemUpdate>({
+  const form = useForm<PoemCreate>({
     mode: 'uncontrolled',
     initialValues: {
-      ...poem,
+      title: '',
+      content: '',
+      language: '',
+      is_public: true,
+      show_author: true,
       author_ids: [],
       original_poem_id: undefined,
       type: undefined,
-    }, 
+    },
     validate: {
       title: isNotEmpty('El título no puede estar vacío'),
       content: isNotEmpty('El contenido no puede estar vacío')
     }
   });
 
-  const { data: authorsData } = useQuery(
-    {
-      queryKey: ['authors'],
-      queryFn: async () => callService(authorsReadAuthors),
-    }
-  )
+  const { data: authorsData } = useAuthors()
+  const { data: poemsData } = usePoems()
 
-  const { data: poemsData } = useQuery(
-    {
-      queryKey: ['poems'],
-      queryFn: async () => callService(poemsReadPoems),
-    }
-  )
+  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
+  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
 
-  const author_ids = authorsData?.data?.map(author => author.id) ?? []
-  const poems_ids = poemsData?.data?.map(poem => poem.id) ?? []
+  const author_ids = authors.map(author => author.id) ?? []
+  const poems_ids = poems.map(poem => poem.id) ?? []
 
   // TODO: put this with author_names when the endpoint is created
 
@@ -70,8 +69,8 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (data: PoemUpdate) =>
-      callService(poemsUpdatePoem, { path: { poem_id: poem.id }, body: data }),
+    mutationFn: async (data: PoemCreate) =>
+      callService(poemsCreatePoem, { body: data }),
     onSuccess: () => {
       handleSuccess()
       close()
@@ -96,7 +95,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
 
       if (values.type == -1) {
         values.type = undefined
-      } 
+      }
 
       await mutation.mutateAsync(values)
     } catch {
@@ -123,6 +122,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
           <Grid.Col span={{ base: 24, sm: 17 }}>
             <Stack gap="xs">
               <TextInput
+                required
                 name='title'
                 key={form.key('title')}
                 label="Título"
@@ -146,13 +146,13 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
             >
               <Stack>
                 <Checkbox
-                  defaultChecked={poem.is_public}
+                  defaultChecked
                   key={form.key('is_public')}
                   {...form.getInputProps('is_public')}
                   label="Poema público"
                 />
                 <Checkbox
-                  defaultChecked={poem.show_author}
+                  defaultChecked
                   key={form.key('show_author')}
                   {...form.getInputProps('show_author')}
                   label="Mostrar autor"
@@ -182,6 +182,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               </Tabs.Panel> */}
               <Tabs.Panel value="editor">
                 <Textarea
+                  required
                   mt="lg"
                   name='content'
                   key={form.key('content')}
@@ -191,6 +192,45 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               </Tabs.Panel>
             </Tabs>
           </Grid.Col>
+          <Grid.Col span={24}>
+            <NavLink
+              label="Opciones avanzadas"
+              rightSection={
+                <TbChevronRight size={12} className="mantine-rotate-rtl" />
+              }
+              active={opened}
+              onClick={toggle}
+            />
+            <Collapse in={opened}>
+              <Fieldset mt="md">
+                <Stack gap="xs">
+                  <Select
+                    allowDeselect
+                    searchable
+                    nothingFoundMessage="No hay nada aquí..."
+                    name='original_poem_id'
+                    key={form.key('original_poem_id')}
+                    label="Poema original"
+                    placeholder="Escribe para buscar un poema"
+                    data={poems_ids}
+                    {...form.getInputProps('original_poem_id')}
+                  />
+                  <Select
+                    allowDeselect
+                    nothingFoundMessage="No hay nada aquí..."
+                    checkIconPosition="right"
+                    name='type'
+                    key={form.key('type')}
+                    label="Tipo de poema"
+                    placeholder="Selecciona el tipo de poema"
+                    data={typeData}
+                    {...form.getInputProps('type')}
+                  />
+                </Stack>
+              </Fieldset>
+            </Collapse>
+          </Grid.Col>
+
           {currentUser?.is_superuser && (
             <Grid.Col span={24}>
               <NavLink
@@ -198,10 +238,10 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                 rightSection={
                   <TbChevronRight size={12} className="mantine-rotate-rtl" />
                 }
-                active={opened}
-                onClick={toggle}
+                active={adminOpened}
+                onClick={adminToggle}
               />
-              <Collapse in={opened}>
+              <Collapse in={adminOpened}>
                 <Fieldset mt="md">
                   <Stack gap="xs">
                     <MultiSelect
@@ -213,32 +253,9 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                       data={author_ids}
                       {...form.getInputProps('author_ids')}
                     />
-                    <Select
-                      allowDeselect
-                      searchable
-                      nothingFoundMessage="No hay nada aquí..."
-                      name='original_poem_id'
-                      key={form.key('original_poem_id')}
-                      label="Poema original"
-                      placeholder="Escribe para buscar un poema"
-                      data={poems_ids}
-                      {...form.getInputProps('original_poem_id')}
-                    />
-                    <Select
-                      allowDeselect
-                      nothingFoundMessage="No hay nada aquí..."
-                      checkIconPosition="right"
-                      name='type'
-                      key={form.key('type')}
-                      label="Tipo de poema"
-                      placeholder="Selecciona el tipo de poema"
-                      data={typeData}
-                      {...form.getInputProps('type')}
-                    />
                   </Stack>
                 </Fieldset>
               </Collapse>
-
             </Grid.Col>
           )}
           <Grid.Col span={24} mt="xl">
@@ -248,13 +265,6 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                 w={150}
               >
                 Guardar
-              </Button>
-              <Button
-                onClick={close}
-                w={150}
-                variant="outline"
-              >
-                Cancelar
               </Button>
             </Group>
           </Grid.Col>
