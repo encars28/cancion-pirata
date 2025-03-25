@@ -49,7 +49,7 @@ export function AddPoem() {
   const author_ids = authors.map(author => author.id) ?? []
   const poems_ids = poems.map(poem => poem.id) ?? []
 
-  // TODO: put this with author_names when the endpoint is created
+  // TODO: put this with author_names when the end point is created
 
   const typeData = [
     {
