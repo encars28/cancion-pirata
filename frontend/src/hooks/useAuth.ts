@@ -63,6 +63,7 @@ const useAuth = () => {
   const logout = () => {
     localStorage.removeItem("access_token")
     client.setConfig({ headers: { "Authorization": "" } })
+    isLoggedIn() // Temporary solution to force refresh
     navigate("/login")
   }
 
