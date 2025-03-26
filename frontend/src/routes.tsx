@@ -11,6 +11,7 @@ import { PasswordPage } from "./pages/passwordpage";
 import { RegisterPage } from "./pages/registerpage";
 import { AddPoemPage } from "./pages/addpoempage";
 import { ResetPasswordPage } from "./pages/resetpasswordpage";
+import { MePage } from "./pages/mepage";
 
 export default function AllRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function AllRoutes() {
       <Route path="/poems/add" element={<AddPoemPage />} />
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/:id" element={<AuthorPage />} />
+      <Route path="/me" element={isLoggedIn() ? (<MePage />): (<MainPage />)} />
       <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
       <Route path="/signup" element={<RegisterPage />} />
       <Route path="/password-recovery" element={<PasswordPage/>} />

@@ -34,7 +34,7 @@ export function AuthorPage() {
     handleError(error as any);
   }
 
-  const author: AuthorPublicWithPoems = data as any;
+  const author: AuthorPublicWithPoems = data!;
   const poemData: RowData[] = author.poems!.map(poem => {
     return {
       title: poem.title,
