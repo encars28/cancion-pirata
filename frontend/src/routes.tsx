@@ -12,8 +12,11 @@ import { RegisterPage } from "./pages/registerpage";
 import { AddPoemPage } from "./pages/addpoempage";
 import { ResetPasswordPage } from "./pages/resetpasswordpage";
 import { MePage } from "./pages/mepage";
+import useAuth from "./hooks/useAuth";
+import { AdminPage } from "./pages/adminpage";
 
 export default function AllRoutes() {
+  const { user } = useAuth()
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
@@ -23,6 +26,7 @@ export default function AllRoutes() {
       <Route path="/authors" element={<AuthorsPage />} />
       <Route path="/authors/:id" element={<AuthorPage />} />
       <Route path="/me" element={isLoggedIn() ? (<MePage />): (<MainPage />)} />
+      <Route path="/admin" element={user?.is_superuser ? (<AdminPage />) : (<NothingFound />)} />
       <Route path="/login" element={isLoggedIn() ? (<MainPage/>) : (<LoginPage />)} />
       <Route path="/signup" element={<RegisterPage />} />
       <Route path="/password-recovery" element={<PasswordPage/>} />
