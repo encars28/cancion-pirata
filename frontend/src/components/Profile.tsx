@@ -1,11 +1,12 @@
 import { UserPublic, usersReadUserMe } from "../client";
-import { UserData } from "./User/UserData";
+import { UserMe } from "./User/UserMe";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
 import { handleError, callService } from "../utils";
 import { useNavigate } from "react-router";
-import { Button, Center, Container, Group, Title } from "@mantine/core";
+import { Button, Container, Group, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { DeleteUserMe } from "./User/DeleteUserMe";
 
 export function Profile() {
   const navigate = useNavigate()
@@ -30,6 +31,7 @@ export function Profile() {
   return (
     <>
       <Group m="xl" justify="flex-end">
+        <DeleteUserMe />
         <Button
           onClick={toggle}
           variant={opened ? "outline" : "filled"}
@@ -39,9 +41,9 @@ export function Profile() {
           {opened ? 'Cerrar' : 'Editar'}
         </Button>
       </Group>
-      <Container size={600}>
+      <Container size={600} ta="left">
         <Title order={1} m="xl">Datos usuario</Title>
-        <UserData edit={opened} user={user} />
+        <UserMe edit={opened} user={user} />
       </Container>
     </>
 

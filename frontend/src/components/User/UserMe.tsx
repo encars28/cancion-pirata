@@ -7,7 +7,7 @@ import { callService, handleError, handleSuccess } from '../../utils';
 import { HttpValidationError } from '../../client/types.gen';
 
 
-export function UserData({ edit, user }: { edit: boolean, user: UserPublic }) {
+export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
   const form = useForm<UserUpdateMe>({
     mode: 'uncontrolled',
     initialValues: {
@@ -16,7 +16,6 @@ export function UserData({ edit, user }: { edit: boolean, user: UserPublic }) {
     validate: {
       email: isEmail('Correo inválido'),
       username: isNotEmpty('Nombre de usuario no puede estar vacío'),
-      full_name: isNotEmpty('Nombre no puede estar vacío'),
     }
   });
 
@@ -37,8 +36,13 @@ export function UserData({ edit, user }: { edit: boolean, user: UserPublic }) {
     },
   })
 
-  const handleSubmit = async (values: typeof form.values) => {
+  const handleSubmit = async () => {
     try {
+      const values = form.getValues()
+      if (values.full_name === '') {
+        values.full_name = undefined
+      }
+
       await mutation.mutateAsync(values)
     } catch {
       // error is handled by mutation
