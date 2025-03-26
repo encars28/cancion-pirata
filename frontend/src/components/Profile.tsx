@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
 import { handleError, callService } from "../utils";
 import { useNavigate } from "react-router";
-import { Button, Container, Group, Title } from "@mantine/core";
+import { Button, Center, Container, Group, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 export function Profile() {
@@ -30,12 +30,17 @@ export function Profile() {
   return (
     <>
       <Group m="xl" justify="flex-end">
-        <Button onClick={toggle} variant={opened ? "outline" : "filled"} color={opened ? "red" : undefined}>
+        <Button
+          onClick={toggle}
+          variant={opened ? "outline" : "filled"}
+          color={opened ? "red" : undefined}
+          mr={{ base: "sm", sm: "xl" }}
+        >
           {opened ? 'Cerrar' : 'Editar'}
         </Button>
       </Group>
-      <Title order={1} mt="xl">Perfil</Title>
-      <Container mt="xl">
+      <Container size={600}>
+        <Title order={1} m="xl">Datos usuario</Title>
         <UserData edit={opened} user={user} />
       </Container>
     </>

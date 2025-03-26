@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import classes from './RegisterForm.module.css';
 
-import { TbAt, TbWriting } from "react-icons/tb";
+import { TbAbc, TbAt, TbUser, TbWriting } from "react-icons/tb";
 import useAuth from '../../../hooks/useAuth';
 import { useForm, isEmail, hasLength, isNotEmpty } from '@mantine/form'
 import { Form } from '@mantine/form';
@@ -78,6 +78,8 @@ export function RegisterForm() {
                 key={form.key('full_name')}
                 label="Nombre completo"
                 placeholder="Tu nombre"
+                rightSectionPointerEvents="none"
+                rightSection={<TbAbc size={15} />}
                 {...form.getInputProps('full_name')}
               />
             </Grid.Col>
@@ -89,7 +91,7 @@ export function RegisterForm() {
                 label="Nombre de usuario"
                 placeholder="Tu nombre de usuario"
                 rightSectionPointerEvents="none"
-                rightSection={<TbWriting size={15} />}
+                rightSection={<TbUser size={15} />}
                 {...form.getInputProps('username')}
                 required
               />
