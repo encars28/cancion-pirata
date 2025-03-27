@@ -6,12 +6,12 @@ import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
 import { Avatar, Button, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
-import { TablePoems, RowData } from '../components/Tables/TablePoems';
 import { TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
 import { EditAuthor } from '../components/Author/EditAuthor';
 import { DeleteAuthor } from '../components/Author/DeleteAuthor';
 import { useNavigate } from 'react-router';
+import { TableSort } from '../components/Tables/TableSort';
 
 export function AuthorPage() {
   const params = useParams();
@@ -35,14 +35,21 @@ export function AuthorPage() {
   }
 
   const author: AuthorPublicWithPoems = data!;
-  const poemData: RowData[] = author.poems!.map(poem => {
+
+  const poemData = author.poems!.map(poem => {
     return {
+      id: poem.id,
       title: poem.title,
       created_at: poem.created_at?.toLocaleDateString() ?? 'Unknown',
       language: poem.language ?? 'Unknown',
-      link: `/poems/${poem.id}`
     }
   })
+
+  const poemHeaders = {
+    title: 'Título',
+    created_at: 'Fecha de creación',
+    language: 'Idioma',
+  }
 
   return (
     <Shell>
@@ -82,7 +89,7 @@ export function AuthorPage() {
           </Tabs.List>
           <Tabs.Panel value="poems">
             <Space mt="xl" />
-            <TablePoems data={poemData} />
+            <TableSort data={poemData} headers={poemHeaders} />
           </Tabs.Panel>
         </Tabs>
       </Container>
