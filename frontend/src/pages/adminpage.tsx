@@ -4,7 +4,7 @@ import { callService, handleError } from "../utils";
 import { UserPublic, usersReadUsers } from "../client";
 import { Loading } from "../components/Loading";
 import { TableSort } from "../components/Tables/TableSort";
-import { Badge, Container } from "@mantine/core";
+import { Badge, Center, Container } from "@mantine/core";
 
 export function AdminPage() {
   const { isPending, isError, data, error } = useQuery({
@@ -48,9 +48,9 @@ export function AdminPage() {
 
   return (
     <Shell>
-      <Container m="xl">
+      <Center m={60}>
         <TableSort headers={userHeaders} data={userData} />
-      </Container>
+      </Center>
     </Shell>
   );
 }

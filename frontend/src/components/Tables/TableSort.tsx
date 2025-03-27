@@ -56,7 +56,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
         onChange={handleSearchChange}
       />
 
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+      <Table horizontalSpacing="md" verticalSpacing="sm" miw={600}>
         <Table.Tbody>
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) =>
