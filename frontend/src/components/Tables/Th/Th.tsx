@@ -1,6 +1,7 @@
 import classes from './Th.module.css';
 import { TbChevronDown, TbChevronUp, TbSelector } from "react-icons/tb";
 import { Center, Group, Table, Text, UnstyledButton } from '@mantine/core';
+import React from 'react';
 
 interface ThProps {
   children: React.ReactNode;

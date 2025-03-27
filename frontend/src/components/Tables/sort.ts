@@ -3,7 +3,7 @@ import { keys } from '@mantine/core';
 export function filterData(data: any[], search: string) {
   const query = search.toLowerCase().trim();
   return data.filter((item) =>
-    keys(data[0]).some((key) => item[key].toLowerCase().includes(query))
+    keys(data[0]).some((key) => typeof item[key] === 'string' ? item[key].toLowerCase().includes(query) : false) 
   );
 }
 

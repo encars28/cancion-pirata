@@ -29,7 +29,7 @@ export function AuthorsPage() {
       <CardGrid>
         { 
           authors.map((author) => {
-            return <AuthorCard path={`/authors/${author.id}`} name={author.full_name} />
+            return <AuthorCard key={author.id} path={`/authors/${author.id}`} name={author.full_name} />
           }) 
         }
       </CardGrid>

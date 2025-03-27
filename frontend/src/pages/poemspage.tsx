@@ -29,7 +29,7 @@ export function PoemsPage() {
       <CardGrid>
         { 
           poems.map((poem) => {
-            return <PoemCard path={`/poems/${poem.id}`} name={poem.title} />
+            return <PoemCard key={poem.id} path={`/poems/${poem.id}`} name={poem.title} />
           }) 
         }
       </CardGrid>

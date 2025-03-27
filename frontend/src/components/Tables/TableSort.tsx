@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { TbSearch } from "react-icons/tb";
 import {
   ScrollArea,
@@ -22,7 +22,6 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<keyof T | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-
   const sortedData = sortData(data, { sortBy, reversed: reverseSortDirection, search });
 
   const setSorting = (field: keyof T) => {
@@ -42,7 +41,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
       ta="left"
     >
       {Object.entries(row).map(([key, value]) => (
-        key !== 'id' ? <Table.Td>{value as string | React.ReactNode}</Table.Td> : null
+        key !== 'id' ? <Table.Td key={key}>{value as string | React.ReactNode}</Table.Td> : null
       ))}
     </Table.Tr>
   ));
@@ -61,7 +60,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
         <Table.Tbody>
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) =>
-              key !== 'actions' ? (
+              typeof sortedData[0][key] === 'string' ? (
                 <Th
                   key={key}
                   sorted={sortBy === key}
@@ -70,7 +69,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
                 >
                   {value as string}
                 </Th>
-              ) : <Table.Th p={0}>{value as string}</Table.Th>
+              ) : <Table.Th p={0} key={key}>{value as ReactNode}</Table.Th>
             )
             }
           </Table.Tr>
