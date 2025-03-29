@@ -16,9 +16,10 @@ interface BasicData {
 export interface TableSortProps<T extends BasicData, H extends {}> {
   data: T[];
   headers: H;
+  miw?: number
 }
 
-export function TableSort<T extends BasicData, H extends {}>({ data, headers }: TableSortProps<T, H>) {
+export function TableSort<T extends BasicData, H extends {}>({ data, headers, miw }: TableSortProps<T, H>) {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState<keyof T | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
@@ -58,7 +59,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
         onChange={handleSearchChange}
       />
 
-      <Table horizontalSpacing="md" verticalSpacing="sm" miw={990}>
+      <Table horizontalSpacing="md" verticalSpacing="sm" miw={miw}>
         <Table.Tbody>
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) =>
