@@ -47,7 +47,9 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
   ));
 
   return (
-    <ScrollArea>
+    <ScrollArea 
+      w="100%"
+    >
       <TextInput
         placeholder="Buscar"
         mb="md"
@@ -56,7 +58,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers }: 
         onChange={handleSearchChange}
       />
 
-      <Table horizontalSpacing="md" verticalSpacing="sm" miw={600}>
+      <Table horizontalSpacing="md" verticalSpacing="sm" miw={990}>
         <Table.Tbody>
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) =>

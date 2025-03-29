@@ -4,15 +4,33 @@ import { callService, handleError } from "../utils";
 import { UserPublic, usersReadUsers } from "../client";
 import { Loading } from "../components/Loading";
 import { TableSort } from "../components/Tables/TableSort";
-import { Badge, Center, Container, Group } from "@mantine/core";
+import {
+  Group, Pagination, Stack
+} from "@mantine/core";
 import { AddUser } from "../components/User/AddUser";
 import { EditUser } from "../components/User/EditUser";
 import { DeleteUser } from "../components/User/DeleteUser";
+import { useNavigate, useSearchParams } from "react-router";
+
+const PER_PAGE = 8
+
+function getUsersQueryOptions({ page }: { page: number }) {
+  return {
+    queryFn: async () =>
+      callService(usersReadUsers, { query: { skip: (page - 1) * PER_PAGE, limit: PER_PAGE } }),
+    queryKey: ["users", { page }],
+  }
+}
 
 export function AdminPage() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
+
+  const setPage = (page: number) => navigate({ search: `?page=${page}` })
+
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ['users'],
-    queryFn: async () => callService(usersReadUsers),
+    ...getUsersQueryOptions({ page }),
     placeholderData: (prevData) => prevData,
   })
 
@@ -24,15 +42,16 @@ export function AdminPage() {
     handleError(error as any);
   }
 
-  const users: UserPublic[] = data?.data ?? []
+  const users: UserPublic[] = data?.data.slice(0, PER_PAGE) ?? []
+  const count = data?.count ?? 0
 
   const userHeaders = {
+    username: 'Usuario',
     email: 'Email',
     full_name: 'Nombre',
-    username: 'Usuario',
     is_superuser: 'Rol',
     created_at: 'Creación',
-    author_id: 'ID autor',
+    is_author: 'Autor',
     is_active: 'Estatus',
     actions: 'Acciones'
   }
@@ -40,12 +59,12 @@ export function AdminPage() {
   const userData = users.map((user) => {
     return {
       id: user.id,
+      username: user.username,
       email: user.email,
       full_name: user.full_name ?? '',
-      username: user.username,
-      is_superuser: user.is_superuser ? 'Administrador' : 'Usuario',
+      is_superuser: user.is_superuser ? 'Admin' : 'Usuario',
       created_at: user.created_at?.toLocaleDateString() ?? '',
-      author_id: user.author_id ?? '',
+      is_author: user.author_id ? 'Sí' : 'No',
       is_active: user.is_active ? "Activo" : "Inactivo",
       actions: <Group gap="xs"><EditUser user={user} /><DeleteUser user_id={user.id} /></Group>
     }
@@ -53,12 +72,31 @@ export function AdminPage() {
 
   return (
     <Shell>
-      <Group justify="flex-end" m="xl" mr={{base: "xl", sm: 100}}>
+      <Group
+        justify="flex-end"
+        mt="xl"
+        mb="md"
+        mr={{ base: "xl", sm: 60 }}
+      >
         <AddUser />
       </Group>
-      <Center m={60}>
+      <Stack
+        align="center"
+        mr={{ base: "xl", sm: 60 }}
+        ml={{ base: "xl", sm: 60 }}
+        mt="xl"
+        mb="xl"
+        gap="xl"
+      >
         <TableSort headers={userHeaders} data={userData} />
-      </Center>
+        <Pagination 
+          mt="xl" 
+          siblings={3} 
+          total={count / PER_PAGE} 
+          onChange={(page) => setPage(page)}
+          disabled={count <= PER_PAGE}
+        />
+      </Stack>
     </Shell>
   );
 }
