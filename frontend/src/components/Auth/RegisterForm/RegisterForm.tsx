@@ -65,7 +65,7 @@ export function RegisterForm() {
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           ¿Ya tienes cuenta?{' '}
-          <Anchor onClick={() => navigate("/login")} size="sm" component="button">
+          <Anchor onClick={() => navigate("/login")} size="sm" component="button" disabled={signUpMutation.isPending}>
             Iniciar sesión
           </Anchor>
         </Text>
@@ -74,6 +74,7 @@ export function RegisterForm() {
           <Grid grow gutter="lg">
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
+                disabled={signUpMutation.isPending}
                 name='full_name'
                 key={form.key('full_name')}
                 label="Nombre completo"
@@ -86,6 +87,7 @@ export function RegisterForm() {
             <Grid.Col span={{ base: 12, sm: 6 }}>
 
               <TextInput
+                disabled={signUpMutation.isPending}
                 name='username'
                 key={form.key('username')}
                 label="Nombre de usuario"
@@ -98,6 +100,7 @@ export function RegisterForm() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
+                disabled={signUpMutation.isPending}
                 name='email'
                 key={form.key('email')}
                 label="Email"
@@ -110,6 +113,7 @@ export function RegisterForm() {
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <PasswordInput
+                disabled={signUpMutation.isPending}
                 name='password'
                 key={form.key('password')}
                 label="Contraseña"
@@ -119,7 +123,7 @@ export function RegisterForm() {
               />
             </Grid.Col>
             <Grid.Col span={12}>
-              <Button fullWidth mt={30} type='submit'>
+              <Button fullWidth mt={30} type='submit' loading={signUpMutation.isPending} loaderProps={{type: 'dots'}}>
                 Crear cuenta
               </Button>
             </Grid.Col>
