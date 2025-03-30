@@ -4,7 +4,7 @@ import { poemsReadPoems } from "../client/sdk.gen"
 
 const usePoems = () => useQuery(
   {
-    queryKey: ['authors'],
+    queryKey: ['poems'],
     queryFn: async () => callService(poemsReadPoems),
     placeholderData: (prevData) => prevData,
   }
