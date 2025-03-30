@@ -1,4 +1,4 @@
-import { AdminTabs } from "../components/FloatingTabs/AdminTabs";
+import { AdminTabs } from "../components/AdminTabs/AdminTabs";
 import { Shell } from "../components/Shell/Shell";
 import { Outlet, useLocation } from "react-router";
 
