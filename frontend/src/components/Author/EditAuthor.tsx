@@ -1,14 +1,14 @@
-import { Stack, TextInput, Modal, Group, Button } from '@mantine/core';
+import { Stack, TextInput, Modal, Group, Button, ActionIcon } from '@mantine/core';
 import { Form, useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
-import { TbCalendar } from "react-icons/tb";
+import { TbCalendar, TbPencil } from "react-icons/tb";
 import { AuthorUpdate, AuthorPublicWithPoems, HttpValidationError } from '../../client/types.gen';
 import { callService, handleError, handleSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsUpdateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 
-export function EditAuthor({ author }: { author: AuthorPublicWithPoems }) {
+export function EditAuthor({ author, icon }: { author: AuthorPublicWithPoems, icon?: boolean }) {
   const [opened, { open, close }] = useDisclosure()
 
   const form = useForm<AuthorUpdate>({
@@ -21,7 +21,7 @@ export function EditAuthor({ author }: { author: AuthorPublicWithPoems }) {
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (data: AuthorUpdate) => 
+    mutationFn: async (data: AuthorUpdate) =>
       callService(authorsUpdateAuthor, { path: { author_id: author.id }, body: data }),
     onSuccess: () => {
       handleSuccess()
@@ -53,12 +53,18 @@ export function EditAuthor({ author }: { author: AuthorPublicWithPoems }) {
 
   return (
     <>
-      <Button
-        variant="outline"
-        onClick={open}
-      >
-        Modificar datos
-      </Button>
+      {icon ? (
+        <ActionIcon variant='filled' onClick={open}>
+          <TbPencil />
+        </ActionIcon>
+      ) : (
+        <Button
+          variant="outline"
+          onClick={open}
+        >
+          Modificar datos
+        </Button>
+      )}
       <Modal
         opened={opened}
         onClose={close}

@@ -6,7 +6,7 @@ import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 
-export function DeletePoem({ poem_id, icon }: { poem_id: string, icon: boolean }) {
+export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean }) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
   const navigate = useNavigate()

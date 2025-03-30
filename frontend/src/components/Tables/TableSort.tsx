@@ -1,13 +1,10 @@
 import React, { ReactNode, useState } from 'react';
-import { TbSearch } from "react-icons/tb";
 import {
   ScrollArea,
   Table,
   Text,
-  TextInput,
 } from '@mantine/core';
 import { Th } from './Th/Th';
-import { sortData } from './sort';
 
 interface BasicData {
   id: string
@@ -17,23 +14,38 @@ export interface TableSortProps<T extends BasicData, H extends {}> {
   data: T[];
   headers: H;
   miw?: number
+  fixed?: boolean
 }
 
-export function TableSort<T extends BasicData, H extends {}>({ data, headers, miw }: TableSortProps<T, H>) {
-  const [search, setSearch] = useState('');
+function sortData(
+  data: any[],
+  payload: { sortBy: any; reversed: boolean; }
+) {
+  if (!payload.sortBy) {
+    return data;
+  }
+
+  const { sortBy } = payload;
+
+  return (
+    [...data].sort((a, b) => {
+      if (payload.reversed) {
+        return b[sortBy].localeCompare(a[sortBy]);
+      }
+      return a[sortBy].localeCompare(b[sortBy]);
+    }
+  ));
+}
+
+export function TableSort<T extends BasicData, H extends {}>({ data, headers, miw, fixed }: TableSortProps<T, H>) {
   const [sortBy, setSortBy] = useState<keyof T | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const sortedData = sortData(data, { sortBy, reversed: reverseSortDirection, search });
+  const sortedData = sortData(data, { sortBy, reversed: reverseSortDirection });
 
   const setSorting = (field: keyof T) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
     setSortBy(field);
-  };
-
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    setSearch(value);
   };
 
   const rows = sortedData.map((row) => (
@@ -51,15 +63,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers, mi
     <ScrollArea 
       w="100%"
     >
-      <TextInput
-        placeholder="Buscar"
-        mb="md"
-        leftSection={<TbSearch size={16} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-
-      <Table horizontalSpacing="md" verticalSpacing="sm" miw={miw}>
+      <Table horizontalSpacing="md" verticalSpacing="sm" miw={miw} layout={fixed ? 'fixed': 'auto'}>
         <Table.Tbody>
           <Table.Tr>
             {Object.entries(headers).map(([key, value]) =>

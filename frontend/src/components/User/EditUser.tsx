@@ -62,7 +62,7 @@ export function EditUser({ user }: { user: UserPublic }) {
 
   return (
     <>
-      <ActionIcon variant="outline" onClick={open}>
+      <ActionIcon variant="filled" onClick={open}>
         <TbPencil />
       </ActionIcon>
       <Modal

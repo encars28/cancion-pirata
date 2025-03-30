@@ -8,7 +8,7 @@ import { UserPublic, usersReadUsers } from "../../client";
 import { EditUser } from "../User/EditUser";
 import { DeleteUser } from "../User/DeleteUser";
 
-const PER_PAGE = 15
+const PER_PAGE = 6
 
 function getUsersQueryOptions({ page }: { page: number }) {
   return {
@@ -21,9 +21,10 @@ function getUsersQueryOptions({ page }: { page: number }) {
 export function TableUsers() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
-
-  const setPage = (page: number) => navigate({ search: `?page=${page}` })
+  const table = searchParams.get('table') ? searchParams.get('table') : 'usuarios'
+  const page = searchParams.get('page') && table === 'usuarios' ? parseInt(searchParams.get('page') as string) : 1
+  
+  const setPage = (page: number) => navigate({ search: `?table=usuarios&page=${page}` })
 
   const { isPending, isError, data, error } = useQuery({
     ...getUsersQueryOptions({ page }),
@@ -79,9 +80,10 @@ export function TableUsers() {
         miw={960}
       />
       <Pagination
-        style={{ bottom: 60, position: "fixed" }}
+        mb="xl"
+        mt="md"
         siblings={3}
-        total={count / PER_PAGE}
+        total={count % PER_PAGE === 0 ? count / PER_PAGE : Math.floor(count / PER_PAGE) + 1}
         onChange={(page) => setPage(page)}
         disabled={count <= PER_PAGE}
       />

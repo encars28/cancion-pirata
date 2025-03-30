@@ -47,7 +47,7 @@ export function AuthorPage() {
         <ActionIcon variant='outline' onClick={() => navigate(`/poems/${poem.id}`)}>
           <TbEye />
         </ActionIcon>
-        <DeletePoem poem_id={poem.id} icon={true}/>
+        <DeletePoem poem_id={poem.id} icon/>
       </Group>
     }
   })

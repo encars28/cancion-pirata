@@ -1,11 +1,12 @@
-import { Button, Modal, Group, Text } from '@mantine/core'
+import { Button, Modal, Group, Text, ActionIcon } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { authorsDeleteAuthor } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
+import { TbTable, TbTrash } from 'react-icons/tb'
 
-export function DeleteAuthor({ author_id }: { author_id: string}) {
+export function DeleteAuthor({ author_id, icon }: { author_id: string, icon?: boolean }) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
   const navigate = useNavigate()
@@ -35,12 +36,21 @@ export function DeleteAuthor({ author_id }: { author_id: string}) {
 
   return (
     <>
-      <Button
-        color="red"
-        onClick={open}
-      >
-        Eliminar autor
-      </Button>
+      {icon ? (
+        <ActionIcon
+          color="red"
+          onClick={open}
+        >
+          <TbTrash />
+        </ActionIcon>
+      ) : (
+        <Button
+          color="red"
+          onClick={open}
+        >
+          Eliminar autor
+        </Button>
+      )}
       <Modal
         opened={opened}
         onClose={close}
