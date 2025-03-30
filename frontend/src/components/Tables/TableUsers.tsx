@@ -7,6 +7,7 @@ import { handleError, callService } from "../../utils";
 import { UserPublic, usersReadUsers } from "../../client";
 import { EditUser } from "../User/EditUser";
 import { DeleteUser } from "../User/DeleteUser";
+import { AddUser } from "../User/AddUser";
 
 const PER_PAGE = 6
 
@@ -21,10 +22,9 @@ function getUsersQueryOptions({ page }: { page: number }) {
 export function TableUsers() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const table = searchParams.get('table') ? searchParams.get('table') : 'usuarios'
-  const page = searchParams.get('page') && table === 'usuarios' ? parseInt(searchParams.get('page') as string) : 1
-  
-  const setPage = (page: number) => navigate({ search: `?table=usuarios&page=${page}` })
+  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
+
+  const setPage = (page: number) => navigate({ search: `?page=${page}` })
 
   const { isPending, isError, data, error } = useQuery({
     ...getUsersQueryOptions({ page }),
@@ -68,25 +68,34 @@ export function TableUsers() {
   })
 
   return (
-    <Stack
-      align="center"
-      gap="xl"
-      mr={{ base: 0, lg: "lg" }}
-      ml={{ base: 0, lg: "lg" }}
-    >
-      <TableSort
-        headers={userHeaders}
-        data={userData}
-        miw={960}
-      />
-      <Pagination
+    <Stack m="xl">
+      <Group
+        justify="flex-end"
         mb="xl"
-        mt="md"
-        siblings={3}
-        total={count % PER_PAGE === 0 ? count / PER_PAGE : Math.floor(count / PER_PAGE) + 1}
-        onChange={(page) => setPage(page)}
-        disabled={count <= PER_PAGE}
-      />
+        mr={{ base: 0, lg: "lg" }}
+      >
+        <AddUser />
+      </Group>
+      <Stack
+        align="center"
+        gap="xl"
+        mr={{ base: 0, lg: "lg" }}
+        ml={{ base: 0, lg: "lg" }}
+      >
+        <TableSort
+          headers={userHeaders}
+          data={userData}
+          miw={960}
+        />
+        <Pagination
+          mb="xl"
+          mt="md"
+          siblings={3}
+          total={count % PER_PAGE === 0 ? count / PER_PAGE : Math.floor(count / PER_PAGE) + 1}
+          onChange={(page) => setPage(page)}
+          disabled={count <= PER_PAGE}
+        />
+      </Stack>
     </Stack>
   )
 }

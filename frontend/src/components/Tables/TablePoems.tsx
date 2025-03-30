@@ -21,10 +21,9 @@ function getUsersQueryOptions({ page }: { page: number }) {
 export function TablePoems() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const table = searchParams.get('table') ? searchParams.get('table') : 'poemas'
-  const page = searchParams.get('page') && table === 'poemas' ? parseInt(searchParams.get('page') as string) : 1
+  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
 
-  const setPage = (page: number) => navigate({ search: `?table=poemas&page=${page}` })
+  const setPage = (page: number) => navigate({ search: `?page=${page}` })
 
   const { isPending, isError, data, error } = useQuery({
     ...getUsersQueryOptions({ page }),
@@ -70,6 +69,7 @@ export function TablePoems() {
     <Stack
       align="center"
       gap="xl"
+      m="xl"
       mr={{ base: 0, lg: "lg" }}
       ml={{ base: 0, lg: "lg" }}
     >

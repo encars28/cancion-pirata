@@ -17,10 +17,10 @@
   
   .tab {
     z-index: 1;
-    font-weight: 500;
+    font-weight: 550;
     font-size: var(--mantine-font-size-sm);
     transition: color 100ms ease;
-    color: var(--mantine-color-gray-7);
+    color: var(--mantine-color-dimmed);
     margin: var(--mantine-spacing-md);
     padding-left: var(--mantine-spacing-xl);
     padding-right: var(--mantine-spacing-xl);
@@ -29,7 +29,6 @@
   
     &[data-active] {
       color: var(--mantine-color-black);
-      font-weight: 550;
     }
   
     @mixin dark {
@@ -37,7 +36,6 @@
   
       &[data-active] {
         color: var(--mantine-color-white);
-        font-weight: 550;
       }
     }
   }
