@@ -52,7 +52,7 @@ export function AddAuthor() {
   return (
     <>
       <Button
-        variant="outline"
+        variant="filled"
         onClick={open}
       >
         Añadir autor
