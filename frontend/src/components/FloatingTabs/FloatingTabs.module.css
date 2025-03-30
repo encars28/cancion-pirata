@@ -6,8 +6,8 @@
   .indicator {
     background-color: var(--mantine-color-white);
     border-radius: var(--mantine-radius-md);
-    border: 1px solid var(--mantine-color-gray-2);
-    box-shadow: var(--mantine-shadow-sm);
+    border: 2px solid var(--mantine-color-gray-3);
+    box-shadow: var(--mantine-shadow-lg);
   
     @mixin dark {
       background-color: var(--mantine-color-dark-6);
@@ -17,9 +17,15 @@
   
   .tab {
     z-index: 1;
-    font-weight: 550;
+    font-weight: 500;
+    font-size: var(--mantine-font-size-sm);
     transition: color 100ms ease;
     color: var(--mantine-color-gray-7);
+    margin: var(--mantine-spacing-sm);
+    padding-left: var(--mantine-spacing-xl);
+    padding-right: var(--mantine-spacing-xl);
+    padding-top: var(--mantine-spacing-sm);
+    padding-bottom: var(--mantine-spacing-sm);
   
     &[data-active] {
       color: var(--mantine-color-black);

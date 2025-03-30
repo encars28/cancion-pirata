@@ -46,7 +46,5 @@ export function Profile() {
         <UserMe edit={opened} user={user} />
       </Container>
     </>
-
-
   );
 }

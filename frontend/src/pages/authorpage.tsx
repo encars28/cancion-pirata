@@ -85,7 +85,6 @@ export function AuthorPage() {
               <DeleteAuthor author_id={author.id} />
               <Button onClick={() => navigate("/poems/add")}>Crear poema</Button>
             </Group>
-
           )}
         </Group>
         <Space mt={100} />
@@ -97,7 +96,7 @@ export function AuthorPage() {
           </Tabs.List>
           <Tabs.Panel value="poems">
             <Space mt="xl" />
-            <TableSort data={poemData} headers={poemHeaders} />
+            <TableSort data={poemData} headers={poemHeaders} miw={700} />
           </Tabs.Panel>
         </Tabs>
       </Container>
