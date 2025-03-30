@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router';
 
 export function PasswordForm() {
   const navigate = useNavigate()
-  const form = useForm<{email: string}>({
+  const form = useForm<{ email: string }>({
     mode: 'uncontrolled',
     validate: {
       email: isEmail("Correo inválido")
@@ -33,13 +33,13 @@ export function PasswordForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: string) =>
-      callService(loginRecoverPassword, {path: { email: data }}),
+      callService(loginRecoverPassword, { path: { email: data } }),
     onSuccess: () => {
       handleSuccess()
     },
     onError: (error: HttpValidationError) => {
       handleError(error)
-    },
+    }
   })
 
   const handleSubmit = async () => {
@@ -65,8 +65,9 @@ export function PasswordForm() {
           Introduce tu email
         </Text>
         <Paper withBorder className={classes.paper}>
-          <UnstyledButton 
-            className={classes.return} 
+          <UnstyledButton
+            className={classes.return}
+            disabled={mutation.isPending}
             onClick={() => navigate("/login")}
           >
             <Center inline>
@@ -79,6 +80,7 @@ export function PasswordForm() {
             name='email'
             key={form.key('email')}
             label="Email"
+            disabled={mutation.isPending}
             placeholder="ejemplo@ejemplo.com"
             rightSectionPointerEvents="none"
             rightSection={<TbAt size={15} />}
@@ -89,6 +91,8 @@ export function PasswordForm() {
             <Button
               type="submit"
               className={classes.submit}
+              loading={mutation.isPending}
+              loaderProps={{ type: 'dots' }}
             >
               Enviar
             </Button>
