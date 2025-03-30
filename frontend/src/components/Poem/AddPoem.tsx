@@ -1,5 +1,4 @@
-import { PoemTextEditor } from "../PoemTextEditor";
-import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, Autocomplete, MultiSelect, Select } from "@mantine/core";
+import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, MultiSelect, Select } from "@mantine/core";
 import { AuthorPublicWithPoems, PoemCreate, PoemPublicWithAllTheInfo } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";

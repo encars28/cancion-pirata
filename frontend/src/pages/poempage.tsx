@@ -8,9 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import useAuth from '../hooks/useAuth';
 import { ShowPoem } from '../components/Poem/ShowPoem';
 import { EditPoem } from '../components/Poem/EditPoem';
-import { Button, Stack, Group, ActionIcon } from '@mantine/core';
+import { Button, Stack, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { TbX } from 'react-icons/tb';
 import { DeletePoem } from '../components/Poem/DeletePoem';
 
 export function PoemPage() {

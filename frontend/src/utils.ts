@@ -48,7 +48,6 @@ export async function callService<R, E, P=undefined>(
 export function createSearchData() {
   const { data: poemsData } = usePoems()
   const { data: authorsData } = useAuthors()
-  console.log(authorsData)
 
   const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []

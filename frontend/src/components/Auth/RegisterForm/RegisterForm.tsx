@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import classes from './RegisterForm.module.css';
 
-import { TbAbc, TbAt, TbUser, TbWriting } from "react-icons/tb";
+import { TbAbc, TbAt, TbUser } from "react-icons/tb";
 import useAuth from '../../../hooks/useAuth';
 import { useForm, isEmail, hasLength, isNotEmpty } from '@mantine/form'
 import { Form } from '@mantine/form';

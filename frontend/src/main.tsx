@@ -4,11 +4,8 @@ import App from './App.tsx'
 import {
   QueryClient,
   QueryClientProvider,
-  QueryCache,
-  MutationCache,
 } from "@tanstack/react-query"
 import { BrowserRouter } from 'react-router'
-
 
 
 const queryClient = new QueryClient({})
@@ -16,6 +13,7 @@ const queryClient = new QueryClient({})
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       <BrowserRouter>
         <App />
       </BrowserRouter>

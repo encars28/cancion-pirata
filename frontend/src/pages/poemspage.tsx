@@ -3,7 +3,7 @@ import { CardGrid } from "../components/Cards/CardGrid";
 import { Title } from "@mantine/core";
 import { handleError } from "../utils";
 import { Loading } from "../components/Loading";
-import { PoemPublicWithAllTheInfo, PoemsPublic } from "../client";
+import { PoemPublicWithAllTheInfo } from "../client";
 import { PoemCard } from "../components/Cards/PoemCard";
 import usePoems from "../hooks/usePoems";
 
