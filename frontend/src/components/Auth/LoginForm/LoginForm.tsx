@@ -60,7 +60,7 @@ export function LoginForm() {
         </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           ¿No tienes cuenta?{' '}
-          <Anchor onClick={() => navigate("/signup")} size="sm" component="button">
+          <Anchor onClick={() => navigate("/signup")} size="sm" component="button" disabled={loginMutation.isPending}>
             Regístrate
           </Anchor>
         </Text>
@@ -68,6 +68,7 @@ export function LoginForm() {
         <Paper withBorder className={classes.paper}>
           <Stack gap="lg">
             <TextInput
+              disabled={loginMutation.isPending}
               name='email'
               key={form.key('email')}
               label="Email"
@@ -78,6 +79,7 @@ export function LoginForm() {
               required
             />
             <PasswordInput
+              disabled={loginMutation.isPending}
               name='password'
               key={form.key('password')}
               label="Contraseña"
@@ -88,11 +90,11 @@ export function LoginForm() {
           </Stack>
           <Group justify="space-between" mt="lg">
             <Checkbox label="Recuérdame" />
-            <Anchor onClick={() => navigate("/password-recovery")} component="button" size="sm">
+            <Anchor onClick={() => navigate("/password-recovery")} component="button" size="sm" disabled={loginMutation.isPending}>
               ¿Olvidaste tu contraseña?
             </Anchor>
           </Group>
-          <Button fullWidth mt="xl" type='submit'>
+          <Button fullWidth mt="xl" type='submit' loading={loginMutation.isPending} loaderProps={{type: 'dots'}}>
             Iniciar sesión
           </Button>
         </Paper>
