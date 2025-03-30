@@ -1,31 +1,54 @@
-import { AppShell, Container, Group, RemoveScroll, Button, UnstyledButton } from '@mantine/core';
+import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar, Title } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useNavigate } from 'react-router';
-import { TbUser } from "react-icons/tb";
+import { TbUser, TbChevronRight, TbLock } from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
 import { isLoggedIn } from '../../hooks/useAuth';
 import useAuth from '../../hooks/useAuth';
+import { useState } from 'react';
+import { useDisclosure } from '@mantine/hooks';
 
 interface ShellProps {
   children: React.ReactNode;
+  navbar?: boolean
 }
 
-export function Shell({ children }: ShellProps) {
+export function Shell({ children, navbar }: ShellProps) {
   const navigate = useNavigate();
+  const [active, setActive] = useState('profile')
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+
   const { logout } = useAuth();
   return (
-    <AppShell header={{ height: 60 }}>
+    <AppShell
+      header={{ height: 60 }}
+      navbar={{
+        width: 300,
+        breakpoint: 'sm',
+        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+      }}>
+
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" px="md" className={classes.inner}>
-          <UnstyledButton onClick={() => navigate("/")} className={classes.link}>
-            Tremendo Logo
-          </UnstyledButton>
+          <Group px="xl">
+            {navbar && (
+              <>
+                <Burger opened={mobileOpened} onClick={toggleMobile} hiddenFrom="sm" size="sm" />
+                <Burger opened={desktopOpened} onClick={toggleDesktop} visibleFrom="sm" size="sm" />
+              </>
+            )}
+            <UnstyledButton onClick={() => navigate("/")} className={classes.link}>
+              Tremendo Logo
+            </UnstyledButton>
+          </Group>
+
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            { isLoggedIn() ? (
+            {isLoggedIn() ? (
               <Button
                 size="xs"
                 variant="filled"
@@ -40,18 +63,54 @@ export function Shell({ children }: ShellProps) {
               >
                 Login
               </Button>
-              )
+            )
             }
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
             <SearchControlMobile />
-            { !isLoggedIn() && <LoginControl /> }
+            {!isLoggedIn() && <LoginControl />}
           </Group>
 
         </Container>
       </AppShell.Header>
-
+      {navbar && (
+        <AppShell.Navbar>
+          <Stack 
+            align='center' 
+            gap="xs"
+            my="xl"
+          > 
+            <Avatar color="blue" name="Usuario" size="xl" />
+            <Title order={2}fw="inherit">Usuario</Title>
+          </Stack>
+          <Container p={0} w="100%">
+            <NavLink
+              px="lg"
+              label="Datos usuario"
+              leftSection={<TbUser size={16} />}
+              rightSection={
+                <TbChevronRight size={12} className="mantine-rotate-rtl" />
+              }
+              onClick={() => { setActive('profile'); navigate('/me/profile') }}
+              active={active === 'profile'}
+            />
+            <NavLink
+              px="lg"
+              label="Cambiar contraseña"
+              leftSection={<TbLock size={16} />}
+              rightSection={
+                <TbChevronRight size={12} className="mantine-rotate-rtl" />
+              }
+              onClick={() => { setActive('password'); navigate('/me/password') }}
+              active={active === 'password'}
+            />
+          </Container>
+          <Button m="xl" mt="45vh" onClick={() => logout()}>
+            Logout
+          </Button>
+        </AppShell.Navbar>
+      )}
       <AppShell.Main>
         <div className={classes.main}>{children}</div>
       </AppShell.Main>

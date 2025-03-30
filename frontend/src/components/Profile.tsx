@@ -41,7 +41,7 @@ export function Profile() {
           {opened ? 'Cerrar' : 'Editar'}
         </Button>
       </Group>
-      <Container size={600} ta="left">
+      <Container size={600} ta="left" mx="xl">
         <Title order={1} m="xl">Datos usuario</Title>
         <UserMe edit={opened} user={user} />
       </Container>
