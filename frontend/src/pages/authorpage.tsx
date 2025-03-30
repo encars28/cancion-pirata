@@ -4,14 +4,15 @@ import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
-import { Avatar, Button, Flex, Space, Tabs, Title, Container, Group } from '@mantine/core';
+import { Avatar, Button, Flex, Space, Tabs, Title, Container, Group, ActionIcon } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
-import { TbVocabulary } from "react-icons/tb";
+import { TbEye, TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
 import { EditAuthor } from '../components/Author/EditAuthor';
 import { DeleteAuthor } from '../components/Author/DeleteAuthor';
 import { useNavigate } from 'react-router';
 import { TableSort } from '../components/Tables/TableSort';
+import { DeletePoem } from '../components/Poem/DeletePoem';
 
 export function AuthorPage() {
   const params = useParams();
@@ -42,6 +43,12 @@ export function AuthorPage() {
       title: poem.title,
       created_at: poem.created_at?.toLocaleDateString() ?? 'Unknown',
       language: poem.language ?? 'Unknown',
+      actions: <Group gap="xs">
+        <ActionIcon variant='outline' onClick={() => navigate(`/poems/${poem.id}`)}>
+          <TbEye />
+        </ActionIcon>
+        <DeletePoem poem_id={poem.id} icon={true}/>
+      </Group>
     }
   })
 
@@ -49,6 +56,7 @@ export function AuthorPage() {
     title: 'Título',
     created_at: 'Fecha de creación',
     language: 'Idioma',
+    actions: 'Acciones'
   }
 
   return (

@@ -1,11 +1,12 @@
-import { Button, Modal, Group, Text } from '@mantine/core'
+import { Button, Modal, Group, Text, ActionIcon } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { poemsDeletePoem } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
+import { TbTrash } from 'react-icons/tb'
 
-export function DeletePoem({ poem_id }: { poem_id: string}) {
+export function DeletePoem({ poem_id, icon }: { poem_id: string, icon: boolean }) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
   const navigate = useNavigate()
@@ -35,12 +36,18 @@ export function DeletePoem({ poem_id }: { poem_id: string}) {
 
   return (
     <>
-      <Button
-        color="red"
-        onClick={open}
-      >
-        Eliminar poema
-      </Button>
+      {icon ? (
+        <ActionIcon color="red" onClick={open}>
+          <TbTrash />
+        </ActionIcon>
+      ) : (
+        <Button
+          color="red"
+          onClick={open}
+        >
+          Eliminar poema
+        </Button>
+      )}
       <Modal
         opened={opened}
         onClose={close}

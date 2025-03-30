@@ -43,7 +43,7 @@ export function PoemPage() {
           {((poem.author_ids && currentUser?.author_id && (poem.author_ids.includes(currentUser?.author_id))) || currentUser?.is_superuser) && (
             <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
               <Button variant="outline" onClick={open}>Editar poema</Button>
-              <DeletePoem poem_id={poem.id} />
+              <DeletePoem poem_id={poem.id} icon={false} />
             </Group>
           )}
           <ShowPoem poem={poem} />
