@@ -17,6 +17,7 @@ import { TableAuthors } from "./components/Tables/TableAuthors";
 import { TableUsers } from "./components/Tables/TableUsers";
 import { TablePoems } from "./components/Tables/TablePoems";
 import { Profile } from "./components/Profile";
+import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -57,6 +58,7 @@ export default function AllRoutes() {
         <Route path="/me" element={<MePage />}>
           <Route index element={<Profile />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="password" element={<UpdatePasswordForm />} />
           <Route path="*" element={<NothingFound />} />
         </Route>
       </Route>

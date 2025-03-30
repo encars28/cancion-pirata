@@ -22,14 +22,17 @@ export function Shell({ children, navbar }: ShellProps) {
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   const { logout } = useAuth();
+  const navwidth = navbar ? 300 : 0;
   return (
     <AppShell
+      layout='alt'
       header={{ height: 60 }}
       navbar={{
-        width: 300,
+        width: navwidth,
         breakpoint: 'sm',
         collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
-      }}>
+      }}
+      >
 
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" px="md" className={classes.inner}>
@@ -71,44 +74,49 @@ export function Shell({ children, navbar }: ShellProps) {
             <SearchControlMobile />
             {!isLoggedIn() && <LoginControl />}
           </Group>
-
         </Container>
       </AppShell.Header>
       {navbar && (
         <AppShell.Navbar>
-          <Stack 
-            align='center' 
-            gap="xs"
-            my="xl"
-          > 
-            <Avatar color="blue" name="Usuario" size="xl" />
-            <Title order={2}fw="inherit">Usuario</Title>
-          </Stack>
-          <Container p={0} w="100%">
-            <NavLink
-              px="lg"
-              label="Datos usuario"
-              leftSection={<TbUser size={16} />}
-              rightSection={
-                <TbChevronRight size={12} className="mantine-rotate-rtl" />
-              }
-              onClick={() => { setActive('profile'); navigate('/me/profile') }}
-              active={active === 'profile'}
-            />
-            <NavLink
-              px="lg"
-              label="Cambiar contraseña"
-              leftSection={<TbLock size={16} />}
-              rightSection={
-                <TbChevronRight size={12} className="mantine-rotate-rtl" />
-              }
-              onClick={() => { setActive('password'); navigate('/me/password') }}
-              active={active === 'password'}
-            />
-          </Container>
-          <Button m="xl" mt="45vh" onClick={() => logout()}>
-            Logout
-          </Button>
+          <AppShell.Section mt="md" px="lg">
+            <Stack
+              align='center'
+              gap="xs"
+              my="xl"
+            >
+              <Avatar color="blue" name="Usuario" size="xl" />
+              <Title order={2} fw="inherit">Usuario</Title>
+            </Stack>
+          </AppShell.Section>
+          <AppShell.Section grow>
+            <Container p={0} w="100%" mt="sm">
+              <NavLink
+                px="lg"
+                label="Datos usuario"
+                leftSection={<TbUser size={16} />}
+                rightSection={
+                  <TbChevronRight size={12} className="mantine-rotate-rtl" />
+                }
+                onClick={() => { setActive('profile'); navigate('/me/profile') }}
+                active={active === 'profile'}
+              />
+              <NavLink
+                px="lg"
+                label="Cambiar contraseña"
+                leftSection={<TbLock size={16} />}
+                rightSection={
+                  <TbChevronRight size={12} className="mantine-rotate-rtl" />
+                }
+                onClick={() => { setActive('password'); navigate('/me/password') }}
+                active={active === 'password'}
+              />
+            </Container>
+          </AppShell.Section>
+          <AppShell.Section px="lg" py="xl">
+            <Button onClick={() => logout()} mb="sm" fullWidth>
+              Logout
+            </Button>
+          </AppShell.Section>
         </AppShell.Navbar>
       )}
       <AppShell.Main>

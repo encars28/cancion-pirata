@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
 import { handleError, callService } from "../utils";
 import { useNavigate } from "react-router";
-import { Button, Container, Group, Title } from "@mantine/core";
+import { Button, Stack, Group, Title, Container } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { DeleteUserMe } from "./User/DeleteUserMe";
 
@@ -41,10 +41,11 @@ export function Profile() {
           {opened ? 'Cerrar' : 'Editar'}
         </Button>
       </Group>
-      <Container size={600} ta="left" mx="xl">
-        <Title order={1} m="xl">Datos usuario</Title>
+      <Title order={1} m="xl">Datos usuario</Title>
+      <Container size={550}>
         <UserMe edit={opened} user={user} />
       </Container>
+
     </>
   );
 }
