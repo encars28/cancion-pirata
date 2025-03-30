@@ -77,6 +77,7 @@ export function ResetPassword() {
         <Paper withBorder className={classes.paper}>
           <Stack>
             <PasswordInput
+              disabled={mutation.isPending}
               name='new_password'
               key={form.key('new_password')}
               label="Contraseña"
@@ -85,6 +86,7 @@ export function ResetPassword() {
               required
             />
             <PasswordInput
+              disabled={mutation.isPending}
               name='confirm_password'
               key={form.key('confirm_password')}
               label="Confirma tu contraseña"
@@ -95,6 +97,8 @@ export function ResetPassword() {
             <Button
               type="submit"
               mt="md"
+              loading={mutation.isPending}
+              loaderProps={{ type: 'dots' }}	
             >
               Cambiar contraseña
             </Button>
