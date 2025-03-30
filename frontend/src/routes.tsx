@@ -16,6 +16,7 @@ import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
 import { TableUsers } from "./components/Tables/TableUsers";
 import { TablePoems } from "./components/Tables/TablePoems";
+import { Profile } from "./components/Profile";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -39,16 +40,25 @@ export default function AllRoutes() {
   return (
     <Routes>
       <Route path="/" element={<MainPage />} />
-      <Route path="/poems" element={<PoemsPage />} />
-      <Route path="/poems/:id" element={<PoemPage />} />
-      <Route path="/poems/add" element={<AddPoemPage />} />
-      <Route path="/authors" element={<AuthorsPage />} />
-      <Route path="/authors/:id" element={<AuthorPage />} />
       <Route path="/signup" element={<RegisterPage />} />
       <Route path="/password-recovery" element={<PasswordPage />} />
 
+      <Route path="/poems" element={<PoemsPage />}>
+        <Route path=":id" element={<PoemPage />} />
+        <Route path="*" element={<NothingFound />} />
+      </Route>
+
+      <Route path="/authors" element={<AuthorsPage />}>
+        <Route path=":id" element={<AuthorPage />} />
+        <Route path="*" element={<NothingFound />} />
+      </Route>
+
       <Route element={<ProtectedRoute isAllowed={isLoggedIn()} />}>
-        <Route path="/me" element={<MePage />} />
+        <Route path="/me" element={<MePage />}>
+          <Route index element={<Profile />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="*" element={<NothingFound />} />
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={!isLoggedIn()} />}>
@@ -59,10 +69,10 @@ export default function AllRoutes() {
       <Route element={<ProtectedRoute isAllowed={true} />}>
         <Route path="/admin" element={<AdminPage />}>
           <Route index element={<TableUsers />} />
-            <Route path="authors" element={<TableAuthors />} />
-            <Route path="users" element={<TableUsers />} />
-            <Route path="poems" element={<TablePoems />} />
-            <Route path="*" element={<NothingFound />} />
+          <Route path="authors" element={<TableAuthors />} />
+          <Route path="users" element={<TableUsers />} />
+          <Route path="poems" element={<TablePoems />} />
+          <Route path="*" element={<NothingFound />} />
         </Route>
       </Route>
 
