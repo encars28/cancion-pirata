@@ -5,12 +5,13 @@ import { UserPublic, usersReadUsers } from "../client";
 import { Loading } from "../components/Loading";
 import { TableSort } from "../components/Tables/TableSort";
 import {
-  Group, Pagination, Stack
+  Group, Pagination, Stack, Tabs
 } from "@mantine/core";
 import { AddUser } from "../components/User/AddUser";
 import { EditUser } from "../components/User/EditUser";
 import { DeleteUser } from "../components/User/DeleteUser";
 import { useNavigate, useSearchParams } from "react-router";
+import { FloatingTabs } from "../components/FloatingTabs/FloatingTabs";
 
 const PER_PAGE = 15
 
@@ -72,35 +73,43 @@ export function AdminPage() {
 
   return (
     <Shell>
-      <Group
-        justify="flex-end"
-        mt="xl"
-        mb="md"
-        mr={{ base: "xl", sm: 60 }}
-      >
-        <AddUser />
-      </Group>
-      <Stack
-        align="center"
-        mr={{ base: "xl", lg: 60 }}
-        ml={{ base: "xl", lg: 60 }}
-        mt="xl"
-        mb="xl"
-        gap="xl"
-      >
-        <TableSort 
-          headers={userHeaders} 
-          data={userData} 
-          miw={960}
-        />
-        <Pagination 
-          style={{bottom: 60, position: "fixed"}}
-          siblings={3} 
-          total={count / PER_PAGE} 
-          onChange={(page) => setPage(page)}
-          disabled={count <= PER_PAGE}
-        />
-      </Stack>
-    </Shell>
+      <FloatingTabs
+        data={
+          {
+            "Usuarios": (
+              <>
+                <Group
+                  justify="flex-end"
+                  mb="xl"
+                  mr={{ base: 0, lg: "lg" }}
+                >
+                  <AddUser />
+                </Group>
+                <Stack
+                  align="center"
+                  gap="xl"
+                  mr={{ base: 0, lg: "lg" }}
+                  ml={{ base: 0, lg: "lg" }}
+                >
+                  <TableSort
+                    headers={userHeaders}
+                    data={userData}
+                    miw={960}
+                  />
+                  <Pagination
+                    style={{ bottom: 60, position: "fixed" }}
+                    siblings={3}
+                    total={count / PER_PAGE}
+                    onChange={(page) => setPage(page)}
+                    disabled={count <= PER_PAGE}
+                  />
+                </Stack>
+              </>
+            )
+          }
+        }
+      />
+
+    </Shell >
   );
 }
