@@ -11,14 +11,6 @@ import { useDisclosure } from '@mantine/hooks';
 export function EditAuthor({ author, icon }: { author: AuthorPublicWithPoems, icon?: boolean }) {
   const [opened, { open, close }] = useDisclosure()
 
-  const form = useForm<AuthorUpdate>({
-    mode: 'uncontrolled',
-    initialValues: {
-      ...author,
-      full_name: '',
-    }
-  })
-
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: AuthorUpdate) =>
@@ -36,6 +28,19 @@ export function EditAuthor({ author, icon }: { author: AuthorPublicWithPoems, ic
       queryClient.invalidateQueries({ queryKey: ["authors"] })
     },
   })
+
+
+  const form = useForm<AuthorUpdate>({
+    mode: 'uncontrolled',
+    initialValues: {
+      ...author,
+      full_name: '',
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  })
+
 
   const handleSubmit = async () => {
     try {
@@ -77,24 +82,22 @@ export function EditAuthor({ author, icon }: { author: AuthorPublicWithPoems, ic
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" pb="md">
             <TextInput
-              disabled={mutation.isPending}
               name='full_name'
-              key={form.key('full_name')}
               label="Nombre completo"
               placeholder={author.full_name}
               {...form.getInputProps('full_name')}
+              key={form.key('full_name')}
             />
             <DateInput
               clearable
-              disabled={mutation.isPending}
               name='birth_date'
-              key={form.key('birth_date')}
               leftSection={<TbCalendar size={18} />}
               leftSectionPointerEvents="none"
               label="Fecha de nacimiento"
               placeholder="Fecha de nacimiento"
               valueFormat="DD/MM/YYYY"
               {...form.getInputProps('birth_date')}
+              key={form.key('birth_date')}
             />
             <Group
               justify='flex-end'

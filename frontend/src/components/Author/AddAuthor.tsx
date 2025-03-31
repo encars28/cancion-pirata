@@ -4,24 +4,12 @@ import { DateInput } from '@mantine/dates';
 import { TbCalendar } from "react-icons/tb";
 import { AuthorCreate, HttpValidationError } from '../../client/types.gen';
 import { callService, handleError, handleSuccess } from '../../utils';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Mutation, useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsCreateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 
 export function AddAuthor() {
   const [opened, { open, close }] = useDisclosure()
-
-  const form = useForm<AuthorCreate>({
-    mode: 'uncontrolled',
-    initialValues: {
-      full_name: '',
-      birth_date: null,
-    },
-    validate: {
-      full_name: isNotEmpty('El nombre es requerido'),
-    }
-  })
-
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: AuthorCreate) =>
@@ -38,6 +26,20 @@ export function AddAuthor() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["authors"] })
     },
+  })
+
+  const form = useForm<AuthorCreate>({
+    mode: 'uncontrolled',
+    initialValues: {
+      full_name: '',
+      birth_date: null,
+    },
+    validate: {
+      full_name: isNotEmpty('El nombre es requerido'),
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
   })
 
   const handleSubmit = async (values: typeof form.values) => {
@@ -69,24 +71,22 @@ export function AddAuthor() {
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" pb="md">
             <TextInput
-              disabled={mutation.isPending}
               name='full_name'
-              key={form.key('full_name')}
               label="Nombre completo"
               placeholder="Nombre completo"
               {...form.getInputProps('full_name')}
+              key={form.key('full_name')}
               required
             />
             <DateInput
               clearable
-              disabled={mutation.isPending}
               name='birth_date'
-              key={form.key('birth_date')}
               leftSection={<TbCalendar size={18} />}
               leftSectionPointerEvents="none"
               label="Fecha de nacimiento"
               placeholder="Fecha de nacimiento"
               valueFormat="DD/MM/YYYY"
+              key={form.key('birth_date')}
               {...form.getInputProps('birth_date')}
             />
             <Group

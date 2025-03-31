@@ -10,23 +10,6 @@ import { useDisclosure } from '@mantine/hooks';
 export function AddUser() {
   const [opened, { open, close }] = useDisclosure()
 
-  const form = useForm<UserCreate>({
-    mode: 'uncontrolled',
-    initialValues: {
-      email: '',
-      password: '',
-      username: '',
-      full_name: '',
-      is_superuser: false,
-      is_active: true,
-    },
-    validate: {
-      email: isEmail('Correo electrónico inválido'),
-      password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
-      username: isNotEmpty('Nombre de usuario requerido'),
-    }
-  })
-
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: UserCreate) =>
@@ -43,7 +26,30 @@ export function AddUser() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
     },
+    
   })
+
+  const form = useForm<UserCreate>({
+    mode: 'uncontrolled',
+    initialValues: {
+      email: '',
+      password: '',
+      username: '',
+      full_name: '',
+      is_superuser: false,
+      is_active: true,
+    },
+    validate: {
+      email: isEmail('Correo electrónico inválido'),
+      password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
+      username: isNotEmpty('Nombre de usuario requerido'),
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  })
+
+
 
   const handleSubmit = async () => {
     try {
@@ -79,7 +85,6 @@ export function AddUser() {
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" p="sm">
             <TextInput
-              disabled={mutation.isPending}
               name='email'
               key={form.key('email')}
               label="Email"
@@ -90,7 +95,6 @@ export function AddUser() {
               required
             />
             <PasswordInput
-              disabled={mutation.isPending}
               name='password'
               key={form.key('password')}
               label="Contraseña"
@@ -99,7 +103,6 @@ export function AddUser() {
               required
             />
             <TextInput
-              disabled={mutation.isPending}
               name='username'
               key={form.key('username')}
               label="Nombre de usuario"
@@ -110,7 +113,6 @@ export function AddUser() {
               required
             />
             <TextInput
-              disabled={mutation.isPending}
               name='full_name'
               key={form.key('full_name')}
               label="Nombre completo"
@@ -120,7 +122,6 @@ export function AddUser() {
               {...form.getInputProps('full_name')}
             />
             <Checkbox
-              disabled={mutation.isPending}
               mt="sm"
               defaultChecked
               key={form.key('is_active')}
@@ -128,7 +129,6 @@ export function AddUser() {
               label="Activo"
             />
             <Checkbox
-              disabled={mutation.isPending}
               key={form.key('is_superuser')}
               {...form.getInputProps('is_superuser')}
               label="Administrador"

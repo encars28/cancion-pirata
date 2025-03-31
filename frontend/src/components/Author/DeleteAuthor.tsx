@@ -4,7 +4,7 @@ import { authorsDeleteAuthor } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
-import { TbTable, TbTrash } from 'react-icons/tb'
+import { TbTrash } from 'react-icons/tb'
 
 export function DeleteAuthor({ author_id, icon }: { author_id: string, icon?: boolean }) {
   const queryClient = useQueryClient()

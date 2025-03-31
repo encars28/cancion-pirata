@@ -21,6 +21,24 @@ export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
   const [adminOpened, { toggle: adminToggle }] = useDisclosure(false);
 
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async (data: PoemCreate) =>
+      callService(poemsCreatePoem, { body: data }),
+    onSuccess: () => {
+      handleSuccess()
+      close()
+    },
+
+    onError: (error: HttpValidationError) => {
+      handleError(error)
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["poems"] })
+    },
+  })
+
   const form = useForm<PoemCreate>({
     mode: 'uncontrolled',
     initialValues: {
@@ -36,7 +54,10 @@ export function AddPoem() {
     validate: {
       title: isNotEmpty('El título no puede estar vacío'),
       content: isNotEmpty('El contenido no puede estar vacío')
-    }
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
   });
 
   const { data: authorsData } = useAuthors()
@@ -66,23 +87,7 @@ export function AddPoem() {
   ]
   const { user: currentUser } = useAuth()
 
-  const queryClient = useQueryClient()
-  const mutation = useMutation({
-    mutationFn: async (data: PoemCreate) =>
-      callService(poemsCreatePoem, { body: data }),
-    onSuccess: () => {
-      handleSuccess()
-      close()
-    },
 
-    onError: (error: HttpValidationError) => {
-      handleError(error)
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["poems"] })
-    },
-  })
 
   const handleSubmit = async () => {
     try {
@@ -122,19 +127,17 @@ export function AddPoem() {
             <Stack gap="xs">
               <TextInput
                 required
-                disabled={mutation.isPending}
                 name='title'
-                key={form.key('title')}
                 label="Título"
                 placeholder="Tu título"
+                key={form.key('title')}
                 {...form.getInputProps('title')}
               />
               <TextInput
-                disabled={mutation.isPending}
                 name='language'
-                key={form.key('language')}
                 label="Idioma"
                 placeholder="es"
+                key={form.key('language')}
                 {...form.getInputProps('language')}
               />
             </Stack>
@@ -148,14 +151,12 @@ export function AddPoem() {
               <Stack>
                 <Checkbox
                   defaultChecked
-                  disabled={mutation.isPending}
                   key={form.key('is_public')}
                   {...form.getInputProps('is_public')}
                   label="Poema público"
                 />
                 <Checkbox
                   defaultChecked
-                  disabled={mutation.isPending}
                   key={form.key('show_author')}
                   {...form.getInputProps('show_author')}
                   label="Mostrar autor"
@@ -186,11 +187,10 @@ export function AddPoem() {
               <Tabs.Panel value="editor">
                 <Textarea
                   required
-                  disabled={mutation.isPending}
                   mt="lg"
                   name='content'
-                  key={form.key('content')}
                   placeholder="Tu contenido"
+                  key={form.key('content')}
                   {...form.getInputProps('content')}
                 />
               </Tabs.Panel>
@@ -211,25 +211,23 @@ export function AddPoem() {
                   <Select
                     allowDeselect
                     searchable
-                    disabled={mutation.isPending}
                     nothingFoundMessage="No hay nada aquí..."
                     name='original_poem_id'
-                    key={form.key('original_poem_id')}
                     label="Poema original"
                     placeholder="Escribe para buscar un poema"
                     data={poems_ids}
+                    key={form.key('original_poem_id')}
                     {...form.getInputProps('original_poem_id')}
                   />
                   <Select
                     allowDeselect
-                    disabled={mutation.isPending}
                     nothingFoundMessage="No hay nada aquí..."
                     checkIconPosition="right"
                     name='type'
-                    key={form.key('type')}
                     label="Tipo de poema"
                     placeholder="Selecciona el tipo de poema"
                     data={typeData}
+                    key={form.key('type')}
                     {...form.getInputProps('type')}
                   />
                 </Stack>
@@ -252,12 +250,11 @@ export function AddPoem() {
                   <Stack gap="xs">
                     <MultiSelect
                       searchable
-                      disabled={mutation.isPending}
                       name='author_ids'
-                      key={form.key('author_ids')}
                       label="Autores"
                       placeholder="Escribe para buscar un autor"
                       data={author_ids}
+                      key={form.key('author_ids')}
                       {...form.getInputProps('author_ids')}
                     />
                   </Stack>

@@ -22,23 +22,6 @@ interface ResetPasswordForm extends NewPassword {
 export function ResetPassword() {
   const navigate = useNavigate()
 
-  const form = useForm<ResetPasswordForm>({
-    mode: 'uncontrolled',
-    validate: {
-      new_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
-      confirm_password: (value, values) => {
-        if (value !== values.new_password) {
-          return 'Las contraseñas no coinciden'
-        }
-      }
-    },
-    initialValues: {
-      new_password: '',
-      confirm_password: '',
-      token: '',
-    }
-  })
-
   const resetPassword = async (data: NewPassword) => {
     const token = new URLSearchParams(window.location.search).get("token")
     if (!token) {
@@ -59,6 +42,26 @@ export function ResetPassword() {
     },
   })
 
+  const form = useForm<ResetPasswordForm>({
+    mode: 'uncontrolled',
+    validate: {
+      new_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
+      confirm_password: (value, values) => {
+        if (value !== values.new_password) {
+          return 'Las contraseñas no coinciden'
+        }
+      }
+    },
+    initialValues: {
+      new_password: '',
+      confirm_password: '',
+      token: '',
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  })
+
   const handleSubmit = async (values: typeof form.values) => {
     try {
       await mutation.mutateAsync(values)
@@ -77,21 +80,19 @@ export function ResetPassword() {
         <Paper withBorder className={classes.paper}>
           <Stack>
             <PasswordInput
-              disabled={mutation.isPending}
               name='new_password'
-              key={form.key('new_password')}
               label="Contraseña"
               placeholder="Tu contraseña"
               {...form.getInputProps('new_password')}
+              key={form.key('new_password')}
               required
             />
             <PasswordInput
-              disabled={mutation.isPending}
               name='confirm_password'
-              key={form.key('confirm_password')}
               label="Confirma tu contraseña"
               placeholder="Tu contraseña"
               {...form.getInputProps('confirm_password')}
+              key={form.key('confirm_password')}
               required
             />
             <Button

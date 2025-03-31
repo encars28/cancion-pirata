@@ -15,18 +15,6 @@ import { useNavigate } from 'react-router';
 export function UpdatePasswordForm() {
   const navigate = useNavigate()
 
-  const form = useForm<UpdatePassword>({
-    mode: 'uncontrolled',
-    validate: {
-      current_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
-      new_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres')
-    },
-    initialValues: {
-      new_password: '',
-      current_password: '',
-    }
-  })
-
   const mutation = useMutation({
     mutationFn: async (data: UpdatePassword) => {
       await callService(usersUpdatePasswordMe, { body: data })
@@ -39,6 +27,23 @@ export function UpdatePasswordForm() {
       handleError(error)
     },
   })
+
+  const form = useForm<UpdatePassword>({
+    mode: 'uncontrolled',
+    validate: {
+      current_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
+      new_password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres')
+    },
+    initialValues: {
+      new_password: '',
+      current_password: '',
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  })
+
+
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
@@ -57,7 +62,6 @@ export function UpdatePasswordForm() {
       <Form form={form} onSubmit={handleSubmit}>
         <Stack ta="left">
           <PasswordInput
-            disabled={mutation.isPending}
             name='current_password'
             key={form.key('current_password')}
             label="Contraseña"
@@ -66,7 +70,6 @@ export function UpdatePasswordForm() {
             required
           />
           <PasswordInput
-            disabled={mutation.isPending}
             name='new_password'
             key={form.key('new_password')}
             label="Nueva contraseña"

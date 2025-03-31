@@ -8,17 +8,6 @@ import { HttpValidationError } from '../../client/types.gen';
 
 
 export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
-  const form = useForm<UserUpdateMe>({
-    mode: 'uncontrolled',
-    initialValues: {
-      ...user,
-    },
-    validate: {
-      email: isEmail('Correo inválido'),
-      username: isNotEmpty('Nombre de usuario no puede estar vacío'),
-    }
-  });
-
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: UserUpdateMe) => 
@@ -35,6 +24,22 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
       queryClient.invalidateQueries({ queryKey: ["users"] })
     },
   })
+
+  const form = useForm<UserUpdateMe>({
+    mode: 'uncontrolled',
+    initialValues: {
+      ...user,
+    },
+    validate: {
+      email: isEmail('Correo inválido'),
+      username: isNotEmpty('Nombre de usuario no puede estar vacío'),
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  });
+
+
 
   const handleSubmit = async () => {
     try {
@@ -54,7 +59,6 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
     <Form form={form} onSubmit={handleSubmit}>
         <Stack ta="left">
           <TextInput
-            disabled={mutation.isPending}
             name='email'
             key={form.key('email')}
             label="Correo"
@@ -66,7 +70,6 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
             readOnly={!edit}
           />
           <TextInput
-            disabled={mutation.isPending}
             name='username'
             key={form.key('username')}
             label="Nombre de usuario"
@@ -77,7 +80,6 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
             readOnly={!edit}
           />
           <TextInput
-            disabled={mutation.isPending}
             name='full_name'
             key={form.key('full_name')}
             label="Nombre completo"

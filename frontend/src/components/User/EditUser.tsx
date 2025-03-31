@@ -16,18 +16,6 @@ export function EditUser({ user }: { user: UserPublic }) {
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
   const author_ids = authors.map(author => author.id) ?? []
 
-  const form = useForm<UserUpdate>({
-    mode: 'uncontrolled',
-    initialValues: {
-      ...user,
-    },
-    validate: {
-      email: isEmail('Correo electrónico inválido'),
-      password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
-      username: isNotEmpty('Nombre de usuario requerido'),
-    }
-  })
-
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: UserUpdate) =>
@@ -45,6 +33,23 @@ export function EditUser({ user }: { user: UserPublic }) {
       queryClient.invalidateQueries({ queryKey: ["users"] })
     },
   })
+
+  const form = useForm<UserUpdate>({
+    mode: 'uncontrolled',
+    initialValues: {
+      ...user,
+    },
+    validate: {
+      email: isEmail('Correo electrónico inválido'),
+      password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 8 caracteres'),
+      username: isNotEmpty('Nombre de usuario requerido'),
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+    }),
+  })
+
+
 
   const handleSubmit = async () => {
     try {
@@ -77,7 +82,6 @@ export function EditUser({ user }: { user: UserPublic }) {
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" p="sm">
             <TextInput
-              disabled={mutation.isPending}
               name='email'
               key={form.key('email')}
               label="Email"
@@ -87,7 +91,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               {...form.getInputProps('email')}
             />
             <PasswordInput
-              disabled={mutation.isPending}
               name='password'
               key={form.key('password')}
               label="Contraseña"
@@ -95,7 +98,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               {...form.getInputProps('password')}
             />
             <TextInput
-              disabled={mutation.isPending}
               name='username'
               key={form.key('username')}
               label="Nombre de usuario"
@@ -105,7 +107,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               {...form.getInputProps('username')}
             />
             <TextInput
-              disabled={mutation.isPending}
               name='full_name'
               key={form.key('full_name')}
               label="Nombre completo"
@@ -117,7 +118,6 @@ export function EditUser({ user }: { user: UserPublic }) {
             <Select
               searchable
               clearable
-              disabled={mutation.isPending}
               name='author_id'
               key={form.key('author_id')}
               label="Autores"
@@ -126,7 +126,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               {...form.getInputProps('author_id')}
             />
             <Checkbox
-              disabled={mutation.isPending}
               mt="sm"
               defaultChecked={user.is_active}
               key={form.key('is_active')}
@@ -134,7 +133,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               label="Activo"
             />
             <Checkbox
-              disabled={mutation.isPending}
               defaultChecked={user.is_superuser}
               key={form.key('is_superuser')}
               {...form.getInputProps('is_superuser')}

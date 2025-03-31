@@ -37,7 +37,11 @@ export function LoginForm() {
     initialValues: {
       email: '',
       password: ''
-    }
+    },
+    enhanceGetInputProps: () => ({
+      disabled: loginMutation.isPending,
+    }),
+
   })
 
   // Form submission
@@ -68,23 +72,21 @@ export function LoginForm() {
         <Paper withBorder className={classes.paper}>
           <Stack gap="lg">
             <TextInput
-              disabled={loginMutation.isPending}
               name='email'
-              key={form.key('email')}
               label="Email"
               placeholder="ejemplo@ejemplo.com"
               rightSectionPointerEvents="none"
               rightSection={<TbAt size={15} />}
               {...form.getInputProps('email')}
+              key={form.key('email')}
               required
             />
             <PasswordInput
-              disabled={loginMutation.isPending}
               name='password'
-              key={form.key('password')}
               label="Contraseña"
               placeholder="Tu contraseña"
               {...form.getInputProps('password')}
+              key={form.key('password')}
               required
             />
           </Stack>

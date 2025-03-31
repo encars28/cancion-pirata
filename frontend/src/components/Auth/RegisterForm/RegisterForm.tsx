@@ -35,7 +35,10 @@ export function RegisterForm() {
       password: '',
       username: '',
       full_name: '',
-    }
+    },
+    enhanceGetInputProps: () => ({
+      disabled: signUpMutation.isPending,
+    }),
   })
 
   // Form submission
@@ -74,50 +77,46 @@ export function RegisterForm() {
           <Grid grow gutter="lg">
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
-                disabled={signUpMutation.isPending}
                 name='full_name'
-                key={form.key('full_name')}
                 label="Nombre completo"
                 placeholder="Tu nombre"
                 rightSectionPointerEvents="none"
                 rightSection={<TbAbc size={15} />}
+                key={form.key('full_name')}
                 {...form.getInputProps('full_name')}
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
 
               <TextInput
-                disabled={signUpMutation.isPending}
                 name='username'
-                key={form.key('username')}
                 label="Nombre de usuario"
                 placeholder="Tu nombre de usuario"
                 rightSectionPointerEvents="none"
                 rightSection={<TbUser size={15} />}
+                key={form.key('username')}
                 {...form.getInputProps('username')}
                 required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <TextInput
-                disabled={signUpMutation.isPending}
                 name='email'
-                key={form.key('email')}
                 label="Email"
                 placeholder="ejemplo@ejemplo.com"
                 rightSectionPointerEvents="none"
                 rightSection={<TbAt size={15} />}
+                key={form.key('email')}
                 {...form.getInputProps('email')}
                 required
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, sm: 6 }}>
               <PasswordInput
-                disabled={signUpMutation.isPending}
                 name='password'
-                key={form.key('password')}
                 label="Contraseña"
                 placeholder="Tu contraseña"
+                key={form.key('password')}
                 {...form.getInputProps('password')}
                 required
               />

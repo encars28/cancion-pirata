@@ -21,15 +21,6 @@ import { useNavigate } from 'react-router';
 
 export function PasswordForm() {
   const navigate = useNavigate()
-  const form = useForm<{ email: string }>({
-    mode: 'uncontrolled',
-    validate: {
-      email: isEmail("Correo inválido")
-    },
-    initialValues: {
-      email: ''
-    }
-  })
 
   const mutation = useMutation({
     mutationFn: async (data: string) =>
@@ -40,6 +31,21 @@ export function PasswordForm() {
     onError: (error: HttpValidationError) => {
       handleError(error)
     }
+  })
+
+  const form = useForm<{ email: string }>({
+    mode: 'uncontrolled',
+    validate: {
+      email: isEmail("Correo inválido")
+    },
+    initialValues: {
+      email: ''
+    },
+    enhanceGetInputProps: () => ({
+      disabled: mutation.isPending,
+      className: classes.input,
+    }),
+
   })
 
   const handleSubmit = async () => {
@@ -76,14 +82,12 @@ export function PasswordForm() {
             </Center>
           </UnstyledButton>
           <TextInput
-            className={classes.input}
             name='email'
-            key={form.key('email')}
             label="Email"
-            disabled={mutation.isPending}
             placeholder="ejemplo@ejemplo.com"
             rightSectionPointerEvents="none"
             rightSection={<TbAt size={15} />}
+            key={form.key('email')}
             {...form.getInputProps('email')}
             required
           />
