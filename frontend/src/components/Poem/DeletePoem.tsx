@@ -63,7 +63,7 @@ export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean 
           <Button onClick={close} variant="default">
             Cancelar
           </Button>
-          <Button onClick={deletePoem} color="red">
+          <Button onClick={deletePoem} color="red" loading={mutation.isPending} loaderProps={{type: 'dots'}}>
             Eliminar
           </Button>
         </Group>

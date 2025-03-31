@@ -122,6 +122,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
           <Grid.Col span={{ base: 24, sm: 17 }}>
             <Stack gap="xs">
               <TextInput
+                disabled={mutation.isPending}
                 name='title'
                 key={form.key('title')}
                 label="Título"
@@ -129,6 +130,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                 {...form.getInputProps('title')}
               />
               <TextInput
+                disabled={mutation.isPending}
                 name='language'
                 key={form.key('language')}
                 label="Idioma"
@@ -145,12 +147,14 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
             >
               <Stack>
                 <Checkbox
+                  disabled={mutation.isPending}
                   defaultChecked={poem.is_public}
                   key={form.key('is_public')}
                   {...form.getInputProps('is_public')}
                   label="Poema público"
                 />
                 <Checkbox
+                  disabled={mutation.isPending}
                   defaultChecked={poem.show_author}
                   key={form.key('show_author')}
                   {...form.getInputProps('show_author')}
@@ -181,6 +185,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               </Tabs.Panel> */}
               <Tabs.Panel value="editor">
                 <Textarea
+                  disabled={mutation.isPending}
                   mt="lg"
                   name='content'
                   key={form.key('content')}
@@ -205,6 +210,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                   <Stack gap="xs">
                     <MultiSelect
                       searchable
+                      disabled={mutation.isPending}
                       name='author_ids'
                       key={form.key('author_ids')}
                       label="Autores"
@@ -215,6 +221,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                     <Select
                       allowDeselect
                       searchable
+                      disabled={mutation.isPending}
                       nothingFoundMessage="No hay nada aquí..."
                       name='original_poem_id'
                       key={form.key('original_poem_id')}
@@ -225,6 +232,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                     />
                     <Select
                       allowDeselect
+                      disabled={mutation.isPending}
                       nothingFoundMessage="No hay nada aquí..."
                       checkIconPosition="right"
                       name='type'
@@ -245,6 +253,8 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               <Button
                 type="submit"
                 w={150}
+                loading={mutation.isPending}
+                loaderProps={{ type: 'dots' }}
               >
                 Guardar
               </Button>

@@ -122,6 +122,7 @@ export function AddPoem() {
             <Stack gap="xs">
               <TextInput
                 required
+                disabled={mutation.isPending}
                 name='title'
                 key={form.key('title')}
                 label="Título"
@@ -129,6 +130,7 @@ export function AddPoem() {
                 {...form.getInputProps('title')}
               />
               <TextInput
+                disabled={mutation.isPending}
                 name='language'
                 key={form.key('language')}
                 label="Idioma"
@@ -146,12 +148,14 @@ export function AddPoem() {
               <Stack>
                 <Checkbox
                   defaultChecked
+                  disabled={mutation.isPending}
                   key={form.key('is_public')}
                   {...form.getInputProps('is_public')}
                   label="Poema público"
                 />
                 <Checkbox
                   defaultChecked
+                  disabled={mutation.isPending}
                   key={form.key('show_author')}
                   {...form.getInputProps('show_author')}
                   label="Mostrar autor"
@@ -182,6 +186,7 @@ export function AddPoem() {
               <Tabs.Panel value="editor">
                 <Textarea
                   required
+                  disabled={mutation.isPending}
                   mt="lg"
                   name='content'
                   key={form.key('content')}
@@ -206,6 +211,7 @@ export function AddPoem() {
                   <Select
                     allowDeselect
                     searchable
+                    disabled={mutation.isPending}
                     nothingFoundMessage="No hay nada aquí..."
                     name='original_poem_id'
                     key={form.key('original_poem_id')}
@@ -216,6 +222,7 @@ export function AddPoem() {
                   />
                   <Select
                     allowDeselect
+                    disabled={mutation.isPending}
                     nothingFoundMessage="No hay nada aquí..."
                     checkIconPosition="right"
                     name='type'
@@ -245,6 +252,7 @@ export function AddPoem() {
                   <Stack gap="xs">
                     <MultiSelect
                       searchable
+                      disabled={mutation.isPending}
                       name='author_ids'
                       key={form.key('author_ids')}
                       label="Autores"
@@ -262,6 +270,8 @@ export function AddPoem() {
               <Button
                 type="submit"
                 w={150}
+                loaderProps={{ type: 'dots' }}
+                loading={mutation.isPending}
               >
                 Guardar
               </Button>
