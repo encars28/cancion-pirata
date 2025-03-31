@@ -69,6 +69,7 @@ export function AddAuthor() {
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" pb="md">
             <TextInput
+              disabled={mutation.isPending}
               name='full_name'
               key={form.key('full_name')}
               label="Nombre completo"
@@ -78,6 +79,7 @@ export function AddAuthor() {
             />
             <DateInput
               clearable
+              disabled={mutation.isPending}
               name='birth_date'
               key={form.key('birth_date')}
               leftSection={<TbCalendar size={18} />}
@@ -100,6 +102,8 @@ export function AddAuthor() {
               <Button
                 variant='filled'
                 type='submit'
+                loading={mutation.isPending}
+                loaderProps={{type: 'dots'}}
               >
                 Guardar
               </Button>

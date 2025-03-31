@@ -66,7 +66,7 @@ export function DeleteAuthor({ author_id, icon }: { author_id: string, icon?: bo
           <Button onClick={close} variant="default">
             Cancelar
           </Button>
-          <Button onClick={deleteAuthor} color="red">
+          <Button onClick={deleteAuthor} color="red" loading={mutation.isPending} loaderProps={{type: 'dots'}}>
             Eliminar
           </Button>
         </Group>
