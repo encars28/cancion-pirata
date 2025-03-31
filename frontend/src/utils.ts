@@ -1,9 +1,12 @@
 import { notifications } from "@mantine/notifications"
-import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo } from "./client/types.gen"
+import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo, UserPublic } from "./client/types.gen"
 import classes from "./notifications.module.css"
 import { RequestResult } from "@hey-api/client-fetch";
 import useAuthors  from "./hooks/useAuthors";
 import usePoems  from "./hooks/usePoems";
+import useAuth from "./hooks/useAuth";
+import { usersReadUsers } from "./client";
+import { useQuery } from "@tanstack/react-query";
 
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
@@ -48,11 +51,21 @@ export async function callService<R, E, P=undefined>(
 export function createSearchData() {
   const { data: poemsData } = usePoems()
   const { data: authorsData } = useAuthors()
+  const { user } = useAuth()
+
+  const { data: usersData } = useQuery(
+    {
+      queryKey: ['users'],
+      queryFn: async () => callService(usersReadUsers),
+      placeholderData: (prevData) => prevData,
+    })
+
+  const users: UserPublic[] = usersData?.data ?? []
 
   const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
 
-  return authors.map(
+  const data =  authors.map(
     (author) => ({
       label: author.full_name,
       description: "Autor",
@@ -65,4 +78,14 @@ export function createSearchData() {
       url: `/poems/${poem.id}`
   })))
 
+  if (user?.is_superuser) {
+    // TODO: Change the url to the user profile
+    data.push(...users.map(
+      (user) => ({
+        label: user.username,
+        description: "Usuario",
+        url: "/"
+    })))
+  }
+  return data
 }

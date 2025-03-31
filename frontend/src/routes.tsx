@@ -40,22 +40,17 @@ const ProtectedRoute = ({
 export default function AllRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/signup" element={<RegisterPage />} />
-      <Route path="/password-recovery" element={<PasswordPage />} />
+      <Route index element={<MainPage />} />
+      <Route path="signup" element={<RegisterPage />} />
+      <Route path="password-recovery" element={<PasswordPage />} />
 
-      <Route path="/poems" element={<PoemsPage />}>
-        <Route path=":id" element={<PoemPage />} />
-        <Route path="*" element={<NothingFound />} />
-      </Route>
-
-      <Route path="/authors" element={<AuthorsPage />}>
-        <Route path=":id" element={<AuthorPage />} />
-        <Route path="*" element={<NothingFound />} />
-      </Route>
+      <Route path="poems" element={<PoemsPage />} />
+      <Route path="poems/:id" element={<PoemPage />} />
+      <Route path="authors" element={<AuthorsPage />} />
+      <Route path="authors/:id" element={<AuthorPage />} />
 
       <Route element={<ProtectedRoute isAllowed={isLoggedIn()} />}>
-        <Route path="/me" element={<MePage />}>
+        <Route path="me" element={<MePage />}>
           <Route index element={<Profile />} />
           <Route path="profile" element={<Profile />} />
           <Route path="password" element={<UpdatePasswordForm />} />
@@ -64,12 +59,12 @@ export default function AllRoutes() {
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={!isLoggedIn()} />}>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={true} />}>
-        <Route path="/admin" element={<AdminPage />}>
+        <Route path="admin" element={<AdminPage />}>
           <Route index element={<TableUsers />} />
           <Route path="authors" element={<TableAuthors />} />
           <Route path="users" element={<TableUsers />} />
