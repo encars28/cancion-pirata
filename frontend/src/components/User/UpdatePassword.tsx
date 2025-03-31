@@ -57,6 +57,7 @@ export function UpdatePasswordForm() {
       <Form form={form} onSubmit={handleSubmit}>
         <Stack ta="left">
           <PasswordInput
+            disabled={mutation.isPending}
             name='current_password'
             key={form.key('current_password')}
             label="Contraseña"
@@ -65,6 +66,7 @@ export function UpdatePasswordForm() {
             required
           />
           <PasswordInput
+            disabled={mutation.isPending}
             name='new_password'
             key={form.key('new_password')}
             label="Nueva contraseña"
@@ -75,6 +77,8 @@ export function UpdatePasswordForm() {
           <Button
             type="submit"
             mt="md"
+            loading={mutation.isPending} 
+            loaderProps={{type: 'dots'}}
           >
             Cambiar contraseña
           </Button>

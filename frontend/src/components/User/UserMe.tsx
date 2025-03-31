@@ -54,6 +54,7 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
     <Form form={form} onSubmit={handleSubmit}>
         <Stack ta="left">
           <TextInput
+            disabled={mutation.isPending}
             name='email'
             key={form.key('email')}
             label="Correo"
@@ -65,6 +66,7 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
             readOnly={!edit}
           />
           <TextInput
+            disabled={mutation.isPending}
             name='username'
             key={form.key('username')}
             label="Nombre de usuario"
@@ -75,6 +77,7 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
             readOnly={!edit}
           />
           <TextInput
+            disabled={mutation.isPending}
             name='full_name'
             key={form.key('full_name')}
             label="Nombre completo"
@@ -91,6 +94,8 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
             >
               <Button
                 type="submit"
+                loading={mutation.isPending} 
+                loaderProps={{type: 'dots'}}
               >
                 Guardar
               </Button>

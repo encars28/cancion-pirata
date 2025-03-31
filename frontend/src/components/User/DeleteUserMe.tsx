@@ -59,7 +59,7 @@ export function DeleteUserMe() {
           <Button onClick={close} variant="default">
             Cancelar
           </Button>
-          <Button onClick={deleteUser} color="red">
+          <Button onClick={deleteUser} color="red" loading={mutation.isPending} loaderProps={{type: 'dots'}}>
             Eliminar
           </Button>
         </Group>

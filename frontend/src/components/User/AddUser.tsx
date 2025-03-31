@@ -79,6 +79,7 @@ export function AddUser() {
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg" ta="left" m="md" p="sm">
             <TextInput
+              disabled={mutation.isPending}
               name='email'
               key={form.key('email')}
               label="Email"
@@ -89,6 +90,7 @@ export function AddUser() {
               required
             />
             <PasswordInput
+              disabled={mutation.isPending}
               name='password'
               key={form.key('password')}
               label="Contraseña"
@@ -97,6 +99,7 @@ export function AddUser() {
               required
             />
             <TextInput
+              disabled={mutation.isPending}
               name='username'
               key={form.key('username')}
               label="Nombre de usuario"
@@ -107,6 +110,7 @@ export function AddUser() {
               required
             />
             <TextInput
+              disabled={mutation.isPending}
               name='full_name'
               key={form.key('full_name')}
               label="Nombre completo"
@@ -116,6 +120,7 @@ export function AddUser() {
               {...form.getInputProps('full_name')}
             />
             <Checkbox
+              disabled={mutation.isPending}
               mt="sm"
               defaultChecked
               key={form.key('is_active')}
@@ -123,6 +128,7 @@ export function AddUser() {
               label="Activo"
             />
             <Checkbox
+              disabled={mutation.isPending}
               key={form.key('is_superuser')}
               {...form.getInputProps('is_superuser')}
               label="Administrador"
@@ -140,6 +146,8 @@ export function AddUser() {
               <Button
                 variant='filled'
                 type='submit'
+                loading={mutation.isPending}
+                loaderProps={{type: 'dots'}}
               >
                 Guardar
               </Button>
