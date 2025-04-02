@@ -56,23 +56,22 @@ export function RegisterForm() {
       await signUpMutation.mutateAsync(values);
     } catch {
       // error is handled by loginMutation
-      form.setErrors({email: "Correo incorrecto o usuario incorrecto", username: "Correo incorrecto o usuario incorrecto"})
+      form.setErrors({ email: "Correo incorrecto o usuario incorrecto", username: "Correo incorrecto o usuario incorrecto" })
     }
   }
 
   return (
-    <Container my={80} maw={{base: 420, sm: 700, md: 800}}>
+    <Container my={80} maw={{ base: 420, sm: 700, md: 800 }}>
+      <Title ta="center" className={classes.title}>
+        Regístrate
+      </Title>
+      <Text c="dimmed" size="sm" ta="center" mt={5}>
+        ¿Ya tienes cuenta?{' '}
+        <Anchor onClick={() => navigate("/login")} size="sm" component="button" disabled={signUpMutation.isPending}>
+          Iniciar sesión
+        </Anchor>
+      </Text>
       <Form form={form} onSubmit={handleSubmit}>
-        <Title ta="center" className={classes.title}>
-          Regístrate
-        </Title>
-        <Text c="dimmed" size="sm" ta="center" mt={5}>
-          ¿Ya tienes cuenta?{' '}
-          <Anchor onClick={() => navigate("/login")} size="sm" component="button" disabled={signUpMutation.isPending}>
-            Iniciar sesión
-          </Anchor>
-        </Text>
-
         <Paper withBorder className={classes.paper}>
           <Grid grow gutter="lg">
             <Grid.Col span={{ base: 12, sm: 6 }}>
@@ -122,7 +121,7 @@ export function RegisterForm() {
               />
             </Grid.Col>
             <Grid.Col span={12}>
-              <Button fullWidth mt={30} type='submit' loading={signUpMutation.isPending} loaderProps={{type: 'dots'}}>
+              <Button fullWidth mt={30} type='submit' loading={signUpMutation.isPending} loaderProps={{ type: 'dots' }}>
                 Crear cuenta
               </Button>
             </Grid.Col>
