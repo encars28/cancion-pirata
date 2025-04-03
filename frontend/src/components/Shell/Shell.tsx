@@ -9,6 +9,7 @@ import { isLoggedIn } from '../../hooks/useAuth';
 import useAuth from '../../hooks/useAuth';
 import { useState } from 'react';
 import { useDisclosure } from '@mantine/hooks';
+import { ProfileControl } from '../Header/ProfileControl';
 
 interface ShellProps {
   children: React.ReactNode;
@@ -25,7 +26,6 @@ export function Shell({ children, navbar }: ShellProps) {
   const navwidth = navbar ? 300 : 0;
   return (
     <AppShell
-      layout='alt'
       header={{ height: 60 }}
       navbar={{
         width: navwidth,
@@ -51,28 +51,12 @@ export function Shell({ children, navbar }: ShellProps) {
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            {isLoggedIn() ? (
-              <Button
-                size="xs"
-                variant="filled"
-                onClick={() => logout()}
-              >Logout</Button>
-            ) : (
-              <Button
-                size="xs"
-                variant="filled"
-                leftSection={<TbUser size={14} />}
-                onClick={() => navigate("/login")}
-              >
-                Login
-              </Button>
-            )
-            }
+            <ProfileControl />
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
             <SearchControlMobile />
-            {!isLoggedIn() && <LoginControl />}
+            <ProfileControl />
           </Group>
         </Container>
       </AppShell.Header>
