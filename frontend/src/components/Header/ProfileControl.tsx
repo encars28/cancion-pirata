@@ -53,12 +53,12 @@ export function ProfileControl() {
         <Text size="md" ta="center" m={10} fw="bold" style={{ wordWrap: "break-word" }}>
           {isLoggedIn() ? "¡Bienvenido, " + user?.username + "!" : "¡Bienvenido!"}
         </Text>
-        <Center mb="md">
+        <Center mb="md" mt="sm">
           {avatar(80)}
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item
-          onClick={() => { isLoggedIn() ? navigate("/profile") : navigate("/login") }}
+          onClick={() => { isLoggedIn() ? navigate("/me") : navigate("/login") }}
           leftSection={isLoggedIn() ? <TbUser /> : <TbLogin />}
           rightSection={<TbChevronRight />}
         >
