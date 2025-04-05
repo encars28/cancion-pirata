@@ -68,7 +68,7 @@ export function Shell({ children, navbar }: ShellProps) {
               gap="xs"
               my="xl"
             >
-              <Avatar src="/src/assets/Cat03.jpg" name="Usuario" size="xl" />
+              <Avatar src="/src/assets/Cat03.jpg" name="Usuario" size={120} />
             </Stack>
           </AppShell.Section>
           <AppShell.Section grow>
