@@ -23,7 +23,7 @@ export function PoemsPage() {
 
   const cardData: CardGridProps[] = poems.map((poem) => ({
     path: `/poems/${poem.id}`,
-    icon: <Image src="/src/assets/Cat03.jpg" fit="contain" w={100} />,
+    icon: <Image src="/src/assets/scroll.png" fit="contain" w={100} />,
     description: <Text mt="md" size="sm">{poem.title}</Text>
   }))
 
