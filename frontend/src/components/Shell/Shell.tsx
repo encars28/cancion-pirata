@@ -1,7 +1,7 @@
 import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar, Title } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useNavigate } from 'react-router';
-import { TbUser, TbChevronRight, TbLock } from "react-icons/tb";
+import { TbUser, TbChevronRight, TbLock, TbLogin } from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
@@ -51,12 +51,12 @@ export function Shell({ children, navbar }: ShellProps) {
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            <ProfileControl />
+            {isLoggedIn() ? <ProfileControl /> : <Button radius="md" leftSection={<TbLogin />}>Iniciar sesión</Button> }
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
             <SearchControlMobile />
-            <ProfileControl />
+            {isLoggedIn() ? <ProfileControl /> : <LoginControl />}
           </Group>
         </Container>
       </AppShell.Header>

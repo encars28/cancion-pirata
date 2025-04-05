@@ -1,26 +1,25 @@
-import { ActionIcon, Text, Avatar, Group, Menu, Tooltip, Container, Flex, Title, Center } from "@mantine/core";
+import { ActionIcon, Text, Avatar, Group, Menu, Tooltip, Center } from "@mantine/core";
 import { useNavigate } from "react-router";
 import useAuth, { isLoggedIn } from "../../hooks/useAuth";
-import { TbChevronRight, TbLogin, TbLogout, TbUser, TbX } from "react-icons/tb";
+import { TbChevronRight, TbLogout, TbUser, TbX } from "react-icons/tb";
 import { useState } from "react";
+import { modals } from "@mantine/modals"
+import { handleSuccess } from "../../utils";
 
 export function ProfileControl() {
   const navigate = useNavigate()
   const [opened, setOpened] = useState(false);
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
 
-  const avatar = (size: number) => {
-    if (isLoggedIn())
-      return (
-        <Avatar size={size} radius="xl" src="/src/assets/Cat03.jpg" alt="Perfil" />
-      )
-
-    return (
-      <Avatar size={size} radius="xl" alt="Login">
-        <TbUser />
-      </Avatar>
-    )
-  }
+  const openModal = () => modals.openConfirmModal({
+    title: 'Por favor confirme su acción',
+    children: (
+      <Text size="sm" ta="left">
+        ¿Está seguro de que desea cerrar sesión?
+      </Text>
+    ),
+    onConfirm: () => {logout(); handleSuccess()},
+  });
 
   return (
     <Menu
@@ -36,7 +35,7 @@ export function ProfileControl() {
           label={isLoggedIn() ? "Perfil" : "Login"}
           offset={0}
         >
-          {avatar(35)}
+          <Avatar size={35} radius="xl" src="/src/assets/Cat03.jpg" alt="Perfil" />
         </Tooltip>
       </Menu.Target>
       <Menu.Dropdown ta='left'>
@@ -51,32 +50,28 @@ export function ProfileControl() {
           </ActionIcon>
         </Group>
         <Text size="md" ta="center" m={10} fw="bold" style={{ wordWrap: "break-word" }}>
-          {isLoggedIn() ? "¡Bienvenido, " + user?.username + "!" : "¡Bienvenido!"}
+          {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          {avatar(80)}
+          <Avatar size={80} radius="xl" src="/src/assets/Cat03.jpg" alt="Perfil" />
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item
-          onClick={() => { isLoggedIn() ? navigate("/me") : navigate("/login") }}
-          leftSection={isLoggedIn() ? <TbUser /> : <TbLogin />}
+          onClick={() => navigate("/me")}
+          leftSection={<TbUser />}
           rightSection={<TbChevronRight />}
         >
-          {isLoggedIn() ? "Perfil" : "Login"}
+          Mi perfil
         </Menu.Item>
-        {isLoggedIn() && (
-          <>
-            <Menu.Divider />
-            <Menu.Item
-              onClick={() => navigate("/logout")}
-              color="red"
-              leftSection={<TbLogout />}
+        <Menu.Divider />
+        <Menu.Item
+          onClick={openModal}
+          color="red"
+          leftSection={<TbLogout />}
 
-            >
-              Cerrar sesión
-            </Menu.Item>
-          </>
-        )}
+        >
+          Cerrar sesión
+        </Menu.Item>
       </Menu.Dropdown>
     </Menu>
   )

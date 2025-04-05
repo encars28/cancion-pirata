@@ -17,6 +17,7 @@ import { isLoggedIn } from './hooks/useAuth';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { createSearchData } from './utils';
+import { ModalsProvider } from '@mantine/modals';
 
 dayjs.extend(customParseFormat);
 
@@ -42,6 +43,7 @@ function App() {
           <AllRoutes />
           <Search data={searchData} />
           <Notifications />
+          <ModalsProvider labels={{ confirm: 'Continuar', cancel: 'Cancelar' }} />
         </>
       }
     </MantineProvider>
