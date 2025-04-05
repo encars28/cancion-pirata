@@ -1,6 +1,6 @@
 import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar, Title } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { TbUser, TbChevronRight, TbLock, TbLogin, TbSettings } from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
@@ -18,7 +18,8 @@ interface ShellProps {
 
 export function Shell({ children, navbar }: ShellProps) {
   const navigate = useNavigate();
-  const [active, setActive] = useState('profile')
+  const location = useLocation()
+  const [active, setActive] = useState(location.pathname.split('me/')[1] ?? 'profile');
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
