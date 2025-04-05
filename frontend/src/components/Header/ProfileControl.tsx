@@ -53,7 +53,7 @@ export function ProfileControl() {
           {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          <Avatar size={80} radius="xl" src="/src/assets/Cat03.jpg" alt="Perfil" />
+          <Avatar size={80} src="/src/assets/Cat03.jpg" alt="Perfil" />
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item

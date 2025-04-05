@@ -68,8 +68,7 @@ export function Shell({ children, navbar }: ShellProps) {
               gap="xs"
               my="xl"
             >
-              <Avatar color="blue" name="Usuario" size="xl" />
-              <Title order={2} fw="inherit">Usuario</Title>
+              <Avatar src="/src/assets/Cat03.jpg" name="Usuario" size="xl" />
             </Stack>
           </AppShell.Section>
           <AppShell.Section grow>
