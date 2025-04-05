@@ -1,7 +1,7 @@
 import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar, Title } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useNavigate } from 'react-router';
-import { TbUser, TbChevronRight, TbLock, TbLogin } from "react-icons/tb";
+import { TbUser, TbChevronRight, TbLock, TbLogin, TbSettings } from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
@@ -93,6 +93,16 @@ export function Shell({ children, navbar }: ShellProps) {
                 }
                 onClick={() => { setActive('password'); navigate('/me/password') }}
                 active={active === 'password'}
+              />
+              <NavLink
+                px="lg"
+                label="Configuración de la página"
+                leftSection={<TbSettings size={16} />}
+                rightSection={
+                  <TbChevronRight size={12} className="mantine-rotate-rtl" />
+                }
+                onClick={() => { setActive('settings'); navigate('/me/settings') }}
+                active={active === 'settings'}
               />
             </Container>
           </AppShell.Section>
