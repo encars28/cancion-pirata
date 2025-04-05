@@ -7,10 +7,10 @@ import { callService, handleError, handleSuccess } from '../../utils';
 import { HttpValidationError } from '../../client/types.gen';
 
 
-export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
+export function UserMe({ user }: { user: UserPublic }) {
   const queryClient = useQueryClient()
   const mutation = useMutation({
-    mutationFn: async (data: UserUpdateMe) => 
+    mutationFn: async (data: UserUpdateMe) =>
       callService(usersUpdateUserMe, { body: data }),
     onSuccess: () => {
       handleSuccess()
@@ -57,53 +57,48 @@ export function UserMe({ edit, user }: { edit: boolean, user: UserPublic }) {
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-        <Stack ta="left">
-          <TextInput
-            name='email'
-            key={form.key('email')}
-            label="Correo"
-            placeholder="Correo"
-            type="email"
-            {...form.getInputProps('email')}
-            rightSectionPointerEvents="none"
-            rightSection={<TbAt size={15} />}
-            readOnly={!edit}
-          />
-          <TextInput
-            name='username'
-            key={form.key('username')}
-            label="Nombre de usuario"
-            placeholder="Nombre de usuario"
-            {...form.getInputProps('username')}
-            rightSectionPointerEvents="none"
-            rightSection={<TbUser size={15} />}
-            readOnly={!edit}
-          />
-          <TextInput
-            name='full_name'
-            key={form.key('full_name')}
-            label="Nombre completo"
-            placeholder="Nombre"
-            {...form.getInputProps('full_name')}
-            rightSectionPointerEvents="none"
-            rightSection={<TbAbc size={15} />}
-            readOnly={!edit}
-          />
-          {edit && (
-            <Group
-              justify='flex-end'
-              mt="xl"
-            >
-              <Button
-                type="submit"
-                loading={mutation.isPending} 
-                loaderProps={{type: 'dots'}}
-              >
-                Guardar
-              </Button>
-            </Group>
-          )}
-        </Stack>
+      <Stack ta="left">
+        <TextInput
+          name='email'
+          key={form.key('email')}
+          label="Correo"
+          placeholder="Correo"
+          type="email"
+          {...form.getInputProps('email')}
+          rightSectionPointerEvents="none"
+          rightSection={<TbAt size={15} />}
+        />
+        <TextInput
+          name='username'
+          key={form.key('username')}
+          label="Nombre de usuario"
+          placeholder="Nombre de usuario"
+          {...form.getInputProps('username')}
+          rightSectionPointerEvents="none"
+          rightSection={<TbUser size={15} />}
+        />
+        <TextInput
+          name='full_name'
+          key={form.key('full_name')}
+          label="Nombre completo"
+          placeholder="Nombre"
+          {...form.getInputProps('full_name')}
+          rightSectionPointerEvents="none"
+          rightSection={<TbAbc size={15} />}
+        />
+        <Group
+          justify='flex-end'
+          mt="xl"
+        >
+          <Button
+            type="submit"
+            loading={mutation.isPending}
+            loaderProps={{ type: 'dots' }}
+          >
+            Guardar
+          </Button>
+        </Group>
+      </Stack>
     </Form>
   );
 }
