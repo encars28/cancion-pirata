@@ -84,7 +84,7 @@ class PoemCRUD:
             if None in authors:
                 return None
 
-            db_obj.authors += authors
+            db_obj.authors = authors
             del obj_update_data["author_ids"]
 
         for field, value in obj_update_data.items():

@@ -58,6 +58,13 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
             status_code=400,
             detail="The user with this email already exists in the system.",
         )
+    
+    user = user_crud.get_by_username(session, username=user_in.username)
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this username already exists in the system.",
+        )
 
     user = user_crud.create(db=session, obj_create=user_in)
     if settings.emails_enabled and user_in.email:
@@ -86,6 +93,14 @@ def update_user_me(
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
             )
+            
+    if user_in.username:
+        existing_user = user_crud.get_by_username(session, username=user_in.username)
+        if existing_user and existing_user.id != current_user.id:
+            raise HTTPException(
+                status_code=409, detail="User with this username already exists"
+            )
+    
     current_user = user_crud.update(
         db=session, obj_id=current_user.id, obj_update=user_in
     ) # type: ignore
@@ -145,6 +160,13 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
             status_code=400,
             detail="The user with this email already exists in the system",
         )
+        
+    user = user_crud.get_by_username(session, user_in.username)
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this username already exists in the system",
+        )
 
     user_data = user_in.model_dump(exclude_unset=True)
     user_create = UserCreate.model_validate(user_data)
@@ -197,6 +219,13 @@ def update_user(
         if existing_user and existing_user.id != user_id:
             raise HTTPException(
                 status_code=409, detail="User with this email already exists"
+            )
+            
+    if user_in.username:
+        existing_user = user_crud.get_by_username(session, user_in.username)
+        if existing_user and existing_user.id != user_id:
+            raise HTTPException(
+                status_code=409, detail="User with this username already exists"
             )
 
     db_user = user_crud.update(db=session, obj_id=db_user.id, obj_update=user_in)
