@@ -24,6 +24,7 @@ const useAuth = () => {
   const signUpMutation = useMutation({
     mutationFn: async (data: UserRegister) => callService(usersRegisterUser, { body: data }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       handleSuccess()
       navigate("/login")
     },
@@ -53,6 +54,7 @@ const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: login,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       navigate("/")
     },
     onError: (error) => {
@@ -75,5 +77,13 @@ const useAuth = () => {
   }
 }
 
-export { isLoggedIn }
+const isAdmin = () => {
+  if (!isLoggedIn()) return false
+
+  const { user } = useAuth()
+  console.log(user?.is_superuser)
+  return user?.is_superuser ?? false
+}
+
+export { isLoggedIn, isAdmin }
 export default useAuth

@@ -18,6 +18,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { createSearchData } from './utils';
 import { ModalsProvider } from '@mantine/modals';
+import { useQueryClient } from '@tanstack/react-query';
 
 dayjs.extend(customParseFormat);
 

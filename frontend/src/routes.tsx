@@ -6,10 +6,9 @@ import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
 import { LoginPage } from "./pages/loginpage";
 import { NothingFound } from "./components/NothingFound/NothingFound";
-import { isLoggedIn } from "./hooks/useAuth";
+import { isAdmin, isLoggedIn } from "./hooks/useAuth";
 import { PasswordPage } from "./pages/passwordpage";
 import { RegisterPage } from "./pages/registerpage";
-import { AddPoemPage } from "./pages/addpoempage";
 import { ResetPasswordPage } from "./pages/resetpasswordpage";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
@@ -67,7 +66,7 @@ export default function AllRoutes() {
         <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
 
-      <Route element={<ProtectedRoute isAllowed={true} />}>
+      <Route element={<ProtectedRoute isAllowed={isAdmin()} />}>
         <Route path="admin" element={<AdminPage />}>
           <Route index element={<TableUsers />} />
           <Route path="authors" element={<TableAuthors />} />
