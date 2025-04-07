@@ -54,29 +54,6 @@ def read_poems(
     poems = [PoemPublicWithAllTheInfo.model_validate(poem) for poem in poems]
     return PoemsPublic(data=poems, count=count)
 
-
-@router.get("/me", response_model=PoemsPublic)
-def read_poems_me(session: SessionDep, current_user: CurrentUser) -> Any:
-    """
-    Get current user poems.
-    """
-    author = author_crud.get_by_id(session, current_user.author_id)
-    if not current_user.is_superuser and not author:
-        poems = []
-        count = 0
-
-    elif current_user.is_superuser:
-        count = poem_crud.get_count(session)
-        poems = poem_crud.get_all(session, skip=0, limit=100)
-
-    else: 
-        poems = author.poems # type: ignore
-        count = len(poems)
-
-    poems = [PoemPublicWithAllTheInfo.model_validate(poem) for poem in poems]
-    return PoemsPublic(data=poems, count=count)
-
-
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(
     session: SessionDep, current_user: OptionalCurrentUser, poem_id: uuid.UUID
