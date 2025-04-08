@@ -26,7 +26,10 @@ router = APIRouter(prefix="/poems", tags=["poems"])
 
 @router.get("/", response_model=PoemsPublic)
 def read_poems(
-    session: SessionDep, current_user: OptionalCurrentUser, skip: int = 0, limit: int = 100
+    session: SessionDep,
+    current_user: OptionalCurrentUser,
+    skip: int = 0,
+    limit: int = 100,
 ) -> Any:
     """
     Retrieve all poems.
@@ -39,10 +42,10 @@ def read_poems(
         for poem in poems:
             if not poem.show_author and current_user.author_id not in poem.author_ids:
                 poem.author_names = []
-        
+
         if current_user.author_id:
             author = author_crud.get_by_id(session, current_user.author_id)
-            author_poems = [poem for poem in author.poems if not poem.is_public] # type: ignore
+            author_poems = [poem for poem in author.poems if not poem.is_public]  # type: ignore
             poems += author_poems
             count += len(author_poems)
 
@@ -53,6 +56,7 @@ def read_poems(
 
     poems = [PoemPublicWithAllTheInfo.model_validate(poem) for poem in poems]
     return PoemsPublic(data=poems, count=count)
+
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(
@@ -116,7 +120,7 @@ def create_poem(
         )
 
         poem_poem_crud.create(db=session, obj_create=poem_poem_in)
-        poem = poem_crud.get_by_id(session, poem.id) # type: ignore
+        poem = poem_crud.get_by_id(session, poem.id)  # type: ignore
 
     return poem
 
@@ -164,8 +168,11 @@ def update_poem(
                 poem_poem_in.original_poem_id = poem_in.original_poem_id
 
             poem_poem_crud.update(
-                db=session, original_id=poem_poem.original_poem_id, derived_id=poem_poem.derived_poem_id, obj_update=poem_poem_in # type: ignore
-            )  
+                db=session,
+                original_id=poem_poem.original_poem_id,
+                derived_id=poem_poem.derived_poem_id,
+                obj_update=poem_poem_in,  # type: ignore
+            )
 
         poem = poem_crud.get_by_id(session, poem.id)
 

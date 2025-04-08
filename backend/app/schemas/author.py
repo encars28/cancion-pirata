@@ -10,6 +10,12 @@ class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
     birth_date: Optional[datetime] = None
 
+class AuthorSchema(AuthorBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    poems: List["PoemPublic"] = []
+
 
 class AuthorCreate(AuthorBase):
     pass
@@ -20,23 +26,24 @@ class AuthorUpdate(AuthorBase):
     birth_date: Optional[datetime] = None
 
 
-class AuthorPublic(AuthorBase):
+class AuthorPublicBasic(BaseModel):
+    id: uuid.UUID
+    full_name: str = Field(max_length=255)
+
+
+class AuthorPublic(AuthorBase): 
     id: uuid.UUID
 
 
-class AuthorPublicWithPoems(AuthorPublic):
-    model_config = ConfigDict(from_attributes=True)
-
-    poems: List[PoemPublic] = []
-
-
-class AuthorSchema(AuthorBase):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    poems: List["PoemPublic"] = []
+class AuthorPublicWithPoems(AuthorSchema):
+    pass
 
 
 class AuthorsPublic(BaseModel):
+    data: list[AuthorPublicBasic]
+    count: int
+
+
+class AuthorsPublicWithPoems(BaseModel):
     data: list[AuthorPublicWithPoems]
     count: int

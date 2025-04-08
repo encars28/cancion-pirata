@@ -13,9 +13,12 @@ from app.api.deps import (
 from app.schemas.common import Message
 from app.schemas.author import (
     AuthorCreate,
+    AuthorPublic,
+    AuthorPublicBasic,
     AuthorPublicWithPoems,
     AuthorUpdate,
     AuthorsPublic,
+    AuthorsPublicWithPoems,
 )
 from app.crud.author import author_crud
 
@@ -24,7 +27,7 @@ router = APIRouter(prefix="/authors", tags=["authors"])
 
 @router.get(
     "/",
-    response_model=AuthorsPublic,
+    response_model=AuthorsPublic | AuthorsPublicWithPoems,
 )
 def read_authors(
     session: SessionDep,
@@ -39,24 +42,20 @@ def read_authors(
     count = author_crud.get_count(db=session)
     authors = author_crud.get_all(db=session, skip=skip, limit=limit)
 
-    if current_user and not current_user.is_superuser:
-        for author in authors:
-            if not current_user.author_id or (
-                current_user.author_id and current_user.author_id != author.id
-            ):
-                author.poems = [
-                    poem for poem in author.poems if poem.is_public and poem.show_author
-                ]
-
-    authors = [AuthorPublicWithPoems.model_validate(author) for author in authors]
-
+    # Admin
+    if current_user and current_user.is_superuser: 
+        authors = [AuthorPublicWithPoems.model_validate(author) for author in authors]
+        return AuthorsPublicWithPoems(data=authors, count=count)
+    
+    # Normal user
+    authors = [AuthorPublicBasic.model_validate(author) for author in authors]
     return AuthorsPublic(data=authors, count=count)
 
 
 @router.post(
     "/",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=AuthorPublicWithPoems,
+    response_model=AuthorPublic,
 )
 def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     """
@@ -66,7 +65,7 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     if author:
         raise HTTPException(
             status_code=400,
-            detail="The author with this full_name already exists in the system.",
+            detail="The author with this name already exists in the system.",
         )
 
     author = author_crud.create(db=session, obj_create=author_in)
@@ -87,6 +86,7 @@ def read_author_by_id(
             detail="The author with this id does not exist in the system",
         )
 
+    # Normal user
     if current_user and (
         not current_user.is_superuser
         and (current_user.author_id and not current_user.author_id == author_id)
@@ -100,7 +100,7 @@ def read_author_by_id(
 
 @router.patch(
     "/{author_id}",
-    response_model=AuthorPublicWithPoems,
+    response_model=AuthorPublic,
 )
 def update_author(
     *,

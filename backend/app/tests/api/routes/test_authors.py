@@ -1,3 +1,4 @@
+import tokenize
 import uuid
 from datetime import datetime
 from fastapi.encoders import jsonable_encoder
@@ -5,19 +6,53 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
-from app.crud.user import user_crud
 from app.crud.author import author_crud
 from app.crud.poem import poem_crud
 from app.core.config import settings
-
-from app.schemas.author import AuthorCreate
-from app.schemas.user import UserUpdate, UserPublic
 
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.poem import create_random_poem
 from app.tests.utils.user import authentication_token_from_email
 
+
+# READ 
+
+
+def test_retrieve_authors_as_admin(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    author = create_random_author(db)
+    create_random_poem(db, author_ids=[author.id], is_public=False)
+    create_random_author(db)
+
+    r = client.get(f"{settings.API_V1_STR}/authors/", headers=superuser_token_headers)
+    all_authors = r.json()
+
+    assert len(all_authors["data"]) > 1
+    assert "count" in all_authors
+    for item in all_authors["data"]:
+        assert "full_name" in item
+        if item["id"] == str(author.id):
+            assert len(item["poems"]) > 0
+
+
+def test_retrieve_authors_as_normal_user(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    create_random_author(db)
+    create_random_author(db)
+
+    r = client.get(f"{settings.API_V1_STR}/authors/", headers=normal_user_token_headers)
+    all_authors = r.json()
+
+    assert len(all_authors["data"]) > 1
+    assert "count" in all_authors
+    for item in all_authors["data"]:
+        assert "full_name" in item
+        assert "poems" not in item
+
+# CREATE AUTHOR
 
 def test_create_author(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -37,37 +72,6 @@ def test_create_author(
     assert jsonable_encoder(author.birth_date) == created_author["birth_date"]
 
 
-def test_get_existing_author(
-    client: TestClient, superuser_token_headers: dict[str, str], db: Session
-) -> None:
-    author = create_random_author(db)
-    author_id = author.id
-    r = client.get(
-        f"{settings.API_V1_STR}/authors/{author_id}",
-        headers=superuser_token_headers,
-    )
-    assert 200 <= r.status_code < 300
-    api_author = r.json()
-
-    existing_author = author_crud.get_by_name(db, author.full_name)
-    assert existing_author
-    assert existing_author.full_name == api_author["full_name"]
-
-
-def test_get_existing_author_not_found(
-    client: TestClient, superuser_token_headers: dict[str, str], db: Session
-) -> None:
-    r = client.get(
-        f"{settings.API_V1_STR}/authors/{uuid.uuid4()}",
-        headers=superuser_token_headers,
-    )
-
-    assert r.status_code == 404
-    assert r.json() == {
-        "detail": "The author with this id does not exist in the system"
-    }
-
-
 def test_create_author_existing_name(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
@@ -83,7 +87,7 @@ def test_create_author_existing_name(
     assert "_id" not in created_author
 
 
-def test_create_author_by_normal_user(
+def test_create_author_without_priviledges(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
     name = random_lower_string()
@@ -96,43 +100,62 @@ def test_create_author_by_normal_user(
     assert r.status_code == 403
 
 
-def test_retrieve_authors(
+# READ BY ID
+
+def test_read_author_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
     create_random_poem(db, author_ids=[author.id], is_public=False)
-    create_random_author(db)
+        
+    author_id = author.id
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/{author_id}",
+        headers=superuser_token_headers,
+    )
+    assert 200 <= r.status_code < 300
+    api_author = r.json()
 
-    r = client.get(f"{settings.API_V1_STR}/authors/", headers=superuser_token_headers)
-    all_authors = r.json()
-
-    assert len(all_authors["data"]) > 1
-    assert "count" in all_authors
-    for item in all_authors["data"]:
-        assert "full_name" in item
-        if item["id"] == str(author.id):
-            assert len(item["poems"]) > 0
+    assert author.full_name == api_author["full_name"]
+    assert api_author["id"] == str(author.id)
+    assert len(api_author["poems"]) == 1
 
 
-def test_retrieve_authors_normal_user(
+def test_read_author_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
     create_random_poem(db, author_ids=[author.id], is_public=False)
-    create_random_author(db)
+    
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/{author.id}",
+        headers=normal_user_token_headers,
+    )
+    assert 200 <= r.status_code < 300
+    api_author = r.json()
+    
+    assert api_author["full_name"] == author.full_name
+    assert api_author["id"] == str(author.id)
+    assert len(api_author["poems"]) == 0
+    
 
-    r = client.get(f"{settings.API_V1_STR}/authors/", headers=normal_user_token_headers)
-    all_authors = r.json()
+def test_read_author_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/{uuid.uuid4()}",
+        headers=superuser_token_headers,
+    )
 
-    assert len(all_authors["data"]) > 1
-    assert "count" in all_authors
-    for item in all_authors["data"]:
-        assert "full_name" in item
-        if item["id"] == str(author.id):
-            assert len(item["poems"]) == 0
+    assert r.status_code == 404
+    assert r.json() == {
+        "detail": "The author with this id does not exist in the system"
+    }
 
 
-def test_update_author(
+# UPDATE
+
+def test_update_author_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
@@ -152,6 +175,48 @@ def test_update_author(
     author_db = author_crud.get_by_name(db, author.full_name)
     assert author_db
     assert author_db.birth_date == birth_date
+
+
+def test_update_author_as_current_author(
+    client: TestClient, user_who_is_author, db: Session
+) -> None: 
+    token = authentication_token_from_email(
+        client=client, db=db, email=user_who_is_author.email
+    )
+    
+    author = create_random_author(db)
+
+    birth_date = datetime.now()
+    data = jsonable_encoder({"birth_date": birth_date})
+    r = client.patch(
+        f"{settings.API_V1_STR}/authors/{author.id}",
+        headers=token,
+        json=data,
+    )
+    assert r.status_code == 200
+    updated_author = r.json()
+
+    assert updated_author["birth_date"] == jsonable_encoder(birth_date)
+
+    author_db = author_crud.get_by_name(db, author.full_name)
+    assert author_db
+    assert author_db.birth_date == birth_date
+    
+
+def test_update_author_without_priviledges(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    author = create_random_author(db)
+
+    birth_date = datetime.now()
+    data = jsonable_encoder({"birth_date": birth_date})
+    r = client.patch(
+        f"{settings.API_V1_STR}/authors/{author.id}",
+        headers=normal_user_token_headers,
+        json=data,
+    )
+    assert r.status_code == 403
+    assert r.json()["detail"] == "The user doesn't have enough privileges"
 
 
 def test_update_author_not_exists(
@@ -183,7 +248,10 @@ def test_update_author_name_exists(
     assert r.json()["detail"] == "Author with this name already exists"
 
 
-def test_delete_author_super_user(
+# DELETE
+
+
+def test_delete_author_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
