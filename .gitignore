@@ -1,5 +1,6 @@
 # Backend
 venv
+.venv
 .coverage
 .env
 .gitignore
