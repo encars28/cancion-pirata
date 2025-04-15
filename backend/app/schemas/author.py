@@ -27,6 +27,8 @@ class AuthorUpdate(AuthorBase):
 
 
 class AuthorPublicBasic(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: uuid.UUID
     full_name: str = Field(max_length=255)
 

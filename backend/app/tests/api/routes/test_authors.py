@@ -1,4 +1,3 @@
-import tokenize
 import uuid
 from datetime import datetime
 from fastapi.encoders import jsonable_encoder

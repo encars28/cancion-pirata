@@ -87,10 +87,10 @@ def read_author_by_id(
         )
 
     # Normal user
-    if current_user and (
+    if (current_user and (
         not current_user.is_superuser
         and (current_user.author_id and not current_user.author_id == author_id)
-    ):
+    )) or current_user is None:
         author.poems = [
             poem for poem in author.poems if poem.is_public and poem.show_author
         ]
