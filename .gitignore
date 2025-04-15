@@ -15,6 +15,7 @@ requirements.txt
 db_data
 db_data/*
 *.sql
+.python-version
 
 # Logs
 logs
