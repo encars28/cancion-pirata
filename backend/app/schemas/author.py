@@ -10,6 +10,7 @@ class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
     birth_date: Optional[datetime] = None
 
+
 class AuthorSchema(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
 
@@ -28,12 +29,12 @@ class AuthorUpdate(AuthorBase):
 
 class AuthorPublicBasic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: uuid.UUID
     full_name: str = Field(max_length=255)
 
 
-class AuthorPublic(AuthorBase): 
+class AuthorPublic(AuthorBase):
     id: uuid.UUID
 
 

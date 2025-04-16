@@ -11,15 +11,16 @@ class PoemBase(BaseModel):
     content: str
     is_public: bool = False
     show_author: bool = True
-
     language: Optional[str] = None
 
 
 class PoemCreate(PoemBase):
-    author_ids: Optional[List[uuid.UUID]] = None
-    
     type: Optional[int] = None
     original_poem_id: Optional[uuid.UUID] = None
+
+
+class PoemCreateAdmin(PoemCreate):
+    author_names: Optional[List[str]] = None
 
 
 class PoemUpdate(PoemBase):
@@ -29,31 +30,43 @@ class PoemUpdate(PoemBase):
     show_author: Optional[bool] = None  # type: ignore
     language: Optional[str] = None
 
-    author_ids: Optional[List[uuid.UUID]] = None
+
+class PoemUpdateAdmin(PoemUpdate):
+    author_names: Optional[List[str]] = None
 
     type: Optional[int] = None
     original_poem_id: Optional[uuid.UUID] = None
 
 
-class PoemPublic(PoemBase):
-    model_config = ConfigDict(from_attributes=True)
+class PoemPublicBasic(BaseModel):
     id: uuid.UUID
+    title: str = Field(max_length=255)
+
+
+class PoemPublicBasicWithAuthor(PoemPublicBasic):
+    author_names: List[str] = []
+
+
+# Used for showing poem info in author
+class PoemPublic(PoemPublicBasic):
+    model_config = ConfigDict(from_attributes=True)
+    language: Optional[str] = None
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
-    
-
-class PoemPublicWithAuthor(PoemPublic):
-    author_names: List[str] = []
-    author_ids: List[uuid.UUID] = []
-
-
-class PoemPublicWithAuthorAndType(PoemPublicWithAuthor):
     type: Optional[int] = None
 
 
-class PoemPublicWithAllTheInfo(PoemPublicWithAuthorAndType):
-    derived_poems: List[PoemPublicWithAuthorAndType] = []
-    original: Optional[PoemPublicWithAuthor] = None
+class PoemPublicWithAuthor(PoemPublic):
+    author_names: List[str] = []
+    is_public: bool = False
+    show_author: bool = True
+
+
+class PoemPublicWithAllTheInfo(PoemPublic):
+    content: str
+    author_names: List[str] = []
+    derived_poems: List[PoemPublicBasicWithAuthor] = []
+    original: Optional[PoemPublicBasicWithAuthor] = None
 
 
 class PoemSchema(PoemBase):
@@ -61,15 +74,20 @@ class PoemSchema(PoemBase):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
-    
+
     author_ids: List[uuid.UUID] = []
     author_names: List[str] = []
 
     type: Optional[int] = None
-    derived_poems: List[PoemPublicWithAuthorAndType] = []
-    original: Optional[PoemPublicWithAuthorAndType] = None
+    derived_poems: List[PoemPublicWithAuthor] = []
+    original: Optional[PoemPublicWithAuthor] = None
+
+
+class PoemsPublicBasic(BaseModel):
+    data: List[PoemPublicBasic]
+    count: int
 
 
 class PoemsPublic(BaseModel):
-    data: List[PoemPublicWithAllTheInfo]
+    data: List[PoemPublicWithAuthor]
     count: int
