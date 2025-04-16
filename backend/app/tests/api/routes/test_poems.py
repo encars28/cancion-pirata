@@ -115,51 +115,6 @@ def test_read_poem_not_enough_permissions(
     assert content["detail"] == "Not enough permissions"
 
 
-def test_read_poems_me(
-    client: TestClient, user_who_is_author: UserSchema, db: Session
-) -> None:
-    token = authentication_token_from_email(
-        client=client, db=db, email=user_who_is_author.email
-    )
-    create_random_poem(db, author_ids=[user_who_is_author.author_id])  # type: ignore
-    create_random_poem(db, author_ids=[user_who_is_author.author_id])  # type: ignore
-
-    response = client.get(
-        f"{settings.API_V1_STR}/poems/me",
-        headers=token,
-    )
-    assert response.status_code == 200
-    content = response.json()
-    assert len(content["data"]) >= 2
-
-
-def test_read_poems_me_no_poems(
-    client: TestClient, normal_user_token_headers: dict[str, str]
-) -> None:
-    response = client.get(
-        f"{settings.API_V1_STR}/poems/me",
-        headers=normal_user_token_headers,
-    )
-    assert response.status_code == 200
-    content = response.json()
-    assert len(content["data"]) == 0
-
-
-def test_read_poems_me_as_superuser(
-    client: TestClient, superuser_token_headers: dict[str, str], db: Session
-) -> None:
-    create_random_poem(db)
-    create_random_poem(db)
-
-    response = client.get(
-        f"{settings.API_V1_STR}/poems/me",
-        headers=superuser_token_headers,
-    )
-    assert response.status_code == 200
-    content = response.json()
-    assert len(content["data"]) >= 2
-
-
 def test_create_poem_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:

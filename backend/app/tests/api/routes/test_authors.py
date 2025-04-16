@@ -183,7 +183,8 @@ def test_update_author_as_current_author(
         client=client, db=db, email=user_who_is_author.email
     )
     
-    author = create_random_author(db)
+    author = author_crud.get_by_id(db, user_who_is_author.author_id)
+    assert author
 
     birth_date = datetime.now()
     data = jsonable_encoder({"birth_date": birth_date})

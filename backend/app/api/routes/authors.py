@@ -87,10 +87,11 @@ def read_author_by_id(
         )
 
     # Normal user
-    if (current_user and (
-        not current_user.is_superuser
-        and (current_user.author_id and not current_user.author_id == author_id)
-    )) or current_user is None:
+    if not current_user or (
+        not current_user.is_superuser and (
+            not current_user.author_id or not current_user.author_id == author_id
+        )
+    ):
         author.poems = [
             poem for poem in author.poems if poem.is_public and poem.show_author
         ]
@@ -121,7 +122,7 @@ def update_author(
         )
 
     if not current_user.is_superuser and (
-        current_user.author_id and not current_user.author_id == author_id
+        not current_user.author_id or not current_user.author_id == author_id
     ):
         raise HTTPException(
             status_code=403,
@@ -151,7 +152,7 @@ def delete_author(
         raise HTTPException(status_code=404, detail="Author not found")
 
     if not current_user.is_superuser and (
-        current_user.author_id and not current_user.author_id == author_id
+        not current_user.author_id or not current_user.author_id == author_id
     ):
         raise HTTPException(
             status_code=403,
