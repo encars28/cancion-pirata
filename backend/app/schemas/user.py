@@ -3,6 +3,8 @@ from typing import Optional
 import uuid
 from datetime import datetime
 
+from app.schemas.author import AuthorPublic
+
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
@@ -56,6 +58,7 @@ class UserSchema(UserBase):
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
+    author: Optional[AuthorPublic] = None
     hashed_password: str
 
 

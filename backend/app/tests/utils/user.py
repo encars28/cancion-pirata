@@ -5,7 +5,6 @@ from app.crud.user import user_crud
 from app.core.config import settings
 from app.schemas.user import UserCreate, UserUpdate, UserSchema
 from app.tests.utils.utils import random_email, random_lower_string
-from app.tests.utils.author import create_random_author
 
 
 def user_authentication_headers(
@@ -28,24 +27,6 @@ def create_random_user(db: Session) -> UserSchema:
     user_in = UserCreate(email=email, password=password, username=username)
     user = user_crud.create(db=db, obj_create=user_in)
     return user
-
-
-def get_author_user(db: Session) -> UserSchema:
-    email = settings.EMAIL_TEST_AUTHOR_USER
-    user = user_crud.get_by_email(db, email=email)
-
-    if not user:
-        user_in_create = UserCreate(
-            email=email, password=random_lower_string(), username=random_lower_string()
-        )
-        user = user_crud.create(db=db, obj_create=user_in_create)
-
-    if user.author_id is None:
-        author = create_random_author(db)
-        user_in_update = UserUpdate(author_id=author.id)
-        user = user_crud.update(db=db, obj_id=user.id, obj_update=user_in_update)
-
-    return user  # type: ignore
 
 
 def authentication_token_from_email(

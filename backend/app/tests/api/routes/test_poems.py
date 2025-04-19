@@ -11,9 +11,9 @@ from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.user import create_random_user
 from app.schemas.poem_poem import PoemType
-from app.schemas.user import UserSchema
+from app.schemas.author import AuthorSchema
+
 from app.crud.poem import poem_crud
-from app.crud.author import author_crud
 
 
 def test_read_poems_as_normal_user(
@@ -28,16 +28,15 @@ def test_read_poems_as_normal_user(
     )
     assert response.status_code == 200
     content = response.json()
-    poem_ids = [poem["id"] for poem in content["data"]]
-    assert str(poem1.id) not in poem_ids
-    assert str(poem2.id) in poem_ids
-        
+    assert len(content["data"]) == 1
+    assert str(poem2.id) == content["data"][0]["id"]
+
 
 def test_read_poems_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    create_random_poem(db, is_public=False)
-    create_random_poem(db, is_public=False)
+    poem1 = create_random_poem(db, is_public=False)
+    poem2 = create_random_poem(db, is_public=False)
 
     response = client.get(
         f"{settings.API_V1_STR}/poems/",
@@ -45,7 +44,10 @@ def test_read_poems_as_superuser(
     )
     assert response.status_code == 200
     content = response.json()
-    assert len(content["data"]) >= 2
+    assert len(content["data"]) == 2
+    for item in content["data"]:
+        assert item["id"] in [str(poem1.id), str(poem2.id)]
+        assert "title" in item
 
 
 def test_read_poem(
@@ -158,16 +160,15 @@ def test_create_poem_no_authors(
 
 
 def test_create_poem_as_normal_user(
-    client: TestClient, user_who_is_author: UserSchema, db: Session
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
 ) -> None:
-    token = authentication_token_from_email(
-        client=client, db=db, email=user_who_is_author.email
-    )
-    author = author_crud.get_by_id(db, user_who_is_author.author_id)
     data = {"title": random_lower_string(), "content": random_lower_string()}
     response = client.post(
         f"{settings.API_V1_STR}/poems/",
-        headers=token,
+        headers=author_user_token_headers,
         json=data,
     )
     assert response.status_code == 200
@@ -176,7 +177,7 @@ def test_create_poem_as_normal_user(
     assert content["content"] == data["content"]
     assert "id" in content
     assert content["created_at"]
-    assert content["author_names"][0] == author.full_name # type: ignore
+    assert content["author_names"][0] == author_user.full_name
 
 
 def test_create_poem_for_the_first_time(client: TestClient, db: Session) -> None:

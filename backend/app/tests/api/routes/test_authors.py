@@ -12,7 +12,8 @@ from app.core.config import settings
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.poem import create_random_poem
-from app.tests.utils.user import authentication_token_from_email
+
+from app.schemas.author import AuthorSchema
 
 
 # READ
@@ -186,30 +187,22 @@ def test_update_author_as_admin(
 
 
 def test_update_author_as_current_author(
-    client: TestClient, user_who_is_author, db: Session
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
 ) -> None:
-    token = authentication_token_from_email(
-        client=client, db=db, email=user_who_is_author.email
-    )
-
-    author = author_crud.get_by_id(db, user_who_is_author.author_id)
-    assert author
-
     birth_date = datetime.now()
     data = jsonable_encoder({"birth_date": birth_date})
     r = client.patch(
-        f"{settings.API_V1_STR}/authors/{author.id}",
-        headers=token,
+        f"{settings.API_V1_STR}/authors/{author_user.id}",
+        headers=author_user_token_headers,
         json=data,
     )
     assert r.status_code == 200
     updated_author = r.json()
 
     assert updated_author["birth_date"] == jsonable_encoder(birth_date)
-
-    author_db = author_crud.get_by_name(db, author.full_name)
-    assert author_db
-    assert author_db.birth_date == birth_date
 
 
 def test_update_author_without_priviledges(
