@@ -225,6 +225,40 @@ def test_create_derived_poem(
     assert content["type"] == PoemType.TRANSLATION.value
 
 
+def test_create_poem_without_author_permissions(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    data = {
+        "title": random_lower_string(),
+        "content": random_lower_string(),
+        "author_names": [random_lower_string()],
+    }
+    response = client.post(
+        f"{settings.API_V1_STR}/poems",
+        headers=normal_user_token_headers,
+        json=data,
+    )
+    assert response.status_code == 400
+
+
+def test_create_poem_author_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    data = {
+        "title": random_lower_string(),
+        "content": random_lower_string(),
+        "author_names": [random_lower_string()],
+    }
+    response = client.post(
+        f"{settings.API_V1_STR}/poems",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    assert response.status_code == 404
+    content = response.json()
+    assert content["detail"] == "Author not found"
+
+
 def test_update_poem(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
@@ -330,6 +364,66 @@ def test_update_derived_poem(
     assert content["updated_at"]
     assert content["original"]["id"] == str(new_original.id)
     assert content["type"] == PoemType.VERSION.value
+
+
+def test_update_poem_author_without_permissions(
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
+) -> None:
+    poem = create_random_poem(db, author_names=[author_user.full_name])
+    data = {
+        "title": random_lower_string(),
+        "content": random_lower_string(),
+        "author_names": [random_lower_string()],
+    }
+    response = client.put(
+        f"{settings.API_V1_STR}/poems/{poem.id}",
+        headers=author_user_token_headers,
+        json=data,
+    )
+    assert response.status_code == 400
+
+
+def test_update_poem_type_without_permissions(
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
+) -> None:
+    poem = create_random_poem(db, author_names=[author_user.full_name])
+    data = {
+        "title": random_lower_string(),
+        "content": random_lower_string(),
+        "type": PoemType.TRANSLATION.value,
+    }
+    response = client.put(
+        f"{settings.API_V1_STR}/poems/{poem.id}",
+        headers=author_user_token_headers,
+        json=data,
+    )
+    assert response.status_code == 400
+
+
+def test_update_poem_original_without_permissions(
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
+) -> None:
+    poem = create_random_poem(db, author_names=[author_user.full_name])
+    data = {
+        "title": random_lower_string(),
+        "content": random_lower_string(),
+        "original_poem_id": str(uuid.uuid4()),
+    }
+    response = client.put(
+        f"{settings.API_V1_STR}/poems/{poem.id}",
+        headers=author_user_token_headers,
+        json=data,
+    )
+    assert response.status_code == 400
 
 
 def test_delete_poem(

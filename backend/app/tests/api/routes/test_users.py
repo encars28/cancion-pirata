@@ -118,26 +118,6 @@ def test_get_existing_user_permissions_error(
     assert r.json() == {"detail": "The user doesn't have enough privileges"}
 
 
-def test_create_user_existing_username(
-    client: TestClient, superuser_token_headers: dict[str, str], db: Session
-) -> None:
-    email = random_email()
-    password = random_lower_string()
-    username = random_lower_string()
-    user_in = UserCreate(email=email, password=password, username=username)
-    user_crud.create(db=db, obj_create=user_in)
-
-    data = {"email": email, "password": password, "username": username}
-    r = client.post(
-        f"{settings.API_V1_STR}/users/",
-        headers=superuser_token_headers,
-        json=data,
-    )
-    created_user = r.json()
-    assert r.status_code == 400
-    assert "_id" not in created_user
-
-
 def test_create_user_by_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
@@ -467,3 +447,97 @@ def test_delete_user_without_privileges(
     )
     assert r.status_code == 403
     assert r.json()["detail"] == "The user doesn't have enough privileges"
+
+
+def test_create_user_existing_username(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+
+    data = {
+        "email": random_email(),
+        "password": random_lower_string(),
+        "username": user.username,
+    }
+    r = client.post(
+        f"{settings.API_V1_STR}/users/",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    assert r.status_code == 400
+    assert (
+        r.json()["detail"] == "The user with this username already exists in the system."
+    )
+
+
+def test_update_user_username_exists(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    user2 = create_random_user(db)
+
+    data = {"username": user2.username}
+    r = client.patch(
+        f"{settings.API_V1_STR}/users/{user.id}",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    assert r.status_code == 409
+    assert r.json()["detail"] == "User with this username already exists"
+
+
+def test_register_user_username_exists(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+
+    data = {
+        "email": random_email(),
+        "password": random_lower_string(),
+        "username": user.username,
+    }
+    r = client.post(
+        f"{settings.API_V1_STR}/users/signup",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    assert r.status_code == 400
+    assert (
+        r.json()["detail"] == "The user with this username already exists in the system"
+    )
+
+
+def test_update_user_me_username_exists(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+
+    data = {"username": user.username}
+    r = client.patch(
+        f"{settings.API_V1_STR}/users/me",
+        headers=normal_user_token_headers,
+        json=data,
+    )
+    assert r.status_code == 409
+    assert r.json()["detail"] == "User with this username already exists"
+
+
+def test_create_user_existing_email(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+
+    data = {
+        "email": user.email,
+        "password": random_lower_string(),
+        "username": random_lower_string(),
+    }
+    r = client.post(
+        f"{settings.API_V1_STR}/users/",
+        headers=superuser_token_headers,
+        json=data,
+    )
+    assert r.status_code == 400
+    assert (
+        r.json()["detail"] == "The user with this email already exists in the system."
+    )

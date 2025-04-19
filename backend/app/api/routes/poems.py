@@ -129,7 +129,7 @@ def update_poem(
         ):
             raise HTTPException(status_code=400, detail="Not enough permissions")
 
-        if poem_in.author_names or poem_in.original_poem_id or poem_in.type:
+        if poem_in.author_names or poem_in.original_poem_id or poem_in.type is not None:
             raise HTTPException(
                 status_code=400,
                 detail="You don't have enough permissions",
