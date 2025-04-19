@@ -11,7 +11,7 @@ class Poem(Base):
     __tablename__ = "poem"
     
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    title: Mapped[str] = mapped_column(String(255), index=True, unique=True)
+    title: Mapped[str] = mapped_column(String(255))
     content: Mapped[str]
     is_public: Mapped[bool] = mapped_column(default=True)
     show_author: Mapped[bool] = mapped_column(default=True)
