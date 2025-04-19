@@ -3,13 +3,11 @@ from typing import Optional
 
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
-from app.models.poem import Poem
+from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
 
 from app.schemas.poem import PoemCreate, PoemSchema, PoemUpdate
-from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate
-
-from app.crud.poem_poem import poem_poem_crud
+from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate, PoemPoemSchema
 
 class PoemCRUD:
     def get_by_id(
@@ -83,9 +81,13 @@ class PoemCRUD:
                 type=type,
             )
             
-            poem_poem_crud.create(db, poem_poem_create)
+            poem_poem = PoemPoemSchema.model_validate(poem_poem_create)
+            poem_poem_data = poem_poem.model_dump(exclude_unset=True)
 
-        db.refresh(db_obj)
+            db_poem_poem = Poem_Poem(**poem_poem_data)
+            db.add(db_poem_poem)
+            db.commit()
+
         return PoemSchema.model_validate(db_obj)
 
     def update(
@@ -109,16 +111,23 @@ class PoemCRUD:
             db_obj.authors = authors # type: ignore
             del obj_update_data["author_names"]
 
-        poem_poem = poem_poem_crud.get_by_derived_id(db, db_obj.id)
-        if not poem_poem and "type" in obj_update_data.keys() and "original_poem_id" in obj_update_data.keys():
+        statement = select(Poem_Poem).where(Poem_Poem.derived_poem_id == db_obj.id)
+        db_poem_poem = db.scalars(statement).first()
+        if not db_poem_poem and "type" in obj_update_data.keys() and "original_poem_id" in obj_update_data.keys():
             poem_poem_in = PoemPoemCreate(
                 type=obj_update_data["type"],
                 original_poem_id=obj_update_data["original_poem_id"],
                 derived_poem_id=db_obj.id,
             )
-            poem_poem = poem_poem_crud.create(db=db, obj_create=poem_poem_in)
+            
+            poem_poem = PoemPoemSchema.model_validate(poem_poem_in)
+            poem_poem_data = poem_poem.model_dump(exclude_unset=True)
+
+            db_poem_poem = Poem_Poem(**poem_poem_data)
+            db.add(db_poem_poem)
+            db.commit()
         
-        elif poem_poem:
+        elif db_poem_poem:
             poem_poem_in = PoemPoemUpdate()
             if "type" in obj_update_data.keys():
                 poem_poem_in.type = obj_update_data["type"]
@@ -128,12 +137,12 @@ class PoemCRUD:
                 poem_poem_in.original_poem_id = obj_update_data["original_poem_id"]
                 del obj_update_data["original_poem_id"]
 
-            poem_poem_crud.update(
-                db=db,
-                original_id=poem_poem.original_poem_id,
-                derived_id=poem_poem.derived_poem_id,
-                obj_update=poem_poem_in,
-            )
+            poem_poem_update_data = poem_poem_in.model_dump(exclude_unset=True)
+
+            for field, value in poem_poem_update_data.items():
+                setattr(db_poem_poem, field, value)
+                
+            db.commit()
         
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
