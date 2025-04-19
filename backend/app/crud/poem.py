@@ -6,6 +6,7 @@ from sqlalchemy import select, func
 from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
 
+from app.poem_parser import PoemParser
 from app.schemas.poem import PoemCreate, PoemSchema, PoemUpdate
 from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate, PoemPoemSchema
 
@@ -61,6 +62,8 @@ class PoemCRUD:
         
         if "original_poem_id" in obj_create_data.keys():
             del obj_create_data["original_poem_id"]
+            
+        obj_create_data["content"] = PoemParser(obj_create_data["content"]).to_html()
 
         obj = PoemSchema.model_validate(obj_create_data)
         db_obj = Poem(**obj.model_dump(exclude_unset=True))
@@ -138,6 +141,8 @@ class PoemCRUD:
                 setattr(db_poem_poem, field, value)
                 
             db.commit()
+            
+        obj_update_data["content"] = PoemParser(obj_update_data["content"]).to_html()
         
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
