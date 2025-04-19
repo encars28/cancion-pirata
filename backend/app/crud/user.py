@@ -50,9 +50,7 @@ class UserCRUD:
         obj_data["hashed_password"] = get_password_hash(obj_create.password)
 
         db_schema = UserSchema.model_validate(obj_data)
-        obj_data = db_schema.model_dump(exclude_none=True, exclude_unset=True)
-
-        db_obj = User(**obj_data)
+        db_obj = User(**db_schema.model_dump(exclude_none=True, exclude_unset=True))
 
         db.add(db_obj)
         db.commit()

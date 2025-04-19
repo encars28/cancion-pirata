@@ -63,8 +63,7 @@ class PoemCRUD:
             del obj_create_data["original_poem_id"]
 
         obj = PoemSchema.model_validate(obj_create_data)
-        obj_data = obj.model_dump(exclude_unset=True)
-        db_obj = Poem(**obj_data)
+        db_obj = Poem(**obj.model_dump(exclude_unset=True))
             
         db.add(db_obj)
         db.commit()
@@ -82,9 +81,7 @@ class PoemCRUD:
             )
             
             poem_poem = PoemPoemSchema.model_validate(poem_poem_create)
-            poem_poem_data = poem_poem.model_dump(exclude_unset=True)
-
-            db_poem_poem = Poem_Poem(**poem_poem_data)
+            db_poem_poem = Poem_Poem(**poem_poem.model_dump(exclude_unset=True))
             db.add(db_poem_poem)
             db.commit()
 
@@ -121,9 +118,7 @@ class PoemCRUD:
             )
             
             poem_poem = PoemPoemSchema.model_validate(poem_poem_in)
-            poem_poem_data = poem_poem.model_dump(exclude_unset=True)
-
-            db_poem_poem = Poem_Poem(**poem_poem_data)
+            db_poem_poem = Poem_Poem(**poem_poem.model_dump(exclude_unset=True))
             db.add(db_poem_poem)
             db.commit()
         

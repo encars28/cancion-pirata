@@ -34,9 +34,7 @@ class AuthorCRUD:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
 
         obj = AuthorSchema.model_validate(obj_create_data)
-        obj_data = obj.model_dump(exclude_unset=True)
-
-        db_obj = Author(**obj_data)
+        db_obj = Author(**obj.model_dump(exclude_unset=True))
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
