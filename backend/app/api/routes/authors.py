@@ -4,6 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import (
+    AuthorFilterQuery,
     OptionalCurrentUser,
     get_current_active_superuser,
     SessionDep,
@@ -32,15 +33,14 @@ router = APIRouter(prefix="/authors", tags=["authors"])
 def read_authors(
     session: SessionDep,
     current_user: OptionalCurrentUser,
-    skip: int = 0,
-    limit: int = 100,
+    queryParams: AuthorFilterQuery,
 ) -> Any:
     """
     Retrieve all authors.
     """
 
     count = author_crud.get_count(db=session)
-    authors = author_crud.get_all(db=session, skip=skip, limit=limit)
+    authors = author_crud.get_all(db=session, queryParams=queryParams)
 
     # Admin
     if current_user and current_user.is_superuser: 

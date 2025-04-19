@@ -2,7 +2,7 @@ from collections.abc import Generator
 from typing import Annotated, Callable, Optional
 
 import jwt
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from pydantic import ValidationError
@@ -12,6 +12,8 @@ from app.core import security
 from app.core.config import settings
 from app.core.db import engine
 from app.schemas.user import UserSchema
+from app.schemas.author import AuthorFilterParams
+from app.schemas.poem import PoemFilterParams
 from app.crud.user import user_crud
 from app.schemas.login import TokenPayload
 
@@ -71,3 +73,6 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
+
+AuthorFilterQuery = Annotated[AuthorFilterParams, Query()]
+PoemFilterQuery = Annotated[PoemFilterParams, Query()]

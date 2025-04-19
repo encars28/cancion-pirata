@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Literal, Optional, List
 import uuid
 from datetime import datetime
 
@@ -83,3 +83,9 @@ class PoemsPublicBasic(BaseModel):
 class PoemsPublic(BaseModel):
     data: List[PoemPublicWithAuthor]
     count: int
+
+class PoemFilterParams(BaseModel):
+    limit: int = Field(100, gt=0, le=100)
+    skip: int = Field(0, ge=0)
+    order_by: Literal["created_at", "updated_at", "title", "author"] = Field("title")
+    desc: bool = Field(False)

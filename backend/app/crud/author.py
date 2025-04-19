@@ -2,10 +2,15 @@ from typing import Optional
 import uuid
 
 from app.models.author import Author
-from app.schemas.author import AuthorSchema, AuthorCreate, AuthorUpdate
+from app.schemas.author import (
+    AuthorFilterParams,
+    AuthorSchema,
+    AuthorCreate,
+    AuthorUpdate,
+)
 
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import text, select, func
 
 
 class AuthorCRUD:
@@ -20,9 +25,23 @@ class AuthorCRUD:
         return AuthorSchema.model_validate(db_obj) if db_obj else None
 
     def get_all(
-        self, db: Session, skip: int = 0, limit: int = 100
+        self, db: Session, queryParams: AuthorFilterParams
     ) -> list[AuthorSchema]:
-        db_objs = db.scalars(select(Author).offset(skip).limit(limit)).all()
+        if queryParams.desc:
+            db_objs = db.scalars(
+                select(Author)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(text(f"{queryParams.order_by} desc"))
+            ).all()
+        else:
+            db_objs = db.scalars(
+                select(Author)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(queryParams.order_by)
+            ).all()
+
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def get_count(self, db: Session) -> int:

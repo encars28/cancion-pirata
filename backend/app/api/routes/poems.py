@@ -3,7 +3,7 @@ from typing import Any
 
 from fastapi import APIRouter, HTTPException
 
-from app.api.deps import CurrentUser, OptionalCurrentUser, SessionDep
+from app.api.deps import CurrentUser, OptionalCurrentUser, PoemFilterQuery, SessionDep
 
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
@@ -27,8 +27,7 @@ router = APIRouter(prefix="/poems", tags=["poems"])
 def read_poems(
     session: SessionDep,
     current_user: OptionalCurrentUser,
-    skip: int = 0,
-    limit: int = 100,
+    queryParams: PoemFilterQuery
 ) -> Any:
     """
     Retrieve all poems.
@@ -36,13 +35,13 @@ def read_poems(
     if current_user and current_user.is_superuser:
         # retrieve all poems
         count = poem_crud.get_count(session)
-        poems = poem_crud.get_all(session, skip=skip, limit=limit)
+        poems = poem_crud.get_all(session, queryParams=queryParams)
         poems = [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
         return PoemsPublic(data=poems, count=count)
 
     # Retrieve public poems
     count = poem_crud.get_public_count(session)
-    poems = poem_crud.get_all_public(session, skip=skip, limit=limit)
+    poems = poem_crud.get_all_public(session, queryParams=queryParams) 
     poems = [PoemPublicBasic.model_validate(poem) for poem in poems]
 
     return PoemsPublicBasic(data=poems, count=count)

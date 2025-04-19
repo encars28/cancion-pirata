@@ -2,12 +2,12 @@ import uuid
 from typing import Optional
 
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import select, func, text
 from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
 
 from app.poem_parser import PoemParser
-from app.schemas.poem import PoemCreate, PoemSchema, PoemUpdate
+from app.schemas.poem import PoemCreate, PoemFilterParams, PoemSchema, PoemUpdate
 from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate, PoemPoemSchema
 
 class PoemCRUD:
@@ -17,16 +17,44 @@ class PoemCRUD:
         db_obj = db.get(Poem, obj_id)
         return PoemSchema.model_validate(db_obj) if db_obj else None
 
-    def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> list[PoemSchema]:
-        db_objs = db.scalars(select(Poem).offset(skip).limit(limit)).all()
+    def get_all(self, db: Session, queryParams: PoemFilterParams) -> list[PoemSchema]:
+        if queryParams.desc:
+            db_objs = db.scalars(
+                select(Poem)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(text(f"{queryParams.order_by} desc"))
+            ).all()
+        else:
+            db_objs = db.scalars(
+                select(Poem)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(queryParams.order_by)
+            ).all()
+            
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def get_all_public(
-        self, db: Session, skip: int = 0, limit: int = 100
+        self, db: Session, queryParams: PoemFilterParams
     ) -> list[PoemSchema]:
-        db_objs = db.scalars(
-            select(Poem).where(Poem.is_public).offset(skip).limit(limit)
-        ).all()
+        if queryParams.desc:
+            db_objs = db.scalars(
+                select(Poem)
+                .where(Poem.is_public)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(text(f"{queryParams.order_by} desc"))
+            ).all()
+        else:
+            db_objs = db.scalars(
+                select(Poem)
+                .where(Poem.is_public)
+                .offset(queryParams.skip)
+                .limit(queryParams.limit)
+                .order_by(queryParams.order_by)
+            ).all()
+            
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def get_count(self, db: Session) -> int:

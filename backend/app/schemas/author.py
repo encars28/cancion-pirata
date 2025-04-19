@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, List
+from typing import Literal, Optional, List
 import uuid
 from datetime import datetime
 
@@ -52,3 +52,10 @@ class AuthorsPublic(BaseModel):
 class AuthorsPublicWithPoems(BaseModel):
     data: list[AuthorPublicWithPoems]
     count: int
+
+
+class AuthorFilterParams(BaseModel):
+    limit: int = Field(100, gt=0, le=100)
+    skip: int = Field(0, ge=0)
+    order_by: Literal["full_name", "birth_date"] = Field("full_name")
+    desc: bool = False
