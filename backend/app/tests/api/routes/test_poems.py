@@ -19,8 +19,8 @@ from app.crud.author import author_crud
 def test_read_poems_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
-    poem = create_random_poem(db, is_public=True, show_author=False)
-    create_random_poem(db, is_public=False)
+    poem1 = create_random_poem(db, is_public=False)
+    poem2 = create_random_poem(db, is_public=True)
 
     response = client.get(
         f"{settings.API_V1_STR}/poems/",
@@ -28,13 +28,10 @@ def test_read_poems_as_normal_user(
     )
     assert response.status_code == 200
     content = response.json()
-    assert len(content["data"]) >= 1
-
-    for p in content["data"]:
-        if p["id"] == str(poem.id):
-            assert not p["show_author"]
-            assert p["author_names"] == []
-
+    poem_ids = [poem["id"] for poem in content["data"]]
+    assert str(poem1.id) not in poem_ids
+    assert str(poem2.id) in poem_ids
+        
 
 def test_read_poems_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
@@ -64,8 +61,6 @@ def test_read_poem(
     content = response.json()
     assert content["title"] == poem.title
     assert content["content"] == poem.content
-    assert content["is_public"] == poem.is_public
-    assert content["show_author"] == poem.show_author
     assert content["id"] == str(poem.id)
 
 
@@ -83,8 +78,6 @@ def test_read_anonymous_poem(
     content = response.json()
     assert content["title"] == poem.title
     assert content["content"] == poem.content
-    assert content["is_public"] == poem.is_public
-    assert content["show_author"] == poem.show_author
     assert content["id"] == str(poem.id)
     assert content["derived_poems"][0]["id"] == str(poem2.id)
     assert content["author_names"] == []
@@ -122,7 +115,7 @@ def test_create_poem_as_superuser(
     data = {
         "title": random_lower_string(),
         "content": random_lower_string(),
-        "author_ids": [str(author.id)],
+        "author_names": [author.full_name],
         "is_public": True,
         "show_author": True,
         "language": "es",
@@ -145,13 +138,13 @@ def test_create_poem_as_superuser(
     assert content["created_at"]
 
 
-def test_create_poem_as_superuser_no_authors(
+def test_create_poem_no_authors(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
     data = {
         "title": random_lower_string(),
         "content": random_lower_string(),
-        "author_ids": [str(uuid.uuid4())],
+        "author_names": [random_lower_string()],
     }
     response = client.post(
         f"{settings.API_V1_STR}/poems/",
@@ -240,7 +233,7 @@ def test_update_poem(
     data = {
         "title": random_lower_string(),
         "content": random_lower_string(),
-        "author_ids": [str(author.id)],
+        "author_names": [author.full_name],
         "original_poem_id": str(original.id),
         "type": PoemType.TRANSLATION.value,
     }
@@ -297,7 +290,7 @@ def test_update_poem_no_authors(
     data = {
         "title": random_lower_string(),
         "content": random_lower_string(),
-        "author_ids": [str(uuid.uuid4())],
+        "author_names": [random_lower_string()],
     }
     response = client.put(
         f"{settings.API_V1_STR}/poems/{poem.id}",

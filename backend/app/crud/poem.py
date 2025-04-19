@@ -7,7 +7,9 @@ from app.models.poem import Poem
 from app.models.author import Author
 
 from app.schemas.poem import PoemCreate, PoemSchema, PoemUpdate
+from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate
 
+from app.crud.poem_poem import poem_poem_crud
 
 class PoemCRUD:
     def get_by_id(
@@ -40,29 +42,50 @@ class PoemCRUD:
 
     def create(self, db: Session, obj_create: PoemCreate) -> Optional[PoemSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
+        
+        author_names = []
+        if "author_names" in obj_create_data.keys():
+            author_names += obj_create_data["author_names"]
+            del obj_create_data["author_names"]
 
-        author_ids = []
-        if "author_ids" in obj_create_data.keys():
-            author_ids += obj_create_data["author_ids"]
-            del obj_create_data["author_ids"]
-
-        authors = [db.get(Author, author_id) for author_id in author_ids]
-        if None in authors:
+        authors = db.scalars(select(Author).filter(Author.full_name.in_(author_names))).all()
+        if len(authors) != len(author_names):
             return None
+        
+        type = None
+        original_poem_id = None
+        if "type" in obj_create_data.keys() and "original_poem_id" in obj_create_data.keys():
+            type = obj_create_data["type"]
+            original_poem_id = obj_create_data["original_poem_id"]
+        
+        if "type" in obj_create_data.keys():
+            del obj_create_data["type"]
+        
+        if "original_poem_id" in obj_create_data.keys():
+            del obj_create_data["original_poem_id"]
 
         obj = PoemSchema.model_validate(obj_create_data)
         obj_data = obj.model_dump(exclude_unset=True)
-
         db_obj = Poem(**obj_data)
             
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
 
-        db_obj.authors += authors
+        db_obj.authors = authors # type: ignore
         db.commit()
         db.refresh(db_obj)
+        
+        if type is not None and original_poem_id: 
+            poem_poem_create = PoemPoemCreate(
+                original_poem_id=original_poem_id,
+                derived_poem_id=db_obj.id,
+                type=type,
+            )
+            
+            poem_poem_crud.create(db, poem_poem_create)
 
+        db.refresh(db_obj)
         return PoemSchema.model_validate(db_obj)
 
     def update(
@@ -71,22 +94,47 @@ class PoemCRUD:
         obj_id: uuid.UUID,
         obj_update: PoemUpdate,
     ) -> Optional[PoemSchema]:
+        
         db_obj = db.get(Poem, obj_id)
         if not db_obj:
             return None
 
         obj_update_data = obj_update.model_dump(exclude_unset=True)
 
-        if "author_ids" in obj_update_data.keys():
-            authors = [
-                db.get(Author, author_id) for author_id in obj_update_data["author_ids"]
-            ]
-            if None in authors:
+        if "author_names" in obj_update_data.keys():
+            authors = db.scalars(select(Author).filter(Author.full_name.in_(obj_update_data["author_names"]))).all()
+            if len(authors) != len(obj_update_data["author_names"]):
                 return None
 
-            db_obj.authors = authors
-            del obj_update_data["author_ids"]
+            db_obj.authors = authors # type: ignore
+            del obj_update_data["author_names"]
 
+        poem_poem = poem_poem_crud.get_by_derived_id(db, db_obj.id)
+        if not poem_poem and "type" in obj_update_data.keys() and "original_poem_id" in obj_update_data.keys():
+            poem_poem_in = PoemPoemCreate(
+                type=obj_update_data["type"],
+                original_poem_id=obj_update_data["original_poem_id"],
+                derived_poem_id=db_obj.id,
+            )
+            poem_poem = poem_poem_crud.create(db=db, obj_create=poem_poem_in)
+        
+        elif poem_poem:
+            poem_poem_in = PoemPoemUpdate()
+            if "type" in obj_update_data.keys():
+                poem_poem_in.type = obj_update_data["type"]
+                del obj_update_data["type"]
+                
+            if "original_poem_id" in obj_update_data.keys():
+                poem_poem_in.original_poem_id = obj_update_data["original_poem_id"]
+                del obj_update_data["original_poem_id"]
+
+            poem_poem_crud.update(
+                db=db,
+                original_id=poem_poem.original_poem_id,
+                derived_id=poem_poem.derived_poem_id,
+                obj_update=poem_poem_in,
+            )
+        
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
 

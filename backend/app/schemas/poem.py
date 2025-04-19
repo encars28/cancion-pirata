@@ -17,11 +17,7 @@ class PoemBase(BaseModel):
 class PoemCreate(PoemBase):
     type: Optional[int] = None
     original_poem_id: Optional[uuid.UUID] = None
-
-
-class PoemCreateAdmin(PoemCreate):
     author_names: Optional[List[str]] = None
-
 
 class PoemUpdate(PoemBase):
     title: Optional[str] = Field(max_length=255, default=None)  # type: ignore
@@ -30,17 +26,15 @@ class PoemUpdate(PoemBase):
     show_author: Optional[bool] = None  # type: ignore
     language: Optional[str] = None
 
-
-class PoemUpdateAdmin(PoemUpdate):
     author_names: Optional[List[str]] = None
-
     type: Optional[int] = None
     original_poem_id: Optional[uuid.UUID] = None
-
 
 class PoemPublicBasic(BaseModel):
     id: uuid.UUID
     title: str = Field(max_length=255)
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PoemPublicBasicWithAuthor(PoemPublicBasic):
@@ -62,9 +56,8 @@ class PoemPublicWithAuthor(PoemPublic):
     show_author: bool = True
 
 
-class PoemPublicWithAllTheInfo(PoemPublic):
+class PoemPublicWithAllTheInfo(PoemPublicWithAuthor):
     content: str
-    author_names: List[str] = []
     derived_poems: List[PoemPublicBasicWithAuthor] = []
     original: Optional[PoemPublicBasicWithAuthor] = None
 
