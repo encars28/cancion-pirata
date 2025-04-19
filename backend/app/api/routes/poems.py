@@ -1,7 +1,7 @@
 import uuid
-from typing import Any
+from typing import Annotated, Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import CurrentUser, OptionalCurrentUser, PoemFilterQuery, SessionDep
 
@@ -10,6 +10,7 @@ from app.schemas.poem import (
     PoemCreate,
     PoemPublicBasic,
     PoemPublicWithAuthor,
+    PoemSchema,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,
@@ -46,6 +47,16 @@ def read_poems(
 
     return PoemsPublicBasic(data=poems, count=count)
 
+@router.get("/search", response_model=list[PoemSchema])
+def search_poems(
+    session: SessionDep,
+    query: Annotated[str, Query()],
+    col: Annotated[str, Query()],
+) -> Any:
+    """
+    Search poems by title or content.
+    """
+    return poem_crud.search(session, query=query, col=col)
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(
@@ -161,3 +172,6 @@ def delete_poem(
 
     poem_crud.delete(db=session, obj_id=poem.id)
     return Message(message="Poem deleted successfully")
+
+
+    

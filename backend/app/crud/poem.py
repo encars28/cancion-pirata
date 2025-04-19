@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, func, text
 from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
+from app.core.db import engine
 
 from app.poem_parser import PoemParser
 from app.schemas.poem import PoemCreate, PoemFilterParams, PoemSchema, PoemUpdate
@@ -45,7 +46,7 @@ class PoemCRUD:
                 .where(Poem.is_public)
                 .offset(queryParams.skip)
                 .limit(queryParams.limit)
-                .order_by(text(f"{queryParams.order_by} desc"))
+                .order_by(getattr(Poem, queryParams.order_by).desc())
             ).all()
         else:
             db_objs = db.scalars(
@@ -53,7 +54,7 @@ class PoemCRUD:
                 .where(Poem.is_public)
                 .offset(queryParams.skip)
                 .limit(queryParams.limit)
-                .order_by(queryParams.order_by)
+                .order_by(getattr(Poem, queryParams.order_by))
             ).all()
 
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
@@ -67,6 +68,13 @@ class PoemCRUD:
         statement = select(func.count()).select_from(Poem).where(Poem.is_public)
         count = db.execute(statement).scalar()
         return count if count else 0
+    
+    def search(self, db: Session, query: str, col: str) -> list[PoemSchema]:
+        db_objs = db.scalars(
+            select(Poem).where(getattr(Poem, col).ilike(f"%{query}%"))
+        ).all()
+        
+        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def create(self, db: Session, obj_create: PoemCreate) -> Optional[PoemSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)

@@ -32,14 +32,14 @@ class AuthorCRUD:
                 select(Author)
                 .offset(queryParams.skip)
                 .limit(queryParams.limit)
-                .order_by(text(f"{queryParams.order_by} desc"))
+                .order_by(getattr(Author, queryParams.order_by).desc())
             ).all()
         else:
             db_objs = db.scalars(
                 select(Author)
                 .offset(queryParams.skip)
                 .limit(queryParams.limit)
-                .order_by(queryParams.order_by)
+                .order_by(getattr(Author, queryParams.order_by))
             ).all()
 
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
