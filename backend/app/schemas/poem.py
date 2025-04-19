@@ -87,5 +87,5 @@ class PoemsPublic(BaseModel):
 class PoemFilterParams(BaseModel):
     limit: int = Field(100, gt=0, le=100)
     skip: int = Field(0, ge=0)
-    order_by: Literal["created_at", "updated_at", "title", "author"] = Field("title")
+    order_by: Literal["created_at", "updated_at", "title", "show_author", "is_public", "type", "language"] = Field("title")
     desc: bool = Field(False)

@@ -10,6 +10,7 @@ from app.poem_parser import PoemParser
 from app.schemas.poem import PoemCreate, PoemFilterParams, PoemSchema, PoemUpdate
 from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate, PoemPoemSchema
 
+
 class PoemCRUD:
     def get_by_id(
         self, db: Session, obj_id: Optional[uuid.UUID]
@@ -32,7 +33,7 @@ class PoemCRUD:
                 .limit(queryParams.limit)
                 .order_by(queryParams.order_by)
             ).all()
-            
+
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def get_all_public(
@@ -54,7 +55,7 @@ class PoemCRUD:
                 .limit(queryParams.limit)
                 .order_by(queryParams.order_by)
             ).all()
-            
+
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def get_count(self, db: Session) -> int:
@@ -69,48 +70,53 @@ class PoemCRUD:
 
     def create(self, db: Session, obj_create: PoemCreate) -> Optional[PoemSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
-        
+
         author_names = []
         if "author_names" in obj_create_data.keys():
             author_names += obj_create_data["author_names"]
             del obj_create_data["author_names"]
 
-        authors = db.scalars(select(Author).filter(Author.full_name.in_(author_names))).all()
+        authors = db.scalars(
+            select(Author).filter(Author.full_name.in_(author_names))
+        ).all()
         if len(authors) != len(author_names):
             return None
-        
+
         type = None
         original_poem_id = None
-        if "type" in obj_create_data.keys() and "original_poem_id" in obj_create_data.keys():
+        if (
+            "type" in obj_create_data.keys()
+            and "original_poem_id" in obj_create_data.keys()
+        ):
             type = obj_create_data["type"]
             original_poem_id = obj_create_data["original_poem_id"]
-        
+
         if "type" in obj_create_data.keys():
             del obj_create_data["type"]
-        
+
         if "original_poem_id" in obj_create_data.keys():
             del obj_create_data["original_poem_id"]
-            
+
         obj_create_data["content"] = PoemParser(obj_create_data["content"]).to_html()
 
         obj = PoemSchema.model_validate(obj_create_data)
         db_obj = Poem(**obj.model_dump(exclude_unset=True))
-            
+
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
 
-        db_obj.authors = authors # type: ignore
+        db_obj.authors = authors  # type: ignore
         db.commit()
         db.refresh(db_obj)
-        
-        if type is not None and original_poem_id: 
+
+        if type is not None and original_poem_id:
             poem_poem_create = PoemPoemCreate(
                 original_poem_id=original_poem_id,
                 derived_poem_id=db_obj.id,
                 type=type,
             )
-            
+
             poem_poem = PoemPoemSchema.model_validate(poem_poem_create)
             db_poem_poem = Poem_Poem(**poem_poem.model_dump(exclude_unset=True))
             db.add(db_poem_poem)
@@ -124,7 +130,6 @@ class PoemCRUD:
         obj_id: uuid.UUID,
         obj_update: PoemUpdate,
     ) -> Optional[PoemSchema]:
-        
         db_obj = db.get(Poem, obj_id)
         if not db_obj:
             return None
@@ -132,33 +137,41 @@ class PoemCRUD:
         obj_update_data = obj_update.model_dump(exclude_unset=True)
 
         if "author_names" in obj_update_data.keys():
-            authors = db.scalars(select(Author).filter(Author.full_name.in_(obj_update_data["author_names"]))).all()
+            authors = db.scalars(
+                select(Author).filter(
+                    Author.full_name.in_(obj_update_data["author_names"])
+                )
+            ).all()
             if len(authors) != len(obj_update_data["author_names"]):
                 return None
 
-            db_obj.authors = authors # type: ignore
+            db_obj.authors = authors  # type: ignore
             del obj_update_data["author_names"]
 
         statement = select(Poem_Poem).where(Poem_Poem.derived_poem_id == db_obj.id)
         db_poem_poem = db.scalars(statement).first()
-        if not db_poem_poem and "type" in obj_update_data.keys() and "original_poem_id" in obj_update_data.keys():
+        if (
+            not db_poem_poem
+            and "type" in obj_update_data.keys()
+            and "original_poem_id" in obj_update_data.keys()
+        ):
             poem_poem_in = PoemPoemCreate(
                 type=obj_update_data["type"],
                 original_poem_id=obj_update_data["original_poem_id"],
                 derived_poem_id=db_obj.id,
             )
-            
+
             poem_poem = PoemPoemSchema.model_validate(poem_poem_in)
             db_poem_poem = Poem_Poem(**poem_poem.model_dump(exclude_unset=True))
             db.add(db_poem_poem)
             db.commit()
-        
+
         elif db_poem_poem:
             poem_poem_in = PoemPoemUpdate()
             if "type" in obj_update_data.keys():
                 poem_poem_in.type = obj_update_data["type"]
                 del obj_update_data["type"]
-                
+
             if "original_poem_id" in obj_update_data.keys():
                 poem_poem_in.original_poem_id = obj_update_data["original_poem_id"]
                 del obj_update_data["original_poem_id"]
@@ -167,11 +180,11 @@ class PoemCRUD:
 
             for field, value in poem_poem_update_data.items():
                 setattr(db_poem_poem, field, value)
-                
+
             db.commit()
-            
+
         obj_update_data["content"] = PoemParser(obj_update_data["content"]).to_html()
-        
+
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
 
