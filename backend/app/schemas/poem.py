@@ -48,13 +48,12 @@ class PoemPublic(PoemPublicBasic):
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
     type: Optional[int] = None
+    is_public: bool = False
+    show_author: bool = True
 
 
 class PoemPublicWithAuthor(PoemPublic):
     author_names: List[str] = []
-    is_public: bool = False
-    show_author: bool = True
-
 
 class PoemPublicWithAllTheInfo(PoemPublicWithAuthor):
     content: str

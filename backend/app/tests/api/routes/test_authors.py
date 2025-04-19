@@ -22,7 +22,7 @@ def test_retrieve_authors_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    create_random_poem(db, author_ids=[author.id], is_public=False)
+    create_random_poem(db, author_names=[author.full_name], is_public=False)
     create_random_author(db)
 
     r = client.get(f"{settings.API_V1_STR}/authors/", headers=superuser_token_headers)
@@ -105,7 +105,7 @@ def test_read_author_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    create_random_poem(db, author_ids=[author.id], is_public=False)
+    create_random_poem(db, author_names=[author.full_name], is_public=False)
         
     author_id = author.id
     r = client.get(
@@ -124,7 +124,7 @@ def test_read_author_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    create_random_poem(db, author_ids=[author.id], is_public=False)
+    create_random_poem(db, author_names=[author.full_name], is_public=False)
     
     r = client.get(
         f"{settings.API_V1_STR}/authors/{author.id}",
@@ -255,7 +255,7 @@ def test_delete_author_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    poem = create_random_poem(db, author_ids=[author.id])
+    poem = create_random_poem(db, author_names=[author.full_name])
     poem_id = poem.id
     author_id = author.id
     r = client.delete(
