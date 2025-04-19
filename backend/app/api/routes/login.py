@@ -1,9 +1,11 @@
 from datetime import timedelta
 from typing import Annotated, Any
 
+from pydantic_core import PydanticCustomError
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordRequestForm
+from pydantic import validate_email
 
 from app.crud.user import user_crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
@@ -29,8 +31,19 @@ def login_access_token(
     """
     OAuth2 compatible token login, get an access token for future requests
     """
+    user_email = form_data.username
+    try: 
+        validate_email(form_data.username)
+
+    except PydanticCustomError:
+        user = user_crud.get_by_username(session, form_data.username)
+        if not user: 
+            raise HTTPException(status_code=400, detail="Incorrect email or userame")
+        
+        user_email = user.email
+        
     user = user_crud.authenticate(
-        db=session, email=form_data.username, password=form_data.password
+        db=session, email=user_email, password=form_data.password
     )
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")

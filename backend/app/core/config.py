@@ -5,6 +5,7 @@ from typing import Annotated, Any, Literal
 from pydantic import (
     AnyUrl,
     BeforeValidator,
+    EmailStr,
     HttpUrl,
     computed_field,
     model_validator,
@@ -106,12 +107,11 @@ class Settings(BaseSettings):
     def emails_enabled(self) -> bool:
         return bool(self.SMTP_HOST and self.EMAILS_FROM_EMAIL)
 
-    # TODO: update type to EmailStr when sqlmodel supports it
-    EMAIL_TEST_USER: str = "test@example.com"
-    EMAIL_TEST_AUTHOR_USER: str = "author@example.com"
-    # TODO: update type to EmailStr when sqlmodel supports it
-    FIRST_SUPERUSER: str
+    EMAIL_TEST_USER: EmailStr = "test@example.com"
+    EMAIL_TEST_AUTHOR_USER: EmailStr = "author@example.com"
+    FIRST_SUPERUSER: EmailStr
     FIRST_SUPERUSER_PASSWORD: str
+    FIRST_SUPERUSER_NAME: str
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         if value == "changethis":
