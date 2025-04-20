@@ -16,7 +16,6 @@ from app.schemas.poem import (
     PoemCreate,
     PoemPublicBasic,
     PoemPublicWithAuthor,
-    PoemSchema,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,
@@ -72,7 +71,7 @@ def search_poems(
             poems = poem_crud.search_date_column(session, query)
         
         case "type":
-            if query.query not in [poem_type.value for poem_type in PoemType]:
+            if not query.query.isnumeric() or int(query.query) not in [poem_type.value for poem_type in PoemType]:
                 raise HTTPException(
                     status_code=400,
                     detail="Invalid query",

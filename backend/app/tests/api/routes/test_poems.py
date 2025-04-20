@@ -4,6 +4,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.crud import poem
+from app.schemas.poem import PoemCreate
 from app.tests.utils.poem import create_random_poem, create_random_derived_poem
 from app.tests.utils.user import authentication_token_from_email
 
@@ -469,3 +471,131 @@ def test_delete_poem_not_enough_permissions(
     assert response.status_code == 400
     content = response.json()
     assert content["detail"] == "Not enough permissions"
+    
+def test_search_string(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    poem1 = poem_crud.create(
+        db=db,
+        obj_create=PoemCreate(
+            title="Test Poem",
+            content="This is a test poem."
+        )
+    )
+    
+    poem2 = poem_crud.create(
+        db=db,
+        obj_create=PoemCreate(
+            title="Another Poem",
+            content="This is another poem."
+        )
+    )
+
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=title&query=Test",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content) == 1
+    assert str(poem1.id) == content[0]["id"] # type: ignore
+    
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=title&query=Poem",
+        headers=superuser_token_headers,
+    )
+    
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content) == 2
+    for item in content:
+        assert item["id"] in [str(poem1.id), str(poem2.id)] # type: ignore
+        
+def test_search_bool(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    poem1 = create_random_poem(db, is_public=True)
+    poem2 = create_random_poem(db, is_public=False)
+
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=is_public&query=true",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content) == 1
+    assert str(poem1.id) == content[0]["id"] # type: ignore
+    
+def test_search_bool_invalid(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=is_public&query=invalid",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 400
+    content = response.json()
+    assert content["detail"] == "Invalid query"
+    
+def test_search_bool_not_enough_permissions(
+    client: TestClient, normal_user_token_headers: dict[str, str]
+) -> None:
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=is_public&query=true",
+        headers=normal_user_token_headers,
+    )
+    assert response.status_code == 400
+    content = response.json()
+    assert content["detail"] == "You don't have enough permissions"
+    
+def test_search_int(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    poem1 = create_random_poem(db)
+    poem2 = create_random_derived_poem(db, type=PoemType.TRANSLATION.value, original_id=poem1.id)
+
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=type&query={PoemType.TRANSLATION.value}",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content) == 1
+    assert str(poem2.id) == content[0]["id"] # type: ignore
+    
+def test_search_int_invalid(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=type&query=invalid",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 400
+    content = response.json()
+    assert content["detail"] == "Invalid query"
+    
+def test_search_date(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    poem1 = create_random_poem(db)
+
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=created_at&query={poem1.created_at.year}", # type: ignore
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert len(content) == 1
+    assert str(poem1.id) == content[0]["id"] # type: ignore
+    
+def test_search_date_invalid(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/search?col=created_at&query=invalid",
+        headers=superuser_token_headers,
+    )
+    assert response.status_code == 400
+    content = response.json()
+    assert content["detail"] == "Invalid query"
+
