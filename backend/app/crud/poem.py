@@ -102,12 +102,28 @@ class PoemCRUD:
 
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
     
-    def search_equals(
+    def search_int_column(
         self, db: Session, query: PoemSearchParams
     ) -> list[PoemSchema]:
         db_objs = db.scalars(
-            select(Poem).where(getattr(Poem, query.col) == query.query)
+            select(Poem).where(getattr(Poem, query.col) == int(query.query))
         ).all()
+
+        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
+    
+    def search_bool_column(
+        self, db: Session, query: PoemSearchParams
+    ) -> list[PoemSchema]:
+        if query.query.lower() == "true":
+            db_objs = db.scalars(
+                select(Poem).where(getattr(Poem, query.col) == True)
+            ).all()
+        elif query.query.lower() == "false":
+            db_objs = db.scalars(
+                select(Poem).where(getattr(Poem, query.col) == False)
+            ).all()
+        else:
+            return []
 
         return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
     

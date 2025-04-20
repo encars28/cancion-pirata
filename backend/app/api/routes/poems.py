@@ -26,6 +26,7 @@ from app.schemas.common import Message
 
 from app.crud.poem import poem_crud
 from app.crud.author import author_crud
+from app.schemas.poem_poem import PoemType
 
 router = APIRouter(prefix="/poems", tags=["poems"])
 
@@ -52,7 +53,7 @@ def read_poems(
     return PoemsPublicBasic(data=poems, count=count)
 
 
-@router.get("/search", response_model=list[PoemSchema])
+@router.get("/search", response_model=list[PoemPublicBasic])
 def search_poems(
     session: SessionDep,
     query: PoemQuery,
@@ -61,12 +62,44 @@ def search_poems(
     """
     Search poems by any field
     """
-    if not current_user or not current_user.is_superuser:
-        if query.col in ["show_author", "is_public"]:
-            raise HTTPException(
-                status_code=400,
-                detail="You don't have enough permissions",
-            )
+    match query.col: 
+        case "created_at" | "updated_at":
+            if not query.query.isnumeric():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid query",
+                )
+            poems = poem_crud.search_date_column(session, query)
+        
+        case "type":
+            if query.query not in [poem_type.value for poem_type in PoemType]:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid query",
+                )
+            poems = poem_crud.search_int_column(session, query)
+        
+        case "title" | "language" | "content":
+            poems = poem_crud.search_text_column(session, query)
+        
+        case "show_author" | "is_public":
+            if not current_user or not current_user.is_superuser:
+                raise HTTPException(
+                    status_code=400,
+                    detail="You don't have enough permissions",
+                )
+            
+            if query.query.lower() not in ["true", "false"]:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid query",
+                )
+                
+            poems = poem_crud.search_bool_column(session, query)
+        case _:
+            poems = []
+            
+    return [PoemPublicBasic.model_validate(poem) for poem in poems]
 
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
