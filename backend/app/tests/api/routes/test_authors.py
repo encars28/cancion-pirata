@@ -13,7 +13,7 @@ from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.poem import create_random_poem
 
-from app.schemas.author import AuthorSchema
+from app.schemas.author import AuthorCreate, AuthorSchema
 
 
 # READ
@@ -295,3 +295,67 @@ def test_delete_author_without_privileges(
     )
     assert r.status_code == 403
     assert r.json()["detail"] == "The user doesn't have enough privileges"
+    
+def test_search_text(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    author1 = author_crud.create(
+        db,
+        obj_create=AuthorCreate(
+            full_name="Pepe",
+        ),
+    )
+    author2 = author_crud.create(
+        db,
+        obj_create=AuthorCreate(
+            full_name="Juan",
+        ),
+    )
+
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/search?col=full_name&query=pe",
+        headers=superuser_token_headers,
+    )
+    all_authors = r.json()
+
+    assert len(all_authors) == 1
+    assert all_authors[0]["id"] == str(author1.id)
+        
+def test_search_date(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    author1 = author_crud.create(
+        db,
+        obj_create=AuthorCreate(
+            full_name="Pepe",
+            birth_date=datetime(2000, 1, 1),
+        ),
+    )
+    author2 = author_crud.create(
+        db,
+        obj_create=AuthorCreate(
+            full_name="Juan",
+            birth_date=datetime(2005, 1, 2),
+        ),
+    )
+
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/search?col=birth_date&query=2000",
+        headers=superuser_token_headers,
+    )
+    all_authors = r.json()
+
+    assert len(all_authors) == 1
+    assert all_authors[0]["id"] == str(author1.id)
+
+def test_search_date_invalid(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/search?col=birth_date&query=a",
+        headers=superuser_token_headers,
+    )
+
+    assert r.status_code == 400
+    assert r.json() == {"detail": "Invalid query"}
+    

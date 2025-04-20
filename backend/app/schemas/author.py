@@ -60,6 +60,6 @@ class AuthorFilterParams(BaseModel):
     order_by: Literal["full_name", "birth_date"] = Field("full_name")
     desc: bool = False
     
-class AuthorSearchParams(AuthorFilterParams):
-    col: Literal["full_name", "birth_date"]
+class AuthorSearchParams(BaseModel):
+    col: Literal["full_name", "birth_date"] = Field("full_name")
     query: str
