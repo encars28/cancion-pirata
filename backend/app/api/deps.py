@@ -13,7 +13,7 @@ from app.core.config import settings
 from app.core.db import engine
 from app.schemas.user import UserSchema
 from app.schemas.author import AuthorFilterParams
-from app.schemas.poem import PoemFilterParams
+from app.schemas.poem import PoemFilterParams, PoemSearchParams
 from app.crud.user import user_crud
 from app.schemas.login import TokenPayload
 
@@ -76,3 +76,5 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
 
 AuthorFilterQuery = Annotated[AuthorFilterParams, Query()]
 PoemFilterQuery = Annotated[PoemFilterParams, Query()]
+
+PoemQuery = Annotated[PoemSearchParams, Query()]

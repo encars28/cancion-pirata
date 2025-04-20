@@ -89,3 +89,8 @@ class PoemFilterParams(BaseModel):
     skip: int = Field(0, ge=0)
     order_by: Literal["created_at", "updated_at", "title", "show_author", "is_public", "type", "language"] = Field("title")
     desc: bool = Field(False)
+    
+class PoemSearchParams(BaseModel):
+    query: str
+    col: Literal["created_at", "updated_at", "title", "show_author", "is_public", "type", "language"] = Field("title")
+    

@@ -1,9 +1,15 @@
 import uuid
-from typing import Annotated, Any
+from typing import Any
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException
 
-from app.api.deps import CurrentUser, OptionalCurrentUser, PoemFilterQuery, SessionDep
+from app.api.deps import (
+    CurrentUser,
+    OptionalCurrentUser,
+    PoemFilterQuery,
+    PoemQuery,
+    SessionDep,
+)
 
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
@@ -26,9 +32,7 @@ router = APIRouter(prefix="/poems", tags=["poems"])
 
 @router.get("/", response_model=PoemsPublic | PoemsPublicBasic)
 def read_poems(
-    session: SessionDep,
-    current_user: OptionalCurrentUser,
-    queryParams: PoemFilterQuery
+    session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemFilterQuery
 ) -> Any:
     """
     Retrieve all poems.
@@ -42,21 +46,28 @@ def read_poems(
 
     # Retrieve public poems
     count = poem_crud.get_public_count(session)
-    poems = poem_crud.get_all_public(session, queryParams=queryParams) 
+    poems = poem_crud.get_all_public(session, queryParams=queryParams)
     poems = [PoemPublicBasic.model_validate(poem) for poem in poems]
 
     return PoemsPublicBasic(data=poems, count=count)
 
+
 @router.get("/search", response_model=list[PoemSchema])
 def search_poems(
     session: SessionDep,
-    query: Annotated[str, Query()],
-    col: Annotated[str, Query()],
+    query: PoemQuery,
+    current_user: OptionalCurrentUser,
 ) -> Any:
     """
-    Search poems by title or content.
+    Search poems by any field
     """
-    return poem_crud.search(session, query=query, col=col)
+    if not current_user or not current_user.is_superuser:
+        if query.col in ["show_author", "is_public"]:
+            raise HTTPException(
+                status_code=400,
+                detail="You don't have enough permissions",
+            )
+
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
 def read_poem(
@@ -69,15 +80,21 @@ def read_poem(
     if not poem:
         raise HTTPException(status_code=404, detail="Poem not found")
 
-    if current_user and not current_user.is_superuser and not poem.is_public:
-        if current_user.author_id is None or current_user.author_id != poem.author_ids:
-            raise HTTPException(status_code=400, detail="Not enough permissions")
+    if current_user and (
+        current_user.is_superuser
+        or (
+            current_user.author_id is not None
+            and current_user.author_id in poem.author_ids
+        )
+    ):
+        return poem
 
-    elif current_user and not current_user.is_superuser and poem.is_public:
-        poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
+    if not poem.is_public:
+        raise HTTPException(status_code=400, detail="Not enough permissions")
 
-        if not poem.show_author:
-            poem.author_names = []
+    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
+    if not poem.show_author:
+        poem.author_names = []
 
     return poem
 
@@ -172,6 +189,3 @@ def delete_poem(
 
     poem_crud.delete(db=session, obj_id=poem.id)
     return Message(message="Poem deleted successfully")
-
-
-    
