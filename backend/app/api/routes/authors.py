@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import (
     AuthorFilterQuery,
+    AuthorQuery,
     OptionalCurrentUser,
     get_current_active_superuser,
     SessionDep,
@@ -51,6 +52,31 @@ def read_authors(
     authors = [AuthorPublicBasic.model_validate(author) for author in authors]
     return AuthorsPublic(data=authors, count=count)
 
+@router.get("/search", response_model=list[AuthorPublicBasic])
+def search_poems(
+    session: SessionDep,
+    query: AuthorQuery,
+    current_user: OptionalCurrentUser,
+) -> Any:
+    """
+    Search poems by any field
+    """
+    match query.col: 
+        case "birth_date":
+            if not query.query.isnumeric():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid query",
+                )
+            authors = author_crud.search_date_column(session, query)
+        
+        case "full_name":
+            authors = author_crud.search_text_column(session, query)
+            
+        case _:
+            authors = []
+            
+    return [AuthorPublicBasic.model_validate(author) for author in authors]
 
 @router.post(
     "/",

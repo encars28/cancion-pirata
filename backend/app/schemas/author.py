@@ -59,3 +59,7 @@ class AuthorFilterParams(BaseModel):
     skip: int = Field(0, ge=0)
     order_by: Literal["full_name", "birth_date"] = Field("full_name")
     desc: bool = False
+    
+class AuthorSearchParams(AuthorFilterParams):
+    col: Literal["full_name", "birth_date"]
+    query: str

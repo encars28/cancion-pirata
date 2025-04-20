@@ -12,7 +12,7 @@ from app.core import security
 from app.core.config import settings
 from app.core.db import engine
 from app.schemas.user import UserSchema
-from app.schemas.author import AuthorFilterParams
+from app.schemas.author import AuthorFilterParams, AuthorSearchParams
 from app.schemas.poem import PoemFilterParams, PoemSearchParams
 from app.crud.user import user_crud
 from app.schemas.login import TokenPayload
@@ -78,3 +78,4 @@ AuthorFilterQuery = Annotated[AuthorFilterParams, Query()]
 PoemFilterQuery = Annotated[PoemFilterParams, Query()]
 
 PoemQuery = Annotated[PoemSearchParams, Query()]
+AuthorQuery = Annotated[AuthorSearchParams, Query()]

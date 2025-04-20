@@ -1,16 +1,18 @@
 from typing import Optional
 import uuid
+import datetime
 
 from app.models.author import Author
 from app.schemas.author import (
     AuthorFilterParams,
     AuthorSchema,
     AuthorCreate,
+    AuthorSearchParams,
     AuthorUpdate,
 )
 
 from sqlalchemy.orm import Session
-from sqlalchemy import text, select, func
+from sqlalchemy import select, func
 
 
 class AuthorCRUD:
@@ -48,6 +50,32 @@ class AuthorCRUD:
         statement = select(func.count()).select_from(Author)
         count = db.execute(statement).scalar()
         return count if count else 0
+    
+    def search_date_column(
+        self, db: Session, query: AuthorSearchParams
+    ) -> list[AuthorSchema]:
+        if not query.query.isnumeric():
+            return []
+
+        db_objs = db.scalars(
+            select(Author).where(
+                getattr(Author, query.col).between(
+                    datetime.date(int(query.query), 1, 1),
+                    datetime.date(int(query.query), 12, 31),
+                )
+            )
+        ).all()
+
+        return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
+    
+    def search_text_column(
+        self, db: Session, query: AuthorSearchParams
+    ) -> list[AuthorSchema]:
+        db_objs = db.scalars(
+            select(Author).where(getattr(Author, query.col).icontains(query.query))
+        ).all()
+
+        return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
 
     def create(self, db: Session, obj_create: AuthorCreate) -> AuthorSchema:
         obj_create_data = obj_create.model_dump(exclude_unset=True)

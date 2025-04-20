@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.crud import poem
 from app.schemas.poem import PoemCreate
 from app.tests.utils.poem import create_random_poem, create_random_derived_poem
 from app.tests.utils.user import authentication_token_from_email
