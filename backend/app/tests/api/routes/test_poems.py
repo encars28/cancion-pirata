@@ -51,10 +51,10 @@ def test_read_poems_as_superuser(
         assert "title" in item
 
 
-def test_read_poem(
+def test_read_poem_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    poem = create_random_poem(db)
+    poem = create_random_poem(db, is_public=False)
 
     response = client.get(
         f"{settings.API_V1_STR}/poems/{poem.id}",
@@ -65,25 +65,22 @@ def test_read_poem(
     assert content["title"] == poem.title
     assert content["content"] == poem.content
     assert content["id"] == str(poem.id)
-
-
-def test_read_anonymous_poem(
-    client: TestClient, db: Session, normal_user_token_headers: dict[str, str]
+    
+def test_read_poem_as_author(
+    client: TestClient, author_user_token_headers: dict[str, str], author_user: AuthorSchema, db: Session
 ) -> None:
-    poem = create_random_poem(db, is_public=True, show_author=False)
-    poem2 = create_random_derived_poem(db, original_id=poem.id)
+    poem = create_random_poem(db, is_public=False, show_author=False, author_names=[author_user.full_name])
 
     response = client.get(
         f"{settings.API_V1_STR}/poems/{poem.id}",
-        headers=normal_user_token_headers,
+        headers=author_user_token_headers,
     )
     assert response.status_code == 200
     content = response.json()
     assert content["title"] == poem.title
     assert content["content"] == poem.content
     assert content["id"] == str(poem.id)
-    assert content["derived_poems"][0]["id"] == str(poem2.id)
-    assert content["author_names"] == []
+    assert content["author_names"] == [author_user.full_name]
 
 
 def test_read_poem_not_found(

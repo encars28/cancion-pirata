@@ -61,7 +61,7 @@ def search_poems(
     """
     Search poems by any field
     """
-    match query.col: 
+    match query.col:
         case "created_at" | "updated_at":
             if not query.query.isnumeric():
                 raise HTTPException(
@@ -69,35 +69,37 @@ def search_poems(
                     detail="Invalid query",
                 )
             poems = poem_crud.search_date_column(session, query)
-        
+
         case "type":
-            if not query.query.isnumeric() or int(query.query) not in [poem_type.value for poem_type in PoemType]:
+            if not query.query.isnumeric() or int(query.query) not in [
+                poem_type.value for poem_type in PoemType
+            ]:
                 raise HTTPException(
                     status_code=400,
                     detail="Invalid query",
                 )
             poems = poem_crud.search_int_column(session, query)
-        
+
         case "title" | "language" | "content":
             poems = poem_crud.search_text_column(session, query)
-        
+
         case "show_author" | "is_public":
             if not current_user or not current_user.is_superuser:
                 raise HTTPException(
                     status_code=400,
                     detail="You don't have enough permissions",
                 )
-            
+
             if query.query.lower() not in ["true", "false"]:
                 raise HTTPException(
                     status_code=400,
                     detail="Invalid query",
                 )
-                
+
             poems = poem_crud.search_bool_column(session, query)
         case _:
             poems = []
-            
+
     return [PoemPublicBasic.model_validate(poem) for poem in poems]
 
 
@@ -112,22 +114,24 @@ def read_poem(
     if not poem:
         raise HTTPException(status_code=404, detail="Poem not found")
 
-    if current_user and (
-        current_user.is_superuser
-        or (
-            current_user.author_id is not None
-            and current_user.author_id in poem.author_ids
-        )
-    ):
+    if current_user and current_user.is_superuser:
         return poem
 
-    if not poem.is_public:
+    if not poem.is_public and (
+        not current_user
+        or not current_user.author_id
+        or current_user.author_id not in poem.author_ids
+    ):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-
-    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
-    if not poem.show_author:
+    
+    if not poem.show_author and (
+        not current_user
+        or not current_user.author_id
+        or current_user.author_id not in poem.author_ids
+    ):
         poem.author_names = []
-
+        
+    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
     return poem
 
 
