@@ -107,6 +107,19 @@ def test_read_poem_not_enough_permissions(
     content = response.json()
     assert content["detail"] == "Not enough permissions"
 
+def test_read_anonymous_poem(
+    client: TestClient, db: Session, author_user: AuthorSchema
+) -> None:
+    poem = create_random_poem(db, is_public=True, show_author=False, author_names=[author_user.full_name])  
+    response = client.get(
+        f"{settings.API_V1_STR}/poems/{poem.id}",
+    )
+    assert response.status_code == 200
+    content = response.json()
+    assert content["title"] == poem.title
+    assert content["content"] == poem.content
+    assert content["id"] == str(poem.id)
+    assert content["author_names"] == []
 
 def test_create_poem_as_superuser(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session

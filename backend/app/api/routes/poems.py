@@ -97,8 +97,6 @@ def search_poems(
                 )
 
             poems = poem_crud.search_bool_column(session, query)
-        case _:
-            poems = []
 
     return [PoemPublicBasic.model_validate(poem) for poem in poems]
 

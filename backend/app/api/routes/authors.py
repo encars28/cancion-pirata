@@ -73,9 +73,6 @@ def search_poems(
         case "full_name":
             authors = author_crud.search_text_column(session, query)
             
-        case _:
-            authors = []
-            
     return [AuthorPublicBasic.model_validate(author) for author in authors]
 
 @router.post(
