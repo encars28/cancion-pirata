@@ -52,7 +52,7 @@ def read_authors(
     authors = [AuthorPublicBasic.model_validate(author) for author in authors]
     return AuthorsPublic(data=authors, count=count)
 
-@router.get("/search", response_model=list[AuthorPublicBasic])
+@router.get("/search", response_model=list[AuthorPublicBasic] | list[AuthorPublic])
 def search_poems(
     session: SessionDep,
     query: AuthorQuery,
@@ -72,7 +72,10 @@ def search_poems(
         
         case "full_name":
             authors = author_crud.search_text_column(session, query)
-            
+    
+    if current_user and current_user.is_superuser:
+        return [AuthorPublic.model_validate(author) for author in authors]
+    
     return [AuthorPublicBasic.model_validate(author) for author in authors]
 
 @router.post(

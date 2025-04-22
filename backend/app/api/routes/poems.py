@@ -1,3 +1,4 @@
+from pprint import pp
 import uuid
 from typing import Any
 
@@ -52,7 +53,7 @@ def read_poems(
     return PoemsPublicBasic(data=poems, count=count)
 
 
-@router.get("/search", response_model=list[PoemPublicBasic])
+@router.get("/search", response_model=list[PoemPublicBasic] | list[PoemPublicWithAuthor])
 def search_poems(
     session: SessionDep,
     query: PoemQuery,
@@ -97,7 +98,10 @@ def search_poems(
                 )
 
             poems = poem_crud.search_bool_column(session, query)
-
+            
+    if current_user and current_user.is_superuser:
+        return [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
+    
     return [PoemPublicBasic.model_validate(poem) for poem in poems]
 
 

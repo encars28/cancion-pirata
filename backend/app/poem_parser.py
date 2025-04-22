@@ -47,9 +47,14 @@ class PoemParser:
         poem, self.indent_count = re.subn(r'^(\d)> ?(.*?)$', r'<div style="text-indent:\1em;">\2</div>', poem, flags=re.MULTILINE)
         return poem
     
+    def _parse_cesura(self, poem:str) -> str:
+        poem = re.sub(r'(^.*?)\/\/(.*?$)', r'\1&nbsp;&nbsp;&nbsp;&nbsp;\2', poem, flags=re.MULTILINE)
+        return poem
+    
     def to_html(self) -> str: 
         poem = self.content
         
+        poem = self._parse_cesura(poem)
         poem = self._parse_word_format(poem)
         poem = self._parse_font_size(poem)
         poem = self._parse_indentation(poem)

@@ -1,5 +1,16 @@
 from app.poem_parser import PoemParser
 
+def test_parser_cesura() -> None: 
+    input_text = """De los sos ojos//tan fuertemientre llorando,
+tornava la cabeça//e estávalos catando.
+Vio puertas abiertas//e uços sin cañados,
+alcándaras vazías,//sin pielles e sin mantos,
+e sin falcones//e sin adtores mudados."""
+
+    spaces = "&nbsp;&nbsp;&nbsp;&nbsp;"
+    output_text = f"De los sos ojos{spaces}tan fuertemientre llorando,<br>tornava la cabeça{spaces}e estávalos catando.<br>Vio puertas abiertas{spaces}e uços sin cañados,<br>alcándaras vazías,{spaces}sin pielles e sin mantos,<br>e sin falcones{spaces}e sin adtores mudados."
+    poem_parser = PoemParser(input_text)
+    assert poem_parser.to_html() == output_text
 
 def test_parser_align() -> None:
     input_text = """<center>
