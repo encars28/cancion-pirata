@@ -66,7 +66,7 @@ export default function AllRoutes() {
         <Route path="reset-password" element={<ResetPasswordPage />} />
       </Route>
 
-      <Route element={<ProtectedRoute isAllowed={isAdmin()} />}>
+      <Route element={<ProtectedRoute isAllowed={true} />}>
         <Route path="admin" element={<AdminPage />}>
           <Route index element={<TableUsers />} />
           <Route path="authors" element={<TableAuthors />} />
