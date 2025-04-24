@@ -54,6 +54,7 @@ class PoemPublic(PoemPublicBasic):
 
 class PoemPublicWithAuthor(PoemPublic):
     author_names: List[str] = []
+    author_ids: List[uuid.UUID] = []
 
 class PoemPublicWithAllTheInfo(PoemPublicWithAuthor):
     content: str

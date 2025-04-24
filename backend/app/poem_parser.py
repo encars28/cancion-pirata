@@ -48,7 +48,7 @@ class PoemParser:
         return poem
     
     def _parse_cesura(self, poem:str) -> str:
-        poem = re.sub(r'(^.*?)\/\/(.*?$)', r'\1&nbsp;&nbsp;&nbsp;&nbsp;\2', poem, flags=re.MULTILINE)
+        poem = re.sub(r'(^.*?)\/\/(.*?$)', r'\1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\2', poem, flags=re.MULTILINE)
         return poem
     
     def to_html(self) -> str: 

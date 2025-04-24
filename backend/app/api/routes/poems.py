@@ -1,4 +1,3 @@
-from pprint import pp
 import uuid
 from typing import Any
 
@@ -12,6 +11,7 @@ from app.api.deps import (
     SessionDep,
 )
 
+from app.poem_parser import PoemParser
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
@@ -117,6 +117,7 @@ def read_poem(
         raise HTTPException(status_code=404, detail="Poem not found")
 
     if current_user and current_user.is_superuser:
+        poem.content = PoemParser(poem.content).to_html()
         return poem
 
     if not poem.is_public and (
@@ -134,6 +135,7 @@ def read_poem(
         poem.author_names = []
         
     poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
+    poem.content = PoemParser(poem.content).to_html()
     return poem
 
 
