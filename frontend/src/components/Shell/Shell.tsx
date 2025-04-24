@@ -1,4 +1,4 @@
-import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar, Title } from '@mantine/core';
+import { AppShell, Burger, NavLink, Container, Group, RemoveScroll, Button, UnstyledButton, Stack, Avatar } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useLocation, useNavigate } from 'react-router';
 import { TbUser, TbChevronRight, TbLock, TbLogin, TbSettings } from "react-icons/tb";

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
 import { handleError, callService } from "../../utils";
-import { AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
+import { AuthorPublic, AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
 import { EditAuthor } from "../Author/EditAuthor";
 import { DeleteAuthor } from "../Author/DeleteAuthor";
 import { TbEye } from "react-icons/tb";
@@ -46,6 +46,7 @@ export function TableAuthors() {
   const authorsHeaders = {
     full_name: 'Nombre',
     birth_date: 'Fecha de nacimiento',
+    poems: 'Poemas',
     actions: 'Acciones'
   }
 
@@ -54,11 +55,12 @@ export function TableAuthors() {
       id: author.id,
       full_name: author.full_name,
       birth_date: author.birth_date?.toLocaleDateString() ?? '',
+      poems: author.poems?.length ?? 0,
       actions: <Group gap="xs" justify="center">
         <ActionIcon variant="outline" onClick={() => navigate(`/authors/${author.id}`)}>
           <TbEye />
         </ActionIcon>
-        <EditAuthor author={author} icon />
+        <EditAuthor author={author as AuthorPublic} icon />
         <DeleteAuthor author_id={author.id} icon />
       </Group>
     }

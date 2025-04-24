@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { poemsDeletePoem } from '../../client'
 import { callService, handleError, handleSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
-import { useNavigate } from 'react-router'
 import { TbTrash } from 'react-icons/tb'
 
 export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean }) {

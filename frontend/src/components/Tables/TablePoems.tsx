@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
 import { handleError, callService } from "../../utils";
-import { PoemPublicWithAllTheInfo, poemsReadPoems } from "../../client";
+import { PoemPublicWithAuthor, poemsReadPoems } from "../../client";
 import { DeletePoem } from "../Poem/DeletePoem";
 import { TbEye } from "react-icons/tb";
 
@@ -38,7 +38,7 @@ export function TablePoems() {
     handleError(error as any);
   }
 
-  const poems: PoemPublicWithAllTheInfo[] = data?.data.slice(0, PER_PAGE) ?? []
+  const poems: PoemPublicWithAuthor[] = data?.data.slice(0, PER_PAGE) ?? []
   const count = data?.count ?? 0
 
   const poemHeaders = {
@@ -55,7 +55,7 @@ export function TablePoems() {
     title: poem.title,
     is_public: poem.is_public ? 'Sí' : 'No',
     show_author: poem.show_author ? 'Sí' : 'No',
-    original: poem.original ? 'Derivado' : 'Original',
+    original: poem.type ? 'Derivado' : 'Original',
     created_at: poem.created_at?.toLocaleDateString() ?? '',
     actions: <Group gap="xs">
         <ActionIcon variant="outline" onClick={() => navigate(`/poems/${poem.id}`)}>

@@ -19,7 +19,7 @@ export type AuthorPublicBasic = {
 export type AuthorPublicWithPoems = {
     full_name: string;
     birth_date?: Date | null;
-    id?: string;
+    id: string;
     poems?: Array<PoemPublic>;
 };
 
@@ -103,6 +103,7 @@ export type PoemPublicWithAllTheInfo = {
     is_public?: boolean;
     show_author?: boolean;
     author_names?: Array<string>;
+    author_ids?: Array<string>;
     content: string;
     derived_poems?: Array<PoemPublicBasicWithAuthor>;
     original?: PoemPublicBasicWithAuthor | null;
@@ -118,6 +119,7 @@ export type PoemPublicWithAuthor = {
     is_public?: boolean;
     show_author?: boolean;
     author_names?: Array<string>;
+    author_ids?: Array<string>;
 };
 
 export type PoemUpdate = {
