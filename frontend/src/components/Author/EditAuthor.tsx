@@ -2,13 +2,13 @@ import { Stack, TextInput, Modal, Group, Button, ActionIcon } from '@mantine/cor
 import { Form, useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
 import { TbCalendar, TbPencil } from "react-icons/tb";
-import { AuthorUpdate, AuthorPublicWithPoems, HttpValidationError } from '../../client/types.gen';
+import { AuthorUpdate, AuthorPublic, HttpValidationError } from '../../client/types.gen';
 import { callService, handleError, handleSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsUpdateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 
-export function EditAuthor({ author, icon }: { author: AuthorPublicWithPoems, icon?: boolean }) {
+export function EditAuthor({ author, icon }: { author: AuthorPublic, icon?: boolean }) {
   const [opened, { open, close }] = useDisclosure()
 
   const queryClient = useQueryClient()

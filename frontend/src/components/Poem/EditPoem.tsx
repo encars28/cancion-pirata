@@ -32,6 +32,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["poems"] })
+      queryClient.invalidateQueries({ queryKey: ["authors"] })
     },
   })
 
@@ -39,7 +40,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     mode: 'uncontrolled',
     initialValues: {
       ...poem,
-      author_ids: [],
+      author_names: [],
       original_poem_id: undefined,
       type: undefined,
     }, 
@@ -66,10 +67,9 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     }
   )
 
-  const author_ids = authorsData?.data?.map(author => author.id) ?? []
+  const author_names = authorsData?.data?.map(author => author.full_name) ?? []
   const poems_ids = poemsData?.data?.map(poem => poem.id) ?? []
 
-  // TODO: put this with author_names when the endpoint is created
 
   const typeData = [
     {
@@ -185,7 +185,8 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
               </Tabs.Panel> */}
               <Tabs.Panel value="editor">
                 <Textarea
-                  
+                  autosize
+                  maxRows={15}
                   mt="lg"
                   name='content'
                   key={form.key('content')}
@@ -210,12 +211,12 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
                   <Stack gap="xs">
                     <MultiSelect
                       searchable
-                      name='author_ids'
-                      key={form.key('author_ids')}
+                      name='author_names'
+                      key={form.key('author_names')}
                       label="Autores"
                       placeholder="Escribe para buscar un autor"
-                      data={author_ids}
-                      {...form.getInputProps('author_ids')}
+                      data={author_names}
+                      {...form.getInputProps('author_names')}
                     />
                     <Select
                       allowDeselect

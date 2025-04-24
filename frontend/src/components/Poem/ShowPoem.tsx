@@ -26,7 +26,9 @@ export function ShowPoem({ poem }: { poem: PoemPublicWithAllTheInfo }) {
       >
         <Container fluid>
           <Title order={1}>{poem.title}</Title>
-          <Title order={3} c="dimmed" fw="lighter">Autor: {poem.author_names?.join(", ")}</Title>
+          <Title order={3} c="dimmed" fw="lighter">
+            Autor: {poem.author_names?.length == 0 ? "Anónimo" : poem.author_names?.join(", ")}
+          </Title>
         </Container>
         <Container fluid><Interweave content={poem.content} /></Container>
         <Space h="xl" />

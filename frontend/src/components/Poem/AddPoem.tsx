@@ -1,5 +1,5 @@
 import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, MultiSelect, Select } from "@mantine/core";
-import { AuthorPublicWithPoems, PoemCreate, PoemPublicWithAllTheInfo } from "../../client/types.gen";
+import { AuthorPublicWithPoems, PoemCreate, PoemPublicWithAuthor } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
@@ -11,6 +11,7 @@ import useAuthors  from "../../hooks/useAuthors";
 import usePoems from "../../hooks/usePoems";
 import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -20,6 +21,8 @@ enum PoemType {
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
   const [adminOpened, { toggle: adminToggle }] = useDisclosure(false);
+  const navigate = useNavigate()
+  const { user} = useAuth()
 
   const queryClient = useQueryClient()
   const mutation = useMutation({
@@ -27,7 +30,7 @@ export function AddPoem() {
       callService(poemsCreatePoem, { body: data }),
     onSuccess: () => {
       handleSuccess()
-      close()
+      navigate(`/authors/${user?.author_id}`)
     },
 
     onError: (error: HttpValidationError) => {
@@ -36,6 +39,7 @@ export function AddPoem() {
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["poems"] })
+      queryClient.invalidateQueries({ queryKey: ["authors"] })
     },
   })
 
@@ -47,7 +51,7 @@ export function AddPoem() {
       language: '',
       is_public: true,
       show_author: true,
-      author_ids: [],
+      author_names: [],
       original_poem_id: undefined,
       type: undefined,
     },
@@ -64,12 +68,10 @@ export function AddPoem() {
   const { data: poemsData } = usePoems()
 
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
-  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
 
-  const author_ids = authors.map(author => author.id) ?? []
-  const poems_ids = poems.map(poem => poem.id) ?? []
+  const author_names = authors.map(author => author.full_name) ?? []
+  const poems_ids = poemsData?.data.map(poem => poem.id) ?? []
 
-  // TODO: put this with author_names when the end point is created
 
   const typeData = [
     {
@@ -187,6 +189,8 @@ export function AddPoem() {
               <Tabs.Panel value="editor">
                 <Textarea
                   required
+                  autosize
+                  maxRows={15}
                   mt="lg"
                   name='content'
                   placeholder="Tu contenido"
@@ -250,12 +254,12 @@ export function AddPoem() {
                   <Stack gap="xs">
                     <MultiSelect
                       searchable
-                      name='author_ids'
+                      name='author_names'
                       label="Autores"
                       placeholder="Escribe para buscar un autor"
-                      data={author_ids}
-                      key={form.key('author_ids')}
-                      {...form.getInputProps('author_ids')}
+                      data={author_names}
+                      key={form.key('author_names')}
+                      {...form.getInputProps('author_names')}
                     />
                   </Stack>
                 </Fieldset>

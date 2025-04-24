@@ -9,20 +9,19 @@ import { TbTrash } from 'react-icons/tb'
 export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean }) {
   const queryClient = useQueryClient()
   const [opened, { open, close }] = useDisclosure()
-  const navigate = useNavigate()
 
   const mutation = useMutation({
     mutationFn: async () => callService(poemsDeletePoem, { path: { poem_id: poem_id } }),
     onSuccess: () => {
       handleSuccess()
       close()
-      navigate('/poems')
     },
     onError: (error) => {
       handleError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })
+      queryClient.invalidateQueries({ queryKey: ['authors'] })
     }
   })
 

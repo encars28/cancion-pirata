@@ -4,7 +4,7 @@ import { DateInput } from '@mantine/dates';
 import { TbCalendar } from "react-icons/tb";
 import { AuthorCreate, HttpValidationError } from '../../client/types.gen';
 import { callService, handleError, handleSuccess } from '../../utils';
-import { Mutation, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsCreateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 

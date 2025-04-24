@@ -1,16 +1,13 @@
 import {
   Anchor,
   Button,
-  Checkbox,
   Container,
-  Group,
   Paper,
   PasswordInput,
   Text,
   TextInput,
   Title,
   Stack,
-  FocusTrap,
 } from '@mantine/core';
 import classes from './LoginForm.module.css';
 

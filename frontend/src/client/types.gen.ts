@@ -5,10 +5,21 @@ export type AuthorCreate = {
     birth_date?: Date | null;
 };
 
-export type AuthorPublicWithPoems = {
+export type AuthorPublic = {
     full_name: string;
     birth_date?: Date | null;
     id: string;
+};
+
+export type AuthorPublicBasic = {
+    id: string;
+    full_name: string;
+};
+
+export type AuthorPublicWithPoems = {
+    full_name: string;
+    birth_date?: Date | null;
+    id?: string;
     poems?: Array<PoemPublic>;
 };
 
@@ -18,6 +29,11 @@ export type AuthorUpdate = {
 };
 
 export type AuthorsPublic = {
+    data: Array<AuthorPublicBasic>;
+    count: number;
+};
+
+export type AuthorsPublicWithPoems = {
     data: Array<AuthorPublicWithPoems>;
     count: number;
 };
@@ -50,63 +66,58 @@ export type PoemCreate = {
     is_public?: boolean;
     show_author?: boolean;
     language?: string | null;
-    author_ids?: Array<string> | null;
     type?: number | null;
     original_poem_id?: string | null;
+    author_names?: Array<string> | null;
 };
 
 export type PoemPublic = {
-    title: string;
-    content: string;
-    is_public?: boolean;
-    show_author?: boolean;
-    language?: string | null;
     id: string;
+    title: string;
+    language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
+    type?: number | null;
+    is_public?: boolean;
+    show_author?: boolean;
+};
+
+export type PoemPublicBasic = {
+    id: string;
+    title: string;
+};
+
+export type PoemPublicBasicWithAuthor = {
+    id: string;
+    title: string;
+    author_names?: Array<string>;
 };
 
 export type PoemPublicWithAllTheInfo = {
-    title: string;
-    content: string;
-    is_public?: boolean;
-    show_author?: boolean;
-    language?: string | null;
     id: string;
+    title: string;
+    language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
-    author_names?: Array<string>;
-    author_ids?: Array<string>;
     type?: number | null;
-    derived_poems?: Array<PoemPublicWithAuthorAndType>;
-    original?: PoemPublicWithAuthor | null;
+    is_public?: boolean;
+    show_author?: boolean;
+    author_names?: Array<string>;
+    content: string;
+    derived_poems?: Array<PoemPublicBasicWithAuthor>;
+    original?: PoemPublicBasicWithAuthor | null;
 };
 
 export type PoemPublicWithAuthor = {
-    title: string;
-    content: string;
-    is_public?: boolean;
-    show_author?: boolean;
-    language?: string | null;
     id: string;
+    title: string;
+    language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
-    author_names?: Array<string>;
-    author_ids?: Array<string>;
-};
-
-export type PoemPublicWithAuthorAndType = {
-    title: string;
-    content: string;
-    is_public?: boolean;
-    show_author?: boolean;
-    language?: string | null;
-    id: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
-    author_names?: Array<string>;
-    author_ids?: Array<string>;
     type?: number | null;
+    is_public?: boolean;
+    show_author?: boolean;
+    author_names?: Array<string>;
 };
 
 export type PoemUpdate = {
@@ -115,13 +126,18 @@ export type PoemUpdate = {
     is_public?: boolean | null;
     show_author?: boolean | null;
     language?: string | null;
-    author_ids?: Array<string> | null;
+    author_names?: Array<string> | null;
     type?: number | null;
     original_poem_id?: string | null;
 };
 
 export type PoemsPublic = {
-    data: Array<PoemPublicWithAllTheInfo>;
+    data: Array<PoemPublicWithAuthor>;
+    count: number;
+};
+
+export type PoemsPublicBasic = {
+    data: Array<PoemPublicBasic>;
     count: number;
 };
 
@@ -605,8 +621,10 @@ export type AuthorsReadAuthorsData = {
     body?: never;
     path?: never;
     query?: {
-        skip?: number;
         limit?: number;
+        skip?: number;
+        order_by?: 'full_name' | 'birth_date';
+        desc?: boolean;
     };
     url: '/api/v1/authors/';
 };
@@ -624,7 +642,7 @@ export type AuthorsReadAuthorsResponses = {
     /**
      * Successful Response
      */
-    200: AuthorsPublic;
+    200: AuthorsPublic | AuthorsPublicWithPoems;
 };
 
 export type AuthorsReadAuthorsResponse = AuthorsReadAuthorsResponses[keyof AuthorsReadAuthorsResponses];
@@ -649,10 +667,38 @@ export type AuthorsCreateAuthorResponses = {
     /**
      * Successful Response
      */
-    200: AuthorPublicWithPoems;
+    200: AuthorPublic;
 };
 
 export type AuthorsCreateAuthorResponse = AuthorsCreateAuthorResponses[keyof AuthorsCreateAuthorResponses];
+
+export type AuthorsSearchPoemsData = {
+    body?: never;
+    path?: never;
+    query: {
+        col?: 'full_name' | 'birth_date';
+        query: string;
+    };
+    url: '/api/v1/authors/search';
+};
+
+export type AuthorsSearchPoemsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AuthorsSearchPoemsError = AuthorsSearchPoemsErrors[keyof AuthorsSearchPoemsErrors];
+
+export type AuthorsSearchPoemsResponses = {
+    /**
+     * Successful Response
+     */
+    200: Array<AuthorPublicBasic> | Array<AuthorPublic>;
+};
+
+export type AuthorsSearchPoemsResponse = AuthorsSearchPoemsResponses[keyof AuthorsSearchPoemsResponses];
 
 export type AuthorsDeleteAuthorData = {
     body?: never;
@@ -730,7 +776,7 @@ export type AuthorsUpdateAuthorResponses = {
     /**
      * Successful Response
      */
-    200: AuthorPublicWithPoems;
+    200: AuthorPublic;
 };
 
 export type AuthorsUpdateAuthorResponse = AuthorsUpdateAuthorResponses[keyof AuthorsUpdateAuthorResponses];
@@ -739,8 +785,10 @@ export type PoemsReadPoemsData = {
     body?: never;
     path?: never;
     query?: {
-        skip?: number;
         limit?: number;
+        skip?: number;
+        order_by?: 'created_at' | 'updated_at' | 'title' | 'show_author' | 'is_public' | 'type' | 'language';
+        desc?: boolean;
     };
     url: '/api/v1/poems/';
 };
@@ -758,7 +806,7 @@ export type PoemsReadPoemsResponses = {
     /**
      * Successful Response
      */
-    200: PoemsPublic;
+    200: PoemsPublic | PoemsPublicBasic;
 };
 
 export type PoemsReadPoemsResponse = PoemsReadPoemsResponses[keyof PoemsReadPoemsResponses];
@@ -788,21 +836,33 @@ export type PoemsCreatePoemResponses = {
 
 export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
 
-export type PoemsReadPoemsMeData = {
+export type PoemsSearchPoemsData = {
     body?: never;
     path?: never;
-    query?: never;
-    url: '/api/v1/poems/me';
+    query: {
+        query: string;
+        col?: 'created_at' | 'updated_at' | 'title' | 'show_author' | 'is_public' | 'type' | 'language';
+    };
+    url: '/api/v1/poems/search';
 };
 
-export type PoemsReadPoemsMeResponses = {
+export type PoemsSearchPoemsErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PoemsSearchPoemsError = PoemsSearchPoemsErrors[keyof PoemsSearchPoemsErrors];
+
+export type PoemsSearchPoemsResponses = {
     /**
      * Successful Response
      */
-    200: PoemsPublic;
+    200: Array<PoemPublicBasic> | Array<PoemPublicWithAuthor>;
 };
 
-export type PoemsReadPoemsMeResponse = PoemsReadPoemsMeResponses[keyof PoemsReadPoemsMeResponses];
+export type PoemsSearchPoemsResponse = PoemsSearchPoemsResponses[keyof PoemsSearchPoemsResponses];
 
 export type PoemsDeletePoemData = {
     body?: never;
