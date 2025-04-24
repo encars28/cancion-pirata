@@ -40,8 +40,8 @@ class AuthorPublic(AuthorBase):
     id: uuid.UUID
 
 
-class AuthorPublicWithPoems(AuthorSchema):
-    pass
+class AuthorPublicWithPoems(AuthorPublic):
+    poems: List["PoemPublic"] = []
 
 
 class AuthorsPublic(BaseModel):
