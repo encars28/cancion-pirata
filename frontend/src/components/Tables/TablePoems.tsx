@@ -56,7 +56,7 @@ export function TablePoems() {
     is_public: poem.is_public ? 'Sí' : 'No',
     show_author: poem.show_author ? 'Sí' : 'No',
     original: poem.type ? 'Derivado' : 'Original',
-    created_at: poem.created_at?.toLocaleDateString() ?? '',
+    created_at: poem.created_at?.toLocaleString() ?? '',
     actions: <Group gap="xs">
         <ActionIcon variant="outline" onClick={() => navigate(`/poems/${poem.id}`)}>
           <TbEye />

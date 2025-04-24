@@ -54,7 +54,7 @@ export function TableAuthors() {
     return {
       id: author.id,
       full_name: author.full_name,
-      birth_date: author.birth_date?.toLocaleDateString() ?? '',
+      birth_date: author.birth_date?.toLocaleString() ?? '',
       poems: author.poems?.length ?? 0,
       actions: <Group gap="xs" justify="center">
         <ActionIcon variant="outline" onClick={() => navigate(`/authors/${author.id}`)}>
