@@ -57,7 +57,7 @@ class AuthorsPublicWithPoems(BaseModel):
 class AuthorFilterParams(BaseModel):
     limit: int = Field(100, gt=0, le=100)
     skip: int = Field(0, ge=0)
-    order_by: Literal["full_name", "birth_date"] = Field("full_name")
+    order_by: Literal["full_name", "birth_date", "poems"] = Field("full_name")
     desc: bool = False
     
 class AuthorSearchParams(BaseModel):

@@ -53,7 +53,7 @@ def read_authors(
     return AuthorsPublic(data=authors, count=count)
 
 @router.get("/search", response_model=list[AuthorPublicBasic] | list[AuthorPublic])
-def search_poems(
+def search_authors(
     session: SessionDep,
     query: AuthorQuery,
     current_user: OptionalCurrentUser,

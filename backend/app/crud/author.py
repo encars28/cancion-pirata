@@ -3,6 +3,7 @@ import uuid
 import datetime
 
 from app.models.author import Author
+from app.models.poem import Poem
 from app.schemas.author import (
     AuthorFilterParams,
     AuthorSchema,
@@ -12,7 +13,7 @@ from app.schemas.author import (
 )
 
 from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc
 
 
 class AuthorCRUD:
@@ -29,20 +30,40 @@ class AuthorCRUD:
     def get_all(
         self, db: Session, queryParams: AuthorFilterParams
     ) -> list[AuthorSchema]:
-        if queryParams.desc:
-            db_objs = db.scalars(
-                select(Author)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(getattr(Author, queryParams.order_by).desc())
-            ).all()
+        if queryParams.order_by != "poems":
+            if queryParams.desc:
+                db_objs = db.scalars(
+                    select(Author)
+                    .offset(queryParams.skip)
+                    .limit(queryParams.limit)
+                    .order_by(getattr(Author, queryParams.order_by).desc())
+                ).all()
+            else:
+                db_objs = db.scalars(
+                    select(Author)
+                    .offset(queryParams.skip)
+                    .limit(queryParams.limit)
+                    .order_by(getattr(Author, queryParams.order_by))
+                ).all()
         else:
-            db_objs = db.scalars(
-                select(Author)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(getattr(Author, queryParams.order_by))
-            ).all()
+            if queryParams.desc:
+                db_objs = db.scalars(
+                    select(Author, func.count(Poem.id).label("poem_count"))
+                    .join(Author.poems)
+                    .group_by(Author.id)
+                    .offset(queryParams.skip)
+                    .limit(queryParams.limit)
+                    .order_by(desc("poem_count"))   
+                ).all()
+            else:
+                db_objs = db.scalars(
+                    select(Author, func.count(Poem.id).label("poem_count"))
+                    .join(Author.poems)
+                    .group_by(Author.id)
+                    .offset(queryParams.skip)
+                    .limit(queryParams.limit)
+                    .order_by("poem_count")
+                ).all()
 
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
 
@@ -50,7 +71,7 @@ class AuthorCRUD:
         statement = select(func.count()).select_from(Author)
         count = db.execute(statement).scalar()
         return count if count else 0
-    
+
     def search_date_column(
         self, db: Session, query: AuthorSearchParams
     ) -> list[AuthorSchema]:
@@ -67,7 +88,7 @@ class AuthorCRUD:
         ).all()
 
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
-    
+
     def search_text_column(
         self, db: Session, query: AuthorSearchParams
     ) -> list[AuthorSchema]:
