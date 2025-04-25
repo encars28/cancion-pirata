@@ -12,8 +12,8 @@ from app.core import security
 from app.core.config import settings
 from app.core.db import engine
 from app.schemas.user import UserSchema
-from app.schemas.author import AuthorFilterParams, AuthorSearchParams
-from app.schemas.poem import PoemFilterParams, PoemSearchParams
+from app.schemas.author import AuthorSearchParams
+from app.schemas.poem import PoemSearchParams
 from app.crud.user import user_crud
 from app.schemas.login import TokenPayload
 
@@ -73,9 +73,6 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
-
-AuthorFilterQuery = Annotated[AuthorFilterParams, Query()]
-PoemFilterQuery = Annotated[PoemFilterParams, Query()]
 
 PoemQuery = Annotated[PoemSearchParams, Query()]
 AuthorQuery = Annotated[AuthorSearchParams, Query()]

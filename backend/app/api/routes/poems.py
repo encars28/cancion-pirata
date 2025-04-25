@@ -6,7 +6,6 @@ from fastapi import APIRouter, HTTPException
 from app.api.deps import (
     CurrentUser,
     OptionalCurrentUser,
-    PoemFilterQuery,
     PoemQuery,
     SessionDep,
 )
@@ -31,26 +30,26 @@ from app.schemas.poem_poem import PoemType
 router = APIRouter(prefix="/poems", tags=["poems"])
 
 
-@router.get("/", response_model=PoemsPublic | PoemsPublicBasic)
-def read_poems(
-    session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemFilterQuery
-) -> Any:
-    """
-    Retrieve all poems.
-    """
-    if current_user and current_user.is_superuser:
-        # retrieve all poems
-        count = poem_crud.get_count(session)
-        poems = poem_crud.get_all(session, queryParams=queryParams)
-        poems = [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
-        return PoemsPublic(data=poems, count=count)
+# @router.get("/", response_model=PoemsPublic | PoemsPublicBasic)
+# def read_poems(
+#     session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemFilterQuery
+# ) -> Any:
+#     """
+#     Retrieve all poems.
+#     """
+#     if current_user and current_user.is_superuser:
+#         # retrieve all poems
+#         count = poem_crud.get_count(session)
+#         poems = poem_crud.get_all(session, queryParams=queryParams)
+#         poems = [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
+#         return PoemsPublic(data=poems, count=count)
 
-    # Retrieve public poems
-    count = poem_crud.get_public_count(session)
-    poems = poem_crud.get_all_public(session, queryParams=queryParams)
-    poems = [PoemPublicBasic.model_validate(poem) for poem in poems]
+#     # Retrieve public poems
+#     count = poem_crud.get_public_count(session)
+#     poems = poem_crud.get_all_public(session, queryParams=queryParams)
+#     poems = [PoemPublicBasic.model_validate(poem) for poem in poems]
 
-    return PoemsPublicBasic(data=poems, count=count)
+#     return PoemsPublicBasic(data=poems, count=count)
 
 
 @router.get("/search", response_model=list[PoemPublicBasic] | list[PoemPublicWithAuthor])

@@ -54,12 +54,12 @@ class AuthorsPublicWithPoems(BaseModel):
     count: int
 
 
-class AuthorFilterParams(BaseModel):
+class AuthorSearchParams(BaseModel):
+    order_by: Literal["full_name", "birth_date", "poems"] = Field("full_name")
     limit: int = Field(100, gt=0, le=100)
     skip: int = Field(0, ge=0)
-    order_by: Literal["full_name", "birth_date", "poems"] = Field("full_name")
     desc: bool = False
+    full_name: str = ""
+    birth_date: str = ""
+    poems: str = ""
     
-class AuthorSearchParams(BaseModel):
-    col: Literal["full_name", "birth_date"] = Field("full_name")
-    query: str

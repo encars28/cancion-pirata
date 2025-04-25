@@ -4,7 +4,6 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.api.deps import (
-    AuthorFilterQuery,
     AuthorQuery,
     OptionalCurrentUser,
     get_current_active_superuser,
@@ -28,55 +27,38 @@ router = APIRouter(prefix="/authors", tags=["authors"])
 
 
 @router.get(
-    "/",
+    "",
     response_model=AuthorsPublic | AuthorsPublicWithPoems,
 )
 def read_authors(
     session: SessionDep,
     current_user: OptionalCurrentUser,
-    queryParams: AuthorFilterQuery,
+    queryParams: AuthorQuery,
 ) -> Any:
     """
     Retrieve all authors.
     """
 
-    count = author_crud.get_count(db=session)
-    authors = author_crud.get_all(db=session, queryParams=queryParams)
-
-    # Admin
-    if current_user and current_user.is_superuser: 
-        authors = [AuthorPublicWithPoems.model_validate(author) for author in authors]
+    if current_user and current_user.is_superuser:
+        authors = [
+            AuthorPublicWithPoems.model_validate(author)
+            for author in author_crud.get_many(
+                db=session, queryParams=queryParams, public_restricted=False
+            )
+        ]
+        count = author_crud.get_count(
+            db=session, queryParams=queryParams, public_restricted=False
+        )
         return AuthorsPublicWithPoems(data=authors, count=count)
-    
-    # Normal user
-    authors = [AuthorPublicBasic.model_validate(author) for author in authors]
+
+    authors = [
+        AuthorPublicBasic.model_validate(author)
+        for author in author_crud.get_many(db=session, queryParams=queryParams)
+    ]
+    count = author_crud.get_count(db=session, queryParams=queryParams)
+
     return AuthorsPublic(data=authors, count=count)
 
-@router.get("/search", response_model=list[AuthorPublicBasic] | list[AuthorPublic])
-def search_authors(
-    session: SessionDep,
-    query: AuthorQuery,
-    current_user: OptionalCurrentUser,
-) -> Any:
-    """
-    Search poems by any field
-    """
-    match query.col: 
-        case "birth_date":
-            if not query.query.isnumeric():
-                raise HTTPException(
-                    status_code=400,
-                    detail="Invalid query",
-                )
-            authors = author_crud.search_date_column(session, query)
-        
-        case "full_name":
-            authors = author_crud.search_text_column(session, query)
-    
-    if current_user and current_user.is_superuser:
-        return [AuthorPublic.model_validate(author) for author in authors]
-    
-    return [AuthorPublicBasic.model_validate(author) for author in authors]
 
 @router.post(
     "/",
@@ -114,9 +96,8 @@ def read_author_by_id(
 
     # Normal user
     if not current_user or (
-        not current_user.is_superuser and (
-            not current_user.author_id or not current_user.author_id == author_id
-        )
+        not current_user.is_superuser
+        and (not current_user.author_id or not current_user.author_id == author_id)
     ):
         author.poems = [
             poem for poem in author.poems if poem.is_public and poem.show_author
