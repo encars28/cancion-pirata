@@ -5,6 +5,7 @@ from datetime import datetime
 
 from app.schemas.poem import PoemPublic
 
+AuthorParam = Literal["full_name", "birth_date", "poems"]
 
 class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
@@ -55,7 +56,7 @@ class AuthorsPublicWithPoems(BaseModel):
 
 
 class AuthorSearchParams(BaseModel):
-    order_by: Literal["full_name", "birth_date", "poems"] = Field("full_name")
+    order_by: AuthorParam = "full_name"
     limit: int = Field(100, gt=0, le=100)
     skip: int = Field(0, ge=0)
     desc: bool = False

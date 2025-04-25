@@ -25,83 +25,38 @@ from app.schemas.common import Message
 
 from app.crud.poem import poem_crud
 from app.crud.author import author_crud
-from app.schemas.poem_poem import PoemType
 
 router = APIRouter(prefix="/poems", tags=["poems"])
 
 
-# @router.get("/", response_model=PoemsPublic | PoemsPublicBasic)
-# def read_poems(
-#     session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemFilterQuery
-# ) -> Any:
-#     """
-#     Retrieve all poems.
-#     """
-#     if current_user and current_user.is_superuser:
-#         # retrieve all poems
-#         count = poem_crud.get_count(session)
-#         poems = poem_crud.get_all(session, queryParams=queryParams)
-#         poems = [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
-#         return PoemsPublic(data=poems, count=count)
-
-#     # Retrieve public poems
-#     count = poem_crud.get_public_count(session)
-#     poems = poem_crud.get_all_public(session, queryParams=queryParams)
-#     poems = [PoemPublicBasic.model_validate(poem) for poem in poems]
-
-#     return PoemsPublicBasic(data=poems, count=count)
-
-
-@router.get("/search", response_model=list[PoemPublicBasic] | list[PoemPublicWithAuthor])
-def search_poems(
-    session: SessionDep,
-    query: PoemQuery,
-    current_user: OptionalCurrentUser,
+@router.get("", response_model=PoemsPublic | PoemsPublicBasic)
+def read_poems(
+    session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemQuery
 ) -> Any:
     """
-    Search poems by any field
+    Retrieve all poems.
     """
-    match query.col:
-        case "created_at" | "updated_at":
-            if not query.query.isnumeric():
-                raise HTTPException(
-                    status_code=400,
-                    detail="Invalid query",
-                )
-            poems = poem_crud.search_date_column(session, query)
-
-        case "type":
-            if not query.query.isnumeric() or int(query.query) not in [
-                poem_type.value for poem_type in PoemType
-            ]:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Invalid query",
-                )
-            poems = poem_crud.search_int_column(session, query)
-
-        case "title" | "language" | "content":
-            poems = poem_crud.search_text_column(session, query)
-
-        case "show_author" | "is_public":
-            if not current_user or not current_user.is_superuser:
-                raise HTTPException(
-                    status_code=400,
-                    detail="You don't have enough permissions",
-                )
-
-            if query.query.lower() not in ["true", "false"]:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Invalid query",
-                )
-
-            poems = poem_crud.search_bool_column(session, query)
-            
     if current_user and current_user.is_superuser:
-        return [PoemPublicWithAuthor.model_validate(poem) for poem in poems]
-    
-    return [PoemPublicBasic.model_validate(poem) for poem in poems]
+        # retrieve all poems
+        count = poem_crud.get_count(
+            session, queryParams=queryParams, public_restricted=False
+        )
+        poems = [
+            PoemPublicWithAuthor.model_validate(poem)
+            for poem in poem_crud.get_many(
+                session, queryParams=queryParams, public_restricted=False
+            )
+        ]
+        return PoemsPublic(data=poems, count=count)
+
+    # Retrieve public poems
+    count = poem_crud.get_count(session, queryParams=queryParams)
+    poems = [
+        PoemPublicBasic.model_validate(poem)
+        for poem in poem_crud.get_many(session, queryParams=queryParams)
+    ]
+
+    return PoemsPublicBasic(data=poems, count=count)
 
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
@@ -125,14 +80,14 @@ def read_poem(
         or current_user.author_id not in poem.author_ids
     ):
         raise HTTPException(status_code=400, detail="Not enough permissions")
-    
+
     if not poem.show_author and (
         not current_user
         or not current_user.author_id
         or current_user.author_id not in poem.author_ids
     ):
         poem.author_names = []
-        
+
     poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
     poem.content = PoemParser(poem.content).to_html()
     return poem

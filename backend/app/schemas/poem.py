@@ -5,6 +5,8 @@ from typing import Literal, Optional, List
 import uuid
 from datetime import datetime
 
+PoemParam = Literal["created_at", "updated_at", "title"]
+PoemParamType = Literal["all", "version", "translation", "derived", "original", ""]
 
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
@@ -84,14 +86,15 @@ class PoemsPublicBasic(BaseModel):
 class PoemsPublic(BaseModel):
     data: List[PoemPublicWithAuthor]
     count: int
-
-class PoemFilterParams(BaseModel):
-    limit: int = Field(100, gt=0, le=100)
-    skip: int = Field(0, ge=0)
-    order_by: Literal["created_at", "updated_at", "title", "show_author", "is_public", "type", "language"] = Field("title")
-    desc: bool = Field(False)
     
 class PoemSearchParams(BaseModel):
-    query: str
-    col: Literal["created_at", "updated_at", "title", "show_author", "is_public", "type", "language"] = Field("title")
+    order_by: PoemParam = "title"
+    limit: int = Field(100, gt=0, le=100)
+    skip: int = Field(0, ge=0)
+    desc: bool = False
+    title: str = ""
+    created_at: str = ""
+    updated_at: str = ""
+    type: PoemParamType = ""
+    language: str = ""
     

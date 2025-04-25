@@ -79,7 +79,7 @@ class AuthorCRUD:
 
         stmt = name_filter.intersect(poem_filter, birth_filter).subquery()
         alias = aliased(Author, stmt)
-
+        
         statement = select(func.count()).select_from(alias)
         count = db.execute(statement).scalar()
 

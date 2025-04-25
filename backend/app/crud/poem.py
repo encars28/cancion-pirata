@@ -1,20 +1,25 @@
 import datetime
 import uuid
+import re
 from typing import Optional
 
-from sqlalchemy.orm import Session
-from sqlalchemy import select, func, text
+from sqlalchemy.orm import Session, aliased
+from sqlalchemy import select, func, Select
 from app.models.poem import Poem, Poem_Poem
 from app.models.author import Author
 
 from app.schemas.poem import (
     PoemCreate,
-    PoemFilterParams,
     PoemSchema,
     PoemSearchParams,
     PoemUpdate,
 )
-from app.schemas.poem_poem import PoemPoemCreate, PoemPoemUpdate, PoemPoemSchema
+from app.schemas.poem_poem import (
+    PoemPoemCreate,
+    PoemPoemUpdate,
+    PoemPoemSchema,
+    PoemType,
+)
 
 
 class PoemCRUD:
@@ -24,108 +29,114 @@ class PoemCRUD:
         db_obj = db.get(Poem, obj_id)
         return PoemSchema.model_validate(db_obj) if db_obj else None
 
-    def get_all(self, db: Session, queryParams: PoemFilterParams) -> list[PoemSchema]:
-        if queryParams.desc:
-            db_objs = db.scalars(
-                select(Poem)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(text(f"{queryParams.order_by} desc"))
-            ).all()
-        else:
-            db_objs = db.scalars(
-                select(Poem)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(queryParams.order_by)
-            ).all()
-
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
-
-    def get_all_public(
-        self, db: Session, queryParams: PoemFilterParams
+    def get_many(
+        self, db: Session, queryParams: PoemSearchParams, public_restricted: bool = True
     ) -> list[PoemSchema]:
+        created_at_filter = self.filter_dates(queryParams.created_at, "created_at")
+        updated_at_filter = self.filter_dates(queryParams.updated_at, "updated_at")
+        title_filter = self.filter_by_title(queryParams)
+        type_filter = self.filter_by_type(queryParams, db)
+        language_filter = self.filter_by_language(queryParams)
+
+        stmt = title_filter.intersect(
+            type_filter, created_at_filter, updated_at_filter, language_filter
+        ).subquery()
+        alias = aliased(Poem, stmt)
+
         if queryParams.desc:
-            db_objs = db.scalars(
-                select(Poem)
-                .where(Poem.is_public)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(getattr(Poem, queryParams.order_by).desc())
-            ).all()
+            order = getattr(alias, queryParams.order_by).desc().nulls_last()
         else:
-            db_objs = db.scalars(
-                select(Poem)
-                .where(Poem.is_public)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
-                .order_by(getattr(Poem, queryParams.order_by))
-            ).all()
+            order = getattr(alias, queryParams.order_by).nulls_first()
 
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
+        s = (
+            select(alias)
+            .offset(queryParams.skip)
+            .limit(queryParams.limit)
+            .order_by(order)
+        )
+        if public_restricted:
+            s = s.where(alias.is_public == True)
 
-    def get_count(self, db: Session) -> int:
-        statement = select(func.count()).select_from(Poem)
+        return [PoemSchema.model_validate(db_obj) for db_obj in db.scalars(s).all()]
+
+    def get_count(
+        self, db: Session, queryParams: PoemSearchParams, public_restricted: bool = True
+    ) -> int:
+        created_at_filter = self.filter_dates(queryParams.created_at, "created_at")
+        updated_at_filter = self.filter_dates(queryParams.updated_at, "updated_at")
+        title_filter = self.filter_by_title(queryParams)
+        type_filter = self.filter_by_type(queryParams, db)
+        language_filter = self.filter_by_language(queryParams)
+
+        stmt = title_filter.intersect(
+            type_filter, created_at_filter, updated_at_filter, language_filter
+        ).subquery()
+        alias = aliased(Poem, stmt)
+
+        statement = select(func.count()).select_from(alias)
+        if public_restricted:
+            statement = statement.where(alias.is_public == True)
+
         count = db.execute(statement).scalar()
         return count if count else 0
 
-    def get_public_count(self, db: Session) -> int:
-        statement = select(func.count()).select_from(Poem).where(Poem.is_public)
-        count = db.execute(statement).scalar()
-        return count if count else 0
+    def filter_by_language(self, query: PoemSearchParams) -> Select:
+        if not query.language:
+            return select(Poem)
 
-    def search_text_column(
-        self, db: Session, query: PoemSearchParams
-    ) -> list[PoemSchema]:
-        db_objs = db.scalars(
-            select(Poem).where(getattr(Poem, query.col).icontains(query.query))
-        ).all()
+        return select(Poem).where(Poem.language == query.language)
 
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
+    def filter_dates(self, date: str, col: str) -> Select:
+        regex = r"(>|<|>=|<=|=|)(\d+)"
+        m = re.match(regex, date)
 
+        if not m:
+            return select(Poem)
 
-    def search_date_column(
-        self, db: Session, query: PoemSearchParams
-    ) -> list[PoemSchema]:
-        if not query.query.isnumeric():
-            return []
-
-        db_objs = db.scalars(
-            select(Poem).where(
-                getattr(Poem, query.col).between(
-                    datetime.date(int(query.query), 1, 1),
-                    datetime.date(int(query.query), 12, 31),
+        match m.group(1):
+            case ">=":
+                s = select(Poem).where(
+                    getattr(Poem, col) >= datetime.date(int(m.group(2)), 1, 1)
                 )
-            )
-        ).all()
+            case ">":
+                s = select(Poem).where(
+                    getattr(Poem, col) >= datetime.date(int(m.group(2)) + 1, 1, 1)
+                )
+            case "<=":
+                s = select(Poem).where(
+                    getattr(Poem, col) <= datetime.date(int(m.group(2)), 12, 31)
+                )
+            case "<":
+                s = select(Author).where(
+                    getattr(Poem, col) <= datetime.date(int(m.group(2)) - 1, 12, 31)
+                )
+            case _:
+                s = select(Poem).where(
+                    getattr(Poem, col).between(
+                        datetime.date(int(m.group(2)), 1, 1),
+                        datetime.date(int(m.group(2)), 12, 31),
+                    )
+                )
+        return s
 
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
-    
-    def search_int_column(
-        self, db: Session, query: PoemSearchParams
-    ) -> list[PoemSchema]:
-        db_objs = db.scalars(
-            select(Poem).where(getattr(Poem, query.col) == int(query.query))
-        ).all()
+    def filter_by_title(self, query: PoemSearchParams) -> Select:
+        return select(Poem).where(Poem.title.icontains(query.title))
 
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
-    
-    def search_bool_column(
-        self, db: Session, query: PoemSearchParams
-    ) -> list[PoemSchema]:
-        if query.query.lower() == "true":
-            db_objs = db.scalars(
-                select(Poem).where(getattr(Poem, query.col) == True)
-            ).all()
-        elif query.query.lower() == "false":
-            db_objs = db.scalars(
-                select(Poem).where(getattr(Poem, query.col) == False)
-            ).all()
-        else:
-            return []
-
-        return [PoemSchema.model_validate(db_obj) for db_obj in db_objs]
-    
+    def filter_by_type(self, query: PoemSearchParams, db: Session) -> Select:
+        s = select(Poem).join(Poem_Poem, Poem.id == Poem_Poem.derived_poem_id)
+        
+        match query.type:
+            case "version":
+                return s.where(Poem_Poem.type == PoemType.VERSION.value)
+            case "translation":
+                return s.where(Poem_Poem.type == PoemType.TRANSLATION.value)
+            case "derived": 
+                return s
+            case "original": 
+                poem_ids = [p.id for p in db.scalars(s).all()]
+                return select(Poem).where(Poem.id.not_in(poem_ids))
+            case _:
+                return select(Poem)
 
     def create(self, db: Session, obj_create: PoemCreate) -> Optional[PoemSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
