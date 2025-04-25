@@ -625,7 +625,7 @@ export type AuthorsReadAuthorsData = {
     query?: {
         limit?: number;
         skip?: number;
-        order_by?: 'full_name' | 'birth_date';
+        order_by?: 'full_name' | 'birth_date' | 'poems';
         desc?: boolean;
     };
     url: '/api/v1/authors/';
@@ -674,7 +674,7 @@ export type AuthorsCreateAuthorResponses = {
 
 export type AuthorsCreateAuthorResponse = AuthorsCreateAuthorResponses[keyof AuthorsCreateAuthorResponses];
 
-export type AuthorsSearchPoemsData = {
+export type AuthorsSearchAuthorsData = {
     body?: never;
     path?: never;
     query: {
@@ -684,23 +684,23 @@ export type AuthorsSearchPoemsData = {
     url: '/api/v1/authors/search';
 };
 
-export type AuthorsSearchPoemsErrors = {
+export type AuthorsSearchAuthorsErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type AuthorsSearchPoemsError = AuthorsSearchPoemsErrors[keyof AuthorsSearchPoemsErrors];
+export type AuthorsSearchAuthorsError = AuthorsSearchAuthorsErrors[keyof AuthorsSearchAuthorsErrors];
 
-export type AuthorsSearchPoemsResponses = {
+export type AuthorsSearchAuthorsResponses = {
     /**
      * Successful Response
      */
     200: Array<AuthorPublicBasic> | Array<AuthorPublic>;
 };
 
-export type AuthorsSearchPoemsResponse = AuthorsSearchPoemsResponses[keyof AuthorsSearchPoemsResponses];
+export type AuthorsSearchAuthorsResponse = AuthorsSearchAuthorsResponses[keyof AuthorsSearchAuthorsResponses];
 
 export type AuthorsDeleteAuthorData = {
     body?: never;

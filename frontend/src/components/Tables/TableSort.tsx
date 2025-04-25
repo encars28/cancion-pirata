@@ -6,6 +6,7 @@ import {
 } from '@mantine/core';
 import { Th } from './Th/Th';
 
+
 interface BasicData {
   id: string
 }

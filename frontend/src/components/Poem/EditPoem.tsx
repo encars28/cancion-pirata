@@ -40,7 +40,6 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     mode: 'uncontrolled',
     initialValues: {
       ...poem,
-      author_names: [],
       original_poem_id: undefined,
       type: undefined,
     }, 
