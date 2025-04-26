@@ -3,7 +3,7 @@ import { Outlet } from "react-router";
 
 export function MePage() {
   return (
-    <Shell navbar>
+    <Shell profileNavbar>
       <Outlet />
     </Shell>
   )

@@ -623,12 +623,15 @@ export type AuthorsReadAuthorsData = {
     body?: never;
     path?: never;
     query?: {
+        order_by?: 'full_name' | 'birth_date' | 'poems';
         limit?: number;
         skip?: number;
-        order_by?: 'full_name' | 'birth_date' | 'poems';
         desc?: boolean;
+        full_name?: string;
+        birth_date?: string;
+        poems?: string;
     };
-    url: '/api/v1/authors/';
+    url: '/api/v1/authors';
 };
 
 export type AuthorsReadAuthorsErrors = {
@@ -673,34 +676,6 @@ export type AuthorsCreateAuthorResponses = {
 };
 
 export type AuthorsCreateAuthorResponse = AuthorsCreateAuthorResponses[keyof AuthorsCreateAuthorResponses];
-
-export type AuthorsSearchAuthorsData = {
-    body?: never;
-    path?: never;
-    query: {
-        col?: 'full_name' | 'birth_date';
-        query: string;
-    };
-    url: '/api/v1/authors/search';
-};
-
-export type AuthorsSearchAuthorsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AuthorsSearchAuthorsError = AuthorsSearchAuthorsErrors[keyof AuthorsSearchAuthorsErrors];
-
-export type AuthorsSearchAuthorsResponses = {
-    /**
-     * Successful Response
-     */
-    200: Array<AuthorPublicBasic> | Array<AuthorPublic>;
-};
-
-export type AuthorsSearchAuthorsResponse = AuthorsSearchAuthorsResponses[keyof AuthorsSearchAuthorsResponses];
 
 export type AuthorsDeleteAuthorData = {
     body?: never;
@@ -787,12 +762,17 @@ export type PoemsReadPoemsData = {
     body?: never;
     path?: never;
     query?: {
+        order_by?: 'created_at' | 'updated_at' | 'title';
         limit?: number;
         skip?: number;
-        order_by?: 'created_at' | 'updated_at' | 'title' | 'show_author' | 'is_public' | 'type' | 'language';
         desc?: boolean;
+        title?: string;
+        created_at?: string;
+        updated_at?: string;
+        type?: 'all' | 'version' | 'translation' | 'derived' | 'original' | '';
+        language?: string;
     };
-    url: '/api/v1/poems/';
+    url: '/api/v1/poems';
 };
 
 export type PoemsReadPoemsErrors = {
@@ -812,59 +792,6 @@ export type PoemsReadPoemsResponses = {
 };
 
 export type PoemsReadPoemsResponse = PoemsReadPoemsResponses[keyof PoemsReadPoemsResponses];
-
-export type PoemsCreatePoemData = {
-    body: PoemCreate;
-    path?: never;
-    query?: never;
-    url: '/api/v1/poems/';
-};
-
-export type PoemsCreatePoemErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type PoemsCreatePoemError = PoemsCreatePoemErrors[keyof PoemsCreatePoemErrors];
-
-export type PoemsCreatePoemResponses = {
-    /**
-     * Successful Response
-     */
-    200: PoemPublicWithAllTheInfo;
-};
-
-export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
-
-export type PoemsSearchPoemsData = {
-    body?: never;
-    path?: never;
-    query: {
-        query: string;
-        col?: 'created_at' | 'updated_at' | 'title' | 'show_author' | 'is_public' | 'type' | 'language';
-    };
-    url: '/api/v1/poems/search';
-};
-
-export type PoemsSearchPoemsErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type PoemsSearchPoemsError = PoemsSearchPoemsErrors[keyof PoemsSearchPoemsErrors];
-
-export type PoemsSearchPoemsResponses = {
-    /**
-     * Successful Response
-     */
-    200: Array<PoemPublicBasic> | Array<PoemPublicWithAuthor>;
-};
-
-export type PoemsSearchPoemsResponse = PoemsSearchPoemsResponses[keyof PoemsSearchPoemsResponses];
 
 export type PoemsDeletePoemData = {
     body?: never;
@@ -946,6 +873,31 @@ export type PoemsUpdatePoemResponses = {
 };
 
 export type PoemsUpdatePoemResponse = PoemsUpdatePoemResponses[keyof PoemsUpdatePoemResponses];
+
+export type PoemsCreatePoemData = {
+    body: PoemCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/poems/';
+};
+
+export type PoemsCreatePoemErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PoemsCreatePoemError = PoemsCreatePoemErrors[keyof PoemsCreatePoemErrors];
+
+export type PoemsCreatePoemResponses = {
+    /**
+     * Successful Response
+     */
+    200: PoemPublicWithAllTheInfo;
+};
+
+export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
 
 export type PrivateCreateUserData = {
     body: PrivateUserCreate;
