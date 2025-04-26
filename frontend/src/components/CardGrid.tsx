@@ -12,11 +12,13 @@ export function CardGrid({ data }: { data: CardGridProps[] }) {
   const navigate = useNavigate()
   return (
     <SimpleGrid
-      cols={{ base: 3, xs: 4, sm: 5, md: 6, lg: 8, xl: 9 }}
+      cols={{ base: 3, sm: 4, md: 6, lg: 7, xl: 8 }}
       spacing="sm"
       verticalSpacing="xl"
       pb={200}
-      m={{ base: 50, xs: 60, sm: 70, md: 80, lg: 90 }}
+      mt={60}
+      ml={60}
+      mr="xl"
     >
       {data.map((card) => (
         <Card

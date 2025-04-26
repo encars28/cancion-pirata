@@ -28,8 +28,8 @@ export function Shell({ children, profileNavbar }: ShellProps) {
         width: navwidth,
         breakpoint: 'sm',
         collapsed: { 
-          mobile: profileNavbar ? !mobileOpened : false, 
-          desktop: profileNavbar ? !desktopOpened : false 
+          mobile: !mobileOpened, 
+          desktop: !desktopOpened
       },
       }}
       >
@@ -60,9 +60,11 @@ export function Shell({ children, profileNavbar }: ShellProps) {
           </Group>
         </Container>
       </AppShell.Header>
+
       {profileNavbar && (
         <ProfileNavbar />
       )}
+
       <AppShell.Main>
         <div className={classes.main}>{children}</div>
       </AppShell.Main>
