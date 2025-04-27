@@ -2,10 +2,21 @@ import { useQuery } from "@tanstack/react-query"
 import { callService } from "../utils"
 import { authorsReadAuthors } from "../client/sdk.gen"
 
-const useAuthors = () => useQuery(
+export interface QueryParams {
+  order_by?: "full_name" | "poems" | "birth_date";
+  full_name?: string;
+  birth_year?: string;
+  poems?: string;
+  desc?: boolean;
+  limit?: number;
+  skip?: number;
+}
+
+const useAuthors = (params: QueryParams) => useQuery(
   {
-    queryKey: ['authors'],
-    queryFn: async () => callService(authorsReadAuthors),
+    queryFn: async () =>
+      callService(authorsReadAuthors, { query: { ...params } }),
+    queryKey: ["authors", "filters"],
     placeholderData: (prevData) => prevData,
   })
 
