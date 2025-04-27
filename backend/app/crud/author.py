@@ -152,7 +152,7 @@ class AuthorCRUD:
         return s
 
     def filter_by_name(self, query: AuthorSearchParams) -> Select:
-        return select(Author).where(Author.full_name.istartswith(query.full_name))
+        return select(Author).where(Author.full_name.icontains(query.full_name))
 
     def create(self, db: Session, obj_create: AuthorCreate) -> AuthorSchema:
         obj_create_data = obj_create.model_dump(exclude_unset=True)

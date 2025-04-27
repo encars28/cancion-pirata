@@ -95,6 +95,7 @@ class PoemSearchParams(BaseModel):
     title: str = ""
     created_at: str = ""
     updated_at: str = ""
+    verses: str = ""
     type: PoemParamType = ""
     language: str = ""
     

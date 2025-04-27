@@ -37,9 +37,10 @@ class PoemCRUD:
         title_filter = self.filter_by_title(queryParams)
         type_filter = self.filter_by_type(queryParams, db)
         language_filter = self.filter_by_language(queryParams)
+        verses_filter = self.filter_by_num_verses(queryParams, db)
 
         stmt = title_filter.intersect(
-            type_filter, created_at_filter, updated_at_filter, language_filter
+            type_filter, created_at_filter, updated_at_filter, language_filter, verses_filter
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -47,13 +48,13 @@ class PoemCRUD:
             order = getattr(alias, queryParams.order_by).desc().nulls_last()
         else:
             order = getattr(alias, queryParams.order_by).nulls_first()
-
         s = (
             select(alias)
             .offset(queryParams.skip)
             .limit(queryParams.limit)
             .order_by(order)
         )
+            
         if public_restricted:
             s = s.where(alias.is_public == True)
 
@@ -67,9 +68,10 @@ class PoemCRUD:
         title_filter = self.filter_by_title(queryParams)
         type_filter = self.filter_by_type(queryParams, db)
         language_filter = self.filter_by_language(queryParams)
+        verses_filter = self.filter_by_num_verses(queryParams, db)
 
         stmt = title_filter.intersect(
-            type_filter, created_at_filter, updated_at_filter, language_filter
+            type_filter, created_at_filter, updated_at_filter, language_filter, verses_filter
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -121,6 +123,28 @@ class PoemCRUD:
 
     def filter_by_title(self, query: PoemSearchParams) -> Select:
         return select(Poem).where(Poem.title.icontains(query.title))
+    
+    def filter_by_num_verses(self, query: PoemSearchParams, db: Session) -> Select:
+        regex = r"(>|<|>=|<=|=|)(\d+)"
+        m = re.match(regex, query.verses)
+
+        if not m:
+            return select(Poem)
+
+        all_poems = db.scalars(select(Poem)).all()
+        match m.group(1):
+            case ">=":
+                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) >= int(m.group(2))]
+            case ">": 
+                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) > int(m.group(2))]
+            case "<=":
+                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) <= int(m.group(2))]
+            case "<":
+                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) < int(m.group(2))]
+            case _:
+                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) == int(m.group(2))]
+                
+        return select(Poem).where(Poem.id.in_(poems))
 
     def filter_by_type(self, query: PoemSearchParams, db: Session) -> Select:
         s = select(Poem).join(Poem_Poem, Poem.id == Poem_Poem.derived_poem_id)
