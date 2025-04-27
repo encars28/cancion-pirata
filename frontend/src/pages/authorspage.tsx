@@ -5,7 +5,7 @@ import { handleError } from "../utils";
 import { Loading } from "../components/Loading";
 import { AuthorPublicWithPoems } from "../client";
 import { useForm } from "@mantine/form";
-import useAuthors, { QueryParams } from "../hooks/useAuthors";
+import useAuthors, { AuthorQueryParams } from "../hooks/useAuthors";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
@@ -13,7 +13,7 @@ import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
 import { TbFilter } from "react-icons/tb";
 
 export function AuthorsPage() {
-  const [filters, setFilters] = useState<QueryParams>({})
+  const [filters, setFilters] = useState<AuthorQueryParams>({})
   const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient()
 
@@ -41,12 +41,14 @@ export function AuthorsPage() {
   const authorCount: number = data?.count ?? 0
 
   const handleSubmit = async (values: typeof form.values) => {
-    setFilters({
+    const updatedFilters: AuthorQueryParams = {
       order_by: values.order_by === "Año de nacimiento" ? "birth_date" : values.order_by === "Número de poemas" ? "poems" : "full_name",
       full_name: values.full_name,
       birth_year: values.birth_year,
       poems: values.poems,
-    })
+    }
+    console.log(updatedFilters)
+    setFilters(updatedFilters)
     console.log("Filters: ", filters)
     queryClient.invalidateQueries({ queryKey: ["authors", "filters"] })
   }

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { callService } from "../utils"
 import { authorsReadAuthors } from "../client/sdk.gen"
 
-export interface QueryParams {
+export interface AuthorQueryParams {
   order_by?: "full_name" | "poems" | "birth_date";
   full_name?: string;
   birth_year?: string;
@@ -12,7 +12,7 @@ export interface QueryParams {
   skip?: number;
 }
 
-const useAuthors = (params: QueryParams) => useQuery(
+const useAuthors = (params: AuthorQueryParams) => useQuery(
   {
     queryFn: async () =>
       callService(authorsReadAuthors, { query: { ...params } }),

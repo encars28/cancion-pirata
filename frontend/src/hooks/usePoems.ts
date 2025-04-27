@@ -2,10 +2,22 @@ import { useQuery } from "@tanstack/react-query"
 import { callService } from "../utils"
 import { poemsReadPoems } from "../client/sdk.gen"
 
-const usePoems = () => useQuery(
+export interface PoemQueryParams {
+  order_by?: "created_at" | "updated_at" | "title"
+  type?: "all" | "version" | "translation" | "derived" | "original" | ""
+  title?: string;
+  created_at?: string;
+  updated_at?: string;
+  language?: string;
+  desc?: boolean;
+  limit?: number;
+  skip?: number;
+}
+
+const usePoems = (params: PoemQueryParams) => useQuery(
   {
-    queryKey: ['poems'],
-    queryFn: async () => callService(poemsReadPoems),
+    queryKey: ['poems', 'filters'],
+    queryFn: async () => callService(poemsReadPoems, { query: { ...params } }),
     placeholderData: (prevData) => prevData,
   }
 )
