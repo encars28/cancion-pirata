@@ -19,6 +19,7 @@ export function CardGrid({ data }: { data: CardGridProps[] }) {
       mt={60}
       ml={60}
       mr="xl"
+      w="100%"
     >
       {data.map((card) => (
         <Card

@@ -1,25 +1,20 @@
 import { Shell } from "../components/Shell/Shell";
 import { CardGrid, CardGridProps } from "../components/CardGrid";
-import { Container, Avatar, Text, Title, Button, Grid, Paper, Select, TextInput, Stack, Space } from "@mantine/core";
+import { Container, Paper, Drawer, Avatar, Text, Title, Button, Group, Flex } from "@mantine/core";
 import { handleError } from "../utils";
 import { Loading } from "../components/Loading";
 import { AuthorPublicWithPoems } from "../client";
-import { TbFilter } from "react-icons/tb";
-import { FilterInfoButton } from "../components/FilterInfoButton";
-import { Form, useForm } from "@mantine/form";
+import { useForm } from "@mantine/form";
 import useAuthors, { QueryParams } from "../hooks/useAuthors";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-
-interface AuthorFilters {
-  order_by?: "Nombre" | "Año de nacimiento" | "Número de poemas";
-  full_name?: string;
-  birth_year?: string;
-  poems?: string;
-}
+import { useDisclosure } from "@mantine/hooks";
+import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
+import { TbFilter } from "react-icons/tb";
 
 export function AuthorsPage() {
   const [filters, setFilters] = useState<QueryParams>({})
+  const [opened, { open, close }] = useDisclosure(false);
   const queryClient = useQueryClient()
 
   const form = useForm<AuthorFilters>({
@@ -68,65 +63,37 @@ export function AuthorsPage() {
         <Title order={1}>Lista de autores</Title>
         <Title order={2} c="dimmed" fw="inherit">Total: {authorCount}</Title>
       </Container>
-      <Grid columns={24}>
-        <Grid.Col span={19}>
-          <CardGrid data={cardData} />
-        </Grid.Col>
-        <Grid.Col span={5}>
-          <Form form={form} onSubmit={handleSubmit}>
-            <Paper shadow="xl" p="lg" mr="xl" h={500} withBorder>
-              <Stack gap="sm" ta="left" mt="md">
-                <Select
-                  label="Ordenar por"
-                  defaultValue="Nombre"
-                  data={["Nombre", "Año de nacimiento", "Número de poemas"]}
-                  allowDeselect={false}
-                  radius="lg"
-                  variant="filled"
-                  key={form.key("order_by")}
-                  {...form.getInputProps("order_by")}
-                />
-                <Space h="md" />
-                <TextInput
-                  label="Nombre"
-                  placeholder="Nombre"
-                  radius="md"
-                  styles={{ input: { color: "grey" } }}
-                  key={form.key("full_name")}
-                  {...form.getInputProps("full_name")}
-                />
-                <TextInput
-                  label={<>Año de nacimiento<FilterInfoButton /> </>}
-                  placeholder="Año de nacimiento"
-                  radius="md"
-                  styles={{ input: { color: "grey" } }}
-                  key={form.key("birth_year")}
-                  {...form.getInputProps("birth_year")}
-                />
-                <TextInput
-                  label={<>Número de poemas<FilterInfoButton /> </>}
-                  placeholder="Número de poemas"
-                  radius="md"
-                  styles={{ input: { color: "grey" } }}
-                  key={form.key("poems")}
-                  {...form.getInputProps("poems")}
-                />
-                <Space h="md" />
-                <Button
-                  variant="light"
-                  color="grey"
-                  leftSection={<TbFilter />}
-                  fullWidth
-                  radius="lg"
-                  type="submit"
-                >
-                  Ordenar y filtrar
-                </Button>
-              </Stack>
-            </Paper>
-          </Form>
-        </Grid.Col>
-      </Grid>
+      <Group hiddenFrom="sm" justify="flex-end" mt="xl" mr={60}>
+        <Button
+          variant="light"
+          color="grey"
+          leftSection={<TbFilter />}
+          onClick={open}
+        >
+          Filtrar
+        </Button>
+      </Group>
+      <Flex wrap="nowrap">
+        <CardGrid data={cardData} />
+        <Container visibleFrom="sm" w={400}>
+          <Paper shadow="xl" p="lg" mr="xl" h={500} withBorder>
+            <FilterAuthor form={form} handleSubmit={handleSubmit} />
+          </Paper>
+        </Container>
+      </Flex>
+      <Drawer
+        offset={8}
+        radius="md"
+        opened={opened}
+        onClose={close}
+        title="Ordenar y filtrar"
+        position="right"
+        hiddenFrom="sm"
+        padding="xl"
+        size="xs"
+      >
+        <FilterAuthor form={form} handleSubmit={handleSubmit} />
+      </Drawer>
     </Shell>
   )
 }
