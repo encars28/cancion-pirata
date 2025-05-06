@@ -1,19 +1,35 @@
-import { Stack, Select, Space, TextInput, Button } from "@mantine/core";
+import { Stack, Select, Space, TextInput, Button, ActionIcon } from "@mantine/core";
 import { Form, UseFormReturnType } from "@mantine/form";
 import { FilterInfoButton } from "../FilterInfoButton";
+import { TbChevronUp, TbChevronDown } from "react-icons/tb";
 
 export interface AuthorFilters {
   order_by?: "Nombre" | "Año de nacimiento" | "Número de poemas";
   full_name?: string;
   birth_year?: string;
   poems?: string;
+  desc?: boolean;
 }
 
 export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<AuthorFilters>, handleSubmit: (values: any) => void }) {
+  const Icon = form.values.desc ? TbChevronUp : TbChevronDown;
+
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <Stack gap="sm" ta="left" mt="md">
         <Select
+          withCheckIcon={false}
+          rightSection={
+            <ActionIcon
+              variant="transparent"
+              size={30}
+              color="grey"
+              onClick={() => form.setFieldValue("desc", !form.values.desc)}
+            >
+              <Icon />
+            </ActionIcon>
+          }
+          rightSectionPointerEvents="all"
           label="Ordenar por"
           defaultValue="Nombre"
           data={["Nombre", "Año de nacimiento", "Número de poemas"]}
@@ -63,11 +79,8 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<A
           color="red"
           fullWidth
           radius="lg"
-          onClick={() => {
-            form.reset();
-            handleSubmit(form.values);
-          }
-          }
+          onClick={() => form.reset()}
+          type="submit"
         >
           Borrar filtros
         </Button>

@@ -19,7 +19,7 @@ export function AuthorsPage() {
   }, [filters])
 
   const form = useForm<AuthorFilters>({
-    mode: "uncontrolled",
+    mode: "controlled",
     initialValues: {
       order_by: "Nombre",
       full_name: "",
@@ -34,6 +34,7 @@ export function AuthorsPage() {
       full_name: values.full_name,
       birth_year: values.birth_year,
       poems: values.poems,
+      desc: values.desc,
     }
 
     setFilters(updatedFilters)

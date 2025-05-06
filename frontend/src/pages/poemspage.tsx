@@ -20,13 +20,14 @@ export function PoemsPage() {
   }, [filters])
 
   const form = useForm<PoemFilters>({
-    mode: "uncontrolled",
+    mode: "controlled",
     initialValues: {
       order_by: "Título",
       title: "",
       created_at: "",
       updated_at: "",
       language: "",
+      desc: false,
     }
   })
 
@@ -36,6 +37,7 @@ export function PoemsPage() {
       title: values.title,
       created_at: values.created_at,
       updated_at: values.updated_at,
+      desc: values.desc,
     }
 
     setFilters(updatedFilters)
@@ -57,7 +59,7 @@ export function PoemsPage() {
         </Button>
       </Group>
       <Flex wrap="nowrap">
-        <PoemGrid filter={filters} />
+        <PoemGrid  filter={filters} />
         <Container visibleFrom="sm" w={400}>
           <Paper shadow="xl" p="lg" mr="xl" h={600} withBorder>
             <FilterPoem form={form} handleSubmit={handleSubmit} />
