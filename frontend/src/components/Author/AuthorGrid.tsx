@@ -4,7 +4,7 @@ import useAuthors, { AuthorQueryParams } from '../../hooks/useAuthors';
 import { handleError } from '../../utils';
 import { Loading } from '../Loading';
 import { AuthorPublicWithPoems } from '../../client';
-import { CardGrid } from './CardGrid';
+import { CardGrid } from '../CardGrid';
 
 export interface CardGridProps {
   path: string;

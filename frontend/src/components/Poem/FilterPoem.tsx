@@ -10,7 +10,7 @@ export interface PoemFilters {
   language?: string;
 }
 
-export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<PoemFilters>, handleSubmit: (values: any) => void }) {
+export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<PoemFilters>, handleSubmit: (values: any) => void }) {
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <Stack gap="sm" ta="left" mt="md">
@@ -65,7 +65,20 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<P
           radius="lg"
           type="submit"
         >
-          Ordenar y filtrar
+          Filtrar
+        </Button>        
+        <Button
+          variant="light"
+          color="red"
+          fullWidth
+          radius="lg"
+          onClick={() => {
+            form.reset();
+            handleSubmit(form.values);
+          }
+          }
+        >
+          Borrar filtros
         </Button>
       </Stack>
     </Form>

@@ -1,37 +1,82 @@
 import { Shell } from "../components/Shell/Shell";
-import { CardGrid, CardGridProps } from "../components/Grid/CardGrid";
-import { Title, Image, Text } from "@mantine/core";
-import { handleError } from "../utils";
-import { Loading } from "../components/Loading";
-import { PoemPublicWithAllTheInfo } from "../client";
-import usePoems from "../hooks/usePoems";
-
+import { Title } from "@mantine/core";
+import { PoemQueryParams } from "../hooks/usePoems";
+import { FilterPoem, PoemFilters } from "../components/Poem/FilterPoem";
+import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
+import { useQueryClient } from "@tanstack/react-query";
+import { PoemGrid } from "../components/Poem/PoemGrid";
+import { TbFilter } from "react-icons/tb";
+import { Container, Paper, Drawer, Button, Group, Flex } from "@mantine/core";
 
 export function PoemsPage() {
-  const { isPending, isError, data, error } = usePoems()
+  const [opened, { open, close }] = useDisclosure(false);
+  const queryClient = useQueryClient()
+  const [filters, setFilters] = useState<PoemQueryParams>({} as PoemQueryParams)
 
-  if (isPending) {
-    return (<Loading />)
+  useEffect(() => {
+    queryClient.invalidateQueries({ queryKey: ["poems", "filters"] })
+  }, [filters])
+
+  const form = useForm<PoemFilters>({
+    mode: "uncontrolled",
+    initialValues: {
+      order_by: "Título",
+      title: "",
+      created_at: "",
+      updated_at: "",
+      language: "",
+    }
+  })
+
+  const handleSubmit = async (values: typeof form.values) => {
+    const updatedFilters: PoemQueryParams = {
+      order_by: values.order_by === "Fecha de publicación" ? "created_at" : values.order_by === "Fecha de modificación" ? "updated_at" : "title",
+      title: values.title,
+      created_at: values.created_at,
+      updated_at: values.updated_at,
+    }
+
+    setFilters(updatedFilters)
   }
-
-  if (isError) {
-    handleError(error as any);
-  }
-
-  const poems: PoemPublicWithAllTheInfo[] = data?.data ?? [];
-  const authorCount: number = data?.count ?? 0;
-
-  const cardData: CardGridProps[] = poems.map((poem) => ({
-    path: `/poems/${poem.id}`,
-    icon: <Image src="/src/assets/scroll.png" fit="contain" w={100} />,
-    description: <Text mt="md" size="sm">{poem.title}</Text>
-  }))
 
   return (
     <Shell>
-      <Title mt={40} order={1}>Lista de poemas</Title>
-      <Title order={2} c="dimmed" fw="inherit">Total: {authorCount}</Title>
-      <CardGrid data={cardData} />
+      <Container mt={40}>
+        <Title order={1}>Lista de poemas</Title>
+      </Container>
+      <Group hiddenFrom="sm" justify="flex-end" mt="xl" mr={60}>
+        <Button
+          variant="light"
+          color="grey"
+          leftSection={<TbFilter />}
+          onClick={open}
+        >
+          Filtrar
+        </Button>
+      </Group>
+      <Flex wrap="nowrap">
+        <PoemGrid filter={filters} />
+        <Container visibleFrom="sm" w={400}>
+          <Paper shadow="xl" p="lg" mr="xl" h={600} withBorder>
+            <FilterPoem form={form} handleSubmit={handleSubmit} />
+          </Paper>
+        </Container>
+      </Flex>
+      <Drawer
+        offset={8}
+        radius="md"
+        opened={opened}
+        onClose={close}
+        title="Ordenar y filtrar"
+        position="right"
+        hiddenFrom="sm"
+        padding="xl"
+        size="xs"
+      >
+        <FilterPoem form={form} handleSubmit={handleSubmit} />
+      </Drawer>
     </Shell>
   )
 }

@@ -51,7 +51,7 @@ export function Shell({ children, profileNavbar }: ShellProps) {
 
           <Group visibleFrom="sm" gap="xl">
             <SearchControl />
-            {isLoggedIn() ? <ProfileControl /> : <Button radius="md" leftSection={<TbLogin />}>Iniciar sesión</Button> }
+            {isLoggedIn() ? <ProfileControl /> : <Button radius="md" onClick={() => navigate("/login")} leftSection={<TbLogin />}>Iniciar sesión</Button> }
           </Group>
 
           <Group hiddenFrom="sm" gap="md">

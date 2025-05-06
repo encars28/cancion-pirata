@@ -7,7 +7,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
 import { TbFilter } from "react-icons/tb";
 import React, { useEffect } from "react"
-import { AuthorGrid } from "../components/Grid/AuthorGrid";
+import { AuthorGrid } from "../components/Author/AuthorGrid";
 
 export function AuthorsPage() {
   const [opened, { open, close }] = useDisclosure(false);
