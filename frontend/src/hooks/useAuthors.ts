@@ -14,8 +14,11 @@ export interface AuthorQueryParams {
 
 const useAuthors = (params: AuthorQueryParams) => useQuery(
   {
-    queryFn: async () =>
-      callService(authorsReadAuthors, { query: { ...params } }),
+    queryFn: async () => {
+      console.log(params)
+      return await callService(authorsReadAuthors, { query: { ...params } })
+    }
+      ,
     queryKey: ["authors", "filters"],
     placeholderData: (prevData) => prevData,
   })

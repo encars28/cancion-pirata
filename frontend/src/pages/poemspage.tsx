@@ -1,5 +1,5 @@
 import { Shell } from "../components/Shell/Shell";
-import { CardGrid, CardGridProps } from "../components/CardGrid";
+import { CardGrid, CardGridProps } from "../components/Grid/CardGrid";
 import { Title, Image, Text } from "@mantine/core";
 import { handleError } from "../utils";
 import { Loading } from "../components/Loading";

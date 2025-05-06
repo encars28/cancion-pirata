@@ -56,7 +56,20 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<A
           radius="lg"
           type="submit"
         >
-          Ordenar y filtrar
+          Filtrar
+        </Button>
+        <Button
+          variant="light"
+          color="red"
+          fullWidth
+          radius="lg"
+          onClick={() => {
+            form.reset();
+            handleSubmit(form.values);
+          }
+          }
+        >
+          Borrar filtros
         </Button>
       </Stack>
     </Form>
