@@ -1,5 +1,5 @@
 import { notifications } from "@mantine/notifications"
-import { AuthorPublicWithPoems, HttpValidationError, PoemPublicWithAllTheInfo, UserPublic } from "./client/types.gen"
+import { AuthorPublicBasic, HttpValidationError, PoemPublicBasic, UserPublic } from "./client/types.gen"
 import classes from "./notifications.module.css"
 import { RequestResult } from "@hey-api/client-fetch";
 import useAuthors  from "./hooks/useAuthors";
@@ -23,7 +23,7 @@ export const handleError = (error: HttpValidationError) => {
     title: 'Error',
     message: errorMessage,
     classNames: classes,
-    autoClose: false,
+    autoClose: 7000,
   })
 }
 
@@ -49,8 +49,8 @@ export async function callService<R, E, P=undefined>(
 }
 
 export function createSearchData() {
-  const { data: poemsData } = usePoems()
-  const { data: authorsData } = useAuthors()
+  const { data: poemsData } = usePoems({})
+  const { data: authorsData } = useAuthors({})
   const { user } = useAuth()
 
   const { data: usersData } = useQuery(
@@ -62,8 +62,8 @@ export function createSearchData() {
 
   const users: UserPublic[] = usersData?.data ?? []
 
-  const poems: PoemPublicWithAllTheInfo[] = poemsData?.data ?? []
-  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
+  const poems: PoemPublicBasic[] = poemsData?.data ?? []
+  const authors: AuthorPublicBasic[] = authorsData?.data ?? []
 
   const data =  authors.map(
     (author) => ({
