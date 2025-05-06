@@ -7,12 +7,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic, AuthorPublicWithPoems } from '../../client/types.gen';
-import useAuthors from '../../hooks/useAuthors';	
+import useAuthors from '../../hooks/useAuthors';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()
 
-  const { data: authorsData } = useAuthors()
+  const { data: authorsData } = useAuthors({})
   const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
   const author_ids = authors.map(author => author.id) ?? []
 
@@ -53,12 +53,15 @@ export function EditUser({ user }: { user: UserPublic }) {
 
   const handleSubmit = async () => {
     try {
-      const values = form.getValues()
-      if (values.full_name === "") {
-        values.full_name = undefined
-      }
+      if (form.isDirty()) {
+        const values = form.getValues()
+        if (values.full_name === "") {
+          values.full_name = undefined
+        }
 
-      await mutation.mutateAsync(values)
+        await mutation.mutateAsync(values)
+        form.resetDirty()
+      }
     } catch {
       // error is handled by mutation
       form.setErrors({ email: 'Correo o usuario incorrecto', username: 'Correo o usuario incorrecto' })
@@ -151,8 +154,8 @@ export function EditUser({ user }: { user: UserPublic }) {
               <Button
                 variant='filled'
                 type='submit'
-                loading={mutation.isPending} 
-                loaderProps={{type: 'dots'}}
+                loading={mutation.isPending}
+                loaderProps={{ type: 'dots' }}
               >
                 Guardar
               </Button>

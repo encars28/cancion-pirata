@@ -44,17 +44,20 @@ export function EditAuthor({ author, icon }: { author: AuthorPublic, icon?: bool
 
   const handleSubmit = async () => {
     try {
-      const values = form.getValues()
-      if (values.full_name === "") {
-        values.full_name = undefined
+      if (form.isDirty()) 
+      {
+        const values = form.getValues()
+        if (values.full_name === "") {
+          values.full_name = undefined
+        }
+        await mutation.mutateAsync(values)
+        form.resetDirty()
       }
-
-      await mutation.mutateAsync(values)
     } catch {
       // error is handled by mutation
       form.setErrors({ full_name: 'Nombre repetido o incorrecto' })
     }
-  }
+  }   
 
   return (
     <>

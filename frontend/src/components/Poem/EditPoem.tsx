@@ -2,13 +2,15 @@ import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextI
 import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
-import { authorsReadAuthors, poemsReadPoems, poemsUpdatePoem } from "../../client";
+import { poemsUpdatePoem } from "../../client";
 import { callService, handleError, handleSuccess } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
-import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
+import useAuthors from "../../hooks/useAuthors";
+import usePoems from "../../hooks/usePoems";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -42,7 +44,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
       ...poem,
       original_poem_id: undefined,
       type: undefined,
-    }, 
+    },
     validate: {
       title: isNotEmpty('El título no puede estar vacío'),
       content: isNotEmpty('El contenido no puede estar vacío')
@@ -52,19 +54,9 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     }),
   });
 
-  const { data: authorsData } = useQuery(
-    {
-      queryKey: ['authors'],
-      queryFn: async () => callService(authorsReadAuthors),
-    }
-  )
+  const { data: authorsData } = useAuthors({})
 
-  const { data: poemsData } = useQuery(
-    {
-      queryKey: ['poems'],
-      queryFn: async () => callService(poemsReadPoems),
-    }
-  )
+  const { data: poemsData } = usePoems({})
 
   const author_names = authorsData?.data?.map(author => author.full_name) ?? []
   const poems_ids = poemsData?.data?.map(poem => poem.id) ?? []
@@ -90,17 +82,20 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
 
   const handleSubmit = async () => {
     try {
-      const values = form.getValues()
+      if (form.isDirty()) {
+        const values = form.getValues()
 
-      if (values.language === "") {
-        values.language = undefined
+        if (values.language === "") {
+          values.language = undefined
+        }
+
+        if (values.type == -1) {
+          values.type = undefined
+        }
+
+        await mutation.mutateAsync(values)
+        form.resetDirty()
       }
-
-      if (values.type == -1) {
-        values.type = undefined
-      } 
-
-      await mutation.mutateAsync(values)
     } catch {
       // error is handled by mutation
     }
