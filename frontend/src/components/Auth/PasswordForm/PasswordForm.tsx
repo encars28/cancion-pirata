@@ -18,6 +18,7 @@ import { HttpValidationError, loginRecoverPassword } from '../../../client';
 import { callService, handleError, handleSuccess } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+import { notifications } from '@mantine/notifications';
 
 export function PasswordForm() {
   const navigate = useNavigate()
@@ -26,6 +27,7 @@ export function PasswordForm() {
     mutationFn: async (data: string) =>
       callService(loginRecoverPassword, { path: { email: data } }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
     },
     onError: (error: HttpValidationError) => {

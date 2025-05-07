@@ -5,6 +5,7 @@ import { TbAbc, TbAt, TbUser } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { callService, handleError, handleSuccess } from '../../utils';
 import { HttpValidationError } from '../../client/types.gen';
+import { notifications } from '@mantine/notifications';
 
 
 export function UserMe({ user }: { user: UserPublic }) {
@@ -13,6 +14,7 @@ export function UserMe({ user }: { user: UserPublic }) {
     mutationFn: async (data: UserUpdateMe) =>
       callService(usersUpdateUserMe, { body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
     },
 

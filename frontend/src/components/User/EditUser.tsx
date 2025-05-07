@@ -8,6 +8,7 @@ import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic, AuthorPublicWithPoems } from '../../client/types.gen';
 import useAuthors from '../../hooks/useAuthors';
+import { notifications } from '@mantine/notifications';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()
@@ -21,6 +22,7 @@ export function EditUser({ user }: { user: UserPublic }) {
     mutationFn: async (data: UserUpdate) =>
       callService(usersUpdateUser, { path: { user_id: user.id }, body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       close()
     },

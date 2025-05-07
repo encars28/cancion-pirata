@@ -11,6 +11,7 @@ import { HttpValidationError, UpdatePassword, usersUpdatePasswordMe } from '../.
 import { callService, handleError, handleSuccess } from '../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+import { notifications } from '@mantine/notifications';
 
 export function UpdatePasswordForm() {
   const navigate = useNavigate()
@@ -20,6 +21,7 @@ export function UpdatePasswordForm() {
       await callService(usersUpdatePasswordMe, { body: data })
     },
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       navigate("/me")
     },

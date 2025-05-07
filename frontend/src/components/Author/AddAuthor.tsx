@@ -7,6 +7,7 @@ import { callService, handleError, handleSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsCreateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 
 export function AddAuthor() {
   const [opened, { open, close }] = useDisclosure()
@@ -15,6 +16,7 @@ export function AddAuthor() {
     mutationFn: async (data: AuthorCreate) =>
       callService(authorsCreateAuthor, { body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       close()
     },

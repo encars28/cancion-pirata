@@ -12,6 +12,7 @@ import usePoems from "../../hooks/usePoems";
 import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
+import { notifications } from "@mantine/notifications";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -29,6 +30,7 @@ export function AddPoem() {
     mutationFn: async (data: PoemCreate) =>
       callService(poemsCreatePoem, { body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       navigate(`/authors/${user?.author_id}`)
     },
@@ -64,8 +66,8 @@ export function AddPoem() {
     }),
   });
 
-  const { data: authorsData } = useAuthors()
-  const { data: poemsData } = usePoems()
+  const { data: authorsData } = useAuthors({})
+  const { data: poemsData } = usePoems({})
 
   const author_names = authorsData?.data.map(author => author.full_name) ?? []
   const poems_ids = poemsData?.data.map(poem => poem.id) ?? []

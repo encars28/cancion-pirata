@@ -11,6 +11,7 @@ import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
 import useAuthors from "../../hooks/useAuthors";
 import usePoems from "../../hooks/usePoems";
+import { notifications } from "@mantine/notifications";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -24,6 +25,7 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     mutationFn: async (data: PoemUpdate) =>
       callService(poemsUpdatePoem, { path: { poem_id: poem.id }, body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       close()
     },

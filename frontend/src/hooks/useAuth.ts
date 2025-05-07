@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
-
 import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
 import { handleError, handleSuccess, callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
+import { notifications } from "@mantine/notifications"
 
 const isLoggedIn = () => {
   return localStorage.getItem("access_token") !== null
@@ -25,6 +25,7 @@ const useAuth = () => {
     mutationFn: async (data: UserRegister) => callService(usersRegisterUser, { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
+      notifications.clean()
       handleSuccess()
       navigate("/login")
     },
@@ -55,6 +56,7 @@ const useAuth = () => {
     mutationFn: login,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
+      notifications.clean()
       navigate("/")
     },
     onError: (error) => {

@@ -14,6 +14,7 @@ import { HttpValidationError, NewPassword, loginResetPassword } from '../../../c
 import { callService, handleError, handleSuccess } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
+import { notifications } from '@mantine/notifications';
 
 interface ResetPasswordForm extends NewPassword {
   confirm_password: string
@@ -34,6 +35,7 @@ export function ResetPassword() {
   const mutation = useMutation({
     mutationFn: resetPassword,
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       navigate("/login")
     },

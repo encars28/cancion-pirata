@@ -1,12 +1,12 @@
 import { notifications } from "@mantine/notifications"
 import { AuthorPublicBasic, HttpValidationError, PoemPublicBasic, UserPublic } from "./client/types.gen"
-import classes from "./notifications.module.css"
 import { RequestResult } from "@hey-api/client-fetch";
 import useAuthors  from "./hooks/useAuthors";
 import usePoems  from "./hooks/usePoems";
 import useAuth from "./hooks/useAuth";
 import { usersReadUsers } from "./client";
 import { useQuery } from "@tanstack/react-query";
+import { errorNotification, successNotification } from "./components/Notifications/notifications";
 
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
@@ -18,22 +18,11 @@ export const handleError = (error: HttpValidationError) => {
 
   }
 
-  notifications.show({
-    color: 'red',
-    title: 'Error',
-    message: errorMessage,
-    classNames: classes,
-    autoClose: 7000,
-  })
+  notifications.show(errorNotification(errorMessage))
 }
 
 export const handleSuccess = () => {
-  notifications.show({
-    color: 'green',
-    title: 'Éxito',
-    message: 'La operación se ha completado!',
-    classNames: classes,
-  })
+  notifications.show(successNotification)
 }
 
 export async function callService<R, E, P=undefined>(

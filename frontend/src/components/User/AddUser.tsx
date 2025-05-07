@@ -6,6 +6,7 @@ import { callService, handleError, handleSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersCreateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 
 export function AddUser() {
   const [opened, { open, close }] = useDisclosure()
@@ -15,6 +16,7 @@ export function AddUser() {
     mutationFn: async (data: UserCreate) =>
       callService(usersCreateUser, { body: data }),
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
       close()
     },
