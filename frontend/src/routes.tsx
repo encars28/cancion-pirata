@@ -4,12 +4,8 @@ import { PoemsPage } from "./pages/poemspage";
 import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
-import { LoginPage } from "./pages/loginpage";
 import { NothingFound } from "./components/NothingFound/NothingFound";
 import { isAdmin, isLoggedIn } from "./hooks/useAuth";
-import { PasswordPage } from "./pages/passwordpage";
-import { RegisterPage } from "./pages/registerpage";
-import { ResetPasswordPage } from "./pages/resetpasswordpage";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
@@ -19,6 +15,11 @@ import { Profile } from "./components/Profile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 import { AddPoem } from "./components/Poem/AddPoem";
 import { PageSettings } from "./components/PageSettings";
+import { BasePage } from "./pages/base";
+import { RegisterForm } from "./components/Auth/RegisterForm/RegisterForm";
+import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";
+import { LoginForm } from "./components/Auth/LoginForm/LoginForm";
+import { ResetPassword } from "./components/Auth/ResetPassword/ResetPassword";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -42,12 +43,19 @@ export default function AllRoutes() {
   return (
     <Routes>
       <Route index element={<MainPage />} />
-      <Route path="signup" element={<RegisterPage />} />
-      <Route path="password-recovery" element={<PasswordPage />} />
+
+      <Route element={<BasePage />}>
+        <Route path="signup" element={<RegisterForm />} />
+        <Route path="password-recovery" element={<PasswordForm />} />
+      </Route>
 
       <Route path="poems" element={<PoemsPage />} />
       <Route path="poems/:id" element={<PoemPage />} />
-      <Route path="poems/add" element={<AddPoem />} />
+
+      <Route path="poems/add" element={<BasePage />}>
+        <Route index element={<AddPoem />} />
+      </Route>
+
       <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/:id" element={<AuthorPage />} />
 
@@ -62,8 +70,10 @@ export default function AllRoutes() {
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={!isLoggedIn()} />}>
-        <Route path="login" element={<LoginPage />} />
-        <Route path="reset-password" element={<ResetPasswordPage />} />
+        <Route element={<BasePage />}>
+          <Route path="login" element={<LoginForm />} />
+          <Route path="reset-password" element={<ResetPassword />} />
+        </Route>
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={true} />}>
