@@ -9,11 +9,16 @@ import { useQueryClient } from "@tanstack/react-query";
 import { PoemGrid } from "../components/Poem/PoemGrid";
 import { TbFilter } from "react-icons/tb";
 import { Container, Paper, Drawer, Button, Group, Flex } from "@mantine/core";
+import { useSearchParams, useNavigate } from "react-router";
+
+export const POEMS_PER_PAGE = 36
 
 export function PoemsPage() {
   const [opened, { open, close }] = useDisclosure(false);
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
-  const [filters, setFilters] = useState<PoemQueryParams>({} as PoemQueryParams)
+  const [filters, setFilters] = useState<PoemQueryParams>({ skip: 0, limit: POEMS_PER_PAGE } as PoemQueryParams)
+  const [searchParams] = useSearchParams()
 
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ["poems", "filters"] })
@@ -31,6 +36,17 @@ export function PoemsPage() {
     }
   })
 
+  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
+
+  const setPage = (page: number) => {
+    navigate({ search: `?page=${page}` });
+    setFilters({
+      ...filters,
+      skip: (page - 1) * POEMS_PER_PAGE,
+      limit: POEMS_PER_PAGE,
+    })
+  }
+
   const handleSubmit = async (values: typeof form.values) => {
     const updatedFilters: PoemQueryParams = {
       order_by: values.order_by === "Fecha de publicación" ? "created_at" : values.order_by === "Fecha de modificación" ? "updated_at" : "title",
@@ -38,6 +54,8 @@ export function PoemsPage() {
       created_at: values.created_at,
       updated_at: values.updated_at,
       desc: values.desc,
+      skip: (page - 1) * POEMS_PER_PAGE,
+      limit: POEMS_PER_PAGE
     }
 
     setFilters(updatedFilters)
@@ -59,7 +77,7 @@ export function PoemsPage() {
         </Button>
       </Group>
       <Flex wrap="nowrap">
-        <PoemGrid  filter={filters} />
+        <PoemGrid filter={filters} setPage={setPage}/>
         <Container visibleFrom="sm" w={400}>
           <Paper shadow="xl" p="lg" mr="xl" h={600} withBorder>
             <FilterPoem form={form} handleSubmit={handleSubmit} />

@@ -11,7 +11,7 @@ import { AddAuthor } from "../Author/AddAuthor";
 import { Th } from "./Th/Th";
 import { useState } from "react";
 
-const PER_PAGE = 6
+export const PER_PAGE = 6
 
 interface RowData {
   full_name: string;
