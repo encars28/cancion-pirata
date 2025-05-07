@@ -16,9 +16,7 @@ import { client } from './client/client.gen';
 import { isLoggedIn } from './hooks/useAuth';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { createSearchData } from './utils';
 import { ModalsProvider } from '@mantine/modals';
-import { useQueryClient } from '@tanstack/react-query';
 
 dayjs.extend(customParseFormat);
 
@@ -36,13 +34,12 @@ if (isLoggedIn()) {
 }
 
 function App() {
-  const searchData = createSearchData()
   return (
     <MantineProvider>
       {
         <>
           <AllRoutes />
-          <Search data={searchData} />
+          <Search />
           <Notifications />
           <ModalsProvider labels={{ confirm: 'Continuar', cancel: 'Cancelar' }} />
         </>

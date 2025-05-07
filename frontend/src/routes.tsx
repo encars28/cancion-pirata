@@ -1,5 +1,4 @@
 import { Route, Routes, Navigate, Outlet } from "react-router";
-import { MainPage } from "./pages/mainpage";
 import { PoemsPage } from "./pages/poemspage";
 import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
@@ -20,6 +19,7 @@ import { RegisterForm } from "./components/Auth/RegisterForm/RegisterForm";
 import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";
 import { LoginForm } from "./components/Auth/LoginForm/LoginForm";
 import { ResetPassword } from "./components/Auth/ResetPassword/ResetPassword";
+import { Hero } from "./components/Hero/Hero";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -42,9 +42,8 @@ const ProtectedRoute = ({
 export default function AllRoutes() {
   return (
     <Routes>
-      <Route index element={<MainPage />} />
-
       <Route element={<BasePage />}>
+        <Route index element={<Hero />} />
         <Route path="signup" element={<RegisterForm />} />
         <Route path="password-recovery" element={<PasswordForm />} />
       </Route>
