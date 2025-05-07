@@ -16,7 +16,7 @@ export interface PoemQueryParams {
 
 const usePoems = (params: PoemQueryParams) => useQuery(
   {
-    queryKey: ['poems', 'filters'],
+    queryKey: Object.keys(params).length === 0 ? ['poems'] : ['poems', 'filters'],
     queryFn: async () => callService(poemsReadPoems, { query: { ...params } }),
     placeholderData: (prevData) => prevData,
   }
