@@ -1,16 +1,16 @@
 import { Checkbox, Fieldset, Collapse, NavLink, Tabs, Input, Group, Stack, TextInput, Textarea, Grid, Button, Center, Space, MultiSelect, Select } from "@mantine/core";
-import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../client/types.gen";
+import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
-import { poemsUpdatePoem } from "../../client";
-import { callService, handleError, handleSuccess } from "../../utils";
-import { HttpValidationError } from "../../client/types.gen";
+import { poemsUpdatePoem } from "../../../client";
+import { callService, handleError, handleSuccess } from "../../../utils";
+import { HttpValidationError } from "../../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
-import useAuthors from "../../hooks/useAuthors";
-import usePoems from "../../hooks/usePoems";
+import useAuthors from "../../../hooks/useAuthors";
+import usePoems from "../../../hooks/usePoems";
 import { notifications } from "@mantine/notifications";
 
 enum PoemType {
@@ -18,7 +18,7 @@ enum PoemType {
   VERSION = 1,
 }
 
-export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, close: () => void }) {
+export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
   const [opened, { toggle }] = useDisclosure(false);
   const queryClient = useQueryClient()
   const mutation = useMutation({
@@ -27,7 +27,6 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
     onSuccess: () => {
       notifications.clean()
       handleSuccess()
-      close()
     },
 
     onError: (error: HttpValidationError) => {
@@ -57,7 +56,6 @@ export function EditPoem({ poem, close }: { poem: PoemPublicWithAllTheInfo, clos
   });
 
   const { data: authorsData } = useAuthors({})
-
   const { data: poemsData } = usePoems({})
 
   const author_names = authorsData?.data?.map(author => author.full_name) ?? []

@@ -19,6 +19,8 @@ export function ProfileControl() {
       </Text>
     ),
     onConfirm: () => {logout(); handleSuccess()},
+    confirmProps: { color: 'red' },
+    labels: { confirm: 'Cerrar sesión', cancel: 'Cancelar' },
   });
 
   return (

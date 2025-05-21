@@ -1,29 +1,23 @@
 import { Shell } from '../components/Shell/Shell';
-import { callService, handleError } from '../utils';
+import { handleError, deleteModal } from '../utils';
 import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
-import { poemsReadPoem } from '../client/sdk.gen';
 import { useNavigate, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
 import useAuth from '../hooks/useAuth';
 import { ShowPoem } from '../components/Poem/ShowPoem';
-import { EditPoem } from '../components/Poem/EditPoem';
-import { Button, Stack, Group } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { DeletePoem } from '../components/Poem/DeletePoem';
+import { Button, Stack, Space, Group } from '@mantine/core';
+import usePoem from '../hooks/usePoem';
+import usePoemActions from '../hooks/usePoemActions';
+import { modals } from '@mantine/modals';
 
 export function PoemPage() {
   const params = useParams();
   const poemId = params.id;
   const navigate = useNavigate()
   const { user: currentUser } = useAuth();
-  const [opened, { open, close }] = useDisclosure()
 
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ['poems', poemId],
-    queryFn: async () => callService(poemsReadPoem, { path: { poem_id: poemId! } }),
-    placeholderData: (prevData) => prevData,
-  })
+  const { isPending, isError, data, error } = usePoem(poemId!);
+  const { deletePoemMutation } = usePoemActions(poemId!)
 
   if (isPending) {
     return (<Loading />)
@@ -35,24 +29,30 @@ export function PoemPage() {
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;
+  const deletePoem = () => modals.openConfirmModal(deleteModal(async () => deletePoemMutation.mutateAsync()))
+
   return (
     <Shell>
-      {!opened && (
-        <Stack>
-          {((poem.author_ids && currentUser?.author_id && (poem.author_ids.includes(currentUser?.author_id))) || currentUser?.is_superuser) && (
-            <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }} mb="xl">
-              <Button variant="outline" onClick={open}>Editar poema</Button>
-              <DeletePoem poem_id={poem.id} icon={false} />
-            </Group>
-          )}
-          <ShowPoem poem={poem} />
-        </Stack>
-      )}
-      {opened && (
-        <Stack>
-          <EditPoem poem={poem} close={close} />
-        </Stack>
-      )}
+      <Space h="xl" />
+      <Stack gap="xs">
+        {((poem.author_ids && currentUser?.author_id && (poem.author_ids.includes(currentUser?.author_id))) || currentUser?.is_superuser) && (
+          <Group justify='flex-end' mt="xl" mr={{ base: "xl", md: 100, lg: 150 }}>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate(`/poems/edit/${poem.id}`)}
+            >
+              Editar poema
+            </Button>
+            <Button 
+              color="red" 
+              onClick={deletePoem}
+            >
+              Eliminar poema
+            </Button>
+          </Group>
+        )}
+        <ShowPoem poem={poem} />
+      </Stack>
     </Shell>
   )
 }

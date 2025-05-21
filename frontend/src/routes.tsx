@@ -20,6 +20,7 @@ import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";
 import { LoginForm } from "./components/Auth/LoginForm/LoginForm";
 import { ResetPassword } from "./components/Auth/ResetPassword/ResetPassword";
 import { Hero } from "./components/Hero/Hero";
+import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -53,6 +54,10 @@ export default function AllRoutes() {
 
       <Route path="poems/add" element={<BasePage />}>
         <Route index element={<AddPoem />} />
+      </Route>
+
+      <Route path="poems/edit/:id" element={<BasePage />}>
+        <Route index element={<EditPoem />} />
       </Route>
 
       <Route path="authors" element={<AuthorsPage />} />

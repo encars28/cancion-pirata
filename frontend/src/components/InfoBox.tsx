@@ -7,7 +7,7 @@ export function InfoBox({children}: {children: React.ReactNode}) {
         color="blue"
         radius="xl"
         iconSize={60}
-        icon={<TbVocabulary />}
+        icon={<TbVocabulary size={25} />}
         m="xl"
         miw={200}
         maw={{base: 250, lg: 300}}>

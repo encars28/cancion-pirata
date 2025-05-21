@@ -31,7 +31,6 @@ export function ShowPoem({ poem }: { poem: PoemPublicWithAllTheInfo }) {
           </Title>
         </Container>
         <Container fluid><Interweave content={poem.content} /></Container>
-        {/* <Container><div dangerouslySetInnerHTML={{__html: poem.content}} /></Container> */}
         <Space h="xl" />
       </Flex>
       <Stack>

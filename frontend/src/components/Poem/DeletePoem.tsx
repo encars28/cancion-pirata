@@ -1,19 +1,16 @@
 import { Button, Modal, Group, Text, ActionIcon } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { poemsDeletePoem } from '../../client'
-import { callService, handleError, handleSuccess } from '../../utils'
-import { useDisclosure } from '@mantine/hooks'
+import { callService, handleError, handleSuccess, deleteModal } from '../../utils'
 import { TbTrash } from 'react-icons/tb'
 
 export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean }) {
   const queryClient = useQueryClient()
-  const [opened, { open, close }] = useDisclosure()
 
   const mutation = useMutation({
     mutationFn: async () => callService(poemsDeletePoem, { path: { poem_id: poem_id } }),
     onSuccess: () => {
       handleSuccess()
-      close()
     },
     onError: (error) => {
       handleError(error as any)
