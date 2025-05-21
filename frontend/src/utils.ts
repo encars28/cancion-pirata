@@ -3,7 +3,6 @@ import { HttpValidationError } from "./client/types.gen"
 import { RequestResult } from "@hey-api/client-fetch";
 import { errorNotification, successNotification } from "./components/Notifications/notifications";
 
-
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
   if (Array.isArray(error.detail) && error.detail.length > 0) {
@@ -31,14 +30,4 @@ export async function callService<R, E, P = undefined>(
   }
 
   return result.data;
-}
-
-export function deleteModal(action: () => void) {
-  return {
-    title: 'Por favor confirme su acción',
-    children: '¿Está seguro de que desea eliminar este elemento?\nEsta acción es irreversible',
-    onConfirm: action,
-    confirmProps: { color: 'red' },
-    labels: { confirm: 'Eliminar', cancel: 'Cancelar' },
-  }
 }
