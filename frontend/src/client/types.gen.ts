@@ -82,17 +82,6 @@ export type PoemPublic = {
     show_author?: boolean;
 };
 
-export type PoemPublicBasic = {
-    id: string;
-    title: string;
-};
-
-export type PoemPublicBasicWithAuthor = {
-    id: string;
-    title: string;
-    author_names?: Array<string>;
-};
-
 export type PoemPublicWithAllTheInfo = {
     id: string;
     title: string;
@@ -105,8 +94,8 @@ export type PoemPublicWithAllTheInfo = {
     author_names?: Array<string>;
     author_ids?: Array<string>;
     content: string;
-    derived_poems?: Array<PoemPublicBasicWithAuthor>;
-    original?: PoemPublicBasicWithAuthor | null;
+    derived_poems?: Array<PoemPublicWithAuthor>;
+    original?: PoemPublicWithAuthor | null;
 };
 
 export type PoemPublicWithAuthor = {
@@ -135,11 +124,6 @@ export type PoemUpdate = {
 
 export type PoemsPublic = {
     data: Array<PoemPublicWithAuthor>;
-    count: number;
-};
-
-export type PoemsPublicBasic = {
-    data: Array<PoemPublicBasic>;
     count: number;
 };
 
@@ -769,6 +753,7 @@ export type PoemsReadPoemsData = {
         title?: string;
         created_at?: string;
         updated_at?: string;
+        verses?: string;
         type?: 'all' | 'version' | 'translation' | 'derived' | 'original' | '';
         language?: string;
     };
@@ -788,10 +773,26 @@ export type PoemsReadPoemsResponses = {
     /**
      * Successful Response
      */
-    200: PoemsPublic | PoemsPublicBasic;
+    200: PoemsPublic;
 };
 
 export type PoemsReadPoemsResponse = PoemsReadPoemsResponses[keyof PoemsReadPoemsResponses];
+
+export type PoemsReadRandomPoemData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/poems/random';
+};
+
+export type PoemsReadRandomPoemResponses = {
+    /**
+     * Successful Response
+     */
+    200: PoemPublicWithAllTheInfo;
+};
+
+export type PoemsReadRandomPoemResponse = PoemsReadRandomPoemResponses[keyof PoemsReadRandomPoemResponses];
 
 export type PoemsDeletePoemData = {
     body?: never;

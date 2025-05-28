@@ -6,12 +6,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
-import { PoemGrid } from "../components/Poem/PoemGrid";
+import { PoemGrid } from "../components/Poem/PoemGrid/PoemGrid";
 import { TbFilter } from "react-icons/tb";
-import { Container, Paper, Drawer, Button, Group, Flex } from "@mantine/core";
+import { Container, Space,  Paper, Drawer, Button, Group, Flex } from "@mantine/core";
 import { useSearchParams, useNavigate } from "react-router";
 
-export const POEMS_PER_PAGE = 36
+export const POEMS_PER_PAGE = 20
 
 export function PoemsPage() {
   const [opened, { open, close }] = useDisclosure(false);
@@ -65,7 +65,7 @@ export function PoemsPage() {
 
   return (
     <Shell>
-      <Container mt={40}>
+      <Container mt={50}>
         <Title order={1}>Lista de poemas</Title>
       </Container>
       <Group hiddenFrom="sm" justify="flex-end" mt="xl" mr={60}>
@@ -78,12 +78,13 @@ export function PoemsPage() {
           Filtrar
         </Button>
       </Group>
+      <Space h={50} />
       <Flex wrap="nowrap">
         <PoemGrid filter={filters} setPage={setPage}/>
-        <Container visibleFrom="sm" w={400}>
-          <Paper shadow="xl" p="lg" mr="xl" h={780} withBorder>
+        <Container visibleFrom="sm" mr="xl" w={400}>
+          {/* <Paper shadow="xl" p="lg" mr="xl" h={780} withBorder> */}
             <FilterPoem form={form} handleSubmit={handleSubmit} />
-          </Paper>
+          {/* </Paper> */}
         </Container>
       </Flex>
       <Drawer

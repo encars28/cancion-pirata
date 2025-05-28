@@ -1,7 +1,7 @@
 import { Stack, Select, Space, TextInput, Button, ActionIcon, Flex, Tooltip } from "@mantine/core";
 import { Form, UseFormReturnType } from "@mantine/form";
 import { FilterInfoButton } from "../FilterInfoButton";
-import { TbArrowsSort, TbChevronDown, TbChevronUp } from "react-icons/tb";
+import { TbChevronDown, TbChevronUp } from "react-icons/tb";
 
 export interface PoemFilters {
   order_by?: "Título" | "Fecha de publicación" | "Fecha de modificación";
