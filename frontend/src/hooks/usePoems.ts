@@ -12,6 +12,7 @@ export interface PoemQueryParams {
   desc?: boolean;
   limit?: number;
   skip?: number;
+  verses?: string;
 }
 
 const usePoems = (params: PoemQueryParams) => useQuery(

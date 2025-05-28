@@ -55,7 +55,9 @@ export function PoemsPage() {
       updated_at: values.updated_at,
       desc: values.desc,
       skip: (page - 1) * POEMS_PER_PAGE,
-      limit: POEMS_PER_PAGE
+      limit: POEMS_PER_PAGE, 
+      verses: values.verses,
+      type: values.type === "Todos" ? "all" : values.type === "Versión" ? "version" : values.type === "Traducción" ? "translation" : values.type === "Original" ? "original" : values.type === "Derivado" ? "derived" : "",
     }
 
     setFilters(updatedFilters)
@@ -79,7 +81,7 @@ export function PoemsPage() {
       <Flex wrap="nowrap">
         <PoemGrid filter={filters} setPage={setPage}/>
         <Container visibleFrom="sm" w={400}>
-          <Paper shadow="xl" p="lg" mr="xl" h={600} withBorder>
+          <Paper shadow="xl" p="lg" mr="xl" h={780} withBorder>
             <FilterPoem form={form} handleSubmit={handleSubmit} />
           </Paper>
         </Container>

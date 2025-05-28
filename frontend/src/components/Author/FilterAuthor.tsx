@@ -1,4 +1,4 @@
-import { Stack, Select, Space, TextInput, Button, ActionIcon } from "@mantine/core";
+import { Stack, Flex, Select, Space, TextInput, Button, ActionIcon, Tooltip } from "@mantine/core";
 import { Form, UseFormReturnType } from "@mantine/form";
 import { FilterInfoButton } from "../FilterInfoButton";
 import { TbChevronUp, TbChevronDown } from "react-icons/tb";
@@ -13,22 +13,15 @@ export interface AuthorFilters {
 
 export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<AuthorFilters>, handleSubmit: (values: any) => void }) {
   const Icon = form.values.desc ? TbChevronUp : TbChevronDown;
+  const label = form.values.desc ? "Ascendente" : "Descendente";
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <Stack gap="sm" ta="left" mt="md">
+      <Flex direction="row" gap="sm">
         <Select
           withCheckIcon={false}
-          rightSection={
-            <ActionIcon
-              variant="transparent"
-              size={30}
-              color="grey"
-              onClick={() => form.setFieldValue("desc", !form.values.desc)}
-            >
-              <Icon />
-            </ActionIcon>
-          }
+          rightSection={<></>}
           rightSectionPointerEvents="all"
           label="Ordenar por"
           defaultValue="Nombre"
@@ -39,6 +32,19 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<A
           key={form.key("order_by")}
           {...form.getInputProps("order_by")}
         />
+        <Tooltip label={label}>
+          <ActionIcon
+            variant="light"
+            radius="lg"
+            mt={28}
+            size={30}
+            color="grey"
+            onClick={() => form.setFieldValue("desc", !form.values.desc)}
+          >
+            <Icon />
+          </ActionIcon>
+        </Tooltip>
+        </Flex>
         <Space h="md" />
         <TextInput
           label="Nombre"
