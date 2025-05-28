@@ -1,6 +1,7 @@
 import datetime
 import uuid
 import re
+import random
 from typing import Optional
 
 from sqlalchemy.orm import Session, aliased
@@ -28,6 +29,12 @@ class PoemCRUD:
     ) -> Optional[PoemSchema]:
         db_obj = db.get(Poem, obj_id)
         return PoemSchema.model_validate(db_obj) if db_obj else None
+    
+    def get_random(self, db: Session) -> Optional[PoemSchema]:
+        poem_ids = db.scalars(select(Poem.id).where(Poem.is_public == True)).all()
+        poem = random.choice(poem_ids)
+        
+        return self.get_by_id(db, poem)
 
     def get_many(
         self, db: Session, queryParams: PoemSearchParams, public_restricted: bool = True

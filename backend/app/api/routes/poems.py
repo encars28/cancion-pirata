@@ -1,6 +1,5 @@
 import uuid
 from typing import Any
-
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import (
@@ -15,6 +14,7 @@ from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
     PoemPublicWithAuthor,
+    PoemSearchParams,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,
@@ -55,6 +55,35 @@ def read_poems(
         ]
 
     return PoemsPublic(data=poems, count=count)
+
+@router.get("/random", response_model=PoemPublicWithAllTheInfo)
+def read_random_poem(
+    session: SessionDep, current_user: OptionalCurrentUser
+) -> Any:
+    """
+    Get a random poem.
+    """
+    poem = poem_crud.get_random(session)
+    if not poem:
+        raise HTTPException(status_code=404, detail="No poem found")
+
+    if current_user and current_user.is_superuser:
+        poem.content = PoemParser(poem.content).to_html()
+        return poem
+    
+    if (
+        not poem.show_author
+        and (
+            not current_user
+            or not current_user.author_id
+            or current_user.author_id not in poem.author_ids
+        )
+    ):
+        poem.author_names = []
+        
+    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
+    poem.content = PoemParser(poem.content).to_html()
+    return poem
 
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)
@@ -181,3 +210,4 @@ def delete_poem(
 
     poem_crud.delete(db=session, obj_id=poem.id)
     return Message(message="Poem deleted successfully")
+
