@@ -4,21 +4,22 @@ import { AuthorPublicWithPoems } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { authorsReadAuthorById } from '../client/sdk.gen';
 import { useParams } from 'react-router';
-import { Avatar, Button, Flex, Space, Tabs, Title, Container, Group, ActionIcon } from '@mantine/core';
+import { Avatar, Text, Flex, Space, Tabs, Title, Container, Group, ActionIcon, Tooltip } from '@mantine/core';
 import { Shell } from '../components/Shell/Shell';
-import { TbEye, TbVocabulary } from "react-icons/tb";
+import { TbVocabulary } from "react-icons/tb";
 import useAuth from '../hooks/useAuth';
 import { EditAuthor } from '../components/Author/EditAuthor';
-import { DeleteAuthor } from '../components/Author/DeleteAuthor';
 import { useNavigate } from 'react-router';
-import { TableSort } from '../components/Tables/TableSort';
-import { DeletePoem } from '../components/Poem/DeletePoem';
+import { modals } from '@mantine/modals';
+import useAuthorActions from '../hooks/useAuthorActions';
+import { TbTrash } from 'react-icons/tb';
 
 export function AuthorPage() {
   const params = useParams();
   const authorId = params.id;
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
+  const { deleteAuthorMutation} = useAuthorActions(authorId!)
 
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['authors', authorId],
@@ -37,27 +38,18 @@ export function AuthorPage() {
 
   const author: AuthorPublicWithPoems = data!;
 
-  const poemData = author.poems!.map(poem => {
-    return {
-      id: poem.id,
-      title: poem.title,
-      created_at: poem.created_at?.toLocaleDateString() ?? 'Unknown',
-      language: poem.language ?? 'Unknown',
-      actions: <Group gap="xs">
-        <ActionIcon variant='outline' onClick={() => navigate(`/poems/${poem.id}`)}>
-          <TbEye />
-        </ActionIcon>
-        {(currentUser?.author_id == author.id || currentUser?.is_superuser) && <DeletePoem poem_id={poem.id} icon />}
-      </Group>
-    }
-  })
-
-  const poemHeaders = {
-    title: 'Título',
-    created_at: 'Fecha de creación',
-    language: 'Idioma',
-    actions: 'Acciones'
+  const deleteAuthor = () => modals.openConfirmModal({
+    title: 'Por favor confirme su acción',
+    children: (
+      <Text size="sm" ta="left">
+        ¿Está seguro de que desea borrar este elemento? La acción es irreversible
+      </Text>
+    ),
+    onConfirm: async () => deleteAuthorMutation.mutateAsync(),
+    confirmProps: { color: 'red' },
+    labels: { confirm: 'Eliminar', cancel: 'Cancelar' },
   }
+  )
 
   return (
     <Shell>
@@ -81,9 +73,16 @@ export function AuthorPage() {
           </Flex>
           {(currentUser?.author_id == author.id || currentUser?.is_superuser) && (
             <Group>
-              <EditAuthor author={author} />
-              <DeleteAuthor author_id={author.id} />
-              <Button onClick={() => navigate("/poems/add")}>Crear poema</Button>
+              {/* <EditAuthor author={author} icon/> */}
+              <Tooltip label="Eliminar">
+                <ActionIcon
+                  color="red"
+                  size={35}
+                  onClick={deleteAuthor}
+                >
+                  <TbTrash size={20} />
+                </ActionIcon>
+              </Tooltip>
             </Group>
           )}
         </Group>
@@ -96,7 +95,7 @@ export function AuthorPage() {
           </Tabs.List>
           <Tabs.Panel value="poems">
             <Space mt="xl" />
-            <TableSort data={poemData} headers={poemHeaders} miw={700} />
+            
           </Tabs.Panel>
         </Tabs>
       </Container>

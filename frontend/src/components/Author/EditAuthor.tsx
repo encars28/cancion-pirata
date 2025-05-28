@@ -2,34 +2,13 @@ import { Stack, TextInput, Modal, Group, Button, ActionIcon } from '@mantine/cor
 import { Form, useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
 import { TbCalendar, TbPencil } from "react-icons/tb";
-import { AuthorUpdate, AuthorPublic, HttpValidationError } from '../../client/types.gen';
-import { callService, handleError, handleSuccess } from '../../utils';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { authorsUpdateAuthor } from '../../client';
+import { AuthorUpdate, AuthorPublic } from '../../client/types.gen';
 import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import useAuthorActions from '../../hooks/useAuthorActions';
 
 export function EditAuthor({ author, icon }: { author: AuthorPublic, icon?: boolean }) {
   const [opened, { open, close }] = useDisclosure()
-
-  const queryClient = useQueryClient()
-  const mutation = useMutation({
-    mutationFn: async (data: AuthorUpdate) =>
-      callService(authorsUpdateAuthor, { path: { author_id: author.id }, body: data }),
-    onSuccess: () => {
-      notifications.clean()
-      handleSuccess()
-      close()
-    },
-
-    onError: (error: HttpValidationError) => {
-      handleError(error)
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["authors"] })
-    },
-  })
+  const { editAuthorMutation: mutation } = useAuthorActions(author.id)
 
 
   const form = useForm<AuthorUpdate>({

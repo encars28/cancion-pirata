@@ -5,7 +5,6 @@ import { Loading } from "../Loading";
 import { handleError, callService } from "../../utils";
 import { AuthorPublic, AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
 import { EditAuthor } from "../Author/EditAuthor";
-import { DeleteAuthor } from "../Author/DeleteAuthor";
 import { TbEye } from "react-icons/tb";
 import { AddAuthor } from "../Author/AddAuthor";
 import { Th } from "./Th/Th";
@@ -82,7 +81,6 @@ export function TableAuthors() {
             <TbEye />
           </ActionIcon>
           <EditAuthor author={author as AuthorPublic} icon />
-          <DeleteAuthor author_id={author.id} icon />
         </Group>
       </Table.Td>
     </Table.Tr>

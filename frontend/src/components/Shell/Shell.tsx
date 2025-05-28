@@ -1,7 +1,7 @@
-import { AppShell, Burger, Container, Group, RemoveScroll, Button, UnstyledButton } from '@mantine/core';
+import { AppShell, Burger, Container, Group, RemoveScroll, Button, UnstyledButton, Tooltip, ActionIcon } from '@mantine/core';
 import { SearchControl } from '../Header/Search/SearchControl/SearchControl';
 import { useNavigate } from 'react-router';
-import { TbLogin} from "react-icons/tb";
+import { TbLogin, TbPlus} from "react-icons/tb";
 import classes from './Shell.module.css';
 import { SearchControlMobile } from '../Header/Search/SearchControlMobile/SearchControlMobile';
 import { LoginControl } from '../Header/LoginControl/LoginControl';
@@ -49,9 +49,19 @@ export function Shell({ children, profileNavbar }: ShellProps) {
           </Group>
 
 
-          <Group visibleFrom="sm" gap="xl">
+          <Group visibleFrom="sm">
             <SearchControl />
             {isLoggedIn() ? <ProfileControl /> : <Button radius="md" onClick={() => navigate("/login")} leftSection={<TbLogin />}>Iniciar sesión</Button> }
+            <Tooltip label="Nuevo poema">
+              <ActionIcon 
+                size={30} 
+                variant='light' 
+                radius="md"
+                onClick={isLoggedIn() ? () => navigate("/poems/add") : () => navigate("/login")}
+              >
+                <TbPlus size={20}/>
+              </ActionIcon>
+            </Tooltip>
           </Group>
 
           <Group hiddenFrom="sm" gap="md">
