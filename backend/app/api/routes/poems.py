@@ -14,12 +14,10 @@ from app.poem_parser import PoemParser
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
-    PoemPublicBasic,
     PoemPublicWithAuthor,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,
-    PoemsPublicBasic,
 )
 from app.schemas.common import Message
 
@@ -29,7 +27,7 @@ from app.crud.author import author_crud
 router = APIRouter(prefix="/poems", tags=["poems"])
 
 
-@router.get("", response_model=PoemsPublic | PoemsPublicBasic)
+@router.get("", response_model=PoemsPublic)
 def read_poems(
     session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemQuery
 ) -> Any:
@@ -47,16 +45,16 @@ def read_poems(
                 session, queryParams=queryParams, public_restricted=False
             )
         ]
-        return PoemsPublic(data=poems, count=count)
 
     # Retrieve public poems
-    count = poem_crud.get_count(session, queryParams=queryParams)
-    poems = [
-        PoemPublicBasic.model_validate(poem)
-        for poem in poem_crud.get_many(session, queryParams=queryParams)
-    ]
+    else:
+        count = poem_crud.get_count(session, queryParams=queryParams)
+        poems = [
+            PoemPublicWithAuthor.model_validate(poem)
+            for poem in poem_crud.get_many(session, queryParams=queryParams)
+        ]
 
-    return PoemsPublicBasic(data=poems, count=count)
+    return PoemsPublic(data=poems, count=count)
 
 
 @router.get("/{poem_id}", response_model=PoemPublicWithAllTheInfo)

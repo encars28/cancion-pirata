@@ -8,6 +8,7 @@ from datetime import datetime
 PoemParam = Literal["created_at", "updated_at", "title"]
 PoemParamType = Literal["all", "version", "translation", "derived", "original", ""]
 
+
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
     content: str
@@ -21,6 +22,7 @@ class PoemCreate(PoemBase):
     original_poem_id: Optional[uuid.UUID] = None
     author_names: Optional[List[str]] = None
 
+
 class PoemUpdate(PoemBase):
     title: Optional[str] = Field(max_length=255, default=None)  # type: ignore
     content: Optional[str] = None  # type: ignore
@@ -32,20 +34,11 @@ class PoemUpdate(PoemBase):
     type: Optional[int] = None
     original_poem_id: Optional[uuid.UUID] = None
 
-class PoemPublicBasic(BaseModel):
-    id: uuid.UUID
-    title: str = Field(max_length=255)
-    
-    model_config = ConfigDict(from_attributes=True)
-
-
-class PoemPublicBasicWithAuthor(PoemPublicBasic):
-    author_names: List[str] = []
-
 
 # Used for showing poem info in author
-class PoemPublic(PoemPublicBasic):
-    model_config = ConfigDict(from_attributes=True)
+class PoemPublic(BaseModel):
+    id: uuid.UUID
+    title: str = Field(max_length=255)
     language: Optional[str] = None
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
@@ -53,15 +46,18 @@ class PoemPublic(PoemPublicBasic):
     is_public: bool = False
     show_author: bool = True
 
+    model_config = ConfigDict(from_attributes=True)
+
 
 class PoemPublicWithAuthor(PoemPublic):
     author_names: List[str] = []
     author_ids: List[uuid.UUID] = []
 
+
 class PoemPublicWithAllTheInfo(PoemPublicWithAuthor):
     content: str
-    derived_poems: List[PoemPublicBasicWithAuthor] = []
-    original: Optional[PoemPublicBasicWithAuthor] = None
+    derived_poems: List[PoemPublicWithAuthor] = []
+    original: Optional[PoemPublicWithAuthor] = None
 
 
 class PoemSchema(PoemBase):
@@ -78,15 +74,11 @@ class PoemSchema(PoemBase):
     original: Optional[PoemPublicWithAuthor] = None
 
 
-class PoemsPublicBasic(BaseModel):
-    data: List[PoemPublicBasic]
-    count: int
-
-
 class PoemsPublic(BaseModel):
     data: List[PoemPublicWithAuthor]
     count: int
-    
+
+
 class PoemSearchParams(BaseModel):
     order_by: PoemParam = "title"
     limit: int = Field(100, gt=0, le=100)
@@ -98,4 +90,3 @@ class PoemSearchParams(BaseModel):
     verses: str = ""
     type: PoemParamType = ""
     language: str = ""
-    
