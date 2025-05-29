@@ -38,6 +38,11 @@ class Collection(Base):
         DateTime(timezone=True), server_default=func.now(), onupdate=func.now()
     )
 
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(  # type: ignore  # noqa: F821
+        back_populates="collections"
+    )
+    
     poems: Mapped[List["Poem"]] = relationship(  # type: ignore  # noqa: F821
         secondary="collection_poem",
         back_populates="collections",

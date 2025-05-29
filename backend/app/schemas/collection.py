@@ -5,6 +5,8 @@ from typing import Optional, List
 import uuid
 from datetime import datetime
 
+from app.schemas.user import UserSchema
+
 
 class CollectionBase(BaseModel):
     name: str = Field(max_length=255)
@@ -14,7 +16,7 @@ class CollectionBase(BaseModel):
     poem_ids: List[uuid.UUID] = []
 
 class CollectionCreate(CollectionBase):
-    pass
+    user_id: uuid.UUID
 
 class CollectionUpdate(CollectionBase):
     name: Optional[str] = Field(max_length=255, default=None)  # type: ignore
@@ -28,6 +30,9 @@ class CollectionSchema(CollectionBase):
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
+    
+    user_id: uuid.UUID
+    user: Optional[UserSchema] = None
     
     model_config = ConfigDict(from_attributes=True)
 

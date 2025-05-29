@@ -24,3 +24,8 @@ class User(Base):
     author_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("author.id"), default=None, unique=True)
     author: Mapped[Optional["Author"]] = relationship(back_populates="user") # type: ignore  # noqa: F821
     
+    collections: Mapped[List["Collection"]] = relationship(  # type: ignore  # noqa: F821
+        back_populates="user",
+        cascade="all, delte"
+    )
+    
