@@ -80,7 +80,7 @@ export function TableAuthors() {
           <ActionIcon variant="outline" onClick={() => navigate(`/authors/${author.id}`)}>
             <TbEye />
           </ActionIcon>
-          <EditAuthor author={author as AuthorPublic} icon />
+          {/* <EditAuthor author={author as AuthorPublic} icon /> */}
         </Group>
       </Table.Td>
     </Table.Tr>
