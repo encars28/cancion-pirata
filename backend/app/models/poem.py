@@ -13,6 +13,7 @@ class Poem(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String(255))
     content: Mapped[str]
+    description: Mapped[Optional[str]]
     is_public: Mapped[bool] = mapped_column(default=True)
     show_author: Mapped[bool] = mapped_column(default=True)
     
@@ -24,6 +25,11 @@ class Poem(Base):
         secondary="author_poem", 
         back_populates="poems",
         passive_deletes=True
+    )
+    
+    collections: Mapped[List["Collection"]] = relationship( # type: ignore  # noqa: F821
+        secondary="collection_poem",
+        back_populates="poems"
     )
 
     original_reference: Mapped[Optional["Poem_Poem"]] = relationship(
