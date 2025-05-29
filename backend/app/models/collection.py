@@ -43,7 +43,7 @@ class Collection(Base):
         back_populates="collections"
     )
     
-    poems: Mapped[List["Poem"]] = relationship(  # type: ignore  # noqa: F821
+    poems: Mapped[Set["Poem"]] = relationship(  # type: ignore  # noqa: F821
         secondary="collection_poem",
         back_populates="collections",
     )

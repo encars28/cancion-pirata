@@ -14,7 +14,6 @@ from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
     PoemPublicWithAuthor,
-    PoemSearchParams,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,

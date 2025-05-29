@@ -9,6 +9,13 @@ from app.schemas.collection import CollectionCreate, CollectionSchema, Collectio
 
 
 class CollectionCRUD:
+    def get_by_id(self, db: Session, obj_id: uuid.UUID) -> Optional[CollectionSchema]:
+        db_obj = db.get(Collection, obj_id)
+        if not db_obj:
+            return None
+
+        return CollectionSchema.model_validate(db_obj)
+    
     def create(self, db: Session, obj_create: CollectionCreate) -> CollectionSchema:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
 
