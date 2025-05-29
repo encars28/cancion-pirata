@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
 import { handleError, callService } from "../../utils";
 import { AuthorPublic, AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
-import { EditAuthor } from "../Author/EditAuthor";
+import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
 import { TbEye } from "react-icons/tb";
 import { AddAuthor } from "../Author/AddAuthor";
 import { Th } from "./Th/Th";

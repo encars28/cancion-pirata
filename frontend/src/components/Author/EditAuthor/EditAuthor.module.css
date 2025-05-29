@@ -1,0 +1,7 @@
+.input_not_allowed{
+  cursor: not-allowed;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+}

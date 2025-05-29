@@ -20,7 +20,7 @@ import {
 import { Shell } from "../components/Shell/Shell";
 import { TbUser, TbVocabulary } from "react-icons/tb";
 import useAuth from "../hooks/useAuth";
-import { EditAuthor } from "../components/Author/EditAuthor";
+import { EditAuthor } from "../components/Author/EditAuthor/EditAuthor";
 import { useNavigate } from "react-router";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../hooks/useAuthorActions";

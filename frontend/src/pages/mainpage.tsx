@@ -69,7 +69,7 @@ export function MainPage() {
                 ))}
           </Text>
           <Group justify="center" mt="xl">
-          <Button variant="default" w={250}>
+          <Button variant="default" w={250} onClick={() => navigate(`/poems/${poem.id}`)}>
             Ir al poema...
           </Button>
           </Group>

@@ -2,9 +2,10 @@ import { Stack, TextInput, Group, Button } from "@mantine/core";
 import { Form, useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { TbCalendar } from "react-icons/tb";
-import { AuthorUpdate, AuthorPublic } from "../../client/types.gen";
-import useAuthorActions from "../../hooks/useAuthorActions";
-import useAuth from "../../hooks/useAuth";
+import { AuthorUpdate, AuthorPublic } from "../../../client/types.gen";
+import useAuthorActions from "../../../hooks/useAuthorActions";
+import useAuth from "../../../hooks/useAuth";
+import classes from "./EditAuthor.module.css";
 
 export function EditAuthor({ author }: { author: AuthorPublic }) {
   const { editAuthorMutation: mutation } = useAuthorActions(author.id);
@@ -51,6 +52,14 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
               currentUser?.author_id === author.id
             )
           }
+          variant={!(
+            currentUser?.is_superuser === true ||
+            currentUser?.author_id === author.id
+          ) ? "filled" : "default"}
+          classNames={!(
+            currentUser?.is_superuser === true ||
+            currentUser?.author_id === author.id
+          ) ? {input: classes.input_not_allowed} : {}}
         />
         <DateInput
           clearable
@@ -68,6 +77,14 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
               currentUser?.author_id === author.id
             )
           }
+          variant={!(
+            currentUser?.is_superuser === true ||
+            currentUser?.author_id === author.id
+          ) ? "filled" : "default"}
+          classNames={!(
+            currentUser?.is_superuser === true ||
+            currentUser?.author_id === author.id
+          ) ? {input: classes.input_not_allowed} : {}}
         />
         {(currentUser?.is_superuser === true ||
           currentUser?.author_id === author.id) && (
