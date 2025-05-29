@@ -1,10 +1,12 @@
-from typing import Optional
+from typing import Optional, List
 import uuid
 from datetime import datetime
 from sqlalchemy import func, DateTime, String, Table, Column, ForeignKey, Uuid
 
 from app.core.base_class import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
+
 
 collection_poem = Table(
     "collection_poem",
@@ -40,3 +42,6 @@ class Collection(Base):
         secondary="collection_poem",
         back_populates="collections",
     )
+    
+    # proxies
+    poem_ids: AssociationProxy[List[uuid.UUID]] = association_proxy("poems", "id")
