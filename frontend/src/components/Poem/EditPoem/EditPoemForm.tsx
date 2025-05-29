@@ -3,7 +3,7 @@ import { PoemPublicWithAllTheInfo, PoemUpdate } from "../../../client/types.gen"
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsUpdatePoem } from "../../../client";
-import { callService, handleError, handleSuccess } from "../../../utils";
+import { callService, handleError, handleSuccess, PoemType } from "../../../utils";
 import { HttpValidationError } from "../../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
@@ -12,20 +12,18 @@ import { useDisclosure } from "@mantine/hooks";
 import useAuthors from "../../../hooks/useAuthors";
 import usePoems from "../../../hooks/usePoems";
 import { notifications } from "@mantine/notifications";
-
-enum PoemType {
-  TRANSLATION = 0,
-  VERSION = 1,
-}
+import { useNavigate } from "react-router";
 
 export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
   const [opened, { toggle }] = useDisclosure(false);
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: PoemUpdate) =>
       callService(poemsUpdatePoem, { path: { poem_id: poem.id }, body: data }),
     onSuccess: () => {
       notifications.clean()
+      navigate(`/poems/${poem.id}`)
       handleSuccess()
     },
 
@@ -59,7 +57,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
   const { data: poemsData } = usePoems({})
 
   const author_names = authorsData?.data?.map(author => author.full_name) ?? []
-  const poems_ids = poemsData?.data?.map(poem => poem.id) ?? []
+  const poems_info = Object.fromEntries(poemsData?.data?.map((poem) => [`${poem.title} - ${poem.author_names?.join(", ")}`, poem.id]) ?? [])
 
 
   const typeData = [
@@ -91,6 +89,10 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
 
         if (values.type == -1) {
           values.type = undefined
+        }
+
+        if (values.original_poem_id !== undefined && values.original_poem_id !== null) {
+          values.original_poem_id = poems_info[values.original_poem_id] ?? undefined
         }
 
         await mutation.mutateAsync(values)
@@ -220,7 +222,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
                       key={form.key('original_poem_id')}
                       label="Poema original"
                       placeholder="Escribe para buscar un poema"
-                      data={poems_ids}
+                      data={Object.keys(poems_info) as any[]}
                       {...form.getInputProps('original_poem_id')}
                     />
                     <Select
@@ -237,7 +239,6 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
                   </Stack>
                 </Fieldset>
               </Collapse>
-
             </Grid.Col>
           )}
           <Grid.Col span={24} mt="xl">

@@ -4,13 +4,10 @@ import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
 import { handleError, callService } from "../utils";
 import { useNavigate } from "react-router";
-import { Group, Title, Container, Text } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import useUserActions from "../hooks/useUserActions";
+import { Group, Title, Container } from "@mantine/core";
 
 export function Profile() {
   const navigate = useNavigate()
-  const { deleteUserMeMutation} = useUserActions();
   const { isPending, isError, data, error } = useQuery({
     queryKey: ['users', 'me'],
     queryFn: async () => callService(usersReadUserMe),

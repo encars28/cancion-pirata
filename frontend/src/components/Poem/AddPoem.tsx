@@ -3,7 +3,7 @@ import { PoemCreate } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
-import { callService, handleError, handleSuccess } from "../../utils";
+import { callService, handleError, handleSuccess, PoemType } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
@@ -13,11 +13,6 @@ import { TbChevronRight } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
-
-enum PoemType {
-  TRANSLATION = 0,
-  VERSION = 1,
-}
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
@@ -70,8 +65,7 @@ export function AddPoem() {
   const { data: poemsData } = usePoems({})
 
   const author_names = authorsData?.data.map(author => author.full_name) ?? []
-  const poems_ids = poemsData?.data.map(poem => poem.id) ?? []
-
+  const poems_info = Object.fromEntries(poemsData?.data?.map((poem) => [`${poem.title} - ${poem.author_names?.join(", ")}`, poem.id]) ?? [])
 
   const typeData = [
     {
@@ -101,6 +95,10 @@ export function AddPoem() {
 
       if (values.type == -1) {
         values.type = undefined
+      }
+
+      if (values.original_poem_id !== undefined && values.original_poem_id !== null) {
+        values.original_poem_id = poems_info[values.original_poem_id] ?? undefined
       }
 
       await mutation.mutateAsync(values)
@@ -219,7 +217,7 @@ export function AddPoem() {
                     name='original_poem_id'
                     label="Poema original"
                     placeholder="Escribe para buscar un poema"
-                    data={poems_ids}
+                    data={Object.keys(poems_info) as any[]}
                     key={form.key('original_poem_id')}
                     {...form.getInputProps('original_poem_id')}
                   />

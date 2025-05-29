@@ -3,6 +3,11 @@ import { HttpValidationError } from "./client/types.gen"
 import { RequestResult } from "@hey-api/client-fetch";
 import { errorNotification, successNotification } from "./components/Notifications/notifications";
 
+export enum PoemType {
+  TRANSLATION = 0,
+  VERSION = 1,
+}
+
 export const handleError = (error: HttpValidationError) => {
   let errorMessage: string
   if (Array.isArray(error.detail) && error.detail.length > 0) {
