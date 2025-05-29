@@ -12,6 +12,7 @@ PoemParamType = Literal["all", "version", "translation", "derived", "original", 
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
     content: str
+    description: Optional[str] = None
     is_public: bool = False
     show_author: bool = True
     language: Optional[str] = None
@@ -39,6 +40,7 @@ class PoemUpdate(PoemBase):
 class PoemPublic(BaseModel):
     id: uuid.UUID
     title: str = Field(max_length=255)
+    description: Optional[str] = None
     language: Optional[str] = None
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
