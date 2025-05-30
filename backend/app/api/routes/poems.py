@@ -1,6 +1,6 @@
 import uuid
-from typing import Any
-from fastapi import APIRouter, HTTPException
+from typing import Any, Optional, Annotated
+from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import (
     CurrentUser,
@@ -86,7 +86,7 @@ def read_poem(
     session: SessionDep,
     current_user: OptionalCurrentUser,
     poem_id: uuid.UUID,
-    parse_content: bool = True,
+    parse: Annotated[Optional[bool], Query()] = None
 ) -> Any:
     """
     Get poem by ID.
@@ -114,10 +114,9 @@ def read_poem(
         poem.author_names = []
 
     poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
-    if parse_content:
+    if parse:
         poem.content = PoemParser(poem.content).to_html()
     
-    print(parse_content)
     return poem
 
 
