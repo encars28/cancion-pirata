@@ -66,7 +66,7 @@ def create_test_data(db: Session):
         collection_in = CollectionCreate(
             **collection,
             user_id=random.choice(users).id,
-            poem_ids=random.sample([poem.id for poem in poems], random.randint(1, 5)),  # type: ignore
+            poem_ids=set(random.sample([poem.id for poem in poems], random.randint(1, 5))), 
         )
         
         collection_crud.create(db, obj_create=collection_in)

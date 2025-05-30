@@ -52,6 +52,12 @@ def read_collection_by_id(
             status_code=404,
             detail="The collection with this id does not exist in the system",
         )
+        
+    if not collection.is_public and (not current_user or (not current_user.is_superuser and current_user.id != collection.user_id)):
+        raise HTTPException(
+            status_code=403,
+            detail="The collection is not public and the user doesn't have enough privileges",
+        )
 
     # Normal user
     if not current_user or (
