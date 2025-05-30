@@ -1,0 +1,162 @@
+[
+  {
+    "title": "El Jardín de los Susurros",
+    "content": "<center>\nEn el **jardín** de los susurros eternos,\n4>donde las <flores>(15) danzan sin cesar,\nlos pájaros//cantan melodías tiernas\n8>y el <viento>(12) viene y va.\n\nBajo la sombra de un ==olivo== antiguo,\n6>reposa el alma en calma,\nmientras las <hojas>(18) murmuran secretos\n4>que llegan hasta el alma.",
+    "description": "Un poema sobre la tranquilidad de un jardín mágico",
+    "is_public": true,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Morning Dew",
+    "content": "<left>\nThe **morning** dew//glistens on petals,\nlike tiny <diamonds>(12) in the light,\n6>each drop//holds a story\n4>of the passing ==night==.\n\nBirds sing their//ancient melodies,\n8>while the sun awakens,\nand in every <ray>(10) of golden light\n6>a new day is taken.",
+    "description": "A poem about the beauty of dawn and new beginnings",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "Lluvia de Abril",
+    "content": "<left>\nCae la lluvia//suave y persistente,\nsobre tejados y calles mojadas,\n6>cada <gota>(10) es un verso\n4>de historias no contadas.\n\nLos **charcos** reflejan el cielo gris,\n8>mientras la ciudad despierta,\ny en cada ventana//se asoma la vida\n6>tras la cortina abierta.",
+    "description": "Poema inspirado en una mañana lluviosa de primavera",
+    "is_public": true,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Les Étoiles Dansantes",
+    "content": "<right>\nDans le **ciel** noir//les étoiles dansent,\ncomme des <diamants>(16) éparpillés,\n4>chaque lumière//raconte une histoire\n6>de temps ==oubliés==.\n\nLa lune sourit//avec tendresse,\n8>aux rêveurs de la nuit,\net dans son <éclat>(14) argenté\n4>se cache l'infini.",
+    "description": "Un poème sur la danse éternelle des étoiles dans la nuit",
+    "is_public": true,
+    "show_author": true,
+    "language": "fr"
+  },
+  {
+    "title": "Giardino di Primavera",
+    "content": "<center>\nNel **giardino** di primavera//fioriscono,\ni colori più <belli>(18) del mondo,\n6>ogni petalo//è una carezza\n4>dell'amore ==profondo==.\n\nLe farfalle danzano//leggere,\n8>tra i fiori appena nati,\ne nel loro <volo>(12) delicato\n6>vivono i sogni beati.",
+    "description": "Celebrazione della bellezza primaverile in un giardino italiano",
+    "is_public": true,
+    "show_author": true,
+    "language": "it"
+  },
+  {
+    "title": "Nocturno Urbano",
+    "content": "<right>\nLas **luces** de neón parpadean,\n6>en la noche sin estrellas,\nmientras los coches//corren veloces\n4>dejando largas <huellas>(14).\n\nEn la esquina un ==músico== toca,\n8>su guitarra desgastada,\ny sus notas//se pierden en el aire\n10>como plegaria callada.",
+    "description": "Un retrato poético de la vida nocturna en la ciudad",
+    "is_public": false,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Autumn Leaves",
+    "content": "<left>\nGolden **leaves** fall//like whispered secrets,\ncarried by the <wind>(20) so free,\n4>each one//tells a story\n6>of what used to ==be==.\n\nThe trees stand bare//against the sky,\n8>their branches reaching high,\nand in their <silence>(16) profound\n4>echoes the autumn sigh.",
+    "description": "Reflection on the melancholy beauty of autumn",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "El Mar de Mis Recuerdos",
+    "content": "<center>\nVuelvo al <mar>(20) de mis recuerdos,\ndonde las **olas** guardan secretos,\n4>cada espuma//es una caricia\n6>de momentos completos.\n\nLa arena tibia//bajo mis pies,\n8>me cuenta historias del pasado,\nmientras el horizonte==infinito==\n4>permanece inalterado.",
+    "description": "Reflexión nostálgica sobre memorias junto al océano",
+    "is_public": true,
+    "show_author": false,
+    "language": "es"
+  },
+  {
+    "title": "Café de Minuit",
+    "content": "<right>\nDans le **café** de minuit//où le temps s'arrête,\nles solitaires//cherchent des histoires,\n6>chaque <tasse>(14) garde des secrets\n4>d'amour et de ==mémoire==.\n\nLa fumée dessine//des formes étranges,\n8>dans l'air épais de la nuit,\net chaque <murmure>(18) raconte\n6>ce que le cœur a fui.",
+    "description": "L'atmosphère intime d'un café nocturne parisien",
+    "is_public": false,
+    "show_author": true,
+    "language": "fr"
+  },
+  {
+    "title": "Luna Piena",
+    "content": "<center>\nLa **luna** piena//illumina il sentiero,\ndove camminano//i sogni perduti,\n4>ogni <raggio>(16) è una speranza\n6>di tempi ==vissuti==.\n\nLe ombre danzano//sotto la luce,\n8>come fantasmi gentili,\ne nella notte <argentata>(12)\n4>volano pensieri sottili.",
+    "description": "La magia di una notte di luna piena in Italia",
+    "is_public": true,
+    "show_author": true,
+    "language": "it"
+  },
+  {
+    "title": "Danza de Otoño",
+    "content": "<left>\nLas **hojas** caen//como mariposas doradas,\nen la danza eterna del otoño,\n6>cada una lleva//un sueño guardado\n4>en su <corazón>(16) de oro.\n\nEl viento sopla==melodías== antiguas,\n8>que solo los árboles entienden,\ny en su susurro//encuentran refugio\n6>las almas que se encienden.",
+    "description": "Una celebración de la belleza del otoño",
+    "is_public": true,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Ocean Waves",
+    "content": "<right>\nThe **ocean** waves//crash against the shore,\nwith ancient <songs>(22) of the deep,\n4>each wave//carries stories\n6>that the sea will always ==keep==.\n\nSeagulls cry//in the salty air,\n8>while the tide rolls in and out,\nand in the <rhythm>(14) of the sea\n4>lives what life's about.",
+    "description": "The eternal rhythm of ocean waves and their timeless message",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "Jardin Secret",
+    "content": "<left>\nDans mon **jardin** secret//poussent des rêves,\nque personne//ne peut voir,\n6>chaque <fleur>(20) est un espoir\n4>qui grandit dans le ==noir==.\n\nLes papillons de nuit//visitent mes pensées,\n8>apportant des nouvelles d'ailleurs,\net dans leur <vol>(12) silencieux\n6>se cachent mes meilleures heures.",
+    "description": "Exploration poétique d'un jardin intérieur mystérieux",
+    "is_public": false,
+    "show_author": true,
+    "language": "fr"
+  },
+  {
+    "title": "Strada di Memoria",
+    "content": "<center>\nCammino sulla **strada** della memoria,\ndove ogni <pietra>(18) racconta,\n4>le storie//di chi è passato\n6>prima che il tempo ==smonti==.\n\nI ricordi fioriscono//come rose,\n8>lungo il sentiero del cuore,\ne in ogni <passo>(14) che faccio\n4>ritrovo l'antico amore.",
+    "description": "Un viaggio nostalgico attraverso i ricordi del passato",
+    "is_public": true,
+    "show_author": true,
+    "language": "it"
+  },
+  {
+    "title": "Café de Medianoche",
+    "content": "<right>\nEn el café//de la medianoche,\n4>donde el <tiempo>(12) se detiene,\nlos **solitarios** buscan historias\n6>que nadie más mantiene.\n\nEl humo del cigarro//dibuja formas\n8>en el aire espeso,\nmientras cada taza//guarda secretos\n4>de un ==amor== en proceso.",
+    "description": "Ambiente íntimo de un café nocturno",
+    "is_public": false,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Winter's Embrace",
+    "content": "<left>\nWinter's **embrace** holds//the sleeping earth,\nwith blankets of <snow>(16) so white,\n6>each flake//is a whisper\n4>from the silent ==night==.\n\nThe bare trees stand//like guardians tall,\n8>protecting dreams below,\nand in their <branches>(20) empty\n6>the wind begins to blow.",
+    "description": "The serene beauty of winter and its quiet embrace",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "Rivière de Lumière",
+    "content": "<center>\nLa **rivière** de lumière//coule doucement,\nà travers les <rêves>(24) de la nuit,\n4>chaque goutte//porte un secret\n6>que le jour a ==fui==.\n\nLes étoiles se mirent//dans l'eau claire,\n8>comme des perles précieuses,\net dans leur <reflet>(18) éternel\n4>dansent les âmes heureuses.",
+    "description": "Une rivière métaphorique qui transporte les rêves et la lumière",
+    "is_public": true,
+    "show_author": false,
+    "language": "fr"
+  },
+  {
+    "title": "Vento del Sud",
+    "content": "<right>\nIl **vento** del sud//porta profumi,\ndi terre <lontane>(22) e calde,\n6>ogni soffio//è una carezza\n4>che l'anima ==scalde==.\n\nLe onde del mare//cantano canzoni,\n8>di amori perduti e trovati,\ne nella loro <melodia>(16) eterna\n6>vivono i cuori innamorati.",
+    "description": "Il vento del sud come messaggero di terre lontane e passioni",
+    "is_public": true,
+    "show_author": true,
+    "language": "it"
+  },
+  {
+    "title": "Caminos de Tierra",
+    "content": "<center>\nPor los **caminos** de tierra roja,\ndonde el polvo//besa los pies desnudos,\n6>camina el <alma>(18) en busca\n4>de destinos mudos.\n\nCada piedra//cuenta una historia,\n8>cada sendero un destino,\ny en la distancia==dorada==\n6>se pierde el peregrino.",
+    "description": "Un viaje espiritual por senderos rurales",
+    "is_public": true,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "City Lights",
+    "content": "<left>\nThe **city** lights//flicker like stars,\nin the urban <night>(26) so bright,\n4>each bulb//tells a story\n6>of someone's inner ==light==.\n\nPeople pass by//like shadows moving,\n8>through streets of concrete and steel,\nand in their <hurried>(20) footsteps\n4>echo what they feel.",
+    "description": "The poetry found in the bustling energy of city life at night",
+    "is_public": false,
+    "show_author": true,
+    "language": "en"
+  }
+]

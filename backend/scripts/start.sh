@@ -3,4 +3,4 @@
 set -e
 set -x
 
-fastapi dev app/main.py --port 8001
+fastapi dev app/main.py

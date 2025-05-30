@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Versos de Medianoche",
+    "description": "Una colección de poemas que capturan la esencia de las noches urbanas y la melancolía nocturna",
+    "is_public": true
+  },
+  {
+    "name": "Naturaleza Salvaje",
+    "description": "Poemas inspirados en la belleza natural, bosques, ríos y la conexión con la tierra",
+    "is_public": true
+  },
+  {
+    "name": "Recuerdos de Infancia",
+    "description": "Nostálgicos versos que evocan la inocencia y magia de los primeros años de vida",
+    "is_public": false
+  },
+  {
+    "name": "Amor y Desamor",
+    "description": "Una emotiva colección sobre las diferentes facetas del amor, desde la pasión hasta la pérdida",
+    "is_public": true
+  },
+  {
+    "name": "Estaciones del Alma",
+    "description": "Poemas que reflejan los diferentes estados emocionales a través de las metáforas estacionales",
+    "is_public": true
+  },
+  {
+    "name": "Viajes Imaginarios",
+    "description": "Aventuras poéticas a través de paisajes reales e imaginarios del mundo",
+    "is_public": true
+  },
+  {
+    "name": "Susurros del Viento",
+    "description": "Colección íntima de poemas sobre soledad, reflexión y búsqueda interior",
+    "is_public": false
+  },
+  {
+    "name": "Ciudades de Papel",
+    "description": "Retratos poéticos de la vida urbana moderna y sus contrastes",
+    "is_public": true
+  },
+  {
+    "name": "Ecos del Tiempo",
+    "description": "Reflexiones sobre el paso del tiempo, la memoria y la nostalgia",
+    "is_public": true
+  },
+  {
+    "name": "Mares Interiores",
+    "description": "Exploración poética de las emociones profundas y los sentimientos oceánicos",
+    "is_public": false
+  }
+]
