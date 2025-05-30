@@ -94,7 +94,7 @@ export function PoemPage() {
                 </Group>
               )}
           </Container>
-          <Container mt="sm" fluid><Interweave content={poem.content} /></Container>
+          <Container w="100%"><Interweave content={poem.content} /></Container>
           <Space h="xl" />
         </Flex>
         <Stack>

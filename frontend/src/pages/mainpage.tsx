@@ -40,18 +40,17 @@ export function MainPage() {
 
   return (
     <Shell>
-      <Hero />
       <SimpleGrid 
         cols={{ base: 1, sm: 2 }} 
         spacing="xl" 
         verticalSpacing={120}
         mt={100} 
         pb={150}
-        ml="xl"
+        ml={{base: "xl", sm: 50, md: 100}}
       >
-        <>
+        <Container w="100%" fluid>
           <Interweave content={poem.content} />
-        </>
+        </Container>
         <Stack>
           <Title order={2}>{poem.title}</Title>
           <Text c="dimmed">
@@ -77,6 +76,7 @@ export function MainPage() {
           </Group>
         </Stack>
       </SimpleGrid>
+      <Hero />
     </Shell>
   );
 }

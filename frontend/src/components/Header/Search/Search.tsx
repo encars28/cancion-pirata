@@ -11,14 +11,16 @@ import {
   searchSearch,
   UserForSearch,
 } from "../../../client";
+import { Loader } from "@mantine/core";
 
 export const [searchStore, searchHandlers] = createSpotlight();
 
 export function Search() {
   const navigate = useNavigate();
+
   const [search, setSearch] = useState("");
 
-  const { data } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["search", search],
     queryFn: async () => callService(searchSearch, { query: { q: search } }),
     placeholderData: (prevData) => prevData,
@@ -71,7 +73,7 @@ export function Search() {
       radius="md"
       nothingFound="No se ha encontrado nada..."
       searchProps={{
-        leftSection: <TbSearch size={20} />,
+        leftSection: isPending ? <Loader size="xs" /> : <TbSearch size={20} />,
         placeholder: "Buscando...",
       }}
       filter={(query, actions) => {
