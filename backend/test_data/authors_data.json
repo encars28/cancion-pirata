@@ -1,7 +1,6 @@
 [
   {
-    "full_name": "Ana López García",
-    "birth_date": "998-06-05T00:00:00Z"
+    "full_name": "Ana López García"
   },
   {
     "full_name": "Carlos Martínez Ruiz",
@@ -16,8 +15,7 @@
     "birth_date": "1836-02-17T00:00:00Z"
   },
   {
-    "full_name": "María González Torres",
-    "birth_date": "1992-03-16T00:00:00Z"
+    "full_name": "María González Torres"
   },
   {
     "full_name": "Pedro Sánchez Villa",
@@ -44,8 +42,7 @@
     "birth_date": "1925-09-06T00:00:00Z"
   },
   {
-    "full_name": "Sofía Moreno Castillo",
-    "birth_date": "1992-11-08T00:00:00Z"
+    "full_name": "Sofía Moreno Castillo"
   },
   {
     "full_name": "Miguel Castro Fernández",
@@ -80,7 +77,6 @@
     "birth_date": "1808-03-25T00:00:00Z"
   },
   {
-    "full_name": "Carmen Jiménez Ramos",
-    "birth_date": "1995-08-17T00:00:00Z"
+    "full_name": "Carmen Jiménez Ramos"
   }
 ]
