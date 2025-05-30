@@ -23,7 +23,7 @@ export function PoemPage() {
   const navigate = useNavigate()
   const { user: currentUser } = useAuth();
 
-  const { isPending, isError, data, error } = usePoem(poemId!);
+  const { isPending, isError, data, error } = usePoem(poemId!, true);
   const { deletePoemMutation } = usePoemActions(poemId!)
 
   if (isPending) {
@@ -94,7 +94,7 @@ export function PoemPage() {
                 </Group>
               )}
           </Container>
-          <Container fluid><Interweave content={poem.content} /></Container>
+          <Container mt="sm" fluid><Interweave content={poem.content} /></Container>
           <Space h="xl" />
         </Flex>
         <Stack>

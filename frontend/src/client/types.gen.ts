@@ -5,6 +5,11 @@ export type AuthorCreate = {
     birth_date?: Date | null;
 };
 
+export type AuthorForSearch = {
+    id: string;
+    full_name: string;
+};
+
 export type AuthorPublic = {
     full_name: string;
     birth_date?: Date | null;
@@ -47,6 +52,42 @@ export type BodyLoginLoginAccessToken = {
     client_secret?: string | null;
 };
 
+export type CollectionCreate = {
+    name: string;
+    description?: string | null;
+    is_public?: boolean;
+    poem_ids?: Array<string>;
+    user_id: string;
+};
+
+export type CollectionForSearch = {
+    id: string;
+    name: string;
+    user_id: string;
+    username: string;
+};
+
+export type CollectionPublic = {
+    name: string;
+    description?: string | null;
+    is_public?: boolean;
+    poem_ids?: Array<string>;
+    id?: string;
+    created_at?: Date | null;
+    updated_at?: Date | null;
+    user_id: string;
+    username?: string | null;
+    user?: UserSchema | null;
+    poems?: Array<PoemPublicWithAuthor>;
+};
+
+export type CollectionUpdate = {
+    name?: string | null;
+    description?: string | null;
+    is_public?: boolean | null;
+    poem_ids?: Array<string> | null;
+};
+
 export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -63,6 +104,7 @@ export type NewPassword = {
 export type PoemCreate = {
     title: string;
     content: string;
+    description?: string | null;
     is_public?: boolean;
     show_author?: boolean;
     language?: string | null;
@@ -71,9 +113,16 @@ export type PoemCreate = {
     author_names?: Array<string> | null;
 };
 
+export type PoemForSearch = {
+    id: string;
+    title: string;
+    author_names?: Array<string>;
+};
+
 export type PoemPublic = {
     id: string;
     title: string;
+    description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
@@ -85,6 +134,7 @@ export type PoemPublic = {
 export type PoemPublicWithAllTheInfo = {
     id: string;
     title: string;
+    description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
@@ -101,6 +151,7 @@ export type PoemPublicWithAllTheInfo = {
 export type PoemPublicWithAuthor = {
     id: string;
     title: string;
+    description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
@@ -114,6 +165,7 @@ export type PoemPublicWithAuthor = {
 export type PoemUpdate = {
     title?: string | null;
     content?: string | null;
+    description?: string | null;
     is_public?: boolean | null;
     show_author?: boolean | null;
     language?: string | null;
@@ -127,12 +179,11 @@ export type PoemsPublic = {
     count: number;
 };
 
-export type PrivateUserCreate = {
-    email: string;
-    password: string;
-    full_name: string;
-    is_verified?: boolean;
-    username: string;
+export type SearchResult = {
+    authors?: Array<AuthorForSearch>;
+    poems?: Array<PoemForSearch>;
+    collections?: Array<CollectionForSearch>;
+    users?: Array<UserForSearch>;
 };
 
 export type Token = {
@@ -154,6 +205,11 @@ export type UserCreate = {
     password: string;
 };
 
+export type UserForSearch = {
+    id: string;
+    username: string;
+};
+
 export type UserPublic = {
     email: string;
     full_name?: string | null;
@@ -170,6 +226,19 @@ export type UserRegister = {
     password: string;
     username: string;
     full_name?: string | null;
+};
+
+export type UserSchema = {
+    email: string;
+    full_name?: string | null;
+    username: string;
+    is_active?: boolean;
+    is_superuser?: boolean;
+    id?: string;
+    created_at?: Date | null;
+    author_id?: string | null;
+    author?: AuthorPublic | null;
+    hashed_password: string;
 };
 
 export type UserUpdate = {
@@ -826,7 +895,9 @@ export type PoemsReadPoemData = {
     path: {
         poem_id: string;
     };
-    query?: never;
+    query?: {
+        parse?: boolean;
+    };
     url: '/api/v1/poems/{poem_id}';
 };
 
@@ -900,30 +971,138 @@ export type PoemsCreatePoemResponses = {
 
 export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
 
-export type PrivateCreateUserData = {
-    body: PrivateUserCreate;
+export type CollectionsCreateCollectionData = {
+    body: CollectionCreate;
     path?: never;
     query?: never;
-    url: '/api/v1/private/users/';
+    url: '/api/v1/collections/';
 };
 
-export type PrivateCreateUserErrors = {
+export type CollectionsCreateCollectionErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type PrivateCreateUserError = PrivateCreateUserErrors[keyof PrivateCreateUserErrors];
+export type CollectionsCreateCollectionError = CollectionsCreateCollectionErrors[keyof CollectionsCreateCollectionErrors];
 
-export type PrivateCreateUserResponses = {
+export type CollectionsCreateCollectionResponses = {
     /**
      * Successful Response
      */
-    200: UserPublic;
+    200: CollectionPublic;
 };
 
-export type PrivateCreateUserResponse = PrivateCreateUserResponses[keyof PrivateCreateUserResponses];
+export type CollectionsCreateCollectionResponse = CollectionsCreateCollectionResponses[keyof CollectionsCreateCollectionResponses];
+
+export type CollectionsDeleteCollectionData = {
+    body?: never;
+    path: {
+        collection_id: string;
+    };
+    query?: never;
+    url: '/api/v1/collections/{collection_id}';
+};
+
+export type CollectionsDeleteCollectionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CollectionsDeleteCollectionError = CollectionsDeleteCollectionErrors[keyof CollectionsDeleteCollectionErrors];
+
+export type CollectionsDeleteCollectionResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type CollectionsDeleteCollectionResponse = CollectionsDeleteCollectionResponses[keyof CollectionsDeleteCollectionResponses];
+
+export type CollectionsReadCollectionByIdData = {
+    body?: never;
+    path: {
+        collection_id: string;
+    };
+    query?: never;
+    url: '/api/v1/collections/{collection_id}';
+};
+
+export type CollectionsReadCollectionByIdErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CollectionsReadCollectionByIdError = CollectionsReadCollectionByIdErrors[keyof CollectionsReadCollectionByIdErrors];
+
+export type CollectionsReadCollectionByIdResponses = {
+    /**
+     * Successful Response
+     */
+    200: CollectionPublic;
+};
+
+export type CollectionsReadCollectionByIdResponse = CollectionsReadCollectionByIdResponses[keyof CollectionsReadCollectionByIdResponses];
+
+export type CollectionsUpdateCollectionData = {
+    body: CollectionUpdate;
+    path: {
+        collection_id: string;
+    };
+    query?: never;
+    url: '/api/v1/collections/{collection_id}';
+};
+
+export type CollectionsUpdateCollectionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CollectionsUpdateCollectionError = CollectionsUpdateCollectionErrors[keyof CollectionsUpdateCollectionErrors];
+
+export type CollectionsUpdateCollectionResponses = {
+    /**
+     * Successful Response
+     */
+    200: CollectionPublic;
+};
+
+export type CollectionsUpdateCollectionResponse = CollectionsUpdateCollectionResponses[keyof CollectionsUpdateCollectionResponses];
+
+export type SearchSearchData = {
+    body?: never;
+    path?: never;
+    query?: {
+        q?: string;
+    };
+    url: '/api/v1/search/';
+};
+
+export type SearchSearchErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type SearchSearchError = SearchSearchErrors[keyof SearchSearchErrors];
+
+export type SearchSearchResponses = {
+    /**
+     * Successful Response
+     */
+    200: SearchResult;
+};
+
+export type SearchSearchResponse = SearchSearchResponses[keyof SearchSearchResponses];
 
 export type ClientOptions = {
     baseUrl: `${string}://${string}` | (string & {});

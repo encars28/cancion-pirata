@@ -9,7 +9,7 @@ export function EditPoem() {
   const navigate = useNavigate()
   const params = useParams();
   const poemId = params.id;
-  const { data, error, isError, isPending } = usePoem(poemId!)
+  const { data, error, isError, isPending } = usePoem(poemId!, false)
   if (isPending) {
     return <Loading />
   }
@@ -19,6 +19,7 @@ export function EditPoem() {
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;
+  console.log(poem)
 
   return (
     <EditPoemForm poem={poem} />

@@ -252,9 +252,9 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo}) {
                 Guardar
               </Button>
               <Button
-                onClick={close}
                 w={150}
                 variant="outline"
+                onClick={() => navigate(`/poems/${poem.id}`)}
               >
                 Cancelar
               </Button>
