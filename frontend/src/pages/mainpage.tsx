@@ -47,10 +47,11 @@ export function MainPage() {
         verticalSpacing={120}
         mt={100} 
         pb={150}
+        ml="xl"
       >
-        <Container fluid>
+        <>
           <Interweave content={poem.content} />
-        </Container>
+        </>
         <Stack>
           <Title order={2}>{poem.title}</Title>
           <Text c="dimmed">
@@ -59,6 +60,7 @@ export function MainPage() {
               ? "Anónimo"
               : poem.author_ids?.map((author, index) => (
                   <Anchor
+                    key={author}
                     underline="hover"
                     target="_blank"
                     c="dimmed"
