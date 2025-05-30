@@ -17,7 +17,7 @@ collection_poem = Table(
     Column(
         "collection_id",
         Uuid,
-        ForeignKey("colection.id", ondelete="CASCADE"),
+        ForeignKey("collection.id", ondelete="CASCADE"),
         primary_key=True,
     ),
 )
