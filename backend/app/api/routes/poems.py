@@ -86,7 +86,7 @@ def read_poem(
     session: SessionDep,
     current_user: OptionalCurrentUser,
     poem_id: uuid.UUID,
-    parse: Annotated[Optional[bool], Query()] = None
+    parse: Annotated[bool, Query()] = True
 ) -> Any:
     """
     Get poem by ID.
@@ -96,7 +96,9 @@ def read_poem(
         raise HTTPException(status_code=404, detail="Poem not found")
 
     if current_user and current_user.is_superuser:
-        poem.content = PoemParser(poem.content).to_html()
+        if parse: 
+            poem.content = PoemParser(poem.content).to_html()
+        print(poem.content)
         return poem
 
     if not poem.is_public and (
@@ -117,6 +119,7 @@ def read_poem(
     if parse:
         poem.content = PoemParser(poem.content).to_html()
     
+    print(poem.content)
     return poem
 
 

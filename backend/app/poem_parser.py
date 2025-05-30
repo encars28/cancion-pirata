@@ -40,7 +40,7 @@ class PoemParser:
         return poem
     
     def _parse_font_size(self, poem:str) -> str:
-        poem = re.sub(r'(?<!\\)<(.*?)>\((\d+)\)', r'<span style="font-size:\2px;">\1</span>', poem, flags=re.DOTALL)
+        poem = re.sub(r'(?<!\\)<([^<]*?)>\((\d+)\)', r'<span style="font-size:\2px;">\1</span>', poem, flags=re.DOTALL)
         return poem
     
     def _parse_indentation(self, poem:str) -> str:
