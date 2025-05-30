@@ -13,7 +13,7 @@ from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.poem import create_random_poem
 
-from app.schemas.author import AuthorCreate, AuthorSchema
+from app.schemas.author import AuthorSchema
 
 
 # READ

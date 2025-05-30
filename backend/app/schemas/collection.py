@@ -11,7 +11,7 @@ from app.schemas.user import UserSchema
 
 class CollectionBase(BaseModel):
     name: str = Field(max_length=255)
-    description: str
+    description: Optional[str] = None
     is_public: bool = True
 
     poem_ids: Set[uuid.UUID] = set()
