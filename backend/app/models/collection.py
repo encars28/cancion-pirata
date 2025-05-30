@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Set
 import uuid
 from datetime import datetime
 from sqlalchemy import func, DateTime, String, Table, Column, ForeignKey, Uuid

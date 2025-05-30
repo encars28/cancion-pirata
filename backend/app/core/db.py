@@ -10,6 +10,7 @@ from app.core.base_class import Base
 import app.models.user
 import app.models.author
 import app.models.poem
+import app.models.collection
 
 engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI))
 

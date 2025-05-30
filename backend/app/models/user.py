@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 import uuid
 from datetime import datetime
 
@@ -26,6 +26,6 @@ class User(Base):
     
     collections: Mapped[List["Collection"]] = relationship(  # type: ignore  # noqa: F821
         back_populates="user",
-        cascade="all, delte"
+        cascade="all, delete"
     )
     
