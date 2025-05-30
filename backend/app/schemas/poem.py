@@ -99,6 +99,8 @@ class PoemForSearch(BaseModel):
     id: uuid.UUID
     title: str = Field(max_length=255)
     author_names: List[str] = []
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class PoemType(Enum):

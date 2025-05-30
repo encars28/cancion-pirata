@@ -50,3 +50,4 @@ class CollectionForSearch(BaseModel):
     user_id: uuid.UUID
     username: str = Field(max_length=255)
 
+    model_config = ConfigDict(from_attributes=True)

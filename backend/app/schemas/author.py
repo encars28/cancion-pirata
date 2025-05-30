@@ -58,6 +58,8 @@ class AuthorsPublicWithPoems(BaseModel):
 class AuthorForSearch(BaseModel): 
     id: uuid.UUID
     full_name: str = Field(max_length=255)
+    
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AuthorSearchParams(BaseModel):

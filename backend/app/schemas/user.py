@@ -70,3 +70,5 @@ class UsersPublic(BaseModel):
 class UserForSearch(BaseModel):
     id: uuid.UUID
     username: str = Field(max_length=255)
+    
+    model_config = ConfigDict(from_attributes=True)

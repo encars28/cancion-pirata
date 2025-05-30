@@ -17,10 +17,13 @@ class CollectionCRUD:
 
         return CollectionSchema.model_validate(db_obj)
     
-    def get_many(self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100) -> list[CollectionSchema]:
+    def get_many(self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100, public_restricted: bool = True) -> list[CollectionSchema]:
         statement = select(Collection).offset(skip).limit(limit)
         if query:
             statement = statement.where(Collection.name.icontains(query))
+            
+        if public_restricted:
+            statement = statement.where(Collection.is_public == True)
 
         return [CollectionSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
     
