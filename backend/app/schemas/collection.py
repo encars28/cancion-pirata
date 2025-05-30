@@ -28,13 +28,13 @@ class CollectionUpdate(CollectionBase):
 
 
 class CollectionSchema(CollectionBase):
-    id: uuid.UUID
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
     created_at: Optional[datetime] = Field(default=datetime.now())
     updated_at: Optional[datetime] = Field(default=datetime.now())
     
     user_id: uuid.UUID
-    username: str = Field(max_length=255)
-    user: UserSchema
+    username: Optional[str] = Field(default=None, max_length=255)
+    user: Optional[UserSchema] = None
     
     poems: List[PoemPublicWithAuthor] = []
     
@@ -42,7 +42,7 @@ class CollectionSchema(CollectionBase):
 
 
 class CollectionPublic(CollectionSchema):
-    username: str = Field(max_length=255)
+    username: Optional[str] = Field(default=None, max_length=255)
 
 class CollectionForSearch(BaseModel): 
     id: uuid.UUID

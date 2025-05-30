@@ -43,7 +43,7 @@ def test_retrieve_authors_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     author1 = create_random_author(db)
-    poem1 = create_random_poem(db, author_names=[author1.full_name])
+    create_random_poem(db, author_names=[author1.full_name])
     author2 = create_random_author(db)
 
     r = client.get(f"{settings.API_V1_STR}/authors/", headers=normal_user_token_headers)
@@ -133,7 +133,7 @@ def test_read_author_with_poems_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
-    poem1 = create_random_poem(db, author_names=[author.full_name], is_public=False)
+    create_random_poem(db, author_names=[author.full_name], is_public=False)
 
     r = client.get(
         f"{settings.API_V1_STR}/authors/{author.id}",

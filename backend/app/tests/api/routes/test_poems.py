@@ -20,7 +20,7 @@ from app.crud.poem import poem_crud
 def test_read_poems_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
-    poem1 = create_random_poem(db, is_public=False)
+    create_random_poem(db, is_public=False)
     poem2 = create_random_poem(db, is_public=True)
 
     response = client.get(

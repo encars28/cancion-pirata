@@ -8,8 +8,8 @@ def create_random_collection(db, user_id, is_public=True):
     name = random_lower_string()
     description = random_lower_string()
     
-    poem1 = create_random_poem(db, is_public=is_public)
-    poem2 = create_random_poem(db, is_public=is_public)
+    poem1 = create_random_poem(db)
+    poem2 = create_random_poem(db)
     
     collection_in = CollectionCreate(
         name=name,

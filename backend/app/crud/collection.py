@@ -6,6 +6,7 @@ from app.models.collection import Collection
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 
+from app.models.poem import Poem
 from app.schemas.collection import CollectionCreate, CollectionSchema, CollectionUpdate
 
 
@@ -27,14 +28,28 @@ class CollectionCRUD:
 
         return [CollectionSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
     
-    def create(self, db: Session, obj_create: CollectionCreate) -> CollectionSchema:
+    def create(self, db: Session, obj_create: CollectionCreate) -> Optional[CollectionSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
 
+        poem_ids = []
+        if "poem_ids" in obj_create_data.keys():
+            poem_ids += obj_create_data["poem_ids"]
+            del obj_create_data["poem_ids"]
+
+        poems = db.scalars(
+            select(Poem).filter(Poem.id.in_(poem_ids))
+        ).all()
+        if len(poems) != len(poem_ids):
+            return None
+        
         obj = CollectionSchema.model_validate(obj_create_data)
         db_obj = Collection(**obj.model_dump(exclude_unset=True))
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
+        
+        db_obj.poems = set(poems) # type: ignore
+        db.commit()
 
         return CollectionSchema.model_validate(db_obj)
 

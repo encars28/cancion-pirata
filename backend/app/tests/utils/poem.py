@@ -5,7 +5,7 @@ from app.crud.poem import poem_crud
 
 from app.tests.utils.utils import random_lower_string
 from app.schemas.poem import PoemCreate, PoemSchema
-from app.schemas.poem_poem import PoemType
+from app.schemas.poem import PoemType
 
 
 def create_random_poem(
