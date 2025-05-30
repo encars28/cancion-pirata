@@ -33,18 +33,21 @@ class UserCRUD:
         db_obj = db.get(User, obj_id)
         return UserSchema.model_validate(db_obj) if db_obj else None
 
-    def get_all(self, db: Session, skip: int = 0, limit: int = 100) -> list[UserSchema]:
-        db_objs = db.scalars(select(User).offset(skip).limit(limit)).all()
-        return [UserSchema.model_validate(db_obj) for db_obj in db_objs]
+    def get_many(
+        self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100
+    ) -> list[UserSchema]:
+        statement = select(User).offset(skip).limit(limit)
+        if query:
+            statement = statement.where(User.username.icontains(query))
+
+        return [UserSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
 
     def get_count(self, db: Session) -> int:
         statement = select(func.count()).select_from(User)
         count = db.execute(statement).scalar()
         return count if count else 0
 
-    def create(
-        self, db: Session, obj_create: UserCreate
-    ) -> UserSchema:
+    def create(self, db: Session, obj_create: UserCreate) -> UserSchema:
         obj_data = obj_create.model_dump(exclude_none=True, exclude_unset=True)
         obj_data["hashed_password"] = get_password_hash(obj_create.password)
 

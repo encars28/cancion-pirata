@@ -4,6 +4,7 @@ import uuid
 from app.models.collection import Collection
 
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from app.schemas.collection import CollectionCreate, CollectionSchema, CollectionUpdate
 
@@ -15,6 +16,13 @@ class CollectionCRUD:
             return None
 
         return CollectionSchema.model_validate(db_obj)
+    
+    def get_many(self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100) -> list[CollectionSchema]:
+        statement = select(Collection).offset(skip).limit(limit)
+        if query:
+            statement = statement.where(Collection.name.icontains(query))
+
+        return [CollectionSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
     
     def create(self, db: Session, obj_create: CollectionCreate) -> CollectionSchema:
         obj_create_data = obj_create.model_dump(exclude_unset=True)

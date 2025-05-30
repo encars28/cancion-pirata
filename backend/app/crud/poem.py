@@ -27,11 +27,11 @@ class PoemCRUD:
     ) -> Optional[PoemSchema]:
         db_obj = db.get(Poem, obj_id)
         return PoemSchema.model_validate(db_obj) if db_obj else None
-    
+
     def get_random(self, db: Session) -> Optional[PoemSchema]:
         poem_ids = db.scalars(select(Poem.id).where(Poem.is_public == True)).all()
         poem = random.choice(poem_ids)
-        
+
         return self.get_by_id(db, poem)
 
     def get_many(
@@ -45,7 +45,11 @@ class PoemCRUD:
         verses_filter = self.filter_by_num_verses(queryParams, db)
 
         stmt = title_filter.intersect(
-            type_filter, created_at_filter, updated_at_filter, language_filter, verses_filter
+            type_filter,
+            created_at_filter,
+            updated_at_filter,
+            language_filter,
+            verses_filter,
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -59,11 +63,20 @@ class PoemCRUD:
             .limit(queryParams.limit)
             .order_by(order)
         )
-            
+
         if public_restricted:
             s = s.where(alias.is_public == True)
 
         return [PoemSchema.model_validate(db_obj) for db_obj in db.scalars(s).all()]
+
+    def get_many_for_search(
+        self, db: Session, query: str, public_restricted: bool = True
+    ) -> list[PoemSchema]:
+        q = self.filter_by_title(PoemSearchParams(title=query))
+        if public_restricted:
+            q = q.where(Poem.is_public == True)
+
+        return [PoemSchema.model_validate(db_obj) for db_obj in db.scalars(q).all()]
 
     def get_count(
         self, db: Session, queryParams: PoemSearchParams, public_restricted: bool = True
@@ -76,7 +89,11 @@ class PoemCRUD:
         verses_filter = self.filter_by_num_verses(queryParams, db)
 
         stmt = title_filter.intersect(
-            type_filter, created_at_filter, updated_at_filter, language_filter, verses_filter
+            type_filter,
+            created_at_filter,
+            updated_at_filter,
+            language_filter,
+            verses_filter,
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -128,7 +145,7 @@ class PoemCRUD:
 
     def filter_by_title(self, query: PoemSearchParams) -> Select:
         return select(Poem).where(Poem.title.icontains(query.title))
-    
+
     def filter_by_num_verses(self, query: PoemSearchParams, db: Session) -> Select:
         regex = r"(>|<|>=|<=|=|)(\d+)"
         m = re.match(regex, query.verses)
@@ -139,29 +156,49 @@ class PoemCRUD:
         all_poems = db.scalars(select(Poem)).all()
         match m.group(1):
             case ">=":
-                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) >= int(m.group(2))]
-            case ">": 
-                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) > int(m.group(2))]
+                poems = [
+                    poem.id
+                    for poem in all_poems
+                    if len(poem.content.split("\n")) >= int(m.group(2))
+                ]
+            case ">":
+                poems = [
+                    poem.id
+                    for poem in all_poems
+                    if len(poem.content.split("\n")) > int(m.group(2))
+                ]
             case "<=":
-                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) <= int(m.group(2))]
+                poems = [
+                    poem.id
+                    for poem in all_poems
+                    if len(poem.content.split("\n")) <= int(m.group(2))
+                ]
             case "<":
-                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) < int(m.group(2))]
+                poems = [
+                    poem.id
+                    for poem in all_poems
+                    if len(poem.content.split("\n")) < int(m.group(2))
+                ]
             case _:
-                poems = [poem.id for poem in all_poems if len(poem.content.split("\n")) == int(m.group(2))]
-                
+                poems = [
+                    poem.id
+                    for poem in all_poems
+                    if len(poem.content.split("\n")) == int(m.group(2))
+                ]
+
         return select(Poem).where(Poem.id.in_(poems))
 
     def filter_by_type(self, query: PoemSearchParams, db: Session) -> Select:
         s = select(Poem).join(Poem_Poem, Poem.id == Poem_Poem.derived_poem_id)
-        
+
         match query.type:
             case "version":
                 return s.where(Poem_Poem.type == PoemType.VERSION.value)
             case "translation":
                 return s.where(Poem_Poem.type == PoemType.TRANSLATION.value)
-            case "derived": 
+            case "derived":
                 return s
-            case "original": 
+            case "original":
                 poem_ids = [p.id for p in db.scalars(s).all()]
                 return select(Poem).where(Poem.id.not_in(poem_ids))
             case _:

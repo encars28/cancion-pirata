@@ -62,8 +62,8 @@ class AuthorForSearch(BaseModel):
 
 class AuthorSearchParams(BaseModel):
     order_by: AuthorParam = "full_name"
-    limit: int = Field(100, gt=0, le=100)
-    skip: int = Field(0, ge=0)
+    limit: int = Field(default=100, gt=0, le=100)
+    skip: int = Field(default=0, ge=0)
     desc: bool = False
     full_name: str = ""
     birth_date: str = ""

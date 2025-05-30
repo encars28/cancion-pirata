@@ -39,7 +39,7 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     count = user_crud.get_count(db=session)
     users = [
         UserPublic.model_validate(user)
-        for user in user_crud.get_all(db=session, skip=skip, limit=limit)
+        for user in user_crud.get_many(db=session, skip=skip, limit=limit)
     ]
 
     return UsersPublic(data=users, count=count)

@@ -69,7 +69,13 @@ class AuthorCRUD:
             ).all()
 
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
-
+    
+    def get_many_for_search(
+        self, db: Session, query: str
+    ) -> list[AuthorSchema]:
+        db_objs = db.scalars(self.filter_by_name(AuthorSearchParams(full_name=query))).all()
+        return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
+    
     def get_count(self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True) -> int:
         birth_filter = self.filter_by_dates(queryParams)
         poem_filter = select(Author).where(

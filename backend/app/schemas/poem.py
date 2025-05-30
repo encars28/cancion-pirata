@@ -84,8 +84,8 @@ class PoemsPublic(BaseModel):
 
 class PoemSearchParams(BaseModel):
     order_by: PoemParam = "title"
-    limit: int = Field(100, gt=0, le=100)
-    skip: int = Field(0, ge=0)
+    limit: int = Field(default=100, gt=0, le=100)
+    skip: int = Field(default=0, ge=0)
     desc: bool = False
     title: str = ""
     created_at: str = ""
