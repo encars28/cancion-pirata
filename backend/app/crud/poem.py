@@ -14,8 +14,6 @@ from app.schemas.poem import (
     PoemSchema,
     PoemSearchParams,
     PoemUpdate,
-)
-from app.schemas.poem_poem import (
     PoemPoemCreate,
     PoemPoemUpdate,
     PoemPoemSchema,

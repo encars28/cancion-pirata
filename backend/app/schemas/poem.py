@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import Literal, Optional, List
 import uuid
 from datetime import datetime
+from enum import Enum
 
 PoemParam = Literal["created_at", "updated_at", "title"]
 PoemParamType = Literal["all", "version", "translation", "derived", "original", ""]
@@ -92,3 +93,29 @@ class PoemSearchParams(BaseModel):
     verses: str = ""
     type: PoemParamType = ""
     language: str = ""
+
+
+class PoemType(Enum):
+    TRANSLATION = 0
+    VERSION = 1
+
+
+class PoemPoemBase(BaseModel):
+    type: int
+
+
+class PoemPoemCreate(PoemPoemBase):
+    original_poem_id: uuid.UUID
+    derived_poem_id: uuid.UUID
+
+
+class PoemPoemUpdate(PoemPoemBase):
+    original_poem_id: Optional[uuid.UUID] = None  # type: ignore
+    derived_poem_id: Optional[uuid.UUID] = None  # type: ignore
+    type: Optional[int] = None  # type: ignore
+
+
+class PoemPoemSchema(PoemPoemBase):
+    model_config = ConfigDict(from_attributes=True)
+    original_poem_id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    derived_poem_id: uuid.UUID

@@ -11,7 +11,7 @@ from app.tests.utils.user import authentication_token_from_email
 from app.tests.utils.utils import random_lower_string
 from app.tests.utils.author import create_random_author
 from app.tests.utils.user import create_random_user
-from app.schemas.poem_poem import PoemType
+from app.schemas.poem import PoemType
 from app.schemas.author import AuthorSchema
 
 from app.crud.poem import poem_crud
