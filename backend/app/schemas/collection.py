@@ -33,6 +33,7 @@ class CollectionSchema(CollectionBase):
     updated_at: Optional[datetime] = Field(default=datetime.now())
     
     user_id: uuid.UUID
+    username: str = Field(max_length=255)
     user: UserSchema
     
     poems: List[PoemPublicWithAuthor] = []
@@ -41,5 +42,11 @@ class CollectionSchema(CollectionBase):
 
 
 class CollectionPublic(CollectionSchema):
-    pass
+    username: str = Field(max_length=255)
+
+class CollectionForSearch(BaseModel): 
+    id: uuid.UUID
+    name: str = Field(max_length=255)
+    user_id: uuid.UUID
+    username: str = Field(max_length=255)
 

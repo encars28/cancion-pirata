@@ -50,3 +50,4 @@ class Collection(Base):
     
     # proxies
     poem_ids: AssociationProxy[List[uuid.UUID]] = association_proxy("poems", "id")
+    username: AssociationProxy[str] = association_proxy("user", "username")

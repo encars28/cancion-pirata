@@ -53,6 +53,11 @@ class AuthorsPublic(BaseModel):
 class AuthorsPublicWithPoems(BaseModel):
     data: list[AuthorPublicWithPoems]
     count: int
+    
+    
+class AuthorForSearch(BaseModel): 
+    id: uuid.UUID
+    full_name: str = Field(max_length=255)
 
 
 class AuthorSearchParams(BaseModel):

@@ -8,7 +8,6 @@ from app.schemas.user import (
     UserSchema,
     UserUpdate,
     UserUpdateMe,
-    PrivateUserCreate,
 )
 
 from sqlalchemy.orm import Session
@@ -44,7 +43,7 @@ class UserCRUD:
         return count if count else 0
 
     def create(
-        self, db: Session, obj_create: UserCreate | PrivateUserCreate
+        self, db: Session, obj_create: UserCreate
     ) -> UserSchema:
         obj_data = obj_create.model_dump(exclude_none=True, exclude_unset=True)
         obj_data["hashed_password"] = get_password_hash(obj_create.password)

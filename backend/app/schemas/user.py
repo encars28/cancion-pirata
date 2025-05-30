@@ -67,9 +67,6 @@ class UsersPublic(BaseModel):
     count: int
 
 
-class PrivateUserCreate(BaseModel):
-    email: str
-    password: str
-    full_name: str
-    is_verified: bool = False
-    username: str
+class UserForSearch(BaseModel):
+    id: uuid.UUID
+    username: str = Field(max_length=255)

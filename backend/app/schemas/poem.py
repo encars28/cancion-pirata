@@ -95,6 +95,12 @@ class PoemSearchParams(BaseModel):
     language: str = ""
 
 
+class PoemForSearch(BaseModel): 
+    id: uuid.UUID
+    title: str = Field(max_length=255)
+    author_names: List[str] = []
+
+
 class PoemType(Enum):
     TRANSLATION = 0
     VERSION = 1
