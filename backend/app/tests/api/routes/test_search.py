@@ -123,5 +123,5 @@ def test_search_as_normal_user(
     assert search_result["poems"][0]["title"] == poem.title  # type: ignore
 
     assert len(search_result["collections"]) == 1
-    assert search_result["collections"][0]["id"] == str(collection.id)
-    assert search_result["collections"][0]["name"] == collection.name
+    assert search_result["collections"][0]["id"] == str(collection.id) # type: ignore
+    assert search_result["collections"][0]["name"] == collection.name # type: ignore

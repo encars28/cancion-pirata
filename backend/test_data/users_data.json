@@ -9,7 +9,7 @@
   },
   {
     "email": "carlos.martinez@email.com",
-    "password": "87654321",
+    "password": "12345678",
     "username": "carlos_martinez",
     "is_active": true,
     "is_superuser": false,
@@ -17,7 +17,7 @@
   },
   {
     "email": "maria.gonzalez@email.com",
-    "password": "11223344",
+    "password": "12345678",
     "username": "maria_gonzalez",
     "is_active": true,
     "is_superuser": false,
@@ -25,7 +25,7 @@
   },
   {
     "email": "pedro.sanchez@email.com",
-    "password": "44332211",
+    "password": "12345678",
     "username": "pedro_sanchez",
     "is_active": true,
     "is_superuser": false,
@@ -33,7 +33,7 @@
   },
   {
     "email": "lucia.torres@email.com",
-    "password": "55667788",
+    "password": "12345678",
     "username": "lucia_torres",
     "is_active": true,
     "is_superuser": false,
@@ -41,7 +41,7 @@
   },
   {
     "email": "david.ruiz@email.com",
-    "password": "88776655",
+    "password": "12345678",
     "username": "david_ruiz",
     "is_active": true,
     "is_superuser": false,
@@ -49,7 +49,7 @@
   },
   {
     "email": "sofia.moreno@email.com",
-    "password": "99887766",
+    "password": "12345678",
     "username": "sofia_moreno",
     "is_active": true,
     "is_superuser": false,
@@ -57,7 +57,7 @@
   },
   {
     "email": "miguel.castro@email.com",
-    "password": "66778899",
+    "password": "12345678",
     "username": "miguel_castro",
     "is_active": true,
     "is_superuser": false,
@@ -65,7 +65,7 @@
   },
   {
     "email": "elena.vargas@email.com",
-    "password": "33445566",
+    "password": "12345678",
     "username": "elena_vargas",
     "is_active": true,
     "is_superuser": false,
@@ -73,7 +73,7 @@
   },
   {
     "email": "javier.herrera@email.com",
-    "password": "77889900",
+    "password": "12345678",
     "username": "javier_herrera",
     "is_active": true,
     "is_superuser": false,
@@ -81,7 +81,7 @@
   },
   {
     "email": "carmen.jimenez@email.com",
-    "password": "12348765",
+    "password": "12345678",
     "username": "carmen_jimenez",
     "is_active": true,
     "is_superuser": false,
@@ -89,7 +89,7 @@
   },
   {
     "email": "alberto.ramos@email.com",
-    "password": "56781234",
+    "password": "12345678",
     "username": "alberto_ramos",
     "is_active": true,
     "is_superuser": false,
@@ -97,7 +97,7 @@
   },
   {
     "email": "patricia.silva@email.com",
-    "password": "98765432",
+    "password": "12345678",
     "username": "patricia_silva",
     "is_active": true,
     "is_superuser": false,
@@ -105,7 +105,7 @@
   },
   {
     "email": "ricardo.mendez@email.com",
-    "password": "43218765",
+    "password": "12345678",
     "username": "ricardo_mendez",
     "is_active": true,
     "is_superuser": false,
@@ -113,7 +113,7 @@
   },
   {
     "email": "admin@email.com",
-    "password": "admin123",
+    "password": "12345678",
     "username": "admin",
     "is_active": true,
     "is_superuser": true,

@@ -12,18 +12,20 @@ from app.schemas.author import AuthorCreate
 from app.schemas.poem import PoemCreate
 from app.schemas.collection import CollectionCreate
 
+from app.core.db import engine
+
 
 def create_test_data(db: Session):
-    with open("user_data.json", "r") as f:
+    with open("test_data/users_data.json", "r") as f:
         user_data = json.load(f)
 
-    with open("author_data.json", "r") as f:
+    with open("test_data/authors_data.json", "r") as f:
         author_data = json.load(f)
 
-    with open("poem_data.json", "r") as f:
+    with open("test_data/poems_data.json", "r") as f:
         poem_data = json.load(f)
 
-    with open("collection_data.json", "r") as f:
+    with open("test_data/collections_data.json", "r") as f:
         collection_data = json.load(f)
 
     users = []
@@ -32,6 +34,7 @@ def create_test_data(db: Session):
         user_in = UserCreate(**user)
         users.append(user_crud.create(db, obj_create=user_in))
 
+    print()
     authors = []
     # Create authors
     for author in tqdm(author_data, desc="Creating authors"):
@@ -40,7 +43,7 @@ def create_test_data(db: Session):
 
     # Assign users to authors
     author_basic_info = {author.full_name: author.id for author in authors}
-
+    print()
     for user in tqdm(users, desc="Assigning authors to users"):
         if user.full_name in author_basic_info.keys():
             user_crud.update(
@@ -50,6 +53,7 @@ def create_test_data(db: Session):
             )
 
     poems = []
+    print()
     # Create poems
     for poem in tqdm(poem_data, desc="Creating poems"):
         poem_in = PoemCreate(
@@ -62,6 +66,7 @@ def create_test_data(db: Session):
         poems.append(poem_crud.create(db, obj_create=poem_in))
 
     # Create collections
+    print()
     for collection in tqdm(collection_data, desc="Creating collections"):
         collection_in = CollectionCreate(
             **collection,
@@ -71,6 +76,9 @@ def create_test_data(db: Session):
         
         collection_crud.create(db, obj_create=collection_in)
         
-if __name__ == "__main__":
-    with Session() as db: 
+def populate(): 
+    with Session(engine) as db: 
         create_test_data(db)
+        
+if __name__ == "__main__":
+    populate()
