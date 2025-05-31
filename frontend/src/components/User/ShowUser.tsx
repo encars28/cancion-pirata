@@ -7,11 +7,13 @@ import {
   Flex,
   Space,
   Tabs,
+  Stack,
 } from "@mantine/core";
 import { TbUser, TbBook, TbBooks } from "react-icons/tb";
 import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
+import { CollectionGrid } from "../Collection/CollectionGrid";
 
 export function ShowUser({ user }: { user: UserPublic }) {
   let authorData = undefined;
@@ -33,30 +35,38 @@ export function ShowUser({ user }: { user: UserPublic }) {
       <Group justify="space-between" gap="xl">
         <Flex justify="flex-start" align="center" gap="xl">
           <Avatar size="xl" />
-          <Title order={1} textWrap="wrap">
-            {user.username}
-          </Title>
-          {user.full_name && (
-            <Title order={3} c="dimmed" fw="lighter">
-              {user.full_name}
+          <Stack gap="xs">
+            <Title order={1} textWrap="wrap">
+              {user.username}
             </Title>
-          )}
+            {user.full_name && (
+              <Title
+                order={3}
+                ta="left"
+                c="dimmed"
+                fw="lighter"
+                textWrap="wrap"
+              >
+                {user.full_name}
+              </Title>
+            )}
+          </Stack>
         </Flex>
       </Group>
-      <Space h={60} />
-      <Tabs variant="outline" defaultValue="poems">
+      <Space h={80} />
+      <Tabs variant="outline" defaultValue="collections">
         <Tabs.List>
           {author && (
             <>
-              <Tabs.Tab value="poems" leftSection={<TbBook size={12} />}>
+              <Tabs.Tab value="poems" leftSection={<TbBook size={16} />}>
                 Poemas
               </Tabs.Tab>
-              <Tabs.Tab value="info" leftSection={<TbUser size={12} />}>
+              <Tabs.Tab value="info" leftSection={<TbUser size={16} />}>
                 Información
               </Tabs.Tab>
             </>
           )}
-          <Tabs.Tab value="collections" leftSection={<TbBooks size={12} />}>
+          <Tabs.Tab value="collections" leftSection={<TbBooks size={18} />}>
             Colecciones
           </Tabs.Tab>
         </Tabs.List>
@@ -72,12 +82,16 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Tabs.Panel>
           </>
         )}
-				<Tabs.Panel value="collections">
-					<Space mt="xl" />
-					<Title order={3} c="dimmed" fw="lighter">
-						Colecciones de {user.username} aún no implementadas.
-					</Title>
-				</Tabs.Panel>
+        <Tabs.Panel value="collections">
+          <Space mt="xl" />
+          {user.collections && user.collections.length > 0 ? (
+            <CollectionGrid collections={user.collections} />
+          ) : (
+            <Title mt={80} order={3} c="dimmed" fw="lighter">
+              Este usuario no tiene colecciones
+            </Title>
+          )}
+        </Tabs.Panel>
       </Tabs>
     </Container>
   );

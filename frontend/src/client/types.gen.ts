@@ -54,6 +54,13 @@ export type BodyLoginLoginAccessToken = {
     client_secret?: string | null;
 };
 
+export type CollectionBasic = {
+    id: string;
+    name: string;
+    description?: string | null;
+    is_public?: boolean;
+};
+
 export type CollectionCreate = {
     name: string;
     description?: string | null;
@@ -79,7 +86,6 @@ export type CollectionPublic = {
     updated_at?: Date | null;
     user_id: string;
     username?: string | null;
-    user?: UserSchema | null;
     poems?: Array<PoemPublicWithAuthor>;
 };
 
@@ -236,7 +242,7 @@ export type UserPublic = {
     id: string;
     created_at?: Date | null;
     author_id?: string | null;
-    collection_names?: Array<string>;
+    collections?: Array<CollectionBasic>;
 };
 
 export type UserRegister = {
@@ -244,20 +250,6 @@ export type UserRegister = {
     password: string;
     username: string;
     full_name?: string | null;
-};
-
-export type UserSchema = {
-    email: string;
-    full_name?: string | null;
-    username: string;
-    is_active?: boolean;
-    is_superuser?: boolean;
-    id?: string;
-    created_at?: Date | null;
-    author_id?: string | null;
-    author?: AuthorPublic | null;
-    hashed_password: string;
-    collection_names?: Array<string>;
 };
 
 export type UserUpdate = {

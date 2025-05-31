@@ -170,25 +170,12 @@ export const poemsCreatePoemResponseTransformer = async (data: any): Promise<Poe
     return data;
 };
 
-const userSchemaSchemaResponseTransformer = (data: any) => {
-    if (data.created_at) {
-        data.created_at = new Date(data.created_at);
-    }
-    if (data.author) {
-        data.author = authorPublicSchemaResponseTransformer(data.author);
-    }
-    return data;
-};
-
 const collectionPublicSchemaResponseTransformer = (data: any) => {
     if (data.created_at) {
         data.created_at = new Date(data.created_at);
     }
     if (data.updated_at) {
         data.updated_at = new Date(data.updated_at);
-    }
-    if (data.user) {
-        data.user = userSchemaSchemaResponseTransformer(data.user);
     }
     if (data.poems) {
         data.poems = data.poems.map((item: any) => {

@@ -17,7 +17,7 @@ export function ShowPoemGrid({ poems, show_author }: { poems: PoemPublicWithAuth
   const navigate = useNavigate();
 
   return (
-    <Grid gutter="xl">
+    <Grid gutter="xl" align="center" w="100%">
       {poems.map((poem) => (
         <Grid.Col key={poem.id} span={{ base: 12, md: 6 }}>
           <Paper

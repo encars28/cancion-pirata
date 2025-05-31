@@ -50,8 +50,7 @@ export function Search() {
       id: user.id,
       label: user.username,
       description: "Usuario",
-      onClick: () => navigate("/"),
-      // onClick: () => navigate(`/users/${user.id}`),
+      onClick: () => navigate(`/users/${user.id}`),
       }))
     ).concat(
       collections.map((collection) => ({
