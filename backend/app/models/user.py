@@ -30,4 +30,3 @@ class User(Base):
         cascade="all, delete"
     )
     
-    collection_names: AssociationProxy[List[str]] = association_proxy("collections", "name")

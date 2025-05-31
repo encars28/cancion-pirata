@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime
 
 from app.schemas.author import AuthorPublic
+from app.schemas.collection import CollectionBasic
 
 
 class UserBase(BaseModel):
@@ -28,9 +29,11 @@ class UserRegister(BaseModel):
 
 
 class UserUpdate(UserBase):
-    email: Optional[EmailStr] = Field(default=None, max_length=255)  # type: ignore
+    email: Optional[EmailStr] = Field( # type: ignore
+        default=None, max_length=255)  
     password: Optional[str] = Field(default=None, min_length=8, max_length=40)
-    username: Optional[str] = Field(default=None, max_length=255)  # type: ignore
+    username: Optional[str] = Field( # type: ignore
+        default=None, max_length=255)  
     author_id: Optional[uuid.UUID] = Field(default=None)
 
 
@@ -50,7 +53,7 @@ class UserPublic(UserBase):
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
-    collection_names: list[str] = []
+    collections: list[CollectionBasic] = []
 
 
 class UserSchema(UserBase):
@@ -61,7 +64,7 @@ class UserSchema(UserBase):
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     hashed_password: str
-    collection_names: list[str] = []
+    collections: list[CollectionBasic] = []
 
 
 class UsersPublic(BaseModel):
@@ -72,5 +75,5 @@ class UsersPublic(BaseModel):
 class UserForSearch(BaseModel):
     id: uuid.UUID
     username: str = Field(max_length=255)
-    
+
     model_config = ConfigDict(from_attributes=True)

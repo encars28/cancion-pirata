@@ -6,7 +6,6 @@ import uuid
 from datetime import datetime
 
 from app.schemas.poem import PoemPublicWithAuthor
-from app.schemas.user import UserSchema
 
 
 class CollectionBase(BaseModel):
@@ -15,6 +14,14 @@ class CollectionBase(BaseModel):
     is_public: bool = True
 
     poem_ids: List[uuid.UUID] = []
+    
+class CollectionBasic(BaseModel): 
+    id: uuid.UUID
+    name: str = Field(max_length=255)
+    description: Optional[str] = None
+    is_public: bool = True
+
+    model_config = ConfigDict(from_attributes=True)
 
 class CollectionCreate(CollectionBase):
     user_id: Optional[uuid.UUID] = None
@@ -34,7 +41,6 @@ class CollectionSchema(CollectionBase):
     
     user_id: uuid.UUID
     username: Optional[str] = Field(default=None, max_length=255)
-    user: Optional[UserSchema] = None
     
     poems: List[PoemPublicWithAuthor] = []
     
