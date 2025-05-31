@@ -440,6 +440,259 @@ def test_update_collection_not_exists(
     )
 
 
+# ADD AND REMOVE POEMS
+
+
+def test_add_poem_to_collection_as_admin(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 200
+    updated_collection = r.json()
+
+    assert str(poem.id) in [p["id"] for p in updated_collection["poems"]]
+
+
+def test_add_poem_to_collection_as_owner(
+    client: TestClient,
+    db: Session,
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+    collection_user_token_headers = authentication_token_from_email(
+        client=client, email=user.email, db=db
+    )
+
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=collection_user_token_headers,
+    )
+    assert r.status_code == 200
+    updated_collection = r.json()
+
+    assert str(poem.id) in [p["id"] for p in updated_collection["poems"]]
+
+
+def test_add_poem_to_collection_without_privileges(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=normal_user_token_headers,
+    )
+    assert r.status_code == 403
+    assert r.json()["detail"] == "The user doesn't have enough privileges"
+
+
+def test_add_poem_to_collection_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{uuid.uuid4()}/poems/{uuid.uuid4()}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Collection not found"
+
+
+def test_add_poem_to_collection_poem_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{uuid.uuid4()}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Poem not found"
+
+
+def test_add_poem_already_in_collection(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    # Add the poem to the collection first
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 200
+
+    # Try to add the same poem again
+    r = client.put(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 200
+    updated_collection = r.json()
+
+    # The poem should still be in the collection
+    assert str(poem.id) in [p["id"] for p in updated_collection["poems"]]
+
+
+def test_remove_poem_from_collection_as_admin(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    # Add the poem to the collection first
+    collection = collection_crud.update(
+        db,
+        obj_id=collection.id,
+        obj_update=CollectionUpdate(poem_ids=collection.poem_ids + [poem.id]),
+    )
+    assert collection
+    assert poem.id in collection.poem_ids
+
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 200
+    message = r.json()
+
+    assert message["message"] == "Poem removed successfully"
+    collection = collection_crud.get_by_id(db, collection.id)
+    assert collection
+    assert poem.id not in collection.poem_ids
+
+
+def test_remove_poem_from_collection_as_owner(
+    client: TestClient,
+    db: Session,
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    # Add the poem to the collection first
+    collection = collection_crud.update(
+        db,
+        obj_id=collection.id,
+        obj_update=CollectionUpdate(poem_ids=collection.poem_ids + [poem.id]),
+    )
+    assert collection
+    assert poem.id in collection.poem_ids
+
+    collection_user_token_headers = authentication_token_from_email(
+        client=client, email=user.email, db=db
+    )
+
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=collection_user_token_headers,
+    )
+    assert r.status_code == 200
+    message = r.json()
+
+    assert message["message"] == "Poem removed successfully"
+    collection = collection_crud.get_by_id(db, collection.id)
+    assert collection
+    assert poem.id not in collection.poem_ids
+
+
+def test_remove_poem_from_collection_without_privileges(
+    client: TestClient, normal_user_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    # Add the poem to the collection first
+    collection = collection_crud.update(
+        db,
+        obj_id=collection.id,
+        obj_update=CollectionUpdate(poem_ids=collection.poem_ids + [poem.id]),
+    )
+    assert collection
+    assert poem.id in collection.poem_ids
+
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=normal_user_token_headers,
+    )
+    assert r.status_code == 403
+    assert r.json()["detail"] == "The user doesn't have enough privileges"
+
+
+def test_remove_poem_from_collection_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str]
+) -> None:
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{uuid.uuid4()}/poems/{uuid.uuid4()}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Collection not found"
+
+
+def test_remove_poem_from_collection_poem_not_found(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{uuid.uuid4()}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 404
+    assert r.json()["detail"] == "Poem not found"
+
+
+def test_remove_poem_not_in_collection(
+    client: TestClient, superuser_token_headers: dict[str, str], db: Session
+) -> None:
+    user = create_random_user(db)
+    collection = create_random_collection(db, user.id)
+    assert collection
+
+    poem = create_random_poem(db, is_public=True)
+
+    # Try to remove a poem that is not in the collection
+    r = client.delete(
+        f"{settings.API_V1_STR}/collections/{collection.id}/poems/{poem.id}",
+        headers=superuser_token_headers,
+    )
+    assert r.status_code == 400
+    assert r.json()["detail"] == "The poem is not in the collection"
+
+
 # DELETE
 
 

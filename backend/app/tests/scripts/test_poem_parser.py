@@ -20,7 +20,7 @@ viento en popa a toda vela,
 no corta el mar, sino vuela
 un velero bergantín;"""
 
-    output_text = '<div style="text-align:center;">Con diez cañones por banda,<br>viento en popa a toda vela,<br></div><div style="direction:rtl;">no corta el mar, sino vuela<br>un velero bergantín;</div>'
+    output_text = '<div style="text-align:center;">Con diez cañones por banda,<br>viento en popa a toda vela,<br></div><div style="text-align:right;">no corta el mar, sino vuela<br>un velero bergantín;</div>'
 
     poem_parser = PoemParser(input_text)
     assert poem_parser.to_html() == output_text
