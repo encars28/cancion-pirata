@@ -1,0 +1,16 @@
+.paper {
+  cursor: pointer;
+  padding: var(--mantine-spacing-lg);
+
+  @mixin hover {
+    background-color: var(--mantine-color-default-hover);
+  }
+}
+
+.link {
+  cursor: pointer;
+
+  @mixin hover {
+    background-color: var(--mantine-primary-color-light-hover);
+  }
+}

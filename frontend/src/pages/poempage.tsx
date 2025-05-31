@@ -4,13 +4,14 @@ import { PoemPublicWithAllTheInfo } from '../client/types.gen';
 import { Loading } from '../components/Loading';
 import { useNavigate, useParams } from 'react-router';
 import useAuth from '../hooks/useAuth';
-import { List, Title, Container, Flex, Stack, Text, Space, Group, ActionIcon, Tooltip, Anchor } from '@mantine/core';
+import { List, Title, Badge, Paper, Image, Container, Flex, Stack, Text, Space, Group, ActionIcon, Tooltip, Anchor } from '@mantine/core';
 import usePoem from '../hooks/usePoem';
 import usePoemActions from '../hooks/usePoemActions';
 import { modals } from '@mantine/modals';
-import { TbPencil, TbTrash } from 'react-icons/tb';
+import { TbPencil, TbUser, TbTrash } from 'react-icons/tb';
 import { Interweave } from 'interweave';
 import { InfoBox } from '../components/InfoBox';
+import classes from './page.module.css';
 
 enum PoemType {
   TRANSLATION = 0,
@@ -93,6 +94,67 @@ export function PoemPage() {
                   </Tooltip>
                 </Group>
               )}
+
+          {/* <Paper
+            shadow="xs"
+            withBorder
+            className={classes.paper}
+            // onClick={() => navigate(`/poems/${poem.id}`)}
+          >
+            <Group justify="space-between" align="center" mb="md">
+              <Group gap="lg">
+                <Image src="/src/assets/scroll.png" w={40} mt="xl " />
+                <Stack gap="xs">
+                  <Text ta="left" fw="bold">
+                    {poem.title}
+                  </Text>
+                  {poem.author_names?.length === 0 ||
+                  poem.show_author === false ? (
+                    <Badge variant="light">
+                      <TbUser /> Anónimo
+                    </Badge>
+                  ) : (
+                    <Group gap="lg">
+                      {poem.author_ids?.map((author, index) => (
+                        <Badge
+                          key={index}
+                          onClick={() => navigate(`/authors/${author}`)}
+                          variant="light"
+                          className={classes.link}
+                        >
+                          <TbUser />
+                          {" " + poem.author_names?.[index]}
+                        </Badge>
+                      ))}
+                    </Group>
+                  )}
+                </Stack>
+              </Group>
+              <Text ta="right" c="dimmed">
+                {poem.type === null
+                  ? "Original"
+                  : poem.type === 0
+                  ? "Traducción"
+                  : poem.type === 1
+                  ? "Versión"
+                  : poem.type === 2
+                  ? "Derivado"
+                  : ""}
+              </Text>
+            </Group>
+            <Space h="xl" />
+            <Group justify="flex-end" gap="xl">
+            <Text c="dimmed" size="sm">
+                Idioma: {poem.language ? poem.language : "Desconocido"}
+              </Text>
+              <Text c="dimmed" size="sm">
+                Creado: {poem.created_at?.toLocaleDateString("es-ES")}
+              </Text>
+              <Text c="dimmed" size="sm">
+                Modificado: {poem.updated_at?.toLocaleDateString("es-ES")}
+              </Text>
+            </Group>
+          </Paper> */}
           </Container>
           <Container w="100%"><Interweave content={poem.content} /></Container>
           <Space h="xl" />

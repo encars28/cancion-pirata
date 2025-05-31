@@ -14,6 +14,7 @@ export type AuthorPublic = {
     full_name: string;
     birth_date?: Date | null;
     id: string;
+    user_id?: string | null;
 };
 
 export type AuthorPublicBasic = {
@@ -25,6 +26,7 @@ export type AuthorPublicWithPoems = {
     full_name: string;
     birth_date?: Date | null;
     id: string;
+    user_id?: string | null;
     poems?: Array<PoemPublic>;
 };
 
@@ -234,6 +236,7 @@ export type UserPublic = {
     id: string;
     created_at?: Date | null;
     author_id?: string | null;
+    collection_names?: Array<string>;
 };
 
 export type UserRegister = {
@@ -254,6 +257,7 @@ export type UserSchema = {
     author_id?: string | null;
     author?: AuthorPublic | null;
     hashed_password: string;
+    collection_names?: Array<string>;
 };
 
 export type UserUpdate = {
