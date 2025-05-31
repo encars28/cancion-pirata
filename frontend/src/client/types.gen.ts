@@ -57,7 +57,7 @@ export type CollectionCreate = {
     description?: string | null;
     is_public?: boolean;
     poem_ids?: Array<string>;
-    user_id: string;
+    user_id?: string | null;
 };
 
 export type CollectionForSearch = {
@@ -160,6 +160,21 @@ export type PoemPublicWithAuthor = {
     show_author?: boolean;
     author_names?: Array<string>;
     author_ids?: Array<string>;
+};
+
+export type PoemRandom = {
+    id: string;
+    title: string;
+    description?: string | null;
+    language?: string | null;
+    created_at?: Date | null;
+    updated_at?: Date | null;
+    type?: number | null;
+    is_public?: boolean;
+    show_author?: boolean;
+    author_names?: Array<string>;
+    author_ids?: Array<string>;
+    content: string;
 };
 
 export type PoemUpdate = {
@@ -858,7 +873,7 @@ export type PoemsReadRandomPoemResponses = {
     /**
      * Successful Response
      */
-    200: PoemPublicWithAllTheInfo;
+    200: PoemRandom;
 };
 
 export type PoemsReadRandomPoemResponse = PoemsReadRandomPoemResponses[keyof PoemsReadRandomPoemResponses];
@@ -1023,7 +1038,7 @@ export type CollectionsDeleteCollectionResponses = {
 
 export type CollectionsDeleteCollectionResponse = CollectionsDeleteCollectionResponses[keyof CollectionsDeleteCollectionResponses];
 
-export type CollectionsReadCollectionByIdData = {
+export type CollectionsReadCollectionData = {
     body?: never;
     path: {
         collection_id: string;
@@ -1032,23 +1047,23 @@ export type CollectionsReadCollectionByIdData = {
     url: '/api/v1/collections/{collection_id}';
 };
 
-export type CollectionsReadCollectionByIdErrors = {
+export type CollectionsReadCollectionErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type CollectionsReadCollectionByIdError = CollectionsReadCollectionByIdErrors[keyof CollectionsReadCollectionByIdErrors];
+export type CollectionsReadCollectionError = CollectionsReadCollectionErrors[keyof CollectionsReadCollectionErrors];
 
-export type CollectionsReadCollectionByIdResponses = {
+export type CollectionsReadCollectionResponses = {
     /**
      * Successful Response
      */
     200: CollectionPublic;
 };
 
-export type CollectionsReadCollectionByIdResponse = CollectionsReadCollectionByIdResponses[keyof CollectionsReadCollectionByIdResponses];
+export type CollectionsReadCollectionResponse = CollectionsReadCollectionResponses[keyof CollectionsReadCollectionResponses];
 
 export type CollectionsUpdateCollectionData = {
     body: CollectionUpdate;
@@ -1076,6 +1091,60 @@ export type CollectionsUpdateCollectionResponses = {
 };
 
 export type CollectionsUpdateCollectionResponse = CollectionsUpdateCollectionResponses[keyof CollectionsUpdateCollectionResponses];
+
+export type CollectionsRemovePoemFromCollectionData = {
+    body?: never;
+    path: {
+        collection_id: string;
+        poem_id: string;
+    };
+    query?: never;
+    url: '/api/v1/collections/{collection_id}/poems/{poem_id}';
+};
+
+export type CollectionsRemovePoemFromCollectionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CollectionsRemovePoemFromCollectionError = CollectionsRemovePoemFromCollectionErrors[keyof CollectionsRemovePoemFromCollectionErrors];
+
+export type CollectionsRemovePoemFromCollectionResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type CollectionsAddPoemToCollectionData = {
+    body?: never;
+    path: {
+        collection_id: string;
+        poem_id: string;
+    };
+    query?: never;
+    url: '/api/v1/collections/{collection_id}/poems/{poem_id}';
+};
+
+export type CollectionsAddPoemToCollectionErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type CollectionsAddPoemToCollectionError = CollectionsAddPoemToCollectionErrors[keyof CollectionsAddPoemToCollectionErrors];
+
+export type CollectionsAddPoemToCollectionResponses = {
+    /**
+     * Successful Response
+     */
+    200: CollectionPublic;
+};
+
+export type CollectionsAddPoemToCollectionResponse = CollectionsAddPoemToCollectionResponses[keyof CollectionsAddPoemToCollectionResponses];
 
 export type SearchSearchData = {
     body?: never;

@@ -1,0 +1,81 @@
+import { callService, handleError, handleSuccess } from '../utils'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router'
+import { notifications } from '@mantine/notifications'
+import { collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
+
+const useCollectionActions = (collectionId: string) => {
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
+
+  const editCollectionMutation = useMutation({
+    mutationFn: async (data: CollectionUpdate) =>
+      callService(collectionsUpdateCollection, { path: { collection_id: collectionId }, body: data }),
+    onSuccess: () => {
+      notifications.clean()
+      handleSuccess()
+      navigate(`/collections/${collectionId}`)
+    },
+    onError: (error) => {
+      handleError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] })
+    }
+  })
+
+  const addPoemToCollection = useMutation({
+    mutationFn: async (poemId: string) =>
+      callService(collectionsAddPoemToCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
+    onSuccess: () => {
+      notifications.clean()
+      handleSuccess()
+    },
+    onError: (error) => {
+      handleError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] })
+    }
+  })
+
+  const removePoemFromCollection = useMutation({
+    mutationFn: async (poemId: string) =>
+      callService(collectionsRemovePoemFromCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
+    onSuccess: () => {
+      notifications.clean()
+      handleSuccess()
+    },
+    onError: (error) => {
+      handleError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] })
+    }
+  })
+
+  const deleteCollectionMutation = useMutation({
+    mutationFn: async () => callService(collectionsDeleteCollection, { path: { collection_id: collectionId } }),
+    onSuccess: () => {
+      handleSuccess()
+      navigate('/')
+    },
+    onError: (error) => {
+      handleError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['collections'] })
+      queryClient.invalidateQueries({ queryKey: ['poems'] })
+    }
+  })
+
+  return {
+    editCollectionMutation,
+    deleteCollectionMutation,
+    addPoemToCollection,
+    removePoemFromCollection
+  }
+
+}
+
+export default useCollectionActions
