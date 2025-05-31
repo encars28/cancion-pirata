@@ -1,5 +1,5 @@
 import uuid
-from typing import Any, Optional, Annotated
+from typing import Any, Annotated
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import (
@@ -14,6 +14,7 @@ from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
     PoemPublicWithAuthor,
+    PoemRandom,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
     PoemsPublic,
@@ -34,7 +35,6 @@ def read_poems(
     Retrieve all poems.
     """
     if current_user and current_user.is_superuser:
-        # retrieve all poems
         count = poem_crud.get_count(
             session, queryParams=queryParams, public_restricted=False
         )
@@ -56,7 +56,7 @@ def read_poems(
     return PoemsPublic(data=poems, count=count)
 
 
-@router.get("/random", response_model=PoemPublicWithAllTheInfo)
+@router.get("/random", response_model=PoemRandom)
 def read_random_poem(session: SessionDep, current_user: OptionalCurrentUser) -> Any:
     """
     Get a random poem.
@@ -75,8 +75,8 @@ def read_random_poem(session: SessionDep, current_user: OptionalCurrentUser) -> 
         or current_user.author_id not in poem.author_ids
     ):
         poem.author_names = []
+        poem.author_ids = []
 
-    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
     poem.content = PoemParser(poem.content).to_html()
     return poem
 
@@ -86,7 +86,7 @@ def read_poem(
     session: SessionDep,
     current_user: OptionalCurrentUser,
     poem_id: uuid.UUID,
-    parse: Annotated[bool, Query()] = True
+    parse: Annotated[bool, Query()] = True,
 ) -> Any:
     """
     Get poem by ID.
@@ -95,12 +95,14 @@ def read_poem(
     if not poem:
         raise HTTPException(status_code=404, detail="Poem not found")
 
+    # Return the poem with all the info
     if current_user and current_user.is_superuser:
-        if parse: 
+        if parse:
             poem.content = PoemParser(poem.content).to_html()
-        print(poem.content)
+
         return poem
 
+    # If the poem is not public, check if the user has permission to view it
     if not poem.is_public and (
         not current_user
         or not current_user.author_id
@@ -108,18 +110,36 @@ def read_poem(
     ):
         raise HTTPException(status_code=400, detail="Not enough permissions")
 
+    # If the poem is public, but the user is not allowed to see the author names
     if not poem.show_author and (
         not current_user
         or not current_user.author_id
         or current_user.author_id not in poem.author_ids
     ):
         poem.author_names = []
+        poem.author_ids = []
 
-    poem.derived_poems = [poem for poem in poem.derived_poems if poem.is_public]
+    # Filter derived poems to only include public ones and remove author names if not allowed
+    poem.derived_poems = [
+        derived
+        for derived in poem.derived_poems
+        if derived.is_public
+        or (current_user
+        and current_user.author_id
+        and current_user.author_id in derived.author_ids)
+    ]
+    for derived in poem.derived_poems:
+        if not derived.show_author and (
+            not current_user
+            or not current_user.author_id
+            or current_user.author_id not in derived.author_ids
+        ):
+            derived.author_names = []
+            derived.author_ids = []
+
     if parse:
         poem.content = PoemParser(poem.content).to_html()
-    
-    print(poem.content)
+
     return poem
 
 

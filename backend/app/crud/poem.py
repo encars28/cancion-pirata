@@ -30,6 +30,9 @@ class PoemCRUD:
 
     def get_random(self, db: Session) -> Optional[PoemSchema]:
         poem_ids = db.scalars(select(Poem.id).where(Poem.is_public == True)).all()
+        if poem_ids == []: 
+            return None
+        
         poem = random.choice(poem_ids)
 
         return self.get_by_id(db, poem)

@@ -55,10 +55,13 @@ class PoemPublic(BaseModel):
 class PoemPublicWithAuthor(PoemPublic):
     author_names: List[str] = []
     author_ids: List[uuid.UUID] = []
+    
 
-
-class PoemPublicWithAllTheInfo(PoemPublicWithAuthor):
+class PoemRandom(PoemPublicWithAuthor):
     content: str
+
+
+class PoemPublicWithAllTheInfo(PoemRandom):
     derived_poems: List[PoemPublicWithAuthor] = []
     original: Optional[PoemPublicWithAuthor] = None
 

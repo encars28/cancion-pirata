@@ -26,9 +26,10 @@ def test_retrieve_authors_as_admin(
     poem1 = create_random_poem(db, author_names=[author1.full_name], is_public=False)
     author2 = create_random_author(db)
 
-    r = client.get(f"{settings.API_V1_STR}/authors/", headers=superuser_token_headers)
+    r = client.get(f"{settings.API_V1_STR}/authors", headers=superuser_token_headers)
     all_authors = r.json()
 
+    assert 200 <= r.status_code < 300
     assert len(all_authors["data"]) == 2
     assert "count" in all_authors
     for item in all_authors["data"]:
@@ -46,9 +47,10 @@ def test_retrieve_authors_as_normal_user(
     create_random_poem(db, author_names=[author1.full_name])
     author2 = create_random_author(db)
 
-    r = client.get(f"{settings.API_V1_STR}/authors/", headers=normal_user_token_headers)
+    r = client.get(f"{settings.API_V1_STR}/authors", headers=normal_user_token_headers)
     all_authors = r.json()
 
+    assert 200 <= r.status_code < 300
     assert len(all_authors["data"]) == 2
     assert "count" in all_authors
     for item in all_authors["data"]:
@@ -109,11 +111,14 @@ def test_create_author_without_priviledges(
 # READ BY ID
 
 
-def test_read_author_with_poems_as_admin(
+def test_read_author_with_private_poems_as_admin(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
     poem = create_random_poem(db, author_names=[author.full_name], is_public=False)
+    poem2 = create_random_poem(
+        db, author_names=[author.full_name], is_public=True, show_author=False
+    )
 
     author_id = author.id
     r = client.get(
@@ -125,15 +130,44 @@ def test_read_author_with_poems_as_admin(
 
     assert author.full_name == api_author["full_name"]
     assert api_author["id"] == str(author.id)
-    assert len(api_author["poems"]) == 1
-    assert api_author["poems"][0]["id"] == str(poem.id)
+    assert len(api_author["poems"]) == 2
+    assert api_author["poems"][0]["id"] in [str(poem.id), str(poem2.id)]
+    assert api_author["poems"][1]["id"] in [str(poem.id), str(poem2.id)]
 
 
-def test_read_author_with_poems_as_normal_user(
+def test_read_author_with_private_poems_as_current_author(
+    client: TestClient,
+    author_user_token_headers: dict[str, str],
+    author_user: AuthorSchema,
+    db: Session,
+) -> None:
+    poem = create_random_poem(db, author_names=[author_user.full_name], is_public=False)
+    poem2 = create_random_poem(
+        db, author_names=[author_user.full_name], is_public=True, show_author=False
+    )
+
+    author_id = author_user.id
+    r = client.get(
+        f"{settings.API_V1_STR}/authors/{author_id}",
+        headers=author_user_token_headers,
+    )
+    assert 200 <= r.status_code < 300
+    api_author = r.json()
+    assert author_user.full_name == api_author["full_name"]
+    assert api_author["id"] == str(author_user.id)
+    assert len(api_author["poems"]) == 2
+    assert api_author["poems"][0]["id"] in [str(poem.id), str(poem2.id)]
+    assert api_author["poems"][1]["id"] in [str(poem.id), str(poem2.id)]
+
+
+def test_read_author_with_private_poems_as_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str], db: Session
 ) -> None:
     author = create_random_author(db)
     create_random_poem(db, author_names=[author.full_name], is_public=False)
+    create_random_poem(
+        db, author_names=[author.full_name], is_public=True, show_author=False
+    )
 
     r = client.get(
         f"{settings.API_V1_STR}/authors/{author.id}",
@@ -295,4 +329,3 @@ def test_delete_author_without_privileges(
     )
     assert r.status_code == 403
     assert r.json()["detail"] == "The user doesn't have enough privileges"
-    
