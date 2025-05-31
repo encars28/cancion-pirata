@@ -3,6 +3,7 @@ import uuid
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 from app.core.config import settings
+from fastapi.encoders import jsonable_encoder
 
 from app.crud.collection import collection_crud
 
@@ -23,7 +24,7 @@ def test_create_collection(
     poem1 = create_random_poem(db, is_public=True)
     poem2 = create_random_poem(db, is_public=True)
     
-    data = {"name": name, "description": description, "poem_ids": [poem1.id, poem2.id]}
+    data = {"name": name, "description": description, "poem_ids": [str(poem1.id), str(poem2.id)]}
     r = client.post(
         f"{settings.API_V1_STR}/collections/",
         headers=normal_user_token_headers,
@@ -42,7 +43,7 @@ def test_create_collection_with_userid(
 ) -> None:
     name = random_lower_string()
     
-    data = {"name": name, "user_id": uuid.uuid4()}
+    data = {"name": name, "user_id": str(uuid.uuid4())}
     r = client.post(
         f"{settings.API_V1_STR}/collections/",
         headers=normal_user_token_headers,
@@ -60,8 +61,9 @@ def test_read_collection(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
+    assert collection
 
-    collection_id = collection.id
+    collection_id = collection.id 
     r = client.get(
         f"{settings.API_V1_STR}/collections/{collection_id}",
         headers=normal_user_token_headers,
@@ -69,10 +71,10 @@ def test_read_collection(
     assert 200 <= r.status_code < 300
     api_collection = r.json()
 
-    assert api_collection["name"] == collection.name
-    assert api_collection["id"] == str(collection.id)
-    assert api_collection["description"] == collection.description
-    assert api_collection["poems"] == collection.poems
+    assert api_collection["name"] == collection.name 
+    assert api_collection["id"] == str(collection.id) 
+    assert api_collection["description"] == collection.description 
+    assert api_collection["poems"] == jsonable_encoder(collection.poems)
 
 
 def test_read_collection_not_found(
@@ -93,7 +95,8 @@ def test_read_collection_not_public_as_normal_user(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id, is_public=False)
-
+    assert collection
+    
     r = client.get(
         f"{settings.API_V1_STR}/collections/{collection.id}",
         headers=normal_user_token_headers,
@@ -108,18 +111,19 @@ def test_read_collection_not_public_as_admin(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id, is_public=False)
+    assert collection
 
     r = client.get(
-        f"{settings.API_V1_STR}/collections/{collection.id}",
+        f"{settings.API_V1_STR}/collections/{collection.id}", 
         headers=superuser_token_headers,
     )
     assert 200 <= r.status_code < 300
     api_collection = r.json()
 
-    assert api_collection["name"] == collection.name
-    assert api_collection["id"] == str(collection.id)
-    assert api_collection["description"] == collection.description
-    assert api_collection["poems"] == collection.poems
+    assert api_collection["name"] == collection.name 
+    assert api_collection["id"] == str(collection.id) 
+    assert api_collection["description"] == collection.description 
+    assert api_collection["poems"] == jsonable_encoder(collection.poems)
     
     
 def test_read_collection_with_private_poems(
@@ -127,17 +131,19 @@ def test_read_collection_with_private_poems(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id, is_public=True)
+    assert collection
     
     # Add a private poem to the collection
     private_poem = create_random_poem(db, is_public=False)
     collection = collection_crud.update(
         db,
         obj_id=collection.id,
-        obj_update=CollectionUpdate(poem_ids=collection.poem_ids.union({private_poem.id})),
+        obj_update=CollectionUpdate(poem_ids=collection.poem_ids + [private_poem.id]),
     )
+    assert collection
     
     r = client.get(
-        f"{settings.API_V1_STR}/collections/{collection.id}", # type: ignore
+        f"{settings.API_V1_STR}/collections/{collection.id}", 
         headers=normal_user_token_headers,
     )
     
@@ -152,13 +158,14 @@ def test_read_collection_with_private_poems_as_admin(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id, is_public=True)
+    assert collection
     
     # Add a private poem to the collection
     private_poem = create_random_poem(db, is_public=False)
     collection = collection_crud.update(
         db,
         obj_id=collection.id,
-        obj_update=CollectionUpdate(poem_ids=collection.poem_ids.union({private_poem.id})),
+        obj_update=CollectionUpdate(poem_ids=collection.poem_ids + [private_poem.id]),
     )
     
     r = client.get(
@@ -179,6 +186,7 @@ def test_read_collection_not_public_as_collection_user(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id, is_public=False)
+    assert collection
 
     collection_user_token_headers = authentication_token_from_email(
         client=client, email=user.email, db=db
@@ -192,7 +200,7 @@ def test_read_collection_not_public_as_collection_user(
     assert api_collection["name"] == collection.name
     assert api_collection["id"] == str(collection.id)
     assert api_collection["description"] == collection.description
-    assert api_collection["poems"] == collection.poems
+    assert api_collection["poems"] == jsonable_encoder(collection.poems)
 
 
 
@@ -201,7 +209,8 @@ def test_update_collection_as_admin(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
-
+    assert collection
+    
     data = {"name": "Updated Collection Name", "description": "Updated description", "poem_ids": []}
     
     r = client.patch(
@@ -223,6 +232,7 @@ def test_update_collection_as_owner(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
+    assert collection
     collection_user_token_headers = authentication_token_from_email(
         client=client, email=user.email, db=db
     )
@@ -247,6 +257,7 @@ def test_update_collection_without_priviledges(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
+    assert collection
 
     description = random_lower_string()
     data = {"description": description}
@@ -281,6 +292,7 @@ def test_delete_collection_as_admin(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
+    assert collection
 
     collection_id = collection.id
     r = client.delete(
@@ -310,6 +322,7 @@ def test_delete_collection_without_privileges(
 ) -> None:
     user = create_random_user(db)
     collection = create_random_collection(db, user.id)
+    assert collection
 
     r = client.delete(
         f"{settings.API_V1_STR}/collections/{collection.id}",

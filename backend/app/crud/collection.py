@@ -48,7 +48,7 @@ class CollectionCRUD:
         db.commit()
         db.refresh(db_obj)
         
-        db_obj.poems = set(poems) # type: ignore
+        db_obj.poems = poems # type: ignore
         db.commit()
 
         return CollectionSchema.model_validate(db_obj)
@@ -64,6 +64,17 @@ class CollectionCRUD:
             return None
 
         obj_update_data = obj_update.model_dump(exclude_unset=True)
+        
+        if "poem_ids" in obj_update_data.keys():
+            poems = db.scalars(
+                select(Poem).filter(Poem.id.in_(obj_update_data["poem_ids"]))
+            ).all()
+            if len(poems) != len(obj_update_data["poem_ids"]):
+                return None
+            
+            db_obj.poems = poems # type: ignore
+            del obj_update_data["poem_ids"]
+        
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
 

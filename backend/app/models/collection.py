@@ -1,4 +1,4 @@
-from typing import Optional, List, Set
+from typing import Optional, List
 import uuid
 from datetime import datetime
 from sqlalchemy import func, DateTime, String, Table, Column, ForeignKey, Uuid
@@ -43,7 +43,7 @@ class Collection(Base):
         back_populates="collections"
     )
     
-    poems: Mapped[Set["Poem"]] = relationship(  # type: ignore  # noqa: F821
+    poems: Mapped[List["Poem"]] = relationship(  # type: ignore  # noqa: F821
         secondary="collection_poem",
         back_populates="collections",
     )
