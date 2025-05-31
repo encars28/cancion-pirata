@@ -50,6 +50,7 @@ class UserPublic(UserBase):
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
+    collection_names: list[str] = []
 
 
 class UserSchema(UserBase):
@@ -60,6 +61,7 @@ class UserSchema(UserBase):
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     hashed_password: str
+    collection_names: list[str] = []
 
 
 class UsersPublic(BaseModel):

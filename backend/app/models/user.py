@@ -5,6 +5,7 @@ from datetime import datetime
 from pydantic import EmailStr
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, String, func, DateTime
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 
 from app.core.base_class import Base
 
@@ -29,3 +30,4 @@ class User(Base):
         cascade="all, delete"
     )
     
+    collection_names: AssociationProxy[List[str]] = association_proxy("collections", "name")
