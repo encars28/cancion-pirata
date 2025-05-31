@@ -6,6 +6,7 @@ from app.core.base_class import Base
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey, Table, Column, Uuid
+from sqlalchemy.ext.associationproxy import association_proxy, AssociationProxy
 
 author_poem = Table(
     "author_poem",
@@ -27,3 +28,5 @@ class Author(Base):
         back_populates="authors",
         cascade="all, delete"
     )
+    
+    user_id: AssociationProxy[Optional[uuid.UUID]] = association_proxy("user", "id")

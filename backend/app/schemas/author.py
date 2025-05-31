@@ -17,6 +17,7 @@ class AuthorSchema(AuthorBase):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     poems: List["PoemPublic"] = []
+    user_id: Optional[uuid.UUID] = None
 
 
 class AuthorCreate(AuthorBase):

@@ -24,23 +24,25 @@ router = APIRouter(prefix="/collections", tags=["collections"])
     "/",
     response_model=CollectionPublic,
 )
-def create_collection(*, session: SessionDep, collection_in: CollectionCreate, current_user: CurrentUser ) -> Any:
+def create_collection(
+    *, session: SessionDep, collection_in: CollectionCreate, current_user: CurrentUser
+) -> Any:
     """
     Create new Collection.
     """
-    if collection_in.user_id: 
+    if collection_in.user_id:
         raise HTTPException(
             status_code=400,
             detail="User ID should not be provided in the request body. It will be set automatically.",
         )
-    
+
     collection_in.user_id = current_user.id
     collection = collection_crud.create(db=session, obj_create=collection_in)
     return collection
 
 
 @router.get("/{collection_id}", response_model=CollectionPublic)
-def read_collection_by_id(
+def read_collection(
     collection_id: uuid.UUID, session: SessionDep, current_user: OptionalCurrentUser
 ) -> Any:
     """
@@ -52,30 +54,40 @@ def read_collection_by_id(
             status_code=404,
             detail="The collection with this id does not exist in the system",
         )
-        
-    if not collection.is_public and (not current_user or (not current_user.is_superuser and current_user.id != collection.user_id)):
+
+    if not collection.is_public and (
+        not current_user
+        or (not current_user.is_superuser and current_user.id != collection.user_id)
+    ):
         raise HTTPException(
             status_code=403,
             detail="The collection is not public and the user doesn't have enough privileges",
         )
 
     # Normal user
-    if not current_user or (
-        not current_user.is_superuser
-        and (not current_user.id == collection.user_id)
-    ):
+    if not current_user or (not current_user.is_superuser):
+        # Show only public poems or private ones if the user is the author
         collection.poems = [
-            poem for poem in collection.poems if poem.is_public
+            poem
+            for poem in collection.poems
+            if poem.is_public
+            or (
+                current_user
+                and current_user.author_id
+                and current_user.author_id in poem.author_ids
+            )
         ]
         
-        for poem in collection.poems: 
+        # Hide author names if the user is not the author
+        for poem in collection.poems:
             if not poem.show_author and (
                 not current_user
                 or not current_user.author_id
                 or current_user.author_id not in poem.author_ids
             ):
                 poem.author_names = []
-        
+                poem.author_ids = []
+
     return collection
 
 
@@ -101,15 +113,15 @@ def update_collection(
             detail="The collection with this id does not exist in the system",
         )
 
-    if not current_user.is_superuser and (
-        not collection.user_id == current_user.id
-    ):
+    if not current_user.is_superuser and (not collection.user_id == current_user.id):
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
         )
 
-    collection = collection_crud.update(db=session, obj_id=collection.id, obj_update=collection_in)
+    collection = collection_crud.update(
+        db=session, obj_id=collection.id, obj_update=collection_in
+    )
     return collection
 
 
@@ -124,9 +136,7 @@ def delete_collection(
     if not collection:
         raise HTTPException(status_code=404, detail="Collection not found")
 
-    if not current_user.is_superuser and (
-        not collection.user_id == current_user.id
-    ):
+    if not current_user.is_superuser and (not collection.user_id == current_user.id):
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
