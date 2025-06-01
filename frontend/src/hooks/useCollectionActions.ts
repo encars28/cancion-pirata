@@ -43,7 +43,6 @@ const useCollectionActions = (collectionId: string) => {
     mutationFn: async (poemId: string) =>
       callService(collectionsRemovePoemFromCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
     onSuccess: () => {
-      notifications.clean()
       handleSuccess()
     },
     onError: (error) => {
