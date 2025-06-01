@@ -79,7 +79,7 @@ export function PoemsPage() {
         </Button>
       </Group>
       <Space h={50} />
-      <Flex wrap="nowrap">
+      <Flex wrap="nowrap" >
         <PoemGrid filter={filters} setPage={setPage}/>
         <Container visibleFrom="sm" mr="xl" w={400}>
           {/* <Paper shadow="xl" p="lg" mr="xl" h={780} withBorder> */}

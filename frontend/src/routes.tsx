@@ -33,7 +33,7 @@ type ProtectedRouteProps = {
 
 const ProtectedRoute = ({
   isAllowed,
-  redirectPath = '/',
+  redirectPath = "/",
   children,
 }: ProtectedRouteProps) => {
   if (!isAllowed) {
@@ -54,21 +54,32 @@ export default function AllRoutes() {
 
       <Route path="poems" element={<PoemsPage />} />
       <Route path="poems/:id" element={<PoemPage />} />
-
-      <Route path="poems/add" element={<BasePage />}>
-        <Route index element={<AddPoem />} />
-      </Route>
-
-      <Route path="poems/edit/:id" element={<BasePage />}>
-        <Route index element={<EditPoem />} />
-      </Route>
-
       <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/:id" element={<AuthorPage />} />
       <Route path="users/:id" element={<UserPage />} />
       <Route path="collections/:id" element={<CollectionPage />} />
 
-      <Route element={<ProtectedRoute isAllowed={isLoggedIn()} />}>
+      <Route
+        element={
+          <ProtectedRoute isAllowed={isLoggedIn()} redirectPath="/login" />
+        }
+      >
+        <Route path="poems/add" element={<BasePage />}>
+          <Route index element={<AddPoem />} />
+        </Route>
+
+        <Route path="poems/edit/:id" element={<BasePage />}>
+          <Route index element={<EditPoem />} />
+        </Route>
+
+        <Route path="collections/add" element={<BasePage />}>
+          <Route index element={<AddPoem />} />
+        </Route>
+
+        <Route path="collections/edit/:id" element={<BasePage />}>
+          <Route index element={<EditPoem />} />
+        </Route>
+
         <Route path="me" element={<MePage />}>
           <Route index element={<Profile />} />
           <Route path="profile" element={<Profile />} />
@@ -97,5 +108,5 @@ export default function AllRoutes() {
 
       <Route path="*" element={<NothingFound />} />
     </Routes>
-  )
+  );
 }

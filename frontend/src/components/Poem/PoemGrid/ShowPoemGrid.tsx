@@ -16,9 +16,9 @@ export function ShowPoemGrid({
   removePoem?: boolean;
 }) {
   return (
-    <Grid gutter="xl" align="center" w="100%">
+    <Grid gutter="xl" align="center" w="100%" h="100%" style={{ alignContent: "stretch", alignItems: "stretch" }}>
       {poems.map((poem) => (
-        <Grid.Col key={poem.id} span={{ base: 12, md: 6 }}>
+        <Grid.Col key={poem.id} span={{ base: 12, md: 6 }} h="100%" w="100%" style={{ alignContent: "stretch", alignItems: "stretch" }}>
           <PoemCard
             poem={poem}
             show_author={show_author}

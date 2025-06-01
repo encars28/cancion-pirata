@@ -27,10 +27,6 @@ const useCollectionActions = (collectionId: string) => {
   const addPoemToCollection = useMutation({
     mutationFn: async (poemId: string) =>
       callService(collectionsAddPoemToCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
-    onSuccess: () => {
-      notifications.clean()
-      handleSuccess()
-    },
     onError: (error) => {
       handleError(error as any)
     },

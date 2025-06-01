@@ -1,6 +1,7 @@
 import {
   ActionIcon,
   Badge,
+  Card,
   Group,
   Image,
   Paper,
@@ -15,14 +16,12 @@ import { useNavigate } from "react-router";
 import classes from "./PoemGrid.module.css";
 import { modals } from "@mantine/modals";
 import useCollectionActions from "../../../hooks/useCollectionActions";
-import React from "react";
 
 interface PoemCardProps {
   poem: PoemPublicWithAuthor;
   show_author?: boolean;
   collectionId?: string;
   removePoemCollection?: boolean;
-  addPoemCollection?: boolean;
 }
 
 export function PoemCard({
@@ -30,13 +29,12 @@ export function PoemCard({
   show_author = true,
   collectionId,
   removePoemCollection = false,
-  addPoemCollection = false,
 }: PoemCardProps) {
   const navigate = useNavigate();
   let removePoemCollectionModal: () => any = () => {};
 
   if (collectionId) {
-    const { removePoemFromCollection, addPoemToCollection } =
+    const { removePoemFromCollection } =
       useCollectionActions(collectionId);
 
     removePoemCollectionModal = () =>
@@ -61,12 +59,15 @@ export function PoemCard({
   }
 
   return (
-    <Paper
+    <Card
       shadow="xs"
       withBorder
       className={classes.paper}
+      w="100%"
+      h="100%"
       onClick={() => navigate(`/poems/${poem.id}`)}
     >
+      <Card.Section>
       <Group justify="space-between" align="center" mb="md">
         <Group gap="lg">
           <Image src="/src/assets/scroll.png" w={40} mt="xl " />
@@ -110,6 +111,7 @@ export function PoemCard({
           </Tooltip>
         )}
       </Group>
+      </Card.Section>
       <Space h="xl" />
       <Group justify="flex-end" gap="xl">
         <Text size="sm" c="dimmed">
@@ -133,6 +135,6 @@ export function PoemCard({
           Modificado: {poem.updated_at?.toLocaleDateString("es-ES")}
         </Text>
       </Group>
-    </Paper>
+    </Card>
   );
 }

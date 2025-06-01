@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService, handleError } from "../utils";
+import { callService, handleError, handleSuccess } from "../utils";
 import { CollectionPublic, collectionsReadCollection } from "../client";
 import { Loading } from "../components/Loading";
 import {
@@ -12,19 +12,35 @@ import {
   Group,
   Tooltip,
   ActionIcon,
+  MultiSelect,
+  Button,
 } from "@mantine/core";
 import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
-import { TbPencil, TbTrash } from "react-icons/tb";
+import { TbBooks, TbEdit, TbTrash } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
+import { Form, useForm } from "@mantine/form";
+import usePoems from "../hooks/usePoems";
 
 export function CollectionPage() {
   const params = useParams();
   const collectionId = params.id;
-  const { deleteCollectionMutation } =
+  const { deleteCollectionMutation, addPoemToCollection } =
     useCollectionActions(collectionId!);
   const { user: currentUser } = useAuth();
+
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      poems: [],
+    },
+    enhanceGetInputProps: () => ({
+      disabled: addPoemToCollection.isPending,
+    }),
+  })
+
+  const { data: poemsData } = usePoems({})
 
   const { data, error, isPending, isError } = useQuery({
     queryKey: ["collections", collectionId],
@@ -44,6 +60,19 @@ export function CollectionPage() {
   }
 
   const collection: CollectionPublic = data!;
+  const poems_info = Object.fromEntries(poemsData?.data?.map((poem) => [`${poem.title} ${poem.author_names && poem.author_names?.length > 0 ? " - " : ""} ${poem.author_names?.join(", ")}`, poem.id]) ?? [])
+
+  const handleSubmit = async (values: typeof form.values) => {
+    try {
+    values.poems.forEach(async (poem) => {
+        await addPoemToCollection.mutateAsync(poems_info[poem]);
+        modals.closeAll();
+    })
+    handleSuccess()
+      } catch {
+        //
+      }
+  };
 
   const deleteCollection = () =>
     modals.openConfirmModal({
@@ -59,6 +88,38 @@ export function CollectionPage() {
       labels: { confirm: "Eliminar", cancel: "Cancelar" },
     });
 
+  const selectPoem = () => modals.open({
+    title: "Añadir poema a la colección",
+    children: (
+      <Form form={form} onSubmit={handleSubmit}>
+        <MultiSelect 
+          data={Object.keys(poems_info)}
+          label="Poemas"
+          ta="left"
+          placeholder="Seleccione uno o más poemas"
+          searchable
+          nothingFoundMessage="No se encontraron poemas"
+          key={form.key("poems")}
+          required
+          clearable
+          withCheckIcon={false}
+          limit={10}
+          {...form.getInputProps("poems")}
+        />
+        <Button
+          type="submit"
+          variant="filled"
+          color="green"
+          mt="xl"
+          fullWidth
+          loading={addPoemToCollection.isPending}
+        >
+          Añadir poema(s)
+        </Button>
+      </Form>
+    ),
+  })
+
   return (
     <Shell>
       <Stack mt={60}>
@@ -67,9 +128,19 @@ export function CollectionPage() {
         {(currentUser?.id === collection.user_id ||
           currentUser?.is_superuser) && (
           <Group mt="sm" justify="center">
-            <Tooltip label="Editar">
-              <ActionIcon variant="outline" size="lg">
-                <TbPencil size={20} />
+            <Tooltip label="Añadir poema">
+              <ActionIcon
+                variant="light"
+                size="lg"
+                color="green"
+                onClick={selectPoem}
+              >
+                <TbBooks size={20} />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip label="Editar colección">
+              <ActionIcon variant="light" size="lg">
+                <TbEdit size={20} />
               </ActionIcon>
             </Tooltip>
             <Tooltip label="Eliminar colección">
