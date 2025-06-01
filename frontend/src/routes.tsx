@@ -23,6 +23,7 @@ import { Hero } from "./components/Hero/Hero";
 import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
+import { CollectionPage } from "./pages/collectionpage";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -65,6 +66,7 @@ export default function AllRoutes() {
       <Route path="authors" element={<AuthorsPage />} />
       <Route path="authors/:id" element={<AuthorPage />} />
       <Route path="users/:id" element={<UserPage />} />
+      <Route path="collections/:id" element={<CollectionPage />} />
 
       <Route element={<ProtectedRoute isAllowed={isLoggedIn()} />}>
         <Route path="me" element={<MePage />}>

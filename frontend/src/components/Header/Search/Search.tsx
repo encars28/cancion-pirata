@@ -57,8 +57,7 @@ export function Search() {
       id: collection.id,
       label: collection.name,
       description: "Colección",
-      onClick: () => navigate("/"),
-      // onClick: () => navigate(`/collections/${collection.id}`),
+      onClick: () => navigate(`/collections/${collection.id}`),
       }))
     );
 
