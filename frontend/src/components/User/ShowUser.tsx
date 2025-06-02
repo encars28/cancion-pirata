@@ -8,12 +8,15 @@ import {
   Space,
   Tabs,
   Stack,
+  Button,
 } from "@mantine/core";
 import { TbUser, TbBook, TbBooks } from "react-icons/tb";
 import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
 import { CollectionGrid } from "../Collection/CollectionGrid";
+import { modals } from "@mantine/modals";
+import { AddCollection } from "../Collection/AddCollection";
 
 export function ShowUser({ user }: { user: UserPublic }) {
   let authorData = undefined;
@@ -24,6 +27,11 @@ export function ShowUser({ user }: { user: UserPublic }) {
   }
 
   const author: AuthorPublicWithPoems | undefined = authorData;
+
+  const addPoemModal = () => modals.open({
+    title: "Crear colección", 
+    children: <AddCollection />,
+  })
 
   return (
     <Container
@@ -87,9 +95,12 @@ export function ShowUser({ user }: { user: UserPublic }) {
           {user.collections && user.collections.length > 0 ? (
             <CollectionGrid collections={user.collections} />
           ) : (
-            <Title mt={80} order={3} c="dimmed" fw="lighter">
-              Este usuario no tiene colecciones
-            </Title>
+            <>
+              <Title mt={80} order={3} c="dimmed" fw="lighter">
+                Este usuario no tiene colecciones
+              </Title>
+              <Button mt="xl" variant="filled" onClick={addPoemModal}>Crear colección</Button>
+            </>
           )}
         </Tabs.Panel>
       </Tabs>

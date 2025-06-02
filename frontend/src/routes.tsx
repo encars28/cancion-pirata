@@ -4,7 +4,7 @@ import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
 import { NothingFound } from "./components/NothingFound/NothingFound";
-import { isAdmin, isLoggedIn } from "./hooks/useAuth";
+import { isLoggedIn } from "./hooks/useAuth";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
@@ -19,7 +19,6 @@ import { RegisterForm } from "./components/Auth/RegisterForm/RegisterForm";
 import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";
 import { LoginForm } from "./components/Auth/LoginForm/LoginForm";
 import { ResetPassword } from "./components/Auth/ResetPassword/ResetPassword";
-import { Hero } from "./components/Hero/Hero";
 import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
@@ -70,10 +69,6 @@ export default function AllRoutes() {
 
         <Route path="poems/edit/:id" element={<BasePage />}>
           <Route index element={<EditPoem />} />
-        </Route>
-
-        <Route path="collections/add" element={<BasePage />}>
-          <Route index element={<AddPoem />} />
         </Route>
 
         <Route path="collections/edit/:id" element={<BasePage />}>

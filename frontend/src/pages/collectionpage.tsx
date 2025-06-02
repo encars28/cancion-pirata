@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, handleError, handleSuccess } from "../utils";
@@ -23,12 +23,14 @@ import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import usePoems from "../hooks/usePoems";
 
+
 export function CollectionPage() {
   const params = useParams();
   const collectionId = params.id;
   const { deleteCollectionMutation, addPoemToCollection } =
     useCollectionActions(collectionId!);
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -38,9 +40,9 @@ export function CollectionPage() {
     enhanceGetInputProps: () => ({
       disabled: addPoemToCollection.isPending,
     }),
-  })
+  });
 
-  const { data: poemsData } = usePoems({})
+  const { data: poemsData } = usePoems({});
 
   const { data, error, isPending, isError } = useQuery({
     queryKey: ["collections", collectionId],
@@ -60,18 +62,25 @@ export function CollectionPage() {
   }
 
   const collection: CollectionPublic = data!;
-  const poems_info = Object.fromEntries(poemsData?.data?.map((poem) => [`${poem.title} ${poem.author_names && poem.author_names?.length > 0 ? " - " : ""} ${poem.author_names?.join(", ")}`, poem.id]) ?? [])
+  const poems_info = Object.fromEntries(
+    poemsData?.data?.map((poem) => [
+      `${poem.title} ${
+        poem.author_names && poem.author_names?.length > 0 ? " - " : ""
+      } ${poem.author_names?.join(", ")}`,
+      poem.id,
+    ]) ?? []
+  );
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-    values.poems.forEach(async (poem) => {
+      values.poems.forEach(async (poem) => {
         await addPoemToCollection.mutateAsync(poems_info[poem]);
         modals.closeAll();
-    })
-    handleSuccess()
-      } catch {
-        //
-      }
+      });
+      handleSuccess();
+    } catch {
+      //
+    }
   };
 
   const deleteCollection = () =>
@@ -80,7 +89,9 @@ export function CollectionPage() {
       children: (
         <Text size="sm" ta="left">
           ¿Está seguro de que desea eliminar esta colección? La acción es {""}
-          <Text component="span" fw="bolder" inherit>irreversible</Text>
+          <Text component="span" fw="bolder" inherit>
+            irreversible
+          </Text>
         </Text>
       ),
       onConfirm: async () => deleteCollectionMutation.mutateAsync(),
@@ -88,37 +99,38 @@ export function CollectionPage() {
       labels: { confirm: "Eliminar", cancel: "Cancelar" },
     });
 
-  const selectPoem = () => modals.open({
-    title: "Añadir poema a la colección",
-    children: (
-      <Form form={form} onSubmit={handleSubmit}>
-        <MultiSelect 
-          data={Object.keys(poems_info)}
-          label="Poemas"
-          ta="left"
-          placeholder="Seleccione uno o más poemas"
-          searchable
-          nothingFoundMessage="No se encontraron poemas"
-          key={form.key("poems")}
-          required
-          clearable
-          withCheckIcon={false}
-          limit={10}
-          {...form.getInputProps("poems")}
-        />
-        <Button
-          type="submit"
-          variant="filled"
-          color="green"
-          mt="xl"
-          fullWidth
-          loading={addPoemToCollection.isPending}
-        >
-          Añadir poema(s)
-        </Button>
-      </Form>
-    ),
-  })
+  const selectPoem = () =>
+    modals.open({
+      title: "Añadir poema a la colección",
+      children: (
+        <Form form={form} onSubmit={handleSubmit}>
+          <MultiSelect
+            data={Object.keys(poems_info)}
+            label="Poemas"
+            ta="left"
+            placeholder="Seleccione uno o más poemas"
+            searchable
+            nothingFoundMessage="No se encontraron poemas"
+            key={form.key("poems")}
+            required
+            clearable
+            withCheckIcon={false}
+            limit={10}
+            {...form.getInputProps("poems")}
+          />
+          <Button
+            type="submit"
+            variant="filled"
+            color="green"
+            mt="xl"
+            fullWidth
+            loading={addPoemToCollection.isPending}
+          >
+            Añadir poema(s)
+          </Button>
+        </Form>
+      ),
+    });
 
   return (
     <Shell>
@@ -139,7 +151,11 @@ export function CollectionPage() {
               </ActionIcon>
             </Tooltip>
             <Tooltip label="Editar colección">
-              <ActionIcon variant="light" size="lg">
+              <ActionIcon
+                variant="light"
+                size="lg"
+                onClick={() => navigate(`/collections/edit/${collectionId}`)}
+              >
                 <TbEdit size={20} />
               </ActionIcon>
             </Tooltip>
@@ -158,7 +174,12 @@ export function CollectionPage() {
       </Stack>
       <Container mx={{ base: "xl", lg: 50 }} mb="xl" mt={60} fluid>
         {collection.poems && collection.poems?.length > 0 ? (
-          <ShowPoemGrid poems={collection.poems} collectionId={collectionId} removePoem show_author />
+          <ShowPoemGrid
+            poems={collection.poems}
+            collectionId={collectionId}
+            removePoem
+            show_author
+          />
         ) : (
           <Title order={3} mt={80} c="dimmed" fw="lighter">
             Esta colección todavía no tiene poemas.
