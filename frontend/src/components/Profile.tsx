@@ -29,7 +29,7 @@ export function Profile() {
     <>
       <Group m="xl" justify="flex-end">
       </Group>
-      <Title order={1} m="xl">Datos usuario</Title>
+      <Title ta="center" order={1} m="xl">Datos usuario</Title>
       <Container size={550}>
         <UserMe user={user} />
       </Container>

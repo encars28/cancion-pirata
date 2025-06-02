@@ -49,13 +49,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
               {user.username}
             </Title>
             {user.full_name && (
-              <Title
-                order={3}
-                
-                c="dimmed"
-                fw="lighter"
-                textWrap="wrap"
-              >
+              <Title order={3} c="dimmed" fw="lighter" textWrap="wrap">
                 {user.full_name}
               </Title>
             )}
@@ -104,12 +98,14 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Stack>
           ) : (
             <>
-              <Title mt={80} order={3} c="dimmed" fw="lighter">
+              <Title ta="center" mt={80} order={3} c="dimmed" fw="lighter">
                 Este usuario no tiene colecciones
               </Title>
-              <Button mt="xl" variant="filled" onClick={addPoemModal}>
-                Crear colección
-              </Button>
+              <Group justify="center">
+                <Button mt="xl" variant="filled" onClick={addPoemModal}>
+                  Crear colección
+                </Button>
+              </Group>
             </>
           )}
         </Tabs.Panel>
