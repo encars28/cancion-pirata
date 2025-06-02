@@ -16,17 +16,16 @@ import {
   ActionIcon,
   Tooltip,
   Anchor,
-  Select,
+  Button,
 } from "@mantine/core";
 import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
 import { modals } from "@mantine/modals";
-import { TbPencil, TbTrash } from "react-icons/tb";
+import { TbBooks, TbEdit, TbTrash } from "react-icons/tb";
 import { Interweave } from "interweave";
 import { InfoBox } from "../components/InfoBox";
-import classes from "./page.module.css";
-import { Form, useForm } from "@mantine/form";
-import useCollectionActions from "../hooks/useCollectionActions";
+import { AddCollection } from "../components/Collection/AddCollection";
+import { AddPoemToCollection } from "../components/Collection/AddPoemToCollection/AddPoemToCollection";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -39,6 +38,12 @@ export function PoemPage() {
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   const { deletePoemMutation } = usePoemActions(poemId!);
+
+  const addPoemModal = () =>
+    modals.open({
+      title: "Crear colección",
+      children: <AddCollection />,
+    });
 
   const { isPending, isError, data, error } = usePoem(poemId!, true);
 
@@ -70,6 +75,24 @@ export function PoemPage() {
       labels: { confirm: "Eliminar", cancel: "Cancelar" },
     });
 
+  const addPoemToCollectionModal = () =>
+    modals.open({
+      title: "Añadir poema a colección",
+      children:
+        currentUser?.collections && currentUser?.collections?.length > 0 ? (
+          <AddPoemToCollection poemId={poem.id} />
+        ) : (
+          <Stack p="lg" mt="md" justify="center">
+            <Title order={4} ta="center" c="dimmed" fw="lighter">
+              No hay colecciones creadas.
+            </Title>
+            <Button variant="filled" mt="xl" onClick={addPoemModal}>
+              Crear colección
+            </Button>
+          </Stack>
+        ),
+    });
+
   return (
     <Shell>
       <Space h="xl" />
@@ -90,25 +113,39 @@ export function PoemPage() {
                 ? "Anónimo"
                 : poem.author_names?.join(", ")}
             </Title>
-            {((poem.author_ids &&
-              currentUser?.author_id &&
-              poem.author_ids.includes(currentUser?.author_id)) ||
-              currentUser?.is_superuser) && (
+            {currentUser && (
               <Group justify="center" mt="lg" gap="xs">
-                <Tooltip label="Editar">
+                <Tooltip label="Añadir a colección">
                   <ActionIcon
-                    variant="outline"
+                    variant="light"
                     size={35}
-                    onClick={() => navigate(`/poems/edit/${poem.id}`)}
+                    color="green"
+                    onClick={addPoemToCollectionModal}
                   >
-                    <TbPencil size={20} />
+                    <TbBooks size={20} />
                   </ActionIcon>
                 </Tooltip>
-                <Tooltip label="Eliminar">
-                  <ActionIcon color="red" size={35} onClick={deletePoem}>
-                    <TbTrash size={20} />
-                  </ActionIcon>
-                </Tooltip>
+                {((poem.author_ids &&
+                  currentUser?.author_id &&
+                  poem.author_ids.includes(currentUser?.author_id)) ||
+                  currentUser?.is_superuser) && (
+                  <>
+                    <Tooltip label="Editar">
+                      <ActionIcon
+                        variant="light"
+                        size={35}
+                        onClick={() => navigate(`/poems/edit/${poem.id}`)}
+                      >
+                        <TbEdit size={20} />
+                      </ActionIcon>
+                    </Tooltip>
+                    <Tooltip label="Eliminar">
+                      <ActionIcon color="red" size={35} onClick={deletePoem}>
+                        <TbTrash size={20} />
+                      </ActionIcon>
+                    </Tooltip>
+                  </>
+                )}
               </Group>
             )}
 

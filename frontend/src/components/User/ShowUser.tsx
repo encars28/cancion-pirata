@@ -28,10 +28,11 @@ export function ShowUser({ user }: { user: UserPublic }) {
 
   const author: AuthorPublicWithPoems | undefined = authorData;
 
-  const addPoemModal = () => modals.open({
-    title: "Crear colección", 
-    children: <AddCollection />,
-  })
+  const addPoemModal = () =>
+    modals.open({
+      title: "Crear colección",
+      children: <AddCollection />,
+    });
 
   return (
     <Container
@@ -62,7 +63,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
         </Flex>
       </Group>
       <Space h={80} />
-      <Tabs variant="outline" defaultValue="collections">
+      <Tabs variant="outline" defaultValue="collections" pb={100}>
         <Tabs.List>
           {author && (
             <>
@@ -93,13 +94,22 @@ export function ShowUser({ user }: { user: UserPublic }) {
         <Tabs.Panel value="collections">
           <Space mt="xl" />
           {user.collections && user.collections.length > 0 ? (
-            <CollectionGrid collections={user.collections} />
+            <Stack gap="xl">
+              <Group justify="flex-end">
+                <Button variant="filled" onClick={addPoemModal}>
+                  Crear colección
+                </Button>
+              </Group>
+              <CollectionGrid collections={user.collections} />
+            </Stack>
           ) : (
             <>
               <Title mt={80} order={3} c="dimmed" fw="lighter">
                 Este usuario no tiene colecciones
               </Title>
-              <Button mt="xl" variant="filled" onClick={addPoemModal}>Crear colección</Button>
+              <Button mt="xl" variant="filled" onClick={addPoemModal}>
+                Crear colección
+              </Button>
             </>
           )}
         </Tabs.Panel>

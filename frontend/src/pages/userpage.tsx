@@ -11,7 +11,7 @@ export function UserPage() {
   const userId = params.id;
 
   const { data, error, isPending, isError } = useQuery({
-    queryKey: ["user", userId],
+    queryKey: ["users", userId],
     queryFn: async () =>
       callService(usersReadUserById, { path: { user_id: userId! } }),
     placeholderData: (prevData) => prevData,

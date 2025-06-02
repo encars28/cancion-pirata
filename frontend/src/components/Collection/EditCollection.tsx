@@ -45,7 +45,7 @@ export function EditCollection({
     mode: "controlled",
     initialValues: {
       ...collection,
-      poem_ids: Object.keys(initialPoems)
+      poem_ids: Object.keys(initialPoems),
     },
     validate: {
       name: isNotEmpty("El nombre no puede estar vacío"),
@@ -62,9 +62,7 @@ export function EditCollection({
       }
 
       if (values.poem_ids && values.poem_ids?.length !== 0) {
-        values.poem_ids = values.poem_ids.map(
-          (poem) => poems_info[poem]
-        );
+        values.poem_ids = values.poem_ids.map((poem) => poems_info[poem]);
       }
 
       await editCollectionMutation.mutateAsync(values);

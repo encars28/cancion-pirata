@@ -50,6 +50,7 @@ export function AddCollection() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
+      queryClient.invalidateQueries({ queryKey: ["users", currentUser?.id] });
     },
   });
 

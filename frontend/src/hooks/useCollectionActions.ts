@@ -2,7 +2,7 @@ import { callService, handleError, handleSuccess } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
-import {collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
+import {collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
 import useAuth from './useAuth'
 
 const useCollectionActions = (collectionId: string) => {
@@ -26,16 +26,6 @@ const useCollectionActions = (collectionId: string) => {
     }
   })
 
-  const addPoemToCollection = useMutation({
-    mutationFn: async (poemId: string) =>
-      callService(collectionsAddPoemToCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
-    onError: (error) => {
-      handleError(error as any)
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['collections'] })
-    }
-  })
 
   const removePoemFromCollection = useMutation({
     mutationFn: async (poemId: string) =>
@@ -70,7 +60,6 @@ const useCollectionActions = (collectionId: string) => {
   return {
     editCollectionMutation,
     deleteCollectionMutation,
-    addPoemToCollection,
     removePoemFromCollection,
   }
 
