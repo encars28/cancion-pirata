@@ -51,7 +51,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             {user.full_name && (
               <Title
                 order={3}
-                ta="left"
+                
                 c="dimmed"
                 fw="lighter"
                 textWrap="wrap"

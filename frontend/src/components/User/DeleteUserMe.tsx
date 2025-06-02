@@ -48,7 +48,7 @@ export function DeleteUserMe() {
         opened={opened}
         onClose={close}
         title="Eliminar usuario"
-        ta="left"
+        
         padding={30}
         overlayProps={{
           blur: 3,

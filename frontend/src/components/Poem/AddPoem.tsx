@@ -120,7 +120,7 @@ export function AddPoem() {
           mt="xl"
           gutter="lg"
           columns={24}
-          ta="left"
+          
           w={900}
         >
           <Grid.Col span={{ base: 24, sm: 17 }}>

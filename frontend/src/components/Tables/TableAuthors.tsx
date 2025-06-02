@@ -70,7 +70,7 @@ export function TableAuthors() {
   const rows = authors.map((author) => (
     <Table.Tr
       key={author.id}
-      ta="left"
+      
     >
       <Table.Td>{author.full_name}</Table.Td>
       <Table.Td>{author.birth_date?.toLocaleString() ?? '--'}</Table.Td>

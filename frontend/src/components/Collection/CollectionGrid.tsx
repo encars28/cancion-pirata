@@ -21,12 +21,12 @@ export function CollectionGrid({
           >
             <Group gap="lg">
                 <Image src="/src/assets/bookshelf.png" w={35} mt="xl " />
-              <Text ta="left" fw="bold">
+              <Text  fw="bold">
                 {collection.name}
               </Text>
               </Group>
               <Space h="lg" />
-              <Text ta="left" size="sm">{collection.description ?? ""}</Text>
+              <Text  size="sm">{collection.description ?? ""}</Text>
           </Paper>
         </Grid.Col>
       ))}

@@ -93,7 +93,7 @@ export function AddCollection() {
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="lg" p="lg" ta="left">
+      <Stack gap="lg" p="lg" >
         <TextInput
           label="Nombre de la colección"
           placeholder="Mi colección"
@@ -114,7 +114,7 @@ export function AddCollection() {
         <MultiSelect
           data={Object.keys(poems_info)}
           label="Poemas"
-          ta="left"
+          
           placeholder="Seleccione uno o más poemas"
           searchable
           nothingFoundMessage="No se encontraron poemas"

@@ -41,7 +41,7 @@ export function PoemCard({
       modals.openConfirmModal({
         title: "Quitar poema de la colección",
         children: (
-          <Text size="sm" ta="left">
+          <Text size="sm">
             ¿Está seguro de que desea eliminar este poema de la colección? La
             acción es {""}
             <Text component="span" fw="bolder" inherit>irreversible</Text>.
@@ -72,7 +72,7 @@ export function PoemCard({
         <Group gap="lg">
           <Image src="/src/assets/scroll.png" w={40} mt="xl " />
           <Stack gap="xs">
-            <Text ta="left" fw="bold">
+            <Text fw="bold">
               {poem.title}
             </Text>
             {show_author ? (

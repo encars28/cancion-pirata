@@ -71,7 +71,7 @@ export function AddAuthor() {
         closeOnClickOutside={false}
         centered>
         <Form form={form} onSubmit={handleSubmit}>
-          <Stack gap="lg" ta="left" m="md" pb="md">
+          <Stack gap="lg"  m="md" pb="md">
             <TextInput
               name='full_name'
               label="Nombre completo"

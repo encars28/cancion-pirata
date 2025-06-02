@@ -14,7 +14,7 @@ export function PageSettings() {
   }
 
   return (
-    <Stack ta="left" mx="xl">
+    <Stack  mx="xl">
       <Group justify="space-between">
         <Title mt="xl" fw="normal" ml="xl" order={2}>Ajustes</Title>
         <Switch

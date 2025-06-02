@@ -43,7 +43,7 @@ export function DeleteUser({user_id}: {user_id: string}) {
         opened={opened}
         onClose={close}
         title="Eliminar usuario"
-        ta="left"
+        
         padding={30}
         overlayProps={{
           blur: 3,

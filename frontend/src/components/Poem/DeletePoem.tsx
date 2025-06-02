@@ -47,7 +47,7 @@ export function DeletePoem({ poem_id, icon }: { poem_id: string, icon?: boolean 
         opened={opened}
         onClose={close}
         title="Eliminar poema"
-        ta="left"
+        
         padding={30}
         overlayProps={{
           blur: 3,

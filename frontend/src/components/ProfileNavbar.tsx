@@ -33,7 +33,7 @@ export function ProfileNavbar() {
     modals.openConfirmModal({
       title: "Por favor confirme su acción",
       children: (
-        <Text size="sm" ta="left">
+        <Text size="sm" >
           ¿Está seguro de que desea borrar este elemento? La acción es
           irreversible
         </Text>
@@ -64,7 +64,7 @@ export function ProfileNavbar() {
       )}
       <AppShell.Section grow>
         <Container p={0} w="100%" mt="sm">
-          <Text ta="left" mb="sm" px="lg" size="sm" c="dimmed">
+          <Text  mb="sm" px="lg" size="sm" c="dimmed">
             Ajustes de la página
           </Text>
           <NavLink
@@ -82,7 +82,7 @@ export function ProfileNavbar() {
           />
         </Container>
         <Container p={0} w="100%" mt="xl">
-          <Text ta="left" mb="sm" px="lg" size="sm" c="dimmed">
+          <Text  mb="sm" px="lg" size="sm" c="dimmed">
             Ajustes de usuario
           </Text>
           <NavLink

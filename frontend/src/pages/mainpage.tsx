@@ -52,8 +52,8 @@ export function MainPage() {
           <Interweave content={poem.content} />
         </Container>
         <Stack>
-          <Title order={2}>{poem.title}</Title>
-          <Text c="dimmed">
+          <Title ta="center" order={2}>{poem.title}</Title>
+          <Text ta="center" c="dimmed">
             Escrito por:{" "}
             {poem.author_names?.length === 0
               ? "Anónimo"

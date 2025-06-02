@@ -62,7 +62,7 @@ export function PoemPage() {
     modals.openConfirmModal({
       title: "Eliminar poema",
       children: (
-        <Text size="sm" ta="left">
+        <Text size="sm" >
           ¿Está seguro de que desea borrar este poema? La acción es {""}
           <Text component="span" fw="bolder" inherit>
             irreversible
@@ -106,8 +106,8 @@ export function PoemPage() {
           w={{ base: "100%", sm: "60%" }}
         >
           <Container fluid>
-            <Title order={1}>{poem.title}</Title>
-            <Title order={3} mt="xs" c="dimmed" fw="lighter">
+            <Title ta="center" order={1}>{poem.title}</Title>
+            <Title ta="center" order={3} mt="xs" c="dimmed" fw="lighter">
               Autor:{" "}
               {poem.author_names?.length == 0
                 ? "Anónimo"
@@ -159,7 +159,7 @@ export function PoemPage() {
               <Group gap="lg">
                 <Image src="/src/assets/scroll.png" w={40} mt="xl " />
                 <Stack gap="xs">
-                  <Text ta="left" fw="bold">
+                  <Text  fw="bold">
                     {poem.title}
                   </Text>
                   {poem.author_names?.length === 0 ||
@@ -235,7 +235,7 @@ export function PoemPage() {
           {poem.derived_poems && poem.derived_poems.length > 0 && (
             <InfoBox>
               <Text>Este poema tiene derivados.</Text>
-              <List ta="left" withPadding>
+              <List  withPadding>
                 {poem.derived_poems.map((derivedPoem) => (
                   <List.Item key={derivedPoem.id}>
                     <Anchor

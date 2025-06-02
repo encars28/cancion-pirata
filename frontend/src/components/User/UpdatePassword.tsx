@@ -62,7 +62,7 @@ export function UpdatePasswordForm() {
       </Title>
       <Container size={550}>
       <Form form={form} onSubmit={handleSubmit}>
-        <Stack ta="left">
+        <Stack >
           <PasswordInput
             name='current_password'
             key={form.key('current_password')}

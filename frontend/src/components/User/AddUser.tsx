@@ -85,7 +85,7 @@ export function AddUser() {
         closeOnClickOutside={false}
         centered>
         <Form form={form} onSubmit={handleSubmit}>
-          <Stack gap="lg" ta="left" m="md" p="sm">
+          <Stack gap="lg"  m="md" p="sm">
             <TextInput
               name='email'
               key={form.key('email')}

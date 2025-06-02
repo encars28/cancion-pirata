@@ -59,7 +59,7 @@ export function UserMe({ user }: { user: UserPublic }) {
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack ta="left">
+      <Stack >
         <TextInput
           name='email'
           key={form.key('email')}

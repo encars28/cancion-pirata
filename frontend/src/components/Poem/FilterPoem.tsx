@@ -20,7 +20,7 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="sm" ta="left" mt="md">
+      <Stack gap="sm"  mt="md">
         <Flex direction="row" gap="sm">
           <Select
             withCheckIcon={false}

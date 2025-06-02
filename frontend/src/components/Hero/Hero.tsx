@@ -17,13 +17,13 @@ export function Hero() {
     <div className={classes.wrapper}>
       <Overlay color="#000" opacity={1} zIndex={1} />
       <Stack className={classes.inner} gap="xl">
-        <Title ta="left" className={classes.title}>
+        <Title  className={classes.title}>
           Descubre nuestros {""}
           <Text component="span" inherit className={classes.highlight}>
             poemas
           </Text>
         </Title>
-        <Text className={classes.description} ta="left">
+        <Text className={classes.description} >
           Explora nuestra colección de poemas, donde además de clásicos podrás disfrutas poemas originales creados por nuestra comunidad.
         </Text>
         <Flex justify="flex-start" align="center" wrap="wrap" gap="xl" mt="xl" ml="lg">

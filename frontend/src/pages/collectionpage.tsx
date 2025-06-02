@@ -87,7 +87,7 @@ export function CollectionPage() {
     modals.openConfirmModal({
       title: "Eliminar colección",
       children: (
-        <Text size="sm" ta="left">
+        <Text size="sm" >
           ¿Está seguro de que desea eliminar esta colección? La acción es {""}
           <Text component="span" fw="bolder" inherit>
             irreversible
@@ -107,7 +107,7 @@ export function CollectionPage() {
           <MultiSelect
             data={Object.keys(poems_info)}
             label="Poemas"
-            ta="left"
+            
             placeholder="Seleccione uno o más poemas"
             searchable
             nothingFoundMessage="No se encontraron poemas"
@@ -140,7 +140,7 @@ export function CollectionPage() {
   return (
     <Shell>
       <Stack mt={60}>
-        <Title order={1}>{collection.name}</Title>
+        <Title ta="center" order={1}>{collection.name}</Title>
         <Text size="md">{collection.description ?? ""}</Text>
         {(currentUser?.id === collection.user_id ||
           currentUser?.is_superuser) && (

@@ -52,7 +52,7 @@ export function TableSort<T extends BasicData, H extends {}>({ data, headers, mi
   const rows = sortedData.map((row) => (
     <Table.Tr
       key={row.id}
-      ta="left"
+      
     >
       {Object.entries(row).map(([key, value]) => (
         key !== 'id' ? <Table.Td key={key}>{value as string | React.ReactNode}</Table.Td> : null

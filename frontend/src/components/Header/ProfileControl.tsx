@@ -14,7 +14,7 @@ export function ProfileControl() {
   const openModal = () => modals.openConfirmModal({
     title: 'Por favor confirme su acción',
     children: (
-      <Text size="sm" ta="left">
+      <Text size="sm" >
         ¿Está seguro de que desea cerrar sesión?
       </Text>
     ),
