@@ -71,10 +71,6 @@ export default function AllRoutes() {
           <Route index element={<EditPoem />} />
         </Route>
 
-        <Route path="collections/edit/:id" element={<BasePage />}>
-          <Route index element={<EditPoem />} />
-        </Route>
-
         <Route path="me" element={<MePage />}>
           <Route index element={<Profile />} />
           <Route path="profile" element={<Profile />} />

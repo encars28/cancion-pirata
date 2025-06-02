@@ -75,6 +75,12 @@ export function AddCollection() {
         values.description = undefined;
       }
 
+      if (values.poem_ids && values.poem_ids?.length !== 0) {
+        values.poem_ids = values.poem_ids.map(
+          (poem) => poems_info[poem]
+        );
+      }
+
       const collection = await addCollectionMutation.mutateAsync(values);
       if (collection) {
         navigate(`/collections/${collection.id}`);
@@ -102,7 +108,7 @@ export function AddCollection() {
           key={form.key("description")}
           name="description"
           autosize
-          maxRows={5}
+          maxRows={4}
         />
         <MultiSelect
           data={Object.keys(poems_info)}
@@ -111,11 +117,11 @@ export function AddCollection() {
           placeholder="Seleccione uno o más poemas"
           searchable
           nothingFoundMessage="No se encontraron poemas"
-          key={form.key("poems")}
+          key={form.key("poem_ids")}
           clearable
           withCheckIcon={false}
           limit={10}
-          {...form.getInputProps("poems")}
+          {...form.getInputProps("poem_ids")}
         />
         <Group justify="space-between" mt="sm">
           <Stack gap={2}>
@@ -149,7 +155,13 @@ export function AddCollection() {
           <Button variant="outline" onClick={() => modals.closeAll()} w="47%">
             Cancelar
           </Button>
-          <Button type="submit" variant="filled" w="47%">
+          <Button
+            type="submit"
+            variant="filled"
+            w="47%"
+            loading={addCollectionMutation.isPending}
+            loaderProps={{ type: "dots" }}
+          >
             Crear
           </Button>
         </Group>

@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, handleError, handleSuccess } from "../utils";
@@ -22,6 +22,7 @@ import { TbBooks, TbEdit, TbTrash } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import usePoems from "../hooks/usePoems";
+import { EditCollection } from "../components/Collection/EditCollection";
 
 
 export function CollectionPage() {
@@ -30,7 +31,6 @@ export function CollectionPage() {
   const { deleteCollectionMutation, addPoemToCollection } =
     useCollectionActions(collectionId!);
   const { user: currentUser } = useAuth();
-  const navigate = useNavigate();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -132,6 +132,11 @@ export function CollectionPage() {
       ),
     });
 
+  const editCollection = () => modals.open({
+    title: "Editar colección", 
+    children: (<EditCollection collection={collection} />),
+  })
+
   return (
     <Shell>
       <Stack mt={60}>
@@ -154,7 +159,7 @@ export function CollectionPage() {
               <ActionIcon
                 variant="light"
                 size="lg"
-                onClick={() => navigate(`/collections/edit/${collectionId}`)}
+                onClick={editCollection}
               >
                 <TbEdit size={20} />
               </ActionIcon>
