@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from app.crud.user import user_crud
 from app.api.deps import (
     CurrentUser,
+    OptionalCurrentUser,
     SessionDep,
     get_current_active_superuser,
 )
@@ -177,7 +178,7 @@ def register_user(session: SessionDep, user_in: UserRegister) -> Any:
 
 @router.get("/{user_id}", response_model=UserPublic)
 def read_user_by_id(
-    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+    user_id: uuid.UUID, session: SessionDep, current_user: OptionalCurrentUser
 ) -> Any:
     """
     Get a specific user by id.
@@ -187,13 +188,9 @@ def read_user_by_id(
         raise HTTPException(
             status_code=404, detail="The user with this id does not exist in the system"
         )
-    if user == current_user:
+    if user == current_user or (current_user and current_user.is_superuser):
         return user
-    if not current_user.is_superuser:
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges",
-        )
+    
              
     user.collections = [collection for collection in user.collections if collection.is_public]
     return user
