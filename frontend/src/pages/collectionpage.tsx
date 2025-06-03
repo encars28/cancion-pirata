@@ -18,7 +18,7 @@ import {
 import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
-import { TbBooks, TbEdit, TbTrash } from "react-icons/tb";
+import { TbBooks, TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import usePoems from "../hooks/usePoems";
@@ -141,30 +141,30 @@ export function CollectionPage() {
     <Shell>
       <Stack mt={60}>
         <Title ta="center" order={1}>{collection.name}</Title>
-        <Text size="md">{collection.description ?? ""}</Text>
+        <Text ta="center" size="md">{collection.description ?? ""}</Text>
         {(currentUser?.id === collection.user_id ||
           currentUser?.is_superuser) && (
           <Group mt="sm" justify="center">
-            <Tooltip label="Añadir poema">
+            <Tooltip position="bottom" label="Añadir poema">
               <ActionIcon
-                variant="light"
+                variant="filled"
                 size="lg"
                 color="green"
                 onClick={selectPoem}
               >
-                <TbBooks size={20} />
+                <TbPlus size={20} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label="Editar colección">
+            <Tooltip position="bottom" label="Editar">
               <ActionIcon
-                variant="light"
+                variant="filled"
                 size="lg"
                 onClick={editCollection}
               >
                 <TbEdit size={20} />
               </ActionIcon>
             </Tooltip>
-            <Tooltip label="Eliminar colección">
+            <Tooltip position="bottom" label="Eliminar">
               <ActionIcon
                 variant="filled"
                 color="red"
@@ -186,7 +186,7 @@ export function CollectionPage() {
             show_author
           />
         ) : (
-          <Title order={3} mt={80} c="dimmed" fw="lighter">
+          <Title ta="center" order={3} mt={80} c="dimmed" fw="lighter">
             Esta colección todavía no tiene poemas.
           </Title>
         )}

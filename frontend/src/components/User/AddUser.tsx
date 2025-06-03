@@ -91,8 +91,8 @@ export function AddUser() {
               key={form.key('email')}
               label="Email"
               placeholder="ejemplo@ejemplo.com"
-              rightSectionPointerEvents="none"
-              rightSection={<TbAt size={15} />}
+              leftSectionPointerEvents="none"
+              leftSection={<TbAt size={15} />}
               {...form.getInputProps('email')}
               required
             />
@@ -109,8 +109,8 @@ export function AddUser() {
               key={form.key('username')}
               label="Nombre de usuario"
               placeholder="Tu nombre de usuario"
-              rightSectionPointerEvents="none"
-              rightSection={<TbUser size={15} />}
+              leftSectionPointerEvents="none"
+              leftSection={<TbUser size={15} />}
               {...form.getInputProps('username')}
               required
             />
@@ -119,8 +119,8 @@ export function AddUser() {
               key={form.key('full_name')}
               label="Nombre completo"
               placeholder="Nombre completo"
-              rightSectionPointerEvents="none"
-              rightSection={<TbAbc size={15} />}
+              leftSectionPointerEvents="none"
+              leftSection={<TbAbc size={15} />}
               {...form.getInputProps('full_name')}
             />
             <Checkbox

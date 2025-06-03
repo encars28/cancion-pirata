@@ -1,5 +1,5 @@
 import {
-  Grid,
+  Stack,
 } from "@mantine/core";
 import { PoemPublicWithAuthor } from "../../../client";
 import { PoemCard } from "./PoemCard";
@@ -16,17 +16,15 @@ export function ShowPoemGrid({
   removePoem?: boolean;
 }) {
   return (
-    <Grid gutter="xl" align="center" w="100%" h="100%" style={{ alignContent: "stretch", alignItems: "stretch" }}>
+    <Stack w="100%" gap="xl" px={{base: "xl", lg: 60}}>
       {poems.map((poem) => (
-        <Grid.Col key={poem.id} span={{ base: 12, md: 6 }} h="100%" w="100%" style={{ alignContent: "stretch", alignItems: "stretch" }}>
           <PoemCard
             poem={poem}
             show_author={show_author}
             collectionId={collectionId}
             removePoemCollection={removePoem}
           />
-        </Grid.Col>
       ))}
-    </Grid>
+    </Stack>
   );
 }

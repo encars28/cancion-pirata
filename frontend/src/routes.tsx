@@ -76,7 +76,7 @@ export default function AllRoutes() {
           <Route path="profile" element={<Profile />} />
           <Route path="password" element={<UpdatePasswordForm />} />
           <Route path="settings" element={<PageSettings />} />
-          <Route path="*" element={<NothingFound />} />
+          <Route path="*" element={<Profile />} />
         </Route>
       </Route>
 

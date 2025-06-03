@@ -1,5 +1,5 @@
 import { Shell } from "../components/Shell/Shell";
-import { Title } from "@mantine/core";
+import { ActionIcon, Title } from "@mantine/core";
 import { PoemQueryParams } from "../hooks/usePoems";
 import { FilterPoem, PoemFilters } from "../components/Poem/FilterPoem";
 import { useDisclosure } from "@mantine/hooks";
@@ -7,22 +7,33 @@ import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { PoemGrid } from "../components/Poem/PoemGrid/PoemGrid";
-import { TbFilter } from "react-icons/tb";
-import { Container, Space,  Paper, Drawer, Button, Group, Flex } from "@mantine/core";
+import { TbAdjustments, TbFilter } from "react-icons/tb";
+import {
+  Container,
+  Space,
+  Paper,
+  Drawer,
+  Button,
+  Group,
+  Flex,
+} from "@mantine/core";
 import { useSearchParams, useNavigate } from "react-router";
 
-export const POEMS_PER_PAGE = 20
+export const POEMS_PER_PAGE = 10;
 
 export function PoemsPage() {
   const [opened, { open, close }] = useDisclosure(false);
-  const navigate = useNavigate()
-  const queryClient = useQueryClient()
-  const [filters, setFilters] = useState<PoemQueryParams>({ skip: 0, limit: POEMS_PER_PAGE } as PoemQueryParams)
-  const [searchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<PoemQueryParams>({
+    skip: 0,
+    limit: POEMS_PER_PAGE,
+  } as PoemQueryParams);
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["poems", "filters"] })
-  }, [filters])
+    queryClient.invalidateQueries({ queryKey: ["poems", "filters"] });
+  }, [filters]);
 
   const form = useForm<PoemFilters>({
     mode: "controlled",
@@ -33,10 +44,12 @@ export function PoemsPage() {
       updated_at: "",
       language: "",
       desc: false,
-    }
-  })
+    },
+  });
 
-  const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page") as string)
+    : 1;
 
   const setPage = (page: number) => {
     navigate({ search: `?page=${page}` });
@@ -44,49 +57,52 @@ export function PoemsPage() {
       ...filters,
       skip: (page - 1) * POEMS_PER_PAGE,
       limit: POEMS_PER_PAGE,
-    })
-  }
+    });
+  };
 
   const handleSubmit = async (values: typeof form.values) => {
     const updatedFilters: PoemQueryParams = {
-      order_by: values.order_by === "Fecha de publicación" ? "created_at" : values.order_by === "Fecha de modificación" ? "updated_at" : "title",
+      order_by:
+        values.order_by === "Fecha de publicación"
+          ? "created_at"
+          : values.order_by === "Fecha de modificación"
+          ? "updated_at"
+          : "title",
       title: values.title,
       created_at: values.created_at,
       updated_at: values.updated_at,
       desc: values.desc,
       skip: (page - 1) * POEMS_PER_PAGE,
-      limit: POEMS_PER_PAGE, 
+      limit: POEMS_PER_PAGE,
       verses: values.verses,
-      type: values.type === "Todos" ? "all" : values.type === "Versión" ? "version" : values.type === "Traducción" ? "translation" : values.type === "Original" ? "original" : values.type === "Derivado" ? "derived" : "",
-    }
+      type:
+        values.type === "Todos"
+          ? "all"
+          : values.type === "Versión"
+          ? "version"
+          : values.type === "Traducción"
+          ? "translation"
+          : values.type === "Original"
+          ? "original"
+          : values.type === "Derivado"
+          ? "derived"
+          : "",
+    };
 
-    setFilters(updatedFilters)
-  }
+    setFilters(updatedFilters);
+  };
 
   return (
     <Shell>
-      <Container mt={50}>
-        <Title order={1}>Lista de poemas</Title>
-      </Container>
-      <Group hiddenFrom="sm" justify="flex-end" mt="xl" mr={60}>
-        <Button
-          variant="light"
-          color="grey"
-          leftSection={<TbFilter />}
-          onClick={open}
-        >
-          Filtrar
-        </Button>
+      <Group justify="center" mt={50} mb={50} gap="xl">
+        <Title ta="center" order={1}>
+          Poemas
+        </Title>
+        <ActionIcon variant="default" onClick={open} size={40}>
+          <TbAdjustments size={25} />
+        </ActionIcon>
       </Group>
-      <Space h={50} />
-      <Flex wrap="nowrap" >
-        <PoemGrid filter={filters} setPage={setPage}/>
-        <Container visibleFrom="sm" mr="xl" w={400}>
-          {/* <Paper shadow="xl" p="lg" mr="xl" h={780} withBorder> */}
-            <FilterPoem form={form} handleSubmit={handleSubmit} />
-          {/* </Paper> */}
-        </Container>
-      </Flex>
+      <PoemGrid filter={filters} setPage={setPage} />
       <Drawer
         offset={8}
         radius="md"
@@ -94,12 +110,11 @@ export function PoemsPage() {
         onClose={close}
         title="Ordenar y filtrar"
         position="right"
-        hiddenFrom="sm"
         padding="xl"
         size="xs"
       >
         <FilterPoem form={form} handleSubmit={handleSubmit} />
       </Drawer>
     </Shell>
-  )
+  );
 }

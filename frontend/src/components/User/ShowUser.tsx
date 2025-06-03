@@ -8,7 +8,9 @@ import {
   Space,
   Tabs,
   Stack,
+  RemoveScroll,
   Button,
+  Box,
 } from "@mantine/core";
 import { TbUser, TbBook, TbBooks } from "react-icons/tb";
 import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
@@ -60,14 +62,9 @@ export function ShowUser({ user }: { user: UserPublic }) {
       <Tabs variant="outline" defaultValue="collections" pb={100}>
         <Tabs.List>
           {author && (
-            <>
               <Tabs.Tab value="poems" leftSection={<TbBook size={16} />}>
                 Poemas
               </Tabs.Tab>
-              <Tabs.Tab value="info" leftSection={<TbUser size={16} />}>
-                Información
-              </Tabs.Tab>
-            </>
           )}
           <Tabs.Tab value="collections" leftSection={<TbBooks size={18} />}>
             Colecciones
@@ -79,17 +76,13 @@ export function ShowUser({ user }: { user: UserPublic }) {
               <Space mt="xl" />
               <ShowPoemGrid poems={author.poems ? author.poems : []} />
             </Tabs.Panel>
-            <Tabs.Panel value="info">
-              <Space mt="xl" />
-              <EditAuthor author={author} />
-            </Tabs.Panel>
           </>
         )}
         <Tabs.Panel value="collections">
           <Space mt="xl" />
           {user.collections && user.collections.length > 0 ? (
             <Stack gap="xl">
-              <Group justify="flex-end">
+              <Group justify="flex-start">
                 <Button variant="filled" onClick={addPoemModal}>
                   Crear colección
                 </Button>

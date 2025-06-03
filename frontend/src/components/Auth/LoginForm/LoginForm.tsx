@@ -72,8 +72,8 @@ export function LoginForm() {
               name='email'
               label="Email"
               placeholder="ejemplo@ejemplo.com"
-              rightSectionPointerEvents="none"
-              rightSection={<TbAt size={15} />}
+              leftSectionPointerEvents="none"
+              leftSection={<TbAt size={15} />}
               {...form.getInputProps('email')}
               key={form.key('email')}
               required

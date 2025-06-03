@@ -1,11 +1,11 @@
 import { Shell } from "../components/Shell/Shell";
-import { Container, Paper, Drawer, Button, Group, Title, Flex } from "@mantine/core";
+import { ActionIcon, Drawer, Group, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { AuthorQueryParams } from "../hooks/useAuthors";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
-import { TbFilter } from "react-icons/tb";
+import { TbAdjustments } from "react-icons/tb";
 import React, { useEffect } from "react"
 import { AuthorGrid } from "../components/Author/AuthorGrid";
 import { useSearchParams, useNavigate } from "react-router";
@@ -59,27 +59,15 @@ export function AuthorsPage() {
 
   return (
     <Shell>
-      <Container mt={40}>
-        <Title order={1}>Lista de autores</Title>
-      </Container>
-      <Group hiddenFrom="sm" justify="flex-end" mt="xl" mr={60}>
-        <Button
-          variant="light"
-          color="grey"
-          leftSection={<TbFilter />}
-          onClick={open}
-        >
-          Filtrar
-        </Button>
+      <Group justify="center" mt={50} mb={50} gap="xl">
+        <Title ta="center" order={1}>
+          Autores
+        </Title>
+        <ActionIcon variant="default" onClick={open} size={40}>
+          <TbAdjustments size={25} />
+        </ActionIcon>
       </Group>
-      <Flex wrap="nowrap">
-        <AuthorGrid filter={filters} setPage={setPage} />
-        <Container visibleFrom="sm" w={400}>
-          <Paper shadow="xl" p="lg" mr="xl" h={530} withBorder>
-            <FilterAuthor form={form} handleSubmit={handleSubmit} />
-          </Paper>
-        </Container>
-      </Flex>
+      <AuthorGrid filter={filters} setPage={setPage} />
       <Drawer
         offset={8}
         radius="md"
@@ -87,7 +75,6 @@ export function AuthorsPage() {
         onClose={close}
         title="Ordenar y filtrar"
         position="right"
-        hiddenFrom="sm"
         padding="xl"
         size="xs"
       >

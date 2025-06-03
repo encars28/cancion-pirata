@@ -4,6 +4,7 @@ import {
   PasswordInput,
   Title,
   Container,
+  Paper
 } from '@mantine/core';
 import { hasLength, useForm } from "@mantine/form";
 import { Form } from "@mantine/form";
@@ -56,11 +57,11 @@ export function UpdatePasswordForm() {
   }
 
   return (
-    <>
-      <Title ta="center" m="xl" mt={60}>
+    <Container size={550} h="100%" style={{ alignContent: "center" }}>
+      <Paper withBorder shadow="md" p="xl" radius="lg">
+      <Title ta="center" mb="xl">
         Cambiar contraseña
       </Title>
-      <Container size={550}>
       <Form form={form} onSubmit={handleSubmit}>
         <Stack >
           <PasswordInput
@@ -89,7 +90,7 @@ export function UpdatePasswordForm() {
           </Button>
         </Stack>
       </Form>
+      </Paper>
       </Container>
-    </>
   )
 }

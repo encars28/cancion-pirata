@@ -67,8 +67,8 @@ export function UserMe({ user }: { user: UserPublic }) {
           placeholder="Correo"
           type="email"
           {...form.getInputProps('email')}
-          rightSectionPointerEvents="none"
-          rightSection={<TbAt size={15} />}
+          leftSectionPointerEvents="none"
+          leftSection={<TbAt size={15} />}
         />
         <TextInput
           name='username'
@@ -76,8 +76,8 @@ export function UserMe({ user }: { user: UserPublic }) {
           label="Nombre de usuario"
           placeholder="Nombre de usuario"
           {...form.getInputProps('username')}
-          rightSectionPointerEvents="none"
-          rightSection={<TbUser size={15} />}
+          leftSectionPointerEvents="none"
+          leftSection={<TbUser size={15} />}
         />
         <TextInput
           name='full_name'
@@ -85,8 +85,8 @@ export function UserMe({ user }: { user: UserPublic }) {
           label="Nombre completo"
           placeholder="Nombre"
           {...form.getInputProps('full_name')}
-          rightSectionPointerEvents="none"
-          rightSection={<TbAbc size={15} />}
+          leftSectionPointerEvents="none"
+          leftSection={<TbAbc size={15} />}
         />
         <Group
           justify='flex-end'

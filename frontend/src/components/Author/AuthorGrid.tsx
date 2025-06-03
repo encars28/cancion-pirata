@@ -6,6 +6,7 @@ import { Loading } from '../Loading';
 import { AuthorPublicWithPoems } from '../../client';
 import { CardGrid } from '../CardGrid';
 import { AUTHORS_PER_PAGE } from '../../pages/authorspage';
+import { useSearchParams } from 'react-router';
 
 export interface CardGridProps {
   path: string;
@@ -15,6 +16,7 @@ export interface CardGridProps {
 
 export function AuthorGrid({ filter, setPage }: { filter: AuthorQueryParams, setPage: (page: number) => void  }) {
   const { data, error, isPending, isError } = useAuthors(filter)
+  const [searchParams] = useSearchParams();
 
   if (isPending) {
     return (<Loading />)
@@ -26,6 +28,10 @@ export function AuthorGrid({ filter, setPage }: { filter: AuthorQueryParams, set
 
   const authors = data?.data as AuthorPublicWithPoems[]
   const count = data?.count as number
+  const totalPages =
+    count % AUTHORS_PER_PAGE === 0
+      ? count / AUTHORS_PER_PAGE
+      : Math.floor(count / AUTHORS_PER_PAGE) + 1;
 
   const cardData: CardGridProps[] = authors.map((author) => ({
     path: `/authors/${author.id}`,
@@ -35,22 +41,26 @@ export function AuthorGrid({ filter, setPage }: { filter: AuthorQueryParams, set
 
   return (
     <Stack
-      align='center'
-      gap={100}
-      mt={60}
-      mb={60}
-      mr="xl"
-      ml={{ base: "xl", md: 60 }}
-      w="100%"
+    align="center"
+    gap={80}
+    m="xl"
+    pb={70}
     >
       <CardGrid data={cardData} />
-      <Pagination
-        color='grey'
-        siblings={3}
-        total={count % AUTHORS_PER_PAGE === 0 ? count / AUTHORS_PER_PAGE : Math.floor(count / AUTHORS_PER_PAGE) + 1}
-        onChange={(page) => setPage(page)}
-        disabled={count <= AUTHORS_PER_PAGE}
-      />
+      <Stack>
+        <Text c="dimmed" ta="center" size="sm">
+          Página {searchParams.get("page") ?? 1} de {totalPages}
+        </Text>
+        <Pagination
+          color="grey"
+          // siblings={3}
+          withPages={false}
+          total={totalPages}
+          onChange={(page) => setPage(page)}
+          disabled={count <= AUTHORS_PER_PAGE}
+          withEdges
+        />
+      </Stack>
     </Stack>
   )
 }

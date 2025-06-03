@@ -26,21 +26,6 @@ export function Hero() {
         <Text className={classes.description} >
           Explora nuestra colección de poemas, donde además de clásicos podrás disfrutas poemas originales creados por nuestra comunidad.
         </Text>
-        <Flex justify="flex-start" align="center" wrap="wrap" gap="xl" mt="xl" ml="lg">
-          <Button
-            className={classes.control}
-            variant="white"
-            onClick={() => navigate("/poems")}
-          >
-            Poemas
-          </Button>
-          <Button
-            className={classes.control}
-            onClick={() => navigate("/authors")}
-          >
-            Autores
-          </Button>
-        </Flex>
       </Stack>
     </div>
   );

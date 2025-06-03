@@ -4,36 +4,43 @@ import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
 import { handleError, callService } from "../utils";
 import { useNavigate } from "react-router";
-import { Group, Title, Container } from "@mantine/core";
+import {
+  Group,
+  Title,
+  Container,
+  Stack,
+  Flex,
+  Center,
+  Paper,
+} from "@mantine/core";
 
 export function Profile() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { isPending, isError, data, error } = useQuery({
-    queryKey: ['users', 'me'],
+    queryKey: ["users", "me"],
     queryFn: async () => callService(usersReadUserMe),
     placeholderData: (prevData) => prevData,
-  })
+  });
 
   if (isPending) {
-    return (<Loading />)
+    return <Loading />;
   }
 
   if (isError) {
-    navigate("/")
+    navigate("/");
     handleError(error as any);
   }
 
-  const user: UserPublic = data!
+  const user: UserPublic = data!;
 
   return (
-    <>
-      <Group m="xl" justify="flex-end">
-      </Group>
-      <Title ta="center" order={1} m="xl">Datos usuario</Title>
-      <Container size={550}>
+    <Container size={550} h="100%" style={{ alignContent: "center" }}>
+      <Paper withBorder shadow="md" p="xl" radius="lg">
+        <Title ta="center" order={1} mb="xl">
+          Perfil
+        </Title>
         <UserMe user={user} />
-      </Container>
-
-    </>
+      </Paper>
+    </Container>
   );
 }

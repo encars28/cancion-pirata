@@ -2,6 +2,7 @@ import {
   ActionIcon,
   Badge,
   Card,
+  Divider,
   Group,
   Image,
   Paper,
@@ -65,10 +66,11 @@ export function PoemCard({
       className={classes.paper}
       w="100%"
       h="100%"
+      p="lg"
       onClick={() => navigate(`/poems/${poem.id}`)}
     >
-      <Card.Section>
-      <Group justify="space-between" align="center" mb="md">
+      <Card.Section p="lg">
+      <Group justify="space-between" align="center" mb="xs">
         <Group gap="lg">
           <Image src="/src/assets/scroll.png" w={40} mt="xl " />
           <Stack gap="xs">
@@ -99,7 +101,7 @@ export function PoemCard({
           </Stack>
         </Group>
         {removePoemCollection && collectionId && (
-          <Tooltip label="Quitar de la colección">
+          <Tooltip label="Eliminar">
             <ActionIcon
               variant="light"
               color="red"
@@ -112,9 +114,10 @@ export function PoemCard({
         )}
       </Group>
       </Card.Section>
-      <Space h="xl" />
+      <Divider mb="sm" />
       <Group justify="flex-end" gap="xl">
         <Text size="sm" c="dimmed">
+          Tipo:{" "}
           {poem.type === null
             ? "Original"
             : poem.type === 0

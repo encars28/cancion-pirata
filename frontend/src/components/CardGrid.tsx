@@ -16,6 +16,7 @@ export function CardGrid({ data }: { data: CardGridProps[] }) {
       spacing="sm"
       verticalSpacing="xl"  
       w="100%"
+      px={{base: "xl", lg: 60}}
     >
       {data.map((card) => (
         <Card
@@ -23,6 +24,7 @@ export function CardGrid({ data }: { data: CardGridProps[] }) {
           radius="md"
           onClick={() => navigate(card.path)}
           key={card.path}
+          ta="center"
         >
           <Card.Section>
             <Center>

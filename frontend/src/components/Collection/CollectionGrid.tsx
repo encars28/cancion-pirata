@@ -1,7 +1,8 @@
 import { CollectionBasic } from "../../client";
-import { Text, Paper, Group, Grid, Image, Space } from "@mantine/core";
+import { Text, Paper, Group, Grid, Space, Image } from "@mantine/core";
 import classes from "./CollectionGrid.module.css";
 import { useNavigate } from "react-router";
+import { TbBooks } from "react-icons/tb";
 
 export function CollectionGrid({
   collections,
@@ -20,7 +21,8 @@ export function CollectionGrid({
             onClick={() => navigate(`/collections/${collection.id}`)}
           >
             <Group gap="lg">
-                <Image src="/src/assets/bookshelf.png" w={35} mt="xl " />
+              {/* <TbBooks size={30} /> */}
+              <Image src="/src/assets/bookshelf.png" w={40}/>
               <Text  fw="bold">
                 {collection.name}
               </Text>

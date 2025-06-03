@@ -2,8 +2,9 @@ import { callService, handleError, handleSuccess } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
-import {collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
+import {collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
 import useAuth from './useAuth'
+import { modals } from '@mantine/modals'
 
 const useCollectionActions = (collectionId: string) => {
   const queryClient = useQueryClient()
@@ -23,9 +24,27 @@ const useCollectionActions = (collectionId: string) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
+      queryClient.invalidateQueries({ queryKey: ['users', currentUser?.id] })
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
     }
   })
 
+    const addPoemToCollection = useMutation({
+    mutationFn: async (poemId: string) =>
+      callService(collectionsAddPoemToCollection, {
+        path: { collection_id: collectionId, poem_id: poemId },
+      }),
+    onSuccess: () => {
+      handleSuccess();
+      modals.closeAll();
+    },
+    onError: (error) => {
+      handleError(error as any);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+    },
+  });
 
   const removePoemFromCollection = useMutation({
     mutationFn: async (poemId: string) =>
@@ -53,6 +72,8 @@ const useCollectionActions = (collectionId: string) => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
       queryClient.invalidateQueries({ queryKey: ['poems'] })
+      queryClient.invalidateQueries({ queryKey: ['users', currentUser?.id] })
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
     }
   })
 
@@ -61,6 +82,7 @@ const useCollectionActions = (collectionId: string) => {
     editCollectionMutation,
     deleteCollectionMutation,
     removePoemFromCollection,
+    addPoemToCollection
   }
 
 }

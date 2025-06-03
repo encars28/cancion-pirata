@@ -21,7 +21,7 @@ import {
 import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
 import { modals } from "@mantine/modals";
-import { TbBooks, TbEdit, TbTrash } from "react-icons/tb";
+import { TbBooks, TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import { Interweave } from "interweave";
 import { InfoBox } from "../components/InfoBox";
 import { AddCollection } from "../components/Collection/AddCollection";
@@ -42,7 +42,7 @@ export function PoemPage() {
   const addPoemModal = () =>
     modals.open({
       title: "Crear colección",
-      children: <AddCollection />,
+      children: <AddCollection  />,
     });
 
   const { isPending, isError, data, error } = usePoem(poemId!, true);
@@ -87,7 +87,7 @@ export function PoemPage() {
               No hay colecciones creadas.
             </Title>
             <Button variant="filled" mt="xl" onClick={addPoemModal}>
-              Crear colección
+              Crear colección y añadir poema
             </Button>
           </Stack>
         ),
@@ -117,12 +117,12 @@ export function PoemPage() {
               <Group justify="center" mt="lg" gap="xs">
                 <Tooltip label="Añadir a colección">
                   <ActionIcon
-                    variant="light"
+                    variant="filled"
                     size={35}
                     color="green"
                     onClick={addPoemToCollectionModal}
                   >
-                    <TbBooks size={20} />
+                    <TbPlus size={20} />
                   </ActionIcon>
                 </Tooltip>
                 {((poem.author_ids &&
@@ -132,7 +132,7 @@ export function PoemPage() {
                   <>
                     <Tooltip label="Editar">
                       <ActionIcon
-                        variant="light"
+                        variant="filled"
                         size={35}
                         onClick={() => navigate(`/poems/edit/${poem.id}`)}
                       >

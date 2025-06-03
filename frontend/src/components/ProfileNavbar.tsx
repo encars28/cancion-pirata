@@ -10,6 +10,7 @@ import {
 import {
   TbChevronRight,
   TbLock,
+  TbLogout,
   TbSettings,
   TbTrash,
   TbUser,
@@ -19,6 +20,7 @@ import { useNavigate, useLocation } from "react-router";
 import useAuth from "../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useUserActions from "../hooks/useUserActions";
+import { handleSuccess } from "../utils";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ export function ProfileNavbar() {
     modals.openConfirmModal({
       title: "Por favor confirme su acción",
       children: (
-        <Text size="sm" >
+        <Text size="sm">
           ¿Está seguro de que desea borrar este elemento? La acción es
           irreversible
         </Text>
@@ -43,37 +45,44 @@ export function ProfileNavbar() {
       labels: { confirm: "Eliminar", cancel: "Cancelar" },
     });
 
+  const logoutModal = () =>
+    modals.openConfirmModal({
+      title: "Cerrar sesión",
+      children: <Text size="sm">¿Está seguro de que desea cerrar sesión?</Text>,
+      onConfirm: () => {
+        logout();
+        handleSuccess();
+      },
+      confirmProps: { color: "red" },
+      labels: { confirm: "Cerrar sesión", cancel: "Cancelar" },
+    });
+
   return (
-    <AppShell.Navbar>
-      <AppShell.Section mt="md" px="lg">
+    <AppShell.Aside>
+      <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
           <Avatar src="/src/assets/Cat03.jpg" name="Usuario" size={120} />
         </Stack>
       </AppShell.Section>
-      {currentUser?.author_id && (
-        <AppShell.Section px="lg" my="md">
-          <Button
-            onClick={() => navigate(`/authors/${currentUser.author_id}`)}
-            mb="sm"
-            variant="default"
-            fullWidth
-          >
-            Ir a página de autor
-          </Button>
-        </AppShell.Section>
-      )}
+      <AppShell.Section px="xl" my="md">
+        <Button
+          onClick={() => navigate(`/users/${currentUser?.id}`)}
+          mb="sm"
+          variant="default"
+          fullWidth
+        >
+          Ver usuario
+        </Button>
+      </AppShell.Section>
       <AppShell.Section grow>
         <Container p={0} w="100%" mt="sm">
-          <Text  mb="sm" px="lg" size="sm" c="dimmed">
+          <Text mb="sm" px="lg" size="sm" c="dimmed">
             Ajustes de la página
           </Text>
           <NavLink
-            px="lg"
+            px="xl"
             label="Configuración de la página"
             leftSection={<TbSettings size={16} />}
-            rightSection={
-              <TbChevronRight size={12} className="mantine-rotate-rtl" />
-            }
             onClick={() => {
               setActive("settings");
               navigate("/me/settings");
@@ -82,16 +91,13 @@ export function ProfileNavbar() {
           />
         </Container>
         <Container p={0} w="100%" mt="xl">
-          <Text  mb="sm" px="lg" size="sm" c="dimmed">
+          <Text mb="sm" px="lg" size="sm" c="dimmed">
             Ajustes de usuario
           </Text>
           <NavLink
-            px="lg"
-            label="Datos usuario"
+            px="xl"
+            label="Datos Perfil"
             leftSection={<TbUser size={16} />}
-            rightSection={
-              <TbChevronRight size={12} className="mantine-rotate-rtl" />
-            }
             onClick={() => {
               setActive("profile");
               navigate("/me/profile");
@@ -99,12 +105,9 @@ export function ProfileNavbar() {
             active={active === "profile"}
           />
           <NavLink
-            px="lg"
+            px="xl"
             label="Cambiar contraseña"
             leftSection={<TbLock size={16} />}
-            rightSection={
-              <TbChevronRight size={12} className="mantine-rotate-rtl" />
-            }
             onClick={() => {
               setActive("password");
               navigate("/me/password");
@@ -112,12 +115,9 @@ export function ProfileNavbar() {
             active={active === "password"}
           />
           <NavLink
-            px="lg"
+            px="xl"
             label="Eliminar cuenta"
             leftSection={<TbTrash size={16} />}
-            rightSection={
-              <TbChevronRight size={12} className="mantine-rotate-rtl" />
-            }
             onClick={deleteMe}
             color="red"
             active
@@ -126,10 +126,16 @@ export function ProfileNavbar() {
         </Container>
       </AppShell.Section>
       <AppShell.Section px="lg" py="xl">
-        <Button onClick={() => logout()} mb="sm" color="red" fullWidth>
-          Logout
+        <Button
+          leftSection={<TbLogout />}
+          onClick={logoutModal}
+          mb="sm"
+          color="red"
+          fullWidth
+        >
+          Cerrar sesión
         </Button>
       </AppShell.Section>
-    </AppShell.Navbar>
+    </AppShell.Aside>
   );
 }

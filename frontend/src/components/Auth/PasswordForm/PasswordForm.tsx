@@ -9,6 +9,7 @@ import {
   TextInput,
   Title,
   UnstyledButton,
+  Anchor
 } from '@mantine/core';
 import { isEmail, useForm } from "@mantine/form";
 import { TbArrowLeft, TbAt } from "react-icons/tb";
@@ -73,22 +74,23 @@ export function PasswordForm() {
           Introduce tu email
         </Text>
         <Paper withBorder className={classes.paper}>
-          <UnstyledButton
+          <Anchor
             className={classes.return}
-            disabled={mutation.isPending}
-            onClick={() => navigate("/login")}
+            underline='hover'
+            onClick={() => {!mutation.isPending && navigate("/login")}}
           >
-            <Center inline>
+            <>
               <TbArrowLeft size={15} />
-              <Box ml={5}>Volver</Box>
-            </Center>
-          </UnstyledButton>
+              {" "}
+              Volver
+            </>
+          </Anchor>
           <TextInput
             name='email'
             label="Email"
             placeholder="ejemplo@ejemplo.com"
-            rightSectionPointerEvents="none"
-            rightSection={<TbAt size={15} />}
+            leftSectionPointerEvents="none"
+            leftSection={<TbAt size={15} />}
             key={form.key('email')}
             {...form.getInputProps('email')}
             required

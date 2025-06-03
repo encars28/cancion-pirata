@@ -79,8 +79,8 @@ export function RegisterForm() {
                 name='full_name'
                 label="Nombre completo"
                 placeholder="Tu nombre"
-                rightSectionPointerEvents="none"
-                rightSection={<TbAbc size={15} />}
+                leftSectionPointerEvents="none"
+                leftSection={<TbAbc size={15} />}
                 key={form.key('full_name')}
                 {...form.getInputProps('full_name')}
               />
@@ -91,8 +91,8 @@ export function RegisterForm() {
                 name='username'
                 label="Nombre de usuario"
                 placeholder="Tu nombre de usuario"
-                rightSectionPointerEvents="none"
-                rightSection={<TbUser size={15} />}
+                leftSectionPointerEvents="none"
+                leftSection={<TbUser size={15} />}
                 key={form.key('username')}
                 {...form.getInputProps('username')}
                 required
@@ -103,8 +103,8 @@ export function RegisterForm() {
                 name='email'
                 label="Email"
                 placeholder="ejemplo@ejemplo.com"
-                rightSectionPointerEvents="none"
-                rightSection={<TbAt size={15} />}
+                leftSectionPointerEvents="none"
+                leftSection={<TbAt size={15} />}
                 key={form.key('email')}
                 {...form.getInputProps('email')}
                 required

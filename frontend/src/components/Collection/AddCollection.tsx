@@ -12,7 +12,7 @@ import { Form } from "@mantine/form";
 import usePoems from "../../hooks/usePoems";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
-import { CollectionCreate } from "../../client";
+import { CollectionCreate, collectionsAddPoemToCollection } from "../../client";
 import { collectionsCreateCollection } from "../../client";
 import { callService, handleError, handleSuccess } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,12 +22,35 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
-export function AddCollection() {
+export function AddCollection({ redirect = true}: { redirect?: boolean }) {
   const { data: poemsData } = usePoems({});
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
 
+  const addPoemToCollection = useMutation({
+    mutationFn: async ({
+      poemId,
+      collectionId,
+    }: {
+      poemId: string;
+      collectionId: string;
+    }) =>
+      callService(collectionsAddPoemToCollection, {
+        path: { collection_id: collectionId, poem_id: poemId },
+      }),
+    onSuccess: () => {
+      handleSuccess();
+      modals.closeAll();
+    },
+    onError: (error) => {
+      handleError(error as any);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["collections"] });
+    },
+  });
+  
   const poems_info = Object.fromEntries(
     poemsData?.data?.map((poem) => [
       `${poem.title} ${
@@ -42,7 +65,7 @@ export function AddCollection() {
       callService(collectionsCreateCollection, { body: data }),
     onSuccess: () => {
       notifications.clean();
-      modals.closeAll();
+      modals.closeAll()
       handleSuccess();
     },
     onError: (error) => {
@@ -51,6 +74,7 @@ export function AddCollection() {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["users", currentUser?.id] });
+      queryClient.invalidateQueries({ queryKey: ["currentUser"]})
     },
   });
 
@@ -83,11 +107,14 @@ export function AddCollection() {
       }
 
       const collection = await addCollectionMutation.mutateAsync(values);
-      if (collection) {
-        navigate(`/collections/${collection.id}`);
-      } else {
-        navigate(`/users/${currentUser?.id}`);
+      if (redirect) {
+        if (collection) {
+          navigate(`/collections/${collection.id}`);
+        } else {
+          navigate(`/users/${currentUser?.id}`);
+        }
       }
+
     } catch {}
   };
 

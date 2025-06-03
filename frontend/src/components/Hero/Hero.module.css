@@ -1,33 +1,41 @@
 .wrapper {
   position: relative;
-  height: 600px;
+  height: 550px;
   padding-top: 160px;
   background-image: url(/src/assets/bookshelves.jpg);
   background-size: cover;
   background-position: center;
   padding-left: 100px;
-  padding-right: 300px;
 
   @media (max-width: $mantine-breakpoint-xs) {
     padding-top: 120px;
     padding-left: var(--mantine-spacing-xl);
     padding-right: var(--mantine-spacing-xl);
+    height: 400px;
   }
 
   @media (max-width: $mantine-breakpoint-sm) {
     padding-top: 90px;
     padding-left: var(--mantine-spacing-xl);
     padding-right: var(--mantine-spacing-xl);
+    height: 500px;
   }
-
   @media (max-width: $mantine-breakpoint-md) {
-    padding-right: var(--mantine-spacing-md);
+    padding-top: 120px;
+  }
+  @media (max-width: $mantine-breakpoint-lg) {
+    padding-top: 100px;
   }
 }
 
 .inner {
   position: relative;
   z-index: 1;
+  width: 50%;
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 100%;
+  }
 }
 
 .title {
@@ -38,7 +46,7 @@
   padding-right: var(--mantine-spacing-md);
   color: var(--mantine-color-white);
   margin-bottom: var(--mantine-spacing-xs);
-  text-align: center;
+  text-align: left;
   font-family:
     Greycliff CF,
     var(--mantine-font-family);
@@ -55,7 +63,7 @@
 
 .description {
   color: var(--mantine-color-gray-0);
-  text-align: center;
+  text-align: left;
   margin-left: var(--mantine-spacing-lg);
   margin-right: var(--mantine-spacing-lg);
   font-size: var(--mantine-spacing-lg);
