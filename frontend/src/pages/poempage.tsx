@@ -7,7 +7,7 @@ import useAuth from "../hooks/useAuth";
 import {
   List,
   Title,
-  Container, 
+  Container,
   Flex,
   Stack,
   Text,
@@ -17,11 +17,21 @@ import {
   Tooltip,
   Anchor,
   Button,
+  Divider,
+  HoverCard,
 } from "@mantine/core";
 import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
 import { modals } from "@mantine/modals";
-import { TbBooks, TbEdit, TbPlus, TbTrash } from "react-icons/tb";
+import {
+  TbBooks,
+  TbEdit,
+  TbMessageLanguage,
+  TbPlus,
+  TbPoint,
+  TbPointFilled,
+  TbTrash,
+} from "react-icons/tb";
 import { Interweave } from "interweave";
 import { InfoBox } from "../components/InfoBox";
 import { AddCollection } from "../components/Collection/AddCollection";
@@ -42,7 +52,7 @@ export function PoemPage() {
   const addPoemModal = () =>
     modals.open({
       title: "Crear colección",
-      children: <AddCollection  />,
+      children: <AddCollection />,
     });
 
   const { isPending, isError, data, error } = usePoem(poemId!, true);
@@ -62,7 +72,7 @@ export function PoemPage() {
     modals.openConfirmModal({
       title: "Eliminar poema",
       children: (
-        <Text size="sm" >
+        <Text size="sm">
           ¿Está seguro de que desea borrar este poema? La acción es {""}
           <Text component="span" fw="bolder" inherit>
             irreversible
@@ -95,161 +105,138 @@ export function PoemPage() {
 
   return (
     <Shell>
-      <Space h="xl" />
-      <Flex justify="center" wrap="wrap" mt="xl">
-        <Flex
-          justify="center"
-          align="center"
-          direction="column"
-          gap="xl"
-          mt="xl"
-          w={{ base: "100%", sm: "60%" }}
-        >
-          <Container fluid>
-            <Title ta="center" order={1}>{poem.title}</Title>
-            <Title ta="center" order={3} mt="xs" c="dimmed" fw="lighter">
-              Autor:{" "}
-              {poem.author_names?.length == 0
-                ? "Anónimo"
-                : poem.author_names?.join(", ")}
+      <Stack justify="center" align="center" my={50} gap="sm">
+        <Group gap={50}>
+          {poem.original && poem.type == PoemType.TRANSLATION && (
+            <HoverCard width={250}>
+              <HoverCard.Target>
+                <ActionIcon variant="light" radius="xl" size={60}>
+                  <TbMessageLanguage size={30} />
+                </ActionIcon>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Text size="sm">
+                  Este poema es una traducción de{" "}
+                  <Anchor
+                    underline="hover"
+                    target="_blank"
+                    onClick={() => navigate(`/poems/${poem.original?.id}`)}
+                  >
+                    {poem.original.title}
+                  </Anchor>
+                </Text>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          )}
+          {poem.original && poem.type == PoemType.VERSION && (
+            <HoverCard width={250}>
+              <HoverCard.Target>
+                <ActionIcon variant="light" radius="xl" size={60}>
+                  <TbMessageLanguage size={30} />
+                </ActionIcon>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Text size="sm">
+                  Este poema es una versión de{" "}
+                  <Anchor
+                    underline="hover"
+                    target="_blank"
+                    onClick={() => navigate(`/poems/${poem.original?.id}`)}
+                  >
+                    {poem.original.title}
+                  </Anchor>
+                </Text>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          )}
+          <Stack>
+            <Title ta="center" order={1}>
+              {poem.title}
             </Title>
-            {currentUser && (
-              <Group justify="center" mt="lg" gap="xs">
-                <Tooltip label="Añadir a colección">
+            <Title ta="center" order={3} c="dimmed" fw="lighter">
+              Escrito por:{" "}
+              {poem.author_names?.length === 0
+                ? "Anónimo"
+                : poem.author_ids?.map((author, index) => (
+                    <Anchor
+                      key={author}
+                      underline="hover"
+                      target="_blank"
+                      c="dimmed"
+                      fw="lighter"
+                      size="xl"
+                      onClick={() => navigate(`/authors/${author}`)}
+                    >
+                      {poem.author_names?.[index] + " "}
+                    </Anchor>
+                  ))}
+            </Title>
+          </Stack>
+        </Group>
+        {poem.description && (
+          <Text mt="lg" ta="center" size="md" fw="lighter">
+            {poem.description}
+          </Text>
+        )}
+        {/* <Divider w="100%" mt="xl" /> */}
+        <Space h={50} />
+        <Container w={600}>
+          <Interweave content={poem.content} />
+        </Container>
+        <Space h={50} />
+        <Group c="dimmed" justify="center" gap="lg">
+          <Text size="sm">Idioma: {poem.language}</Text>
+          <TbPointFilled size={6} />
+          <Text size="sm">
+            Fecha de publicación: {poem.created_at?.toLocaleDateString()}
+          </Text>
+          <TbPointFilled size={6} />
+          <Text size="sm">
+            Fecha de modificación: {poem.updated_at?.toLocaleDateString()}
+          </Text>
+        </Group>
+        {currentUser && (
+          <Stack
+            gap="xs"
+            p={50}
+            w="100%"
+            align="flex-end"
+            style={{ bottom: "0px", position: "fixed" }}
+          >
+            <Tooltip label="Añadir a colección">
+              <ActionIcon
+                variant="filled"
+                size={35}
+                color="green"
+                onClick={addPoemToCollectionModal}
+              >
+                <TbPlus size={20} />
+              </ActionIcon>
+            </Tooltip>
+            {((poem.author_ids &&
+              currentUser?.author_id &&
+              poem.author_ids.includes(currentUser?.author_id)) ||
+              currentUser?.is_superuser) && (
+              <>
+                <Tooltip label="Editar">
                   <ActionIcon
                     variant="filled"
                     size={35}
-                    color="green"
-                    onClick={addPoemToCollectionModal}
+                    onClick={() => navigate(`/poems/edit/${poem.id}`)}
                   >
-                    <TbPlus size={20} />
+                    <TbEdit size={20} />
                   </ActionIcon>
                 </Tooltip>
-                {((poem.author_ids &&
-                  currentUser?.author_id &&
-                  poem.author_ids.includes(currentUser?.author_id)) ||
-                  currentUser?.is_superuser) && (
-                  <>
-                    <Tooltip label="Editar">
-                      <ActionIcon
-                        variant="filled"
-                        size={35}
-                        onClick={() => navigate(`/poems/edit/${poem.id}`)}
-                      >
-                        <TbEdit size={20} />
-                      </ActionIcon>
-                    </Tooltip>
-                    <Tooltip label="Eliminar">
-                      <ActionIcon color="red" size={35} onClick={deletePoem}>
-                        <TbTrash size={20} />
-                      </ActionIcon>
-                    </Tooltip>
-                  </>
-                )}
-              </Group>
+                <Tooltip label="Eliminar">
+                  <ActionIcon color="red" size={35} onClick={deletePoem}>
+                    <TbTrash size={20} />
+                  </ActionIcon>
+                </Tooltip>
+              </>
             )}
-
-            {/* <Paper
-            shadow="xs"
-            withBorder
-            className={classes.paper}
-            // onClick={() => navigate(`/poems/${poem.id}`)}
-          >
-            <Group justify="space-between" align="center" mb="md">
-              <Group gap="lg">
-                <Image src="/src/assets/scroll.png" w={40} mt="xl " />
-                <Stack gap="xs">
-                  <Text  fw="bold">
-                    {poem.title}
-                  </Text>
-                  {poem.author_names?.length === 0 ||
-                  poem.show_author === false ? (
-                    <Badge variant="light">
-                      <TbUser /> Anónimo
-                    </Badge>
-                  ) : (
-                    <Group gap="lg">
-                      {poem.author_ids?.map((author, index) => (
-                        <Badge
-                          key={index}
-                          onClick={() => navigate(`/authors/${author}`)}
-                          variant="light"
-                          className={classes.link}
-                        >
-                          <TbUser />
-                          {" " + poem.author_names?.[index]}
-                        </Badge>
-                      ))}
-                    </Group>
-                  )}
-                </Stack>
-              </Group>
-              <Text ta="right" c="dimmed">
-                {poem.type === null
-                  ? "Original"
-                  : poem.type === 0
-                  ? "Traducción"
-                  : poem.type === 1
-                  ? "Versión"
-                  : poem.type === 2
-                  ? "Derivado"
-                  : ""}
-              </Text>
-            </Group>
-            <Space h="xl" />
-            <Group justify="flex-end" gap="xl">
-            <Text c="dimmed" size="sm">
-                Idioma: {poem.language ? poem.language : "Desconocido"}
-              </Text>
-              <Text c="dimmed" size="sm">
-                Creado: {poem.created_at?.toLocaleDateString("es-ES")}
-              </Text>
-              <Text c="dimmed" size="sm">
-                Modificado: {poem.updated_at?.toLocaleDateString("es-ES")}
-              </Text>
-            </Group>
-          </Paper> */}
-          </Container>
-          <Container w="100%">
-            <Interweave content={poem.content} />
-          </Container>
-          <Space h="xl" />
-        </Flex>
-        <Stack>
-          {poem.original && poem.type == PoemType.TRANSLATION && (
-            <InfoBox>
-              <Text>Este poema es una traducción.</Text>
-              <Anchor onClick={() => navigate(`/poems/${poem.original!.id}`)}>
-                Ver poema original
-              </Anchor>
-            </InfoBox>
-          )}
-          {poem.original && poem.type == PoemType.VERSION && (
-            <InfoBox>
-              <Text>Este poema es una versión.</Text>
-              <Anchor onClick={() => navigate(`/poems/${poem.original!.id}`)}>
-                Ver poema original
-              </Anchor>
-            </InfoBox>
-          )}
-          {poem.derived_poems && poem.derived_poems.length > 0 && (
-            <InfoBox>
-              <Text>Este poema tiene derivados.</Text>
-              <List  withPadding>
-                {poem.derived_poems.map((derivedPoem) => (
-                  <List.Item key={derivedPoem.id}>
-                    <Anchor
-                      onClick={() => navigate(`/poems/${derivedPoem.id}`)}
-                    >
-                      {derivedPoem.title}
-                    </Anchor>
-                  </List.Item>
-                ))}
-              </List>
-            </InfoBox>
-          )}
-        </Stack>
-      </Flex>
+          </Stack>
+        )}
+      </Stack>
     </Shell>
   );
 }

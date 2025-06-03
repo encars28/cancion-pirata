@@ -38,6 +38,7 @@ export function ProfileControl() {
           src="/src/assets/Cat03.jpg"
           alt="Perfil"
           onClick={() => navigate("/me")}
+          style={{ cursor: "pointer" }}
         />
       </Menu.Target>
       <Menu.Dropdown ta="left">

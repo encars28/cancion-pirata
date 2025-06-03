@@ -69,7 +69,7 @@ export function PoemCard({
       p="lg"
       onClick={() => navigate(`/poems/${poem.id}`)}
     >
-      <Card.Section p="lg">
+      <Card.Section px="lg" pt="lg">
       <Group justify="space-between" align="center" mb="xs">
         <Group gap="lg">
           <Image src="/src/assets/scroll.png" w={40} mt="xl " />
@@ -113,7 +113,10 @@ export function PoemCard({
           </Tooltip>
         )}
       </Group>
-      </Card.Section>
+      </Card.Section >
+      {poem.description && (
+        <Card.Section p="lg"><Text>{poem.description}</Text></Card.Section>
+      )}
       <Divider mb="sm" />
       <Group justify="flex-end" gap="xl">
         <Text size="sm" c="dimmed">
