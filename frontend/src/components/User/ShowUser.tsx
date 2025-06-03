@@ -10,9 +10,10 @@ import {
   Stack,
   RemoveScroll,
   Button,
+  Text,
   Box,
 } from "@mantine/core";
-import { TbUser, TbBook, TbBooks } from "react-icons/tb";
+import { TbUser, TbBook, TbBooks, TbPointFilled } from "react-icons/tb";
 import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
@@ -44,17 +45,30 @@ export function ShowUser({ user }: { user: UserPublic }) {
       fluid
     >
       <Group justify="space-between" gap="xl">
-        <Flex justify="flex-start" align="center" gap="xl">
+        <Flex justify="flex-start" direction="row" align="center" gap="xl">
           <Avatar size="xl" />
-          <Stack gap="xs">
+          <Stack gap={2}>
             <Title order={1} textWrap="wrap">
               {user.username}
             </Title>
-            {user.full_name && (
-              <Title order={3} c="dimmed" fw="lighter" textWrap="wrap">
-                {user.full_name}
-              </Title>
-            )}
+            <Group>
+              {user.full_name && (
+                <Text c="dimmed" fw="lighter">
+                  {user.full_name}
+                </Text>
+              )}
+
+              {author && author.birth_date && (
+                <>
+                  {" "}
+                  <TbPointFilled color="grey" size={6} />
+                  <Text c="dimmed" fw="lighter">
+                    Fecha de nacimiento:{" "}
+                    {author.birth_date.toLocaleDateString()}
+                  </Text>
+                </>
+              )}
+            </Group>
           </Stack>
         </Flex>
       </Group>
@@ -62,9 +76,9 @@ export function ShowUser({ user }: { user: UserPublic }) {
       <Tabs variant="outline" defaultValue="collections" pb={100}>
         <Tabs.List>
           {author && (
-              <Tabs.Tab value="poems" leftSection={<TbBook size={16} />}>
-                Poemas
-              </Tabs.Tab>
+            <Tabs.Tab value="poems" leftSection={<TbBook size={16} />}>
+              Poemas
+            </Tabs.Tab>
           )}
           <Tabs.Tab value="collections" leftSection={<TbBooks size={18} />}>
             Colecciones

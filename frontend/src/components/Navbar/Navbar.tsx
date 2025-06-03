@@ -18,23 +18,15 @@ interface NavbarLinkProps {
   label: string;
   active?: boolean;
   onClick?: () => void;
-  disabled?: boolean;
 }
 
-function NavbarLink({
-  icon: Icon,
-  label,
-  active,
-  onClick,
-  disabled,
-}: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
         onClick={onClick}
         className={classes.link}
         data-active={active || undefined}
-        data-disabled={disabled || undefined}
       >
         <Icon size={20} />
       </UnstyledButton>
@@ -48,14 +40,35 @@ export function Navbar() {
   const { user } = useAuth();
 
   return (
-    <nav className={classes.navbar}>
-      <div className={classes.navbarMain}>
-        <AppShell.Section>
-          <Stack justify="center" gap={0}>
+    <>
+      <AppShell.Section mt={100} grow>
+        <Stack justify="center" align="center" gap={0}>
+          <NavbarLink
+            icon={TbListSearch}
+            label="Explorar poemas"
+            active={active === "explore_poems"}
+            onClick={() => {
+              setActive("explore_poems");
+              navigate("/poems");
+            }}
+          />
+          <NavbarLink
+            icon={TbUserSearch}
+            label="Explorar autores"
+            active={active === "explore_authors"}
+            onClick={() => {
+              setActive("explore_authors");
+              navigate("/authors");
+            }}
+          />
+        </Stack>
+      </AppShell.Section>
+      {isLoggedIn() && (
+        <AppShell.Section mb={100}>
+          <Stack justify="center" align="center" gap={0}>
             <NavbarLink
               icon={TbBook}
               label="Mis poemas"
-              disabled={!isLoggedIn()}
               active={active === "poems"}
               onClick={() => {
                 setActive("poems");
@@ -64,7 +77,6 @@ export function Navbar() {
             />
             <NavbarLink
               icon={TbBooks}
-              disabled={!isLoggedIn()}
               label="Mis colecciones"
               active={active === "collections"}
               onClick={() => {
@@ -74,7 +86,6 @@ export function Navbar() {
             />
             <NavbarLink
               icon={TbUser}
-              disabled={!isLoggedIn()}
               label="Mi usuario"
               active={active === "userpage"}
               onClick={() => {
@@ -84,29 +95,7 @@ export function Navbar() {
             />
           </Stack>
         </AppShell.Section>
-        <AppShell.Section>
-          <Stack justify="center" gap={0}>
-            <NavbarLink
-              icon={TbListSearch}
-              label="Explorar poemas"
-              active={active === "explore_poems"}
-              onClick={() => {
-                setActive("explore_poems");
-                navigate("/poems");
-              }}
-            />
-            <NavbarLink
-              icon={TbUserSearch}
-              label="Explorar autores"
-              active={active === "explore_authors"}
-              onClick={() => {
-                setActive("explore_authors");
-                navigate("/authors");
-              }}
-            />
-          </Stack>
-        </AppShell.Section>
-      </div>
-    </nav>
+      )}
+    </>
   );
 }

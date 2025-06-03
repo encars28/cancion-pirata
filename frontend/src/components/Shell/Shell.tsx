@@ -128,7 +128,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
 
       {profileNavbar && <ProfileNavbar />}
       
-      <AppShell.Navbar>
+      <AppShell.Navbar p="sm">
         <Navbar />
       </AppShell.Navbar>
 

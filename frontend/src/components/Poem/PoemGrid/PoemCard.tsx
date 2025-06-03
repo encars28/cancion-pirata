@@ -115,7 +115,7 @@ export function PoemCard({
       </Group>
       </Card.Section >
       {poem.description && (
-        <Card.Section p="lg"><Text>{poem.description}</Text></Card.Section>
+        <Card.Section p="lg"><Text ml="lg">{poem.description}</Text></Card.Section>
       )}
       <Divider mb="sm" />
       <Group justify="flex-end" gap="xl">
