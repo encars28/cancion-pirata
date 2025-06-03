@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { SearchControl } from "../Header/Search/SearchControl/SearchControl";
 import { useNavigate } from "react-router";
-import { TbLogin, TbWritingSign } from "react-icons/tb";
+import { TbBook, TbLogin, TbWritingSign } from "react-icons/tb";
 import classes from "./Shell.module.css";
 import { SearchControlMobile } from "../Header/Search/SearchControlMobile/SearchControlMobile";
 import { LoginControl } from "../Header/LoginControl/LoginControl";
@@ -19,6 +19,7 @@ import { isLoggedIn } from "../../hooks/useAuth";
 import { useDisclosure } from "@mantine/hooks";
 import { ProfileControl } from "../Header/ProfileControl";
 import { ProfileNavbar } from "../ProfileNavbar";
+import { Navbar } from "../Navbar/Navbar";
 
 interface ShellProps {
   children: React.ReactNode;
@@ -43,6 +44,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
           desktop: !desktopOpened,
         },
       }}
+      navbar={{width: 70, breakpoint: "sm"}}
     >
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" className={classes.inner}>
@@ -125,6 +127,10 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
       </AppShell.Header>
 
       {profileNavbar && <ProfileNavbar />}
+      
+      <AppShell.Navbar>
+        <Navbar />
+      </AppShell.Navbar>
 
       <AppShell.Main >
         <div className={fillBackground ? classes.main_filled : classes.main}>{children}</div>
