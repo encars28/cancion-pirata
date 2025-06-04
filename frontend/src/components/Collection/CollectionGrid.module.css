@@ -1,8 +1,0 @@
-.paper {
-    cursor: pointer;
-    padding: var(--mantine-spacing-xl);
-  
-    @mixin hover {
-      background-color: var(--mantine-color-default-hover);
-    }
-  }

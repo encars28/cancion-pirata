@@ -14,7 +14,7 @@ import {
 import { TbBook, TbBooks, TbPointFilled } from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
-import { CollectionGrid } from "../Collection/CollectionGrid";
+import { CollectionGrid } from "../Collection/CollectionGrid/CollectionGrid";
 import { modals } from "@mantine/modals";
 import { AddCollection } from "../Collection/AddCollection";
 import useUserActions from "../../hooks/useUserActions";

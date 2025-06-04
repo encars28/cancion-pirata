@@ -123,11 +123,11 @@ export function PoemCard({
             </Tooltip>
           )}
         </Group>
-        {poem.description && (
+        {poem.description ? (
           <Text lineClamp={3} ml="lg">
             {poem.description}
           </Text>
-        )}
+        ) : <Text c="dimmed" ta="center" ml="lg">No hay descripción</Text>}
         <Stack gap={0}>
           <Divider mb="sm" />
           <Group justify="flex-end" wrap="nowrap" gap="xl">

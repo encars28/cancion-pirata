@@ -1,0 +1,11 @@
+.paper {
+    cursor: pointer;
+    padding-right: var(--mantine-spacing-xl);
+    padding-left: var(--mantine-spacing-xl);
+    padding-top: var(--mantine-spacing-lg);
+    padding-bottom: var(--mantine-spacing-sm);
+  
+    @mixin hover {
+      background-color: var(--mantine-color-default-hover);
+    }
+  }
