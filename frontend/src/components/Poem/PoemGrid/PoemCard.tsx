@@ -124,10 +124,10 @@ export function PoemCard({
           )}
         </Group>
         {poem.description ? (
-          <Text lineClamp={3} ml="lg">
+          <Text lineClamp={3} size="sm" ml="lg">
             {poem.description}
           </Text>
-        ) : <Text c="dimmed" ta="center" ml="lg">No hay descripción</Text>}
+        ) : <Text c="dimmed" ta="center" size="sm" >Este poema no tiene descripción</Text>}
         <Stack gap={0}>
           <Divider mb="sm" />
           <Group justify="flex-end" wrap="nowrap" gap="xl">
