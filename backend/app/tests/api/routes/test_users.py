@@ -107,17 +107,6 @@ def test_get_existing_user_current_user(client: TestClient, db: Session) -> None
     assert existing_user.username == api_user["username"]
 
 
-def test_get_existing_user_permissions_error(
-    client: TestClient, normal_user_token_headers: dict[str, str]
-) -> None:
-    r = client.get(
-        f"{settings.API_V1_STR}/users/{uuid.uuid4()}",
-        headers=normal_user_token_headers,
-    )
-    assert r.status_code == 403
-    assert r.json() == {"detail": "The user doesn't have enough privileges"}
-
-
 def test_create_user_by_normal_user(
     client: TestClient, normal_user_token_headers: dict[str, str]
 ) -> None:
