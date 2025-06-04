@@ -54,6 +54,10 @@ export type BodyLoginLoginAccessToken = {
     client_secret?: string | null;
 };
 
+export type BodyUsersUpdateUserProfilePicture = {
+    image: Blob | File;
+};
+
 export type CollectionBasic = {
     id: string;
     name: string;
@@ -534,6 +538,45 @@ export type UsersUpdatePasswordMeResponses = {
 
 export type UsersUpdatePasswordMeResponse = UsersUpdatePasswordMeResponses[keyof UsersUpdatePasswordMeResponses];
 
+export type UsersGetUserMeProfilePictureData = {
+    body?: never;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/profile_picture';
+};
+
+export type UsersGetUserMeProfilePictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type UsersUpdateUserProfilePictureData = {
+    body: BodyUsersUpdateUserProfilePicture;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/profile_picture';
+};
+
+export type UsersUpdateUserProfilePictureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUpdateUserProfilePictureError = UsersUpdateUserProfilePictureErrors[keyof UsersUpdateUserProfilePictureErrors];
+
+export type UsersUpdateUserProfilePictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type UsersUpdateUserProfilePictureResponse = UsersUpdateUserProfilePictureResponses[keyof UsersUpdateUserProfilePictureResponses];
+
 export type UsersRegisterUserData = {
     body: UserRegister;
     path?: never;
@@ -639,6 +682,31 @@ export type UsersUpdateUserResponses = {
 };
 
 export type UsersUpdateUserResponse = UsersUpdateUserResponses[keyof UsersUpdateUserResponses];
+
+export type UsersGetUserProfilePictureData = {
+    body?: never;
+    path: {
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/profile_picture';
+};
+
+export type UsersGetUserProfilePictureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersGetUserProfilePictureError = UsersGetUserProfilePictureErrors[keyof UsersGetUserProfilePictureErrors];
+
+export type UsersGetUserProfilePictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
 
 export type UtilsTestEmailData = {
     body?: never;

@@ -76,7 +76,7 @@ export function AuthorsPage() {
         title="Ordenar y filtrar"
         position="right"
         padding="xl"
-        size="xs"
+        size="sm"
       >
         <FilterAuthor form={form} handleSubmit={handleSubmit} />
       </Drawer>

@@ -21,6 +21,8 @@ import useAuth from "../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useUserActions from "../hooks/useUserActions";
 import { handleSuccess } from "../utils";
+import { ProfileAvatar } from "./User/ProfileAvatar";
+import { UploadProfilePicture } from "./User/UploadProfilePicture/UploadProfilePicture";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();
@@ -61,7 +63,7 @@ export function ProfileNavbar() {
     <AppShell.Aside>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
-          <Avatar src="/src/assets/Cat03.jpg" name="Usuario" size={120} />
+          <UploadProfilePicture />
         </Stack>
       </AppShell.Section>
       <AppShell.Section px="xl" my="md">

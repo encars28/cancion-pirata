@@ -9,9 +9,16 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import useAuth, { isLoggedIn } from "../../hooks/useAuth";
-import { TbChevronRight, TbLogout, TbSettings, TbUser, TbX } from "react-icons/tb";
+import {
+  TbChevronRight,
+  TbLogout,
+  TbSettings,
+  TbUser,
+  TbX,
+} from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import { handleSuccess } from "../../utils";
+import { ProfileAvatar } from "../User/ProfileAvatar";
 
 export function ProfileControl() {
   const navigate = useNavigate();
@@ -32,21 +39,14 @@ export function ProfileControl() {
   return (
     <Menu shadow="lg" width={250} position="bottom" trigger="hover">
       <Menu.Target>
-        <Avatar
-          size={35}
-          radius="xl"
-          src="/src/assets/Cat03.jpg"
-          alt="Perfil"
-          onClick={() => navigate("/me")}
-          style={{ cursor: "pointer" }}
-        />
+        <ProfileAvatar size={35} style={{cursor: "pointer"}} onClick={() => navigate("/me")} />
       </Menu.Target>
       <Menu.Dropdown ta="left">
         <Text size="md" ta="center" m={10} fw="bold">
           {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          <Avatar size={80} src="/src/assets/Cat03.jpg" alt="Perfil" />
+          <ProfileAvatar size={70} />
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item
@@ -55,10 +55,7 @@ export function ProfileControl() {
         >
           Página usuario
         </Menu.Item>
-        <Menu.Item
-          onClick={() => navigate("/me")}
-          leftSection={<TbSettings />}
-        >
+        <Menu.Item onClick={() => navigate("/me")} leftSection={<TbSettings />}>
           Ajustes perfil
         </Menu.Item>
         <Menu.Divider />

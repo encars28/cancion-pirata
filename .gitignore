@@ -17,6 +17,7 @@ db_data
 db_data/*
 *.sql
 .python-version
+images/*
 
 # Logs
 logs

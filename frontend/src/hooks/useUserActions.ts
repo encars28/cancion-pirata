@@ -1,6 +1,6 @@
-import { usersDeleteUserMe } from '../client'
+import { usersDeleteUserMe, usersGetUserMeProfilePicture, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
 import { callService, handleError, handleSuccess } from '../utils'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 
@@ -8,6 +8,36 @@ const useUserActions = (userId?: string) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { logout } = useAuth()
+
+  const { data: profilePicture } = useQuery({
+    queryKey: ['currentUser', 'profilePicture'],
+    queryFn: async () => callService(usersGetUserMeProfilePicture),
+  })
+
+  const { data: userProfilePicture } = useQuery({
+    queryKey: ['users', userId, 'profilePicture'],
+    queryFn: async () => {
+      return callService(usersGetUserProfilePicture, { path: { user_id: userId! } })
+    },
+  })
+
+
+
+const updateProfilePicture = useMutation({
+    mutationFn: async (file: File) => {
+      return callService(usersUpdateUserProfilePicture, { body: { image: file } })
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['users', userId] })
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+    },
+    onSuccess: () => {
+      handleSuccess()
+    },
+    onError: (error) => {
+      handleError(error as any)
+    }
+  })
 
   const deleteUserMeMutation = useMutation({
     mutationFn: async () => callService(usersDeleteUserMe),
@@ -29,6 +59,9 @@ const useUserActions = (userId?: string) => {
 
   return {
     deleteUserMeMutation,
+    profilePicture,
+    updateProfilePicture, 
+    userProfilePicture
   }
 }
 

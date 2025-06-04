@@ -102,7 +102,10 @@ export function PoemsPage() {
           <TbAdjustments size={25} />
         </ActionIcon>
       </Group>
-      <PoemGrid filter={filters} setPage={setPage} />
+      <Container px={{base: "xl", lg:60}} fluid>
+        <PoemGrid filter={filters} setPage={setPage} />
+      </Container>
+
       <Drawer
         offset={8}
         radius="md"
@@ -111,7 +114,7 @@ export function PoemsPage() {
         title="Ordenar y filtrar"
         position="right"
         padding="xl"
-        size="xs"
+        size="sm"
       >
         <FilterPoem form={form} handleSubmit={handleSubmit} />
       </Drawer>

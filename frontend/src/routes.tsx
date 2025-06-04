@@ -23,6 +23,7 @@ import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
 import { CollectionPage } from "./pages/collectionpage";
+import { UploadProfilePicture } from "./components/User/UploadProfilePicture/UploadProfilePicture";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;

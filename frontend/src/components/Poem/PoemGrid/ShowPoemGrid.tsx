@@ -16,7 +16,7 @@ export function ShowPoemGrid({
   removePoem?: boolean;
 }) {
   return (
-    <Stack w="100%" gap="xl" px={{base: "xl", lg: 60}}>
+    <Stack w="100%" gap="xl">
       {poems.map((poem) => (
           <PoemCard
             poem={poem}

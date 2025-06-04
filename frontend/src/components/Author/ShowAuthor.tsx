@@ -40,14 +40,13 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
 
   return (
     <Container
-      mt="xl"
-      ml={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
-      mr={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
+      mt={70}
+      mx={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
       fluid
     >
       <Group justify="space-between" gap="xl">
         <Flex justify="flex-start" direction="row" align="center" gap="xl">
-          <Avatar size="xl" />
+        <Avatar size={100} />
           <Stack>
             <Title order={1} textWrap="wrap">
               {author.full_name}
