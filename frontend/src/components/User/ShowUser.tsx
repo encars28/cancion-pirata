@@ -8,19 +8,15 @@ import {
   Space,
   Tabs,
   Stack,
-  RemoveScroll,
   Button,
   Text,
-  Box,
 } from "@mantine/core";
-import { TbUser, TbBook, TbBooks, TbPointFilled } from "react-icons/tb";
-import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
+import { TbBook, TbBooks, TbPointFilled } from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
 import { CollectionGrid } from "../Collection/CollectionGrid";
 import { modals } from "@mantine/modals";
 import { AddCollection } from "../Collection/AddCollection";
-import { ProfileAvatar } from "./ProfileAvatar";
 import useUserActions from "../../hooks/useUserActions";
 
 export function ShowUser({ user }: { user: UserPublic }) {
