@@ -44,7 +44,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
           desktop: !desktopOpened,
         },
       }}
-      navbar={{width: 70, breakpoint: "sm"}}
+      navbar={{width: 70, breakpoint: "xs"}}
     >
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" className={classes.inner}>

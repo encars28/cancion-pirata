@@ -43,7 +43,7 @@ export function PoemGrid({
     <Stack
       align="center"
       gap={80}
-      m="xl"
+      m="lg"
       pb={70}
     >
       <ShowPoemGrid poems={poems} show_author />

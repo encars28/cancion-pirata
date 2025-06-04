@@ -102,7 +102,7 @@ export function PoemsPage() {
           <TbAdjustments size={25} />
         </ActionIcon>
       </Group>
-      <Container px={{base: "xl", lg:60}} fluid>
+      <Container px={{lg:60}} fluid>
         <PoemGrid filter={filters} setPage={setPage} />
       </Container>
 
