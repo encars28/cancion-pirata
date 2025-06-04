@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService, handleError, handleSuccess } from "../utils";
+import { callService, showError, showSuccess } from "../utils";
 import { CollectionPublic, collectionsReadCollection } from "../client";
 import { Loading } from "../components/Loading";
 import {
@@ -58,7 +58,7 @@ export function CollectionPage() {
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const collection: CollectionPublic = data!;
@@ -77,7 +77,7 @@ export function CollectionPage() {
         await addPoemToCollection.mutateAsync(poems_info[poem]);
         modals.closeAll();
       });
-      handleSuccess();
+      showSuccess();
     } catch {
       //
     }

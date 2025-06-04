@@ -1,4 +1,4 @@
-import { callService, handleError, handleSuccess } from '../utils'
+import { callService, showError, showSuccess } from '../utils'
 import { poemsDeletePoem } from '../client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
@@ -12,7 +12,7 @@ const usePoemActions = (poemId: string) => {
   const deletePoemMutation = useMutation({
     mutationFn: async () => callService(poemsDeletePoem, { path: { poem_id: poemId } }),
     onSuccess: () => {
-      handleSuccess()
+      showSuccess()
       if (currentUser?.is_superuser) {
         navigate('/admin')
       }
@@ -21,7 +21,7 @@ const usePoemActions = (poemId: string) => {
       }
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })

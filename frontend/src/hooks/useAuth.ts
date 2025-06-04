@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
-import { handleError, handleSuccess, callService } from "../utils"
+import { showError, showSuccess, callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
 import { notifications } from "@mantine/notifications"
@@ -26,11 +26,11 @@ const useAuth = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       navigate("/login")
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
@@ -59,9 +59,9 @@ const useAuth = () => {
       notifications.clean()
       navigate("/")
     },
-    onError: (error) => {
-      handleError(error as any)
-    },
+    // onError: (error) => {
+    //   showError(error as any)
+    // },
   })
 
   const logout = () => {

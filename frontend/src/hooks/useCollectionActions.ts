@@ -1,4 +1,4 @@
-import { callService, handleError, handleSuccess } from '../utils'
+import { callService, showError, showSuccess } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
@@ -16,11 +16,11 @@ const useCollectionActions = (collectionId: string) => {
       callService(collectionsUpdateCollection, { path: { collection_id: collectionId }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       navigate(`/collections/${collectionId}`)
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
@@ -35,11 +35,11 @@ const useCollectionActions = (collectionId: string) => {
         path: { collection_id: collectionId, poem_id: poemId },
       }),
     onSuccess: () => {
-      handleSuccess();
+      showSuccess();
       modals.closeAll();
     },
     onError: (error) => {
-      handleError(error as any);
+      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
@@ -50,10 +50,10 @@ const useCollectionActions = (collectionId: string) => {
     mutationFn: async (poemId: string) =>
       callService(collectionsRemovePoemFromCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
     onSuccess: () => {
-      handleSuccess()
+      showSuccess()
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
@@ -63,11 +63,11 @@ const useCollectionActions = (collectionId: string) => {
   const deleteCollectionMutation = useMutation({
     mutationFn: async () => callService(collectionsDeleteCollection, { path: { collection_id: collectionId } }),
     onSuccess: () => {
-      handleSuccess()
+      showSuccess()
       navigate(`/users/${currentUser?.id}`)
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })

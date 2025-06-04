@@ -1,5 +1,5 @@
 import { usersDeleteUserMe, usersGetUserMeProfilePicture, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
-import { callService, handleError, handleSuccess } from '../utils'
+import { callService, showError, showSuccess } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
@@ -34,10 +34,10 @@ const updateProfilePicture = useMutation({
     },
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     }
   })
 
@@ -46,10 +46,10 @@ const updateProfilePicture = useMutation({
     onSuccess: () => {
       logout()
       navigate('/')
-      handleSuccess()
+      showSuccess()
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users']})

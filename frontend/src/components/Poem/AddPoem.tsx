@@ -23,7 +23,7 @@ import { PoemCreate } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
-import { callService, handleError, handleSuccess, PoemType } from "../../utils";
+import { callService, showError, showSuccess, PoemType } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
@@ -54,12 +54,12 @@ export function AddPoem() {
       callService(poemsCreatePoem, { body: data }),
     onSuccess: () => {
       notifications.clean();
-      handleSuccess();
+      showSuccess();
       navigate(`/authors/${user?.author_id}`);
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error);
+      showError(error);
     },
 
     onSettled: () => {

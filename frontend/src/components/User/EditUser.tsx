@@ -2,7 +2,7 @@ import { Stack, ActionIcon, TextInput, PasswordInput, Modal, Group, Button, Chec
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc, TbPencil } from "react-icons/tb";
 import { HttpValidationError, UserUpdate } from '../../client/types.gen';
-import { callService, handleError, handleSuccess } from '../../utils';
+import { callService, showError, showSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
@@ -23,12 +23,12 @@ export function EditUser({ user }: { user: UserPublic }) {
       callService(usersUpdateUser, { path: { user_id: user.id }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       close()
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
 
     onSettled: () => {

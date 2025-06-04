@@ -2,7 +2,7 @@ import { Stack, TextInput, PasswordInput, Modal, Group, Button, Checkbox } from 
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc } from "react-icons/tb";
 import { HttpValidationError, UserCreate } from '../../client/types.gen';
-import { callService, handleError, handleSuccess } from '../../utils';
+import { callService, showError, showSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersCreateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
@@ -17,12 +17,12 @@ export function AddUser() {
       callService(usersCreateUser, { body: data }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       close()
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
 
     onSettled: () => {

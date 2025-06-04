@@ -5,7 +5,7 @@ import { modals } from "@mantine/modals";
 import { isNotEmpty, Form, useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { collectionsAddPoemToCollection } from "../../../client/";
-import { callService, handleError, handleSuccess } from "../../../utils";
+import { callService, showError, showSuccess } from "../../../utils";
 import useAuth from "../../../hooks/useAuth";
 
 export function AddPoemToCollection({ poemId }: { poemId: string }) {
@@ -31,11 +31,11 @@ export function AddPoemToCollection({ poemId }: { poemId: string }) {
         path: { collection_id: collectionId, poem_id: poemId },
       }),
     onSuccess: () => {
-      handleSuccess();
+      showSuccess();
       modals.closeAll();
     },
     onError: (error) => {
-      handleError(error as any);
+      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });

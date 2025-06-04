@@ -27,8 +27,8 @@ import { useForm } from "@mantine/form";
 import { poemsUpdatePoem } from "../../../client";
 import {
   callService,
-  handleError,
-  handleSuccess,
+  showError,
+  showSuccess,
   PoemType,
 } from "../../../utils";
 import { HttpValidationError } from "../../../client/types.gen";
@@ -58,11 +58,11 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
     onSuccess: () => {
       notifications.clean();
       navigate(`/poems/${poem.id}`);
-      handleSuccess();
+      showSuccess();
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error);
+      showError(error);
     },
 
     onSettled: () => {

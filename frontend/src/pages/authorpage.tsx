@@ -2,7 +2,7 @@ import { Navigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import useAuthor from "../hooks/useAuthor";
 import { Loading } from "../components/Loading";
-import { handleError } from "../utils";
+import { showError } from "../utils";
 import { AuthorPublicWithPoems } from "../client";
 import { ShowAuthor } from "../components/Author/ShowAuthor";
 
@@ -17,7 +17,7 @@ export function AuthorPage() {
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const author: AuthorPublicWithPoems = data!;

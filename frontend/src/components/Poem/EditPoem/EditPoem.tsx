@@ -1,6 +1,6 @@
 import usePoem from "../../../hooks/usePoem"
 import { Loading } from "../../Loading"
-import { handleError } from "../../../utils"
+import { showError } from "../../../utils"
 import { useNavigate, useParams } from "react-router"
 import { PoemPublicWithAllTheInfo } from "../../../client/types.gen"
 import { EditPoemForm } from "./EditPoemForm"
@@ -15,7 +15,7 @@ export function EditPoem() {
   }
   if (isError) {
     navigate("/poems")
-    handleError(error as any)
+    showError(error as any)
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;

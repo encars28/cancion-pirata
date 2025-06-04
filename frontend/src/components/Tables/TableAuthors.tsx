@@ -2,7 +2,7 @@ import { Stack, Group, Pagination, Text, ActionIcon, ScrollArea, Table } from "@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { handleError, callService } from "../../utils";
+import { showError, callService } from "../../utils";
 import { AuthorPublic, AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
 import { EditAuthor } from "../Author/EditAuthor/EditAuthor";
 import { TbEye } from "react-icons/tb";
@@ -54,7 +54,7 @@ export function TableAuthors() {
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const authors: AuthorPublicWithPoems[] = data?.data.slice(0, PER_PAGE) ?? []

@@ -1,5 +1,5 @@
 import { Shell } from "../components/Shell/Shell";
-import { handleError } from "../utils";
+import { showError } from "../utils";
 import { PoemPublicWithAllTheInfo } from "../client/types.gen";
 import { Loading } from "../components/Loading";
 import { useNavigate, useParams } from "react-router";
@@ -63,7 +63,7 @@ export function PoemPage() {
 
   if (isError) {
     navigate("/poems");
-    handleError(error as any);
+    showError(error as any);
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;

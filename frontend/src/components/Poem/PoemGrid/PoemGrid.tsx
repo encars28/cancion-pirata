@@ -1,7 +1,7 @@
 import { Pagination, Stack, Text } from "@mantine/core";
 import React from "react";
 import usePoems, { PoemQueryParams } from "../../../hooks/usePoems";
-import { handleError } from "../../../utils";
+import { showError } from "../../../utils";
 import { Loading } from "../../Loading";
 import { PoemPublicWithAuthor } from "../../../client";
 import { POEMS_PER_PAGE } from "../../../pages/poemspage";
@@ -29,7 +29,7 @@ export function PoemGrid({
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const poems = data?.data as PoemPublicWithAuthor[];

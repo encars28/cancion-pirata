@@ -3,7 +3,7 @@ import { UserPublic, UserUpdateMe, usersUpdateUserMe } from '../../client';
 import { TextInput, Stack, Button, Group } from '@mantine/core';
 import { TbAbc, TbAt, TbUser } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { callService, handleError, handleSuccess } from '../../utils';
+import { callService, showError, showSuccess } from '../../utils';
 import { HttpValidationError } from '../../client/types.gen';
 import { notifications } from '@mantine/notifications';
 
@@ -15,11 +15,11 @@ export function UserMe({ user }: { user: UserPublic }) {
       callService(usersUpdateUserMe, { body: data }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
 
     onSettled: () => {

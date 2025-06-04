@@ -1,5 +1,5 @@
 import { authorsDeleteAuthor, authorsGetAuthorPicture, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate, HttpValidationError } from '../client'
-import { callService, handleError, handleSuccess } from '../utils'
+import { callService, showError, showSuccess } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
@@ -13,7 +13,7 @@ const useAuthorActions = (authorId: string) => {
   const deleteAuthorMutation = useMutation({
     mutationFn: async () => callService(authorsDeleteAuthor, { path: { author_id: authorId } }),
     onSuccess: () => {
-      handleSuccess()
+      showSuccess()
       if (currentUser?.is_superuser) {
         navigate('/admin')
       }
@@ -22,7 +22,7 @@ const useAuthorActions = (authorId: string) => {
       }
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })
@@ -35,12 +35,12 @@ const useAuthorActions = (authorId: string) => {
       callService(authorsUpdateAuthor, { path: { author_id: authorId }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       close()
     },
 
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
 
     onSettled: () => {
@@ -52,10 +52,10 @@ const useAuthorActions = (authorId: string) => {
     mutationFn: async (file: File) => callService(authorsUploadAuthorPicture, {path: { author_id: authorId }, body: { file: file }}),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['authors', authorId] })

@@ -11,7 +11,7 @@ import { hasLength, useForm } from "@mantine/form";
 import classes from "./ResetPassword.module.css"
 import { Form } from "@mantine/form";
 import { HttpValidationError, NewPassword, loginResetPassword } from '../../../client';
-import { callService, handleError, handleSuccess } from '../../../utils';
+import { callService, showError, showSuccess } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
@@ -36,11 +36,11 @@ export function ResetPassword() {
     mutationFn: resetPassword,
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       navigate("/login")
     },
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
   })
 

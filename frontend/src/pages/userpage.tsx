@@ -1,10 +1,11 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService, handleError } from "../utils";
+import { callService, showError } from "../utils";
 import { UserPublic, usersReadUserById } from "../client";
 import { Loading } from "../components/Loading";
 import { ShowUser } from "../components/User/ShowUser";
+import { NothingFound } from "../components/ErrorPages/NothingFound";
 
 export function UserPage() {
   const params = useParams();
@@ -21,9 +22,9 @@ export function UserPage() {
     return <Loading />;
   }
 
-  if (isError) {
-    handleError(error as any);
-  }
+  // if (isError) {
+  //   return <NothingFound />
+  // }
 
   const user: UserPublic = data!;
 

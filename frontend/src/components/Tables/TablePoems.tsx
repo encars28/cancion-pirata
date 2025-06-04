@@ -3,7 +3,7 @@ import { TableSort } from "../Tables/TableSort";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { handleError, callService } from "../../utils";
+import { showError, callService } from "../../utils";
 import { PoemPublicWithAuthor, poemsReadPoems } from "../../client";
 import { DeletePoem } from "../Poem/DeletePoem";
 import { TbEye } from "react-icons/tb";
@@ -35,7 +35,7 @@ export function TablePoems() {
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const poems: PoemPublicWithAuthor[] = data?.data.slice(0, PER_PAGE) ?? []

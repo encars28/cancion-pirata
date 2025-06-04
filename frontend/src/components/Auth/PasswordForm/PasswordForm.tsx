@@ -16,7 +16,7 @@ import { TbArrowLeft, TbAt } from "react-icons/tb";
 import classes from "./PasswordForm.module.css"
 import { Form } from "@mantine/form";
 import { HttpValidationError, loginRecoverPassword } from '../../../client';
-import { callService, handleError, handleSuccess } from '../../../utils';
+import { callService, showError, showSuccess } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
@@ -29,10 +29,10 @@ export function PasswordForm() {
       callService(loginRecoverPassword, { path: { email: data } }),
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
     },
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     }
   })
 

@@ -20,7 +20,7 @@ import { useNavigate, useLocation } from "react-router";
 import useAuth from "../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useUserActions from "../hooks/useUserActions";
-import { handleSuccess } from "../utils";
+import { showSuccess } from "../utils";
 import { ProfileAvatar } from "./User/ProfileAvatar";
 import { UploadProfilePicture } from "./User/UploadProfilePicture/UploadProfilePicture";
 
@@ -53,7 +53,7 @@ export function ProfileNavbar() {
       children: <Text size="sm">¿Está seguro de que desea cerrar sesión?</Text>,
       onConfirm: () => {
         logout();
-        handleSuccess();
+        showSuccess();
       },
       confirmProps: { color: "red" },
       labels: { confirm: "Cerrar sesión", cancel: "Cancelar" },

@@ -1,7 +1,7 @@
 import { Avatar, Pagination, Stack, Text } from '@mantine/core';
 import React from 'react';
 import useAuthors, { AuthorQueryParams } from '../../hooks/useAuthors';
-import { handleError } from '../../utils';
+import { showError } from '../../utils';
 import { Loading } from '../Loading';
 import { AuthorPublicWithPoems } from '../../client';
 import { CardGrid } from '../CardGrid';
@@ -23,7 +23,7 @@ export function AuthorGrid({ filter, setPage }: { filter: AuthorQueryParams, set
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const authors = data?.data as AuthorPublicWithPoems[]

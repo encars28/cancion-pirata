@@ -1,4 +1,4 @@
-import { Button, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { Flex, Stack, Text, Title } from '@mantine/core';
 import classes from './NothingFound.module.css';
 import { Shell } from '../Shell/Shell';
 
@@ -14,26 +14,10 @@ export function NothingFound() {
         </Text>
       </Flex>
       <Stack className={classes.content} justify='center' align='center' h='100%' gap="xl">
-        <Title className={classes.title}>Tú ves algo? Porque yo no</Title>
+        <Title className={classes.title}>Error: no encontrado</Title>
         <Text c="dimmed" size="lg" ta="center" maw={550}>
           La página a la que estás intentando acceder no existe.
-        </Text>
-        <Group justify="center" gap="xl">
-          <Button
-            variant='filled'
-            component='a'
-            href='/poems'
-          >
-            Ver Poemas
-          </Button>
-          <Button
-            variant='filled'
-            component='a'
-            href='/authors'
-          >
-            Ver Autores
-          </Button>
-        </Group>
+        </Text> 
       </Stack>
     </Shell>
   );

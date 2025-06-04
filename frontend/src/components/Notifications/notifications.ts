@@ -8,9 +8,9 @@ export const errorNotification = (errorMessage: string) => ({
     classNames: classes,
 })
 
-export const successNotification = {
+export const successNotification = (message?: string ) => ({
     color: 'green',
     title: 'Éxito',
-    message: 'La operación se ha completado!',
+    message: message || 'La operación se ha completado!',
     classNames: classes,
-}
+})

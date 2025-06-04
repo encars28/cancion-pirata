@@ -14,7 +14,7 @@ import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
 import { CollectionCreate, collectionsAddPoemToCollection } from "../../client";
 import { collectionsCreateCollection } from "../../client";
-import { callService, handleError, handleSuccess } from "../../utils";
+import { callService, showError, showSuccess } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { isNotEmpty } from "@mantine/form";
@@ -43,7 +43,7 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
       modals.closeAll();
     },
     onError: (error) => {
-      handleError(error as any);
+      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
@@ -65,10 +65,10 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
     onSuccess: () => {
       notifications.clean();
       modals.closeAll()
-      handleSuccess();
+      showSuccess();
     },
     onError: (error) => {
-      handleError(error as any);
+      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
@@ -112,7 +112,7 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
           collectionId: collection.id!,
         });
       } else if (poemId) {
-        handleError("No se ha podido añadir el poema a la colección");
+        showError("No se ha podido añadir el poema a la colección");
       }
 
       if (redirect) {

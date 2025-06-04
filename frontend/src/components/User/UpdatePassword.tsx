@@ -9,7 +9,7 @@ import {
 import { hasLength, useForm } from "@mantine/form";
 import { Form } from "@mantine/form";
 import { HttpValidationError, UpdatePassword, usersUpdatePasswordMe } from '../../client';
-import { callService, handleError, handleSuccess } from '../../utils';
+import { callService, showError, showSuccess } from '../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
@@ -23,11 +23,11 @@ export function UpdatePasswordForm() {
     },
     onSuccess: () => {
       notifications.clean()
-      handleSuccess()
+      showSuccess()
       navigate("/me")
     },
     onError: (error: HttpValidationError) => {
-      handleError(error)
+      showError(error)
     },
   })
 

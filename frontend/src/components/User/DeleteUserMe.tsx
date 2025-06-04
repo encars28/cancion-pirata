@@ -1,7 +1,7 @@
 import { Button, Modal, Group, Text } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { usersDeleteUserMe } from '../../client'
-import { callService, handleError, handleSuccess } from '../../utils'
+import { callService, showError, showSuccess } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { useNavigate } from 'react-router'
 import useAuth from '../../hooks/useAuth'
@@ -15,13 +15,13 @@ export function DeleteUserMe() {
   const mutation = useMutation({
     mutationFn: async () => callService(usersDeleteUserMe),
     onSuccess: () => {
-      handleSuccess()
+      showSuccess()
       close()
       logout()
       navigate('/')
     },
     onError: (error) => {
-      handleError(error as any)
+      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })

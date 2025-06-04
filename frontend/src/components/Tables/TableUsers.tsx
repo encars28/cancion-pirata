@@ -3,7 +3,7 @@ import { TableSort } from "../Tables/TableSort";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { handleError, callService } from "../../utils";
+import { showError, callService } from "../../utils";
 import { UserPublic, usersReadUsers } from "../../client";
 import { EditUser } from "../User/EditUser";
 import { DeleteUser } from "../User/DeleteUser";
@@ -36,7 +36,7 @@ export function TableUsers() {
   }
 
   if (isError) {
-    handleError(error as any);
+    showError(error as any);
   }
 
   const users: UserPublic[] = data?.data.slice(0, PER_PAGE) ?? []

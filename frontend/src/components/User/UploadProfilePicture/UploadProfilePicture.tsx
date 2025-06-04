@@ -5,7 +5,7 @@ import { TbPencil } from "react-icons/tb";
 import { ProfileAvatar } from "../ProfileAvatar";
 import classes from "./UploadProfilePicture.module.css";
 import { useHover } from "@mantine/hooks";
-import { handleError } from "../../../utils";
+import { showError } from "../../../utils";
 
 export function UploadProfilePicture() {
   const { updateProfilePicture } = useUserActions();
@@ -24,7 +24,7 @@ export function UploadProfilePicture() {
     <div ref={ref} className={classes.container}>
       <Dropzone
         onDrop={(files) => handleSubmit(files[0])}
-        onReject={() => handleError("Formato de archivo no permitido o archivo mayor a 5MB")}
+        onReject={() => showError("Formato de archivo no permitido o archivo mayor a 5MB")}
         maxSize={5 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
         multiple={false}

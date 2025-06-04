@@ -2,7 +2,7 @@ import { UserPublic, usersReadUserMe } from "../client";
 import { UserMe } from "./User/UserMe";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "./Loading";
-import { handleError, callService } from "../utils";
+import { showError, callService } from "../utils";
 import { useNavigate } from "react-router";
 import {
   Group,
@@ -28,7 +28,7 @@ export function Profile() {
 
   if (isError) {
     navigate("/");
-    handleError(error as any);
+    showError(error as any);
   }
 
   const user: UserPublic = data!;

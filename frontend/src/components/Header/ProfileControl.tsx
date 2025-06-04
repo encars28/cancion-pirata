@@ -17,7 +17,7 @@ import {
   TbX,
 } from "react-icons/tb";
 import { modals } from "@mantine/modals";
-import { handleSuccess } from "../../utils";
+import { showSuccess } from "../../utils";
 import { ProfileAvatar } from "../User/ProfileAvatar";
 
 export function ProfileControl() {
@@ -30,7 +30,7 @@ export function ProfileControl() {
       children: <Text size="sm">¿Está seguro de que desea cerrar sesión?</Text>,
       onConfirm: () => {
         logout();
-        handleSuccess();
+        showSuccess();
       },
       confirmProps: { color: "red" },
       labels: { confirm: "Cerrar sesión", cancel: "Cancelar" },
