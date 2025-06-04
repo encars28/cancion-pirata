@@ -54,9 +54,15 @@ export function PoemCard({
       });
   }
 
-  const handleButtonClick = (event) => {
+
+  const handleButtonClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     removePoemCollectionModal();
+  }
+
+  const handleAuthorClick = (event: React.MouseEvent, authorId: string) => {
+    event.stopPropagation();
+    navigate(`/authors/${authorId}`);
   }
 
   return (
@@ -87,7 +93,7 @@ export function PoemCard({
                   {poem.author_ids?.map((author, index) => (
                     <Badge
                       key={index}
-                      onClick={() => navigate(`/authors/${author}`)}
+                      onClick={(e) => handleAuthorClick(e, author)}
                       variant="light"
                       className={classes.link}
                     >
