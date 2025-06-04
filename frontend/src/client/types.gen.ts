@@ -3,6 +3,7 @@
 export type AuthorCreate = {
     full_name: string;
     birth_date?: Date | null;
+    death_date?: Date | null;
 };
 
 export type AuthorForSearch = {
@@ -13,6 +14,7 @@ export type AuthorForSearch = {
 export type AuthorPublic = {
     full_name: string;
     birth_date?: Date | null;
+    death_date?: Date | null;
     id: string;
     user_id?: string | null;
 };
@@ -25,6 +27,7 @@ export type AuthorPublicBasic = {
 export type AuthorPublicWithPoems = {
     full_name: string;
     birth_date?: Date | null;
+    death_date?: Date | null;
     id: string;
     user_id?: string | null;
     poems?: Array<PoemPublic>;
@@ -33,6 +36,7 @@ export type AuthorPublicWithPoems = {
 export type AuthorUpdate = {
     full_name?: string | null;
     birth_date?: Date | null;
+    death_date?: Date | null;
 };
 
 export type AuthorsPublic = {
@@ -755,12 +759,13 @@ export type AuthorsReadAuthorsData = {
     body?: never;
     path?: never;
     query?: {
-        order_by?: 'full_name' | 'birth_date' | 'poems';
+        order_by?: 'full_name' | 'birth_date' | 'poems' | 'death_date';
         limit?: number;
         skip?: number;
         desc?: boolean;
         full_name?: string;
         birth_date?: string;
+        death_date?: string;
         poems?: string;
     };
     url: '/api/v1/authors';

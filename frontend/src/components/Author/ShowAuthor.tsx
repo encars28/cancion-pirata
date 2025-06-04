@@ -13,9 +13,8 @@ import {
   Tooltip,
   Button,
 } from "@mantine/core";
-import { TbUser, TbVocabulary, TbTrash, TbPointFilled } from "react-icons/tb";
+import { TbBook, TbTrash, TbPointFilled } from "react-icons/tb";
 import useAuth from "../../hooks/useAuth";
-import { EditAuthor } from "./EditAuthor/EditAuthor";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
@@ -60,6 +59,16 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
                 </Text>
               </>
             )}
+            {author && author.death_date && (
+              <>
+                {" "}
+                <TbPointFilled color="grey" size={6} />
+                <Text c="dimmed" fw="lighter">
+                  Fecha de fallecimiento:{" "}
+                  {author.death_date.toLocaleDateString()}
+                </Text>
+              </>
+            )}
           </Stack>
         </Flex>
         {currentUser?.is_superuser && (
@@ -86,7 +95,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
       <Space h={60} />
       <Tabs variant="outline" defaultValue="poems">
         <Tabs.List>
-          <Tabs.Tab value="poems" leftSection={<TbVocabulary size={12} />}>
+          <Tabs.Tab value="poems" leftSection={<TbBook size={12} />}>
             Poemas
           </Tabs.Tab>
         </Tabs.List>

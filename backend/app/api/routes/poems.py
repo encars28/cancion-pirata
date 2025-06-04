@@ -13,6 +13,7 @@ from app.poem_parser import PoemParser
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
+    PoemForSearch,
     PoemPublicWithAuthor,
     PoemRandom,
     PoemUpdate,

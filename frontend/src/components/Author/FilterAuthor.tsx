@@ -4,9 +4,10 @@ import { FilterInfoButton } from "../FilterInfoButton";
 import { TbChevronUp, TbChevronDown } from "react-icons/tb";
 
 export interface AuthorFilters {
-  order_by?: "Nombre" | "Año de nacimiento" | "Número de poemas";
+  order_by?: "Nombre" | "Año de nacimiento" | "Número de poemas" | "Año de fallecimiento";
   full_name?: string;
   birth_year?: string;
+  death_year?: string;
   poems?: string;
   desc?: boolean;
 }
@@ -25,7 +26,7 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<A
           rightSectionPointerEvents="all"
           label="Ordenar por"
           defaultValue="Nombre"
-          data={["Nombre", "Año de nacimiento", "Número de poemas"]}
+          data={["Nombre", "Año de nacimiento", "Número de poemas", "Año de fallecimiento"]}
           allowDeselect={false}
           radius="lg"
           variant="filled"
@@ -61,6 +62,14 @@ export function FilterAuthor({ form, handleSubmit }: { form: UseFormReturnType<A
           styles={{ input: { color: "grey" } }}
           key={form.key("birth_year")}
           {...form.getInputProps("birth_year")}
+        />
+        <TextInput
+          label={<>Año de fallecimiento<FilterInfoButton /> </>}
+          placeholder="Año de fallecimiento"
+          radius="md"
+          styles={{ input: { color: "grey" } }}
+          key={form.key("death_year")}
+          {...form.getInputProps("death_year")}
         />
         <TextInput
           label={<>Número de poemas<FilterInfoButton /> </>}

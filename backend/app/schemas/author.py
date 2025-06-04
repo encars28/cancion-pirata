@@ -5,11 +5,12 @@ from datetime import datetime
 
 from app.schemas.poem import PoemPublic
 
-AuthorParam = Literal["full_name", "birth_date", "poems"]
+AuthorParam = Literal["full_name", "birth_date", "poems", "death_date"]
 
 class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
     birth_date: Optional[datetime] = None
+    death_date: Optional[datetime] = None
 
 
 class AuthorSchema(AuthorBase):
@@ -57,11 +58,8 @@ class AuthorsPublicWithPoems(BaseModel):
     count: int
     
     
-class AuthorForSearch(BaseModel): 
-    id: uuid.UUID
-    full_name: str = Field(max_length=255)
-    
-    model_config = ConfigDict(from_attributes=True)
+class AuthorForSearch(AuthorPublicBasic): 
+    pass
 
 
 class AuthorSearchParams(BaseModel):
@@ -71,5 +69,6 @@ class AuthorSearchParams(BaseModel):
     desc: bool = False
     full_name: str = ""
     birth_date: str = ""
+    death_date: str = ""
     poems: str = ""
     

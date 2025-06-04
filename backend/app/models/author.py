@@ -21,6 +21,7 @@ class Author(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     full_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     birth_date: Mapped[Optional[datetime]]
+    death_date: Mapped[Optional[datetime]]
     
     user: Mapped[Optional["User"]] = relationship(back_populates="author") # type: ignore  # noqa: F821
     poems: Mapped[List["Poem"]] = relationship(  # type: ignore  # noqa: F821

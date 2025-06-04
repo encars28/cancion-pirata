@@ -60,6 +60,9 @@ const authorPublicSchemaResponseTransformer = (data: any) => {
     if (data.birth_date) {
         data.birth_date = new Date(data.birth_date);
     }
+    if (data.death_date) {
+        data.death_date = new Date(data.death_date);
+    }
     return data;
 };
 
@@ -81,6 +84,9 @@ const poemPublicSchemaResponseTransformer = (data: any) => {
 const authorPublicWithPoemsSchemaResponseTransformer = (data: any) => {
     if (data.birth_date) {
         data.birth_date = new Date(data.birth_date);
+    }
+    if (data.death_date) {
+        data.death_date = new Date(data.death_date);
     }
     if (data.poems) {
         data.poems = data.poems.map((item: any) => {

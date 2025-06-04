@@ -29,6 +29,7 @@ export function AuthorsPage() {
       order_by: "Nombre",
       full_name: "",
       birth_year: "",
+      death_year: "",
       poems: "",
     }
   })
@@ -45,9 +46,10 @@ export function AuthorsPage() {
 
   const handleSubmit = async (values: typeof form.values) => {
     const updatedFilters: AuthorQueryParams = {
-      order_by: values.order_by === "Año de nacimiento" ? "birth_date" : values.order_by === "Número de poemas" ? "poems" : "full_name",
+      order_by: values.order_by === "Año de nacimiento" ? "birth_date" : values.order_by === "Año de fallecimiento" ? "death_date" : values.order_by === "Número de poemas" ? "poems" : "full_name",
       full_name: values.full_name,
       birth_year: values.birth_year,
+      death_year: values.death_year,
       poems: values.poems,
       desc: values.desc,
       skip: (page - 1) * AUTHORS_PER_PAGE,

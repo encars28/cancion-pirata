@@ -8,11 +8,13 @@
   },
   {
     "full_name": "Pablo Neruda",
-    "birth_date": "1904-07-12T00:00:00Z"
+    "birth_date": "1904-07-12T00:00:00Z",
+    "death_date": "1973-09-23T00:00:00Z"
   },
   {
     "full_name": "Gustavo Adolfo Bécquer",
-    "birth_date": "1836-02-17T00:00:00Z"
+    "birth_date": "1836-02-17T00:00:00Z",
+    "death_date": "1870-12-22T00:00:00Z"
   },
   {
     "full_name": "María González Torres"
@@ -27,11 +29,13 @@
   },
   {
     "full_name": "Miguel Hernández",
-    "birth_date": "1910-10-30T00:00:00Z"
+    "birth_date": "1910-10-30T00:00:00Z",
+    "death_date": "1942-03-28T00:00:00Z"
   },
   {
     "full_name": "Rubén Darío",
-    "birth_date": "1867-01-18T00:00:00Z"
+    "birth_date": "1867-01-18T00:00:00Z",
+    "death_date": "1916-02-06T00:00:00Z"
   },
   {
     "full_name": "David Ruiz Morales",
@@ -39,7 +43,8 @@
   },
   {
     "full_name": "Ángel González",
-    "birth_date": "1925-09-06T00:00:00Z"
+    "birth_date": "1925-09-06T00:00:00Z",
+    "death_date": "2008-01-12T00:00:00Z"
   },
   {
     "full_name": "Sofía Moreno Castillo"
@@ -54,15 +59,18 @@
   },
   {
     "full_name": "Francisco de Quevedo",
-    "birth_date": "1580-09-14T00:00:00Z"
+    "birth_date": "1580-09-14T00:00:00Z",
+    "death_date": "1645-09-08T00:00:00Z"
   },
   {
     "full_name": "Lope de Vega",
-    "birth_date": "1562-11-25T00:00:00Z"
+    "birth_date": "1562-11-25T00:00:00Z",
+    "death_date": "1635-08-27T00:00:00Z"
   },
   {
     "full_name": "Rafael Alberti",
-    "birth_date": "1902-12-16T00:00:00Z"
+    "birth_date": "1902-12-16T00:00:00Z",
+    "death_date": "1999-10-28T00:00:00Z"
   },
   {
     "full_name": "Javier Herrera López",
@@ -70,11 +78,13 @@
   },
   {
     "full_name": "Gloria Fuertes",
-    "birth_date": "1917-07-28T00:00:00Z"
+    "birth_date": "1917-07-28T00:00:00Z",
+    "death_date": "1998-11-27T00:00:00Z"
   },
   {
     "full_name": "José de Espronceda",
-    "birth_date": "1808-03-25T00:00:00Z"
+    "birth_date": "1808-03-25T00:00:00Z",
+    "death_date": "1842-05-23T00:00:00Z"
   },
   {
     "full_name": "Carmen Jiménez Ramos"

@@ -74,6 +74,16 @@ export function ShowUser({ user }: { user: UserPublic }) {
                   </Text>
                 </>
               )}
+              {author && author.death_date &&(
+                <>
+                  {" "}
+                  <TbPointFilled color="grey" size={6} />
+                  <Text c="dimmed" fw="lighter">
+                    Fecha de fallecimiento:{" "}
+                    {author.death_date.toLocaleDateString()}
+                  </Text>
+                </>
+              )}
             </Group>
           </Stack>
         </Flex>

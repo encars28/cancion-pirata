@@ -30,13 +30,14 @@ class AuthorCRUD:
     def get_many(
         self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True
     ) -> list[AuthorSchema]:
-        birth_filter = self.filter_by_dates(queryParams)
+        birth_filter = self.filter_by_dates(queryParams, "birth_date")
+        death_filter = self.filter_by_dates(queryParams, "death_date")
         poem_filter = select(Author).where(
             Author.id.in_(self.filter_by_poem(db, queryParams, public_restricted))
         )
         name_filter = self.filter_by_name(queryParams)
 
-        stmt = name_filter.intersect(poem_filter, birth_filter).subquery()
+        stmt = name_filter.intersect(poem_filter, birth_filter, death_filter).subquery()
         alias = aliased(Author, stmt)
 
         if queryParams.order_by != "poems":
@@ -77,13 +78,14 @@ class AuthorCRUD:
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
     
     def get_count(self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True) -> int:
-        birth_filter = self.filter_by_dates(queryParams)
+        birth_filter = self.filter_by_dates(queryParams, "birth_date")
+        death_filter = self.filter_by_dates(queryParams, "death_date")
         poem_filter = select(Author).where(
             Author.id.in_(self.filter_by_poem(db, queryParams, public_restricted))
         )
         name_filter = self.filter_by_name(queryParams)
 
-        stmt = name_filter.intersect(poem_filter, birth_filter).subquery()
+        stmt = name_filter.intersect(poem_filter, birth_filter, death_filter).subquery()
         alias = aliased(Author, stmt)
         
         statement = select(func.count()).select_from(alias)
@@ -124,9 +126,9 @@ class AuthorCRUD:
 
         return [a.id for a in db.scalars(s).all()]
 
-    def filter_by_dates(self, query: AuthorSearchParams) -> Select:
+    def filter_by_dates(self, query: AuthorSearchParams, date: str) -> Select:
         regex = r"(>|<|>=|<=|=|)(\d+)"
-        m = re.match(regex, query.birth_date)
+        m = re.match(regex, getattr(query, date))
 
         if not m:
             return select(Author)
@@ -134,23 +136,23 @@ class AuthorCRUD:
         match m.group(1):
             case ">=":
                 s = select(Author).where(
-                    Author.birth_date >= datetime.date(int(m.group(2)), 1, 1)
+                     getattr(Author, date) >= datetime.date(int(m.group(2)), 1, 1)
                 )
             case ">":
                 s = select(Author).where(
-                    Author.birth_date >= datetime.date(int(m.group(2)) + 1, 1, 1)
+                    getattr(Author, date) >= datetime.date(int(m.group(2)) + 1, 1, 1)
                 )
             case "<=":
                 s = select(Author).where(
-                    Author.birth_date <= datetime.date(int(m.group(2)), 12, 31)
+                    getattr(Author, date) <= datetime.date(int(m.group(2)), 12, 31)
                 )
             case "<":
                 s = select(Author).where(
-                    Author.birth_date <= datetime.date(int(m.group(2)) - 1, 12, 31)
+                    getattr(Author, date) <= datetime.date(int(m.group(2)) - 1, 12, 31)
                 )
             case _:
                 s = select(Author).where(
-                    Author.birth_date.between(
+                    getattr(Author, date).between(
                         datetime.date(int(m.group(2)), 1, 1),
                         datetime.date(int(m.group(2)), 12, 31),
                     )

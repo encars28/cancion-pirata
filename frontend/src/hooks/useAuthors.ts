@@ -3,9 +3,10 @@ import { callService } from "../utils"
 import { authorsReadAuthors } from "../client/sdk.gen"
 
 export interface AuthorQueryParams {
-  order_by?: "full_name" | "poems" | "birth_date";
+  order_by?: "full_name" | "poems" | "birth_date" | "death_date";
   full_name?: string;
   birth_year?: string;
+  death_year?: string;
   poems?: string;
   desc?: boolean;
   limit?: number;
