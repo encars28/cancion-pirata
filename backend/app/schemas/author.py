@@ -10,7 +10,6 @@ AuthorParam = Literal["full_name", "birth_date", "poems", "death_date"]
 class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
     birth_date: Optional[datetime] = None
-    death_date: Optional[datetime] = None
 
 
 class AuthorSchema(AuthorBase):
@@ -18,17 +17,21 @@ class AuthorSchema(AuthorBase):
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
     poems: List["PoemPublic"] = []
+    death_date: Optional[datetime] = None
     user_id: Optional[uuid.UUID] = None
     image_path: Optional[str] = Field(default=None, max_length=255)
 
 
 class AuthorCreate(AuthorBase):
-    pass
+    death_date: Optional[datetime] = None
 
 
-class AuthorUpdate(AuthorBase):
+class AuthorUpdateBasic(AuthorBase):
     full_name: Optional[str] = Field(max_length=255, default=None)  # type: ignore
     birth_date: Optional[datetime] = None
+    
+class AuthorUpdate(AuthorUpdateBasic):
+    death_date: Optional[datetime] = None
 
 
 class AuthorPublicBasic(BaseModel):

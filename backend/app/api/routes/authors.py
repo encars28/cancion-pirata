@@ -21,6 +21,7 @@ from app.schemas.author import (
     AuthorPublicBasic,
     AuthorPublicWithPoems,
     AuthorUpdate,
+    AuthorUpdateBasic,
     AuthorsPublic,
     AuthorsPublicWithPoems,
 )
@@ -187,7 +188,7 @@ def update_author(
     session: SessionDep,
     current_user: CurrentUser,
     author_id: uuid.UUID,
-    author_in: AuthorUpdate,
+    author_in: AuthorUpdate | AuthorUpdateBasic,
 ) -> Any:
     """
     Update an Author.
@@ -206,6 +207,12 @@ def update_author(
         raise HTTPException(
             status_code=403,
             detail="The user doesn't have enough privileges",
+        )
+        
+    if not current_user.is_superuser and isinstance(author_in, AuthorUpdateBasic):
+        raise HTTPException(
+            status_code=403,
+            detail="The user doesn't have enough privileges to update this field",
         )
 
     if author_in.full_name:

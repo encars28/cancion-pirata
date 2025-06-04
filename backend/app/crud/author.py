@@ -10,6 +10,7 @@ from app.schemas.author import (
     AuthorCreate,
     AuthorSearchParams,
     AuthorUpdate,
+    AuthorUpdateBasic,
 )
 
 from sqlalchemy.orm import Session, aliased
@@ -190,7 +191,7 @@ class AuthorCRUD:
         self,
         db: Session,
         obj_id: uuid.UUID,
-        obj_update: AuthorUpdate,
+        obj_update: AuthorUpdate | AuthorUpdateBasic,
     ) -> Optional[AuthorSchema]:
         db_obj = db.get(Author, obj_id)
         if not db_obj:
