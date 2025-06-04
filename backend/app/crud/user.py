@@ -1,6 +1,8 @@
 from typing import Optional
 import uuid
+import os
 
+from app.core.config import settings
 from app.core.security import verify_password, get_password_hash
 from app.models.user import User
 from app.schemas.user import (
@@ -60,6 +62,25 @@ class UserCRUD:
 
         return UserSchema.model_validate(db_obj)
 
+    def update_image_path(
+        self, db: Session, obj_id: uuid.UUID, image_path: str
+    ) -> Optional[UserSchema]:
+        db_obj = db.get(User, obj_id)
+        if not db_obj:
+            return None
+
+        # Ensure the image path is valid and exists
+        if not os.path.exists(image_path):
+            return None
+
+        # Update the image path
+        db_obj.image_path = image_path
+
+        db.commit()
+        db.refresh(db_obj)
+
+        return UserSchema.model_validate(db_obj)
+    
     def update(
         self, db: Session, obj_id: uuid.UUID, obj_update: UserUpdate | UserUpdateMe
     ) -> Optional[UserSchema]:
@@ -72,6 +93,7 @@ class UserCRUD:
         if "password" in user_data:
             user_data["hashed_password"] = get_password_hash(user_data["password"])
             del user_data["password"]
+            
 
         for key, value in user_data.items():
             setattr(db_obj, key, value)

@@ -1,5 +1,85 @@
 [
   {
+    "title": "Susurros del Amanecer",
+    "content": "<center>\nEntre las **brumas** del amanecer silencioso,\ndonde los <rayos>(14) rompen la oscuridad,\n6>cada destello//es una promesa\n4>de luz y ==claridad==.\n\nLos grillos callan//su serenata nocturna,\n8>mientras el día se despierta,\ny en cada <gota>(16) de rocío\n6>la esperanza se liberta.",
+    "description": "La transición mágica entre la noche y el día",
+    "is_public": true,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Whispering Shadows",
+    "content": "<right>\nIn the **shadows** that dance//across my wall,\nlive the <memories>(18) I thought were gone,\n4>each silhouette//tells a tale\n6>of where my heart has ==drawn==.\n\nThe candle flickers//with ancient wisdom,\n8>casting stories in the dark,\nand in its <flame>(12) so gentle\n4>beats my restless heart.",
+    "description": "Shadows as keepers of forgotten memories and emotions",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "Mélodie du Vent",
+    "content": "<left>\nLe **vent** chante//sa mélodie secrète,\nà travers les <branches>(20) qui dansent,\n6>chaque note//porte un message\n4>que les arbres ==lancent==.\n\nLes feuilles tombent//comme des lettres,\n8>écrites par la nature,\net dans leur <chute>(14) gracieuse\n6>se lit notre future.",
+    "description": "Le vent comme messager poétique de la nature",
+    "is_public": true,
+    "show_author": true,
+    "language": "fr"
+  },
+  {
+    "title": "Ponte dei Sogni",
+    "content": "<center>\nSul **ponte** dei sogni//cammino lento,\nsospeso tra cielo e <terra>(16),\n4>ogni passo//è una speranza\n6>che il cuore ==serra==.\n\nLe nuvole passano//come pensieri,\n8>nel vento della mattina,\ne nel loro <volo>(12) silenzioso\n4>l'anima si avvicina.",
+    "description": "Un ponte metaforico che collega sogni e realtà",
+    "is_public": true,
+    "show_author": false,
+    "language": "it"
+  },
+  {
+    "title": "Biblioteca de Silencio",
+    "content": "<right>\nEn la **biblioteca** del silencio,\ndonde los <libros>(22) guardan secretos,\n6>cada página//susurra historias\n4>de amores ==discretos==.\n\nLa luz se filtra//entre estanterías,\n8>iluminando polvo dorado,\ny en cada <rincón>(18) olvidado\n6>vive un pasado amado.",
+    "description": "Una biblioteca como santuario de historias silenciosas",
+    "is_public": false,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "Mountain Echo",
+    "content": "<left>\nThe **mountain** echo//calls my name,\nacross the <valleys>(24) wide and deep,\n4>each sound//returns to me\n6>the promises I ==keep==.\n\nEagles soar//above the peaks,\n8>their wings spread against the sky,\nand in their <flight>(14) so graceful\n4>my spirit learns to fly.",
+    "description": "The majesty of mountains and their echoing wisdom",
+    "is_public": true,
+    "show_author": true,
+    "language": "en"
+  },
+  {
+    "title": "Jardin de Minuit",
+    "content": "<center>\nDans le **jardin** de minuit//fleurissent,\nles <pensées>(18) les plus secrètes,\n6>chaque pétale//cache un rêve\n4>que la lune ==reflète==.\n\nLes grillons jouent//leur symphonie,\n8>sous les étoiles bienveillantes,\net dans leur <chant>(16) nocturne\n6>dansent les âmes aimantes.",
+    "description": "Un jardin nocturne où s'épanouissent les pensées secrètes",
+    "is_public": true,
+    "show_author": true,
+    "language": "fr"
+  },
+  {
+    "title": "Treno dei Ricordi",
+    "content": "<right>\nIl **treno** dei ricordi//attraversa la notte,\nportando <passeggeri>(20) del passato,\n4>ogni vagone//custodisce\n6>un momento ==amato==.\n\nI binari si perdono//nell'orizzonte,\n8>come strade del cuore,\ne nel loro <suono>(14) metallico\n4>echeggia l'antico amore.",
+    "description": "Un viaggio nostalgico attraverso i ricordi su un treno notturno",
+    "is_public": true,
+    "show_author": true,
+    "language": "it"
+  },
+  {
+    "title": "Espejo del Alma",
+    "content": "<left>\nEn el **espejo** del alma//se reflejan,\nlas <verdades>(16) más profundas,\n6>cada imagen//muestra secretos\n4>de heridas ==fecundas==.\n\nLa luz atraviesa//el cristal del tiempo,\n8>revelando lo oculto,\ny en cada <reflejo>(18) encuentro\n6>mi ser más adulto.",
+    "description": "La introspección a través del espejo metafórico del alma",
+    "is_public": false,
+    "show_author": true,
+    "language": "es"
+  },
+  {
+    "title": "River's Song",
+    "content": "<center>\nThe **river** sings//its ancient song,\nof <journeys>(22) long and far,\n4>each ripple//carries stories\n6>from where the old gods ==are==.\n\nFish swim//in silver streams,\n8>through waters crystal clear,\nand in their <dance>(12) eternal\n4>flows away each tear.",
+    "description": "A river as the keeper of ancient stories and eternal flow",
+    "is_public": true,
+    "show_author": false,
+    "language": "en"
+  },
+  {
     "title": "El Jardín de los Susurros",
     "content": "<center>\nEn el **jardín** de los susurros eternos,\n4>donde las <flores>(15) danzan sin cesar,\nlos pájaros//cantan melodías tiernas\n8>y el <viento>(12) viene y va.\n\nBajo la sombra de un ==olivo== antiguo,\n6>reposa el alma en calma,\nmientras las <hojas>(18) murmuran secretos\n4>que llegan hasta el alma.",
     "description": "Un poema sobre la tranquilidad de un jardín mágico",

@@ -1,7 +1,11 @@
+from ctypes import resize
 import uuid
 from typing import Any
+import os
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi.responses import FileResponse
+from pytest import Session
 
 from app.crud.user import user_crud
 from app.api.deps import (
@@ -24,6 +28,7 @@ from app.schemas.user import (
 )
 
 from app.external.email import generate_new_account_email, send_email
+from PIL import Image
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -127,6 +132,69 @@ def update_password_me(
     )  # type: ignore
     return Message(message="Password updated successfully")
 
+@router.post("/me/profile_picture", response_model=Message)
+def update_user_profile_picture(
+    session: SessionDep, image: UploadFile, current_user: CurrentUser
+) -> Any:
+    """
+    Update own profile picture.
+    """
+    if not image.content_type or "image" not in image.content_type:
+        raise HTTPException(
+            status_code=400, detail="File is not an image"
+        )
+        
+    if not current_user.image_path:
+        path = os.path.join(settings.IMAGES_DIR, "users", str(current_user.id))
+        try:
+            os.makedirs(path, exist_ok=True)
+        except OSError as e:
+            raise HTTPException(
+                status_code=500, detail=f"Failed to create image directory for user: {e}"
+            )
+            
+        user_crud.update_image_path(
+            db=session, obj_id=current_user.id, image_path=path
+        )
+        
+        with open(os.path.join(path, "profile.png"), "wb") as f:
+            f.write(image.file.read())
+            
+        # resize_path = os.path.join(path, "profile_resize.png")
+        # i = Image.open(os.path.join(path, "profile.png"))
+        # i.thumbnail((400, 400))
+        # i.save(resize_path)
+    
+        return Message(message="Profile picture updated successfully")
+
+    with open(os.path.join(current_user.image_path, "profile.png"), "wb") as f:
+        f.write(image.file.read())
+        
+    # resize_path = os.path.join(current_user.image_path, "profile_resize.png")
+    # i = Image.open(os.path.join(current_user.image_path, "profile.png"))
+    # i.thumbnail((400, 400))
+    # i.save(resize_path)
+
+    return Message(message="Profile picture updated successfully")
+
+@router.get("/me/profile_picture")
+def get_user_me_profile_picture(current_user: CurrentUser) -> Any:
+    """
+    Get own profile picture.
+    """
+    if not current_user.image_path:
+        return None
+
+    image_path = os.path.join(current_user.image_path, "profile.png")
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="Profile picture not found")
+
+    return FileResponse(image_path)
+    # resize_path = os.path.join(current_user.image_path, "profile_resize.png")
+    # if not os.path.exists(resize_path):
+    #     return FileResponse(image_path)
+    
+    # return FileResponse(resize_path)
 
 @router.get("/me", response_model=UserPublic)
 def read_user_me(current_user: CurrentUser) -> Any:
@@ -195,6 +263,25 @@ def read_user_by_id(
     user.collections = [collection for collection in user.collections if collection.is_public]
     return user
 
+@router.get("/{user_id}/profile_picture")
+def get_user_profile_picture(user_id: uuid.UUID, session: SessionDep) -> Any:
+    """
+    Get profile picture.
+    """
+    user = user_crud.get_by_id(session, user_id)
+    if not user: 
+        raise HTTPException(
+            status_code=404, detail="The user with this id does not exist in the system"
+        )
+        
+    if not user.image_path:
+        return None
+
+    image_path = os.path.join(user.image_path, "profile.png")
+    if not os.path.exists(image_path):
+        raise HTTPException(status_code=404, detail="Profile picture not found")
+
+    return FileResponse(image_path)
 
 @router.patch(
     "/{user_id}",

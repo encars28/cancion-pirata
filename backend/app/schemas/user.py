@@ -65,6 +65,7 @@ class UserSchema(UserBase):
     author: Optional[AuthorPublic] = None
     hashed_password: str
     collections: list[CollectionBasic] = []
+    image_path: Optional[str] = None
 
 
 class UsersPublic(BaseModel):

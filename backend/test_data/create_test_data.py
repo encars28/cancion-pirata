@@ -55,7 +55,7 @@ def create_test_data(db: Session):
     poems = []
     print()
     # Create poems
-    for poem in tqdm(poem_data, desc="Creating poems"):
+    for poem in tqdm(poem_data[10:], desc="Creating poems"):
         poem_in = PoemCreate(
             **poem,
             author_names=[
@@ -64,6 +64,21 @@ def create_test_data(db: Session):
             ],
         )
         poems.append(poem_crud.create(db, obj_create=poem_in))
+        
+    # Assign derived poems
+    print()
+    for poem in tqdm(poem_data[:10], desc="Assigning derived poems"):
+        poem_in = PoemCreate(
+            **poem,
+            author_names=[
+                author.full_name
+                for author in random.sample(authors, random.randint(0, 3))
+            ],
+            original_poem_id=random.choice(poems).id if poems else None,
+            type=random.randint(0, 1),
+        )
+        
+        poems.append(poem_crud.create(db, obj_create=poem_in))
 
     # Create collections
     print()
@@ -71,7 +86,7 @@ def create_test_data(db: Session):
         collection_in = CollectionCreate(
             **collection,
             user_id=random.choice(users).id,
-            poem_ids=set(random.sample([poem.id for poem in poems], random.randint(1, 5))), 
+            poem_ids=random.sample([poem.id for poem in poems], random.randint(1, 5)), 
         )
         
         collection_crud.create(db, obj_create=collection_in)

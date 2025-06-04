@@ -18,7 +18,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(255), unique=True)
     is_active: Mapped[bool] = mapped_column(default=True)
     is_superuser: Mapped[bool] = mapped_column(default=False)
-    
+    image_path: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     full_name: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     created_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), server_default=func.now())
     
