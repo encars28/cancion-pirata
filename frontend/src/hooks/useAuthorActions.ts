@@ -1,6 +1,6 @@
-import { authorsDeleteAuthor, authorsUpdateAuthor, AuthorUpdate, HttpValidationError } from '../client'
+import { authorsDeleteAuthor, authorsGetAuthorPicture, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate, HttpValidationError } from '../client'
 import { callService, handleError, handleSuccess } from '../utils'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
@@ -47,11 +47,31 @@ const useAuthorActions = (authorId: string) => {
       queryClient.invalidateQueries({ queryKey: ["authors"] })
     },
   })
-    
+
+  const updateProfilePicture = useMutation({
+    mutationFn: async (file: File) => callService(authorsUploadAuthorPicture, {path: { author_id: authorId }, body: { file: file }}),
+    onSuccess: () => {
+      notifications.clean()
+      handleSuccess()
+    },
+    onError: (error) => {
+      handleError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['authors', authorId] })
+    }
+  })
+
+  const {data: AuthorProfilePicture} = useQuery({
+    queryKey: ['authors', authorId, 'profilePicture'],
+    queryFn: async () => callService(authorsGetAuthorPicture, { path: { author_id: authorId } }),
+  })
 
   return {
     deleteAuthorMutation,
-    editAuthorMutation
+    editAuthorMutation,
+    updateProfilePicture,
+    AuthorProfilePicture,
   }
 }
 

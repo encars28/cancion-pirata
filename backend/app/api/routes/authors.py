@@ -1,8 +1,11 @@
+from email.mime import image
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException
-
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi.responses import FileResponse
+from app.core.config import settings
+import os
 from app.api.deps import (
     AuthorQuery,
     OptionalCurrentUser,
@@ -104,6 +107,75 @@ def read_author_by_id(
         ]
 
     return author
+
+@router.get("/{author_id}/picture")
+def get_author_picture(
+    author_id: uuid.UUID, session: SessionDep
+) -> Any:
+    """
+    Get the picture of a specific Author by id.
+    """  
+    author = author_crud.get_by_id(session, author_id)
+    if not author:
+        raise HTTPException(
+            status_code=404,
+            detail="The author with this id does not exist in the system",
+        )
+
+    if not author.image_path:
+        return None
+    
+    image = os.path.join(author.image_path, "profile.png")
+    if not os.path.exists(image):
+        raise HTTPException(
+            status_code=404,
+            detail="Profile picture not found",
+        )
+
+    return FileResponse(image)
+
+@router.post("/{author_id}/picture", response_model=Message, dependencies=[Depends(get_current_active_superuser)])
+def upload_author_picture(
+    author_id: uuid.UUID,
+    session: SessionDep,
+    file: UploadFile,
+) -> Any:
+    """
+    Upload a picture for a specific Author by id.
+    """
+    author = author_crud.get_by_id(session, author_id)
+    if not author:
+        raise HTTPException(
+            status_code=404,
+            detail="The author with this id does not exist in the system",
+        )
+
+    if not file.content_type or "image" not in file.content_type:
+        raise HTTPException(
+            status_code=400,
+            detail="File is not an image.",
+        )
+
+    if not author.image_path:
+        path = os.path.join(settings.IMAGES_DIR, "authors", str(author.id))
+        try: 
+            os.makedirs(path, exist_ok=True)
+        except OSError as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to create image directory for author: {e}",
+            )
+            
+        author_crud.update_image_path(db=session, obj_id=author.id, image_path=path)
+        with open(os.path.join(path, "profile.png"), "wb") as f:
+            f.write(file.file.read())
+            
+        return Message(message="Profile picture uploaded successfully")
+    
+    with open(os.path.join(author.image_path, "profile.png"), "wb") as f:
+        f.write(file.file.read())
+
+    return Message(message="Profile picture uploaded successfully")
 
 
 @router.patch(

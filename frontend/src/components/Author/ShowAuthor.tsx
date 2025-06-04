@@ -4,7 +4,6 @@ import {
   Container,
   Group,
   Title,
-  Avatar,
   Flex,
   Space,
   Text,
@@ -18,6 +17,7 @@ import useAuth from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
+import { AuthorAvatar } from "./AuthorAvatar";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
   const { user: currentUser } = useAuth();
@@ -45,7 +45,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
     >
       <Group justify="space-between" gap="xl">
         <Flex justify="flex-start" direction="row" align="center" gap="xl">
-        <Avatar size={100} />
+        <AuthorAvatar size={100} authorId={author.id} />
           <Stack>
             <Title order={1} textWrap="wrap">
               {author.full_name}

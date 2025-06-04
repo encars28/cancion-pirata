@@ -22,6 +22,7 @@ class Author(Base):
     full_name: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     birth_date: Mapped[Optional[datetime]]
     death_date: Mapped[Optional[datetime]]
+    image_path: Mapped[Optional[str]] = mapped_column(String(255), default=None)
     
     user: Mapped[Optional["User"]] = relationship(back_populates="author") # type: ignore  # noqa: F821
     poems: Mapped[List["Poem"]] = relationship(  # type: ignore  # noqa: F821

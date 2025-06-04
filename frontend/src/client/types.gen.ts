@@ -49,6 +49,10 @@ export type AuthorsPublicWithPoems = {
     count: number;
 };
 
+export type BodyAuthorsUploadAuthorPicture = {
+    file: Blob | File;
+};
+
 export type BodyLoginLoginAccessToken = {
     grant_type?: string | null;
     username: string;
@@ -894,6 +898,58 @@ export type AuthorsUpdateAuthorResponses = {
 };
 
 export type AuthorsUpdateAuthorResponse = AuthorsUpdateAuthorResponses[keyof AuthorsUpdateAuthorResponses];
+
+export type AuthorsGetAuthorPictureData = {
+    body?: never;
+    path: {
+        author_id: string;
+    };
+    query?: never;
+    url: '/api/v1/authors/{author_id}/picture';
+};
+
+export type AuthorsGetAuthorPictureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AuthorsGetAuthorPictureError = AuthorsGetAuthorPictureErrors[keyof AuthorsGetAuthorPictureErrors];
+
+export type AuthorsGetAuthorPictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: unknown;
+};
+
+export type AuthorsUploadAuthorPictureData = {
+    body: BodyAuthorsUploadAuthorPicture;
+    path: {
+        author_id: string;
+    };
+    query?: never;
+    url: '/api/v1/authors/{author_id}/picture';
+};
+
+export type AuthorsUploadAuthorPictureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AuthorsUploadAuthorPictureError = AuthorsUploadAuthorPictureErrors[keyof AuthorsUploadAuthorPictureErrors];
+
+export type AuthorsUploadAuthorPictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type AuthorsUploadAuthorPictureResponse = AuthorsUploadAuthorPictureResponses[keyof AuthorsUploadAuthorPictureResponses];
 
 export type PoemsReadPoemsData = {
     body?: never;

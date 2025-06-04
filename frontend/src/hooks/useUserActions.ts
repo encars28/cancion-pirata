@@ -3,6 +3,7 @@ import { callService, handleError, handleSuccess } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
+import { notifications } from '@mantine/notifications'
 
 const useUserActions = (userId?: string) => {
   const queryClient = useQueryClient()
@@ -32,6 +33,7 @@ const updateProfilePicture = useMutation({
       queryClient.invalidateQueries({ queryKey: ['currentUser'] })
     },
     onSuccess: () => {
+      notifications.clean()
       handleSuccess()
     },
     onError: (error) => {

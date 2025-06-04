@@ -173,6 +173,19 @@ class AuthorCRUD:
 
         return AuthorSchema.model_validate(db_obj)
 
+    def update_image_path(
+        self, db: Session, obj_id: uuid.UUID, image_path: str
+    ) -> Optional[AuthorSchema]:
+        db_obj = db.get(Author, obj_id)
+        if not db_obj:
+            return None
+
+        db_obj.image_path = image_path
+        db.commit()
+        db.refresh(db_obj)
+
+        return AuthorSchema.model_validate(db_obj)
+    
     def update(
         self,
         db: Session,
