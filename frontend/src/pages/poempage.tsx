@@ -52,7 +52,7 @@ export function PoemPage() {
   const addPoemModal = () =>
     modals.open({
       title: "Crear colección",
-      children: <AddCollection />,
+      children: <AddCollection redirect={false} poemId={poemId}/>,
     });
 
   const { isPending, isError, data, error } = usePoem(poemId!, true);
@@ -198,10 +198,10 @@ export function PoemPage() {
         {currentUser && (
           <Stack
             gap="xs"
-            p={50}
+            pr={80}
             w="100%"
             align="flex-end"
-            style={{ bottom: "0px", position: "fixed" }}
+            style={{ bottom: "50px", position: "fixed" }}
           >
             <Tooltip label="Añadir a colección">
               <ActionIcon

@@ -8,7 +8,12 @@ export enum PoemType {
   VERSION = 1,
 }
 
-export const handleError = (error: HttpValidationError) => {
+export const handleError = (error: HttpValidationError | string) => {
+  if (typeof error === "string") {
+    notifications.show(errorNotification(error))
+    return
+  }
+  
   let errorMessage: string
   if (Array.isArray(error.detail) && error.detail.length > 0) {
     errorMessage = error.detail[0].msg

@@ -22,7 +22,7 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
-export function AddCollection({ redirect = true}: { redirect?: boolean }) {
+export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, poemId?: string }) {
   const { data: poemsData } = usePoems({});
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -40,7 +40,6 @@ export function AddCollection({ redirect = true}: { redirect?: boolean }) {
         path: { collection_id: collectionId, poem_id: poemId },
       }),
     onSuccess: () => {
-      handleSuccess();
       modals.closeAll();
     },
     onError: (error) => {
@@ -107,6 +106,15 @@ export function AddCollection({ redirect = true}: { redirect?: boolean }) {
       }
 
       const collection = await addCollectionMutation.mutateAsync(values);
+      if (poemId && collection) {
+        await addPoemToCollection.mutateAsync({
+          poemId: poemId,
+          collectionId: collection.id!,
+        });
+      } else if (poemId) {
+        handleError("No se ha podido añadir el poema a la colección");
+      }
+
       if (redirect) {
         if (collection) {
           navigate(`/collections/${collection.id}`);
