@@ -25,9 +25,10 @@ interface ShellProps {
   children: React.ReactNode;
   profileNavbar?: boolean;
   fillBackground?: boolean;
+  noPaddingTop?: boolean
 }
 
-export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
+export function Shell({ children, profileNavbar, fillBackground, noPaddingTop }: ShellProps) {
   const navigate = useNavigate();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
@@ -148,7 +149,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
       </AppShell.Navbar>
 
       <AppShell.Main h="calc(100vh - var(--app-shell-header-height) - var(--app-shell-padding) * 2)">
-        <div className={fillBackground ? classes.main_filled : classes.main}>
+        <div className={fillBackground ? classes.main_filled : noPaddingTop ? classes.main_no_padding : classes.main}>
           {children}
         </div>
       </AppShell.Main>

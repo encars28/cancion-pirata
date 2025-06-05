@@ -7,12 +7,9 @@ import {
   Stack,
 } from "@mantine/core";
 import classes from "./Hero.module.css";
-import { useNavigate } from "react-router";
 
 
 export function Hero() {
-  const navigate = useNavigate();
-
   return (
     <div className={classes.wrapper}>
       <Overlay color="#000" opacity={1} zIndex={1} />

@@ -10,6 +10,10 @@
   padding-top: 70px;
 }
 
+.main_no_padding {
+  padding-bottom: 120px;
+}
+
 .main_filled {
   background-color: var(--mantine-color-blue-1);
   padding-bottom: 120px;

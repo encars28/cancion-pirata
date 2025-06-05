@@ -18,6 +18,7 @@ import {
   LoadingOverlay,
   Skeleton,
   Box,
+  Divider,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { useState } from "react";
@@ -37,7 +38,6 @@ export function MainPage() {
     refetchOnMount: false,
   });
 
-
   if (isPending) {
     return <Loading />;
   }
@@ -46,10 +46,10 @@ export function MainPage() {
   //   setOverlay(false);
   // }
 
-  const poem = (data as PoemPublicWithAllTheInfo);
+  const poem = data as PoemPublicWithAllTheInfo;
 
   return (
-    <Shell>
+    <Shell noPaddingTop>
       <Hero />
       <>
         {/* <LoadingOverlay
@@ -59,24 +59,25 @@ export function MainPage() {
         loaderProps={{ type: "dots" }}
       /> */}
         {/* <Skeleton visible={overlay}> */}
-          {/* {poem ? ( */}
-            <SimpleGrid
-              cols={{ base: 1, sm: 2 }}
-              spacing="xl"
-              verticalSpacing={120}
-              mt={100}
-              pb={150}
-              ml={{ base: "xl", sm: 50, md: 100 }}
-            >
-              <Container w="100%" fluid>
-                <Interweave content={poem.content} />
-              </Container>
+        {/* {poem ? ( */}
+        <SimpleGrid
+          cols={{ base: 1, md: 2 }}
+          spacing="xl"
+          verticalSpacing={120}
+          mt={100}
+          mx={50}
+        >
+          <Container mx={30} w="100%" fluid>
+            <Interweave content={poem.content} />
+          </Container>
+          <Group wrap="nowrap" justify="center">
+            <Divider visibleFrom="md" orientation="vertical" mr="xl" size="sm"/>
+            <Stack h="100%" justify="space-around">
               <Stack gap="lg">
                 <Title ta="center" order={2}>
                   {poem.title}
                 </Title>
-                {
-                poem.author_names?.length === 0 ||
+                {poem.author_names?.length === 0 ||
                 poem.show_author === false ? (
                   <Group justify="center">
                     <Badge variant="default" size="lg">
@@ -86,23 +87,29 @@ export function MainPage() {
                 ) : (
                   <Group justify="center" gap="md">
                     {poem.author_ids?.map((author, index) => (
-                      <AuthorBadge authorId={author} authorName={poem.author_names![index]} key={author} />
+                      <AuthorBadge
+                        authorId={author}
+                        authorName={poem.author_names![index]}
+                        key={author}
+                      />
                     ))}
                   </Group>
                 )}
-                <Group justify="center" mt="lg">
-                  <Button
-                    variant="outline"
-                    w={250}
-                    onClick={() => navigate(`/poems/${poem.id}`)}
-                  >
-                    Ir al poema...
-                  </Button>
-                </Group>
               </Stack>
-            </SimpleGrid>
-          {/* // ) : <Box h={300} w="100%" />} */}
-          {/* ) : null } */}
+              <Group justify="center" mt="lg">
+                <Button
+                  variant="outline"
+                  w={250}
+                  onClick={() => navigate(`/poems/${poem.id}`)}
+                >
+                  Ir al poema...
+                </Button>
+              </Group>
+            </Stack>
+          </Group>
+        </SimpleGrid>
+        {/* // ) : <Box h={300} w="100%" />} */}
+        {/* ) : null } */}
         {/* // </Skeleton> */}
       </>
     </Shell>
