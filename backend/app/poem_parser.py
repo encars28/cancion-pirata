@@ -1,59 +1,70 @@
 import re
 
+CESURA_SPACES = 10
 
 class PoemParser:
     def __init__(self, content: str) -> None:
         self.content = content
         self.indent_count = 0
+        self.is_aligned = False
 
     def _parse_word_format(self, poem: str) -> str:
         poem = re.sub(
             r"(?<!\\)\*\*(.*?)\*\*", r"<strong>\1</strong>", poem, flags=re.DOTALL
         )
-        poem = re.sub(r"(?<!\\)__(.*?)__", r"<i>\1</i>", poem, flags=re.DOTALL)
-        poem = re.sub(r"(?<!\\)==(.*?)==", r"<u>\1</u>", poem, flags=re.DOTALL)
-        poem = re.sub(r"(?<!\\)--(.*?)--", r"<s>\1</s>", poem, flags=re.DOTALL)
+        poem = re.sub(
+            r"(?<!\\)\*(.*?)\*", r"<i>\1</i>", poem, flags=re.DOTALL
+        )
+        poem = re.sub(r"(?<!\\)_(.*?)_", r"<u>\1</u>", poem, flags=re.DOTALL)
+        poem = re.sub(r"(?<!\\)~(.*?)~", r"<s>\1</s>", poem, flags=re.DOTALL)
+        
+        matches = re.finditer(r"(?<!\\)=([^=]+)=(?:\(([^)]+)\))?", poem, flags=re.DOTALL | re.MULTILINE)
+        for match in matches: 
+            content = match.group(1)
+            if match.group(2):
+                color = match.group(2)[1:-1]
+                poem = poem.replace(match.group(0), f'<mark style="background:{color}!important;">{content}</mark>')
+            else:
+                poem = poem.replace(match.group(0), f'<mark>{content}</mark>')
+                
         return poem
 
     def _parse_text_align(self, poem: str) -> str:
+        align_count = 0
         for align in ["center", "left"]:
             regex = rf"(?<!\\)<{align}>.?(.*?)(?=<center>|<right>|<left>|$)"
             sub = rf'<div style="text-align:{align};">\1</div>'
-            poem = re.sub(regex, sub, poem, flags=re.DOTALL)
+            poem, align_count = re.subn(regex, sub, poem, flags=re.DOTALL)
 
         right_regex = r"(?<!\\)<right>.?(.*?)(?=<center>|<right>|<left>|$)"
         sub = r'<div style="text-align:right;">\1</div>'
-        poem, count = re.subn(right_regex, sub, poem, flags=re.DOTALL)
+        poem, right_align_count = re.subn(right_regex, sub, poem, flags=re.DOTALL)
 
-        if count > 0 and self.indent_count > 0:
+        if right_align_count > 0 and self.indent_count > 0:
             poem = self._adjust_indentation_right_align(poem)
+            
+        if align_count > 0 or right_align_count > 0:
+            self.is_aligned = True
 
         return poem
 
     def _adjust_indentation_right_align(self, poem: str) -> str:
-        matches = re.finditer(
-            r'<div style="text-align:right;">.*?</div>($|<div style="text-align:)',
-            poem,
-            flags=re.DOTALL,
-        )
-        indent_matches = re.findall(
-            r'<div style="text-indent:\d;">.*?</div>', poem, flags=re.DOTALL
-        )
-
-        for match in matches:
-            for i_match in indent_matches:
-                if (
-                    poem.index(i_match) > match.start()
-                    and poem.index(i_match) < match.end()
-                ):
-                    new_match = re.sub(
-                        r'<div style="text-indent:(\d);">(.*?)</div>',
-                        r'<div style="text-indent:\1; direction: rtl;">\2&lrm;</div>',
-                        i_match,
-                        flags=re.MULTILINE,
-                    )
-                    poem = poem.replace(i_match, new_match)
-
+        pattern = r'(<div style="text-align:right;">)(.*?)(?=<div style="text-align:|$)'
+        
+        def replace_right_block(match):
+            opening_tag = match.group(1)
+            content = match.group(2)
+            
+            modified_content = re.sub(
+                r'<div style="padding-left:(\d+)ch; margin:0;">(.*?)</div>',
+                r'<div style="padding-right:\1ch; margin:0; text-align:right;">\2</div>',
+                content,
+                flags=re.DOTALL
+            )
+            
+            return opening_tag + modified_content
+        
+        poem = re.sub(pattern, replace_right_block, poem, flags=re.DOTALL)
         return poem
 
     def _parse_font_size(self, poem: str) -> str:
@@ -66,18 +77,23 @@ class PoemParser:
         return poem
 
     def _parse_indentation(self, poem: str) -> str:
+        # Here I am also capturing the newline in the regex, because otherwise
+        # the later <br> would add an extra line break.
         poem, self.indent_count = re.subn(
-            r"^(\d)> ?(.*?)$",
-            r'<div style="text-indent:\1em;">\2</div>',
+            r"^(\d+)>(.*\n?)",
+            r'<div style="padding-left:\1ch; margin:0;">\2</div>',
             poem,
             flags=re.MULTILINE,
         )
+            
         return poem
 
     def _parse_cesura(self, poem: str) -> str:
+        # For the cesura I have chosen to implement it using a fixed number of spaces
+        cesura = "&nbsp;" * CESURA_SPACES
         poem = re.sub(
             r"(^.*?)\/\/(.*?$)",
-            r"\1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\2",
+            fr"\1{cesura}\2",
             poem,
             flags=re.MULTILINE,
         )
@@ -95,4 +111,7 @@ class PoemParser:
         # Line breaks
         poem = re.sub(r"\n", "<br>", poem)
 
-        return poem
+        if not self.is_aligned:
+            return '<div style="text-align: center;">' + poem + "</div>"
+        
+        return '<div>' + poem + "</div>"
