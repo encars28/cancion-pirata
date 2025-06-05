@@ -22,8 +22,8 @@ class PoemParser:
         for match in matches: 
             content = match.group(1)
             if match.group(2):
-                color = match.group(2)[1:-1]
-                poem = poem.replace(match.group(0), f'<mark style="background:{color}!important;">{content}</mark>')
+                color = match.group(2)
+                poem = poem.replace(match.group(0), f'<mark style="background-color:{color}!important;">{content}</mark>')
             else:
                 poem = poem.replace(match.group(0), f'<mark>{content}</mark>')
                 
