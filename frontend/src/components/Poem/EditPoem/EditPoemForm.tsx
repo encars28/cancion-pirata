@@ -77,6 +77,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
       ...poem,
       original_poem_id: undefined,
       type: undefined,
+      author_names: undefined,
     },
     validate: {
       title: isNotEmpty("El título no puede estar vacío"),
@@ -90,7 +91,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
   const { data: authorsData } = useAuthors({});
   const { data: poemsData } = usePoems({});
 
-  const author_names =
+  const author_names_info =
     authorsData?.data?.map((author) => author.full_name) ?? [];
   const poems_info = Object.fromEntries(
     poemsData?.data?.map((poem) => [
@@ -274,7 +275,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
                       key={form.key("author_names")}
                       label="Autores"
                       placeholder="Escribe para buscar un autor"
-                      data={author_names}
+                      data={author_names_info}
                       {...form.getInputProps("author_names")}
                     />
                     <Select

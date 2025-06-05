@@ -44,7 +44,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
           desktop: !desktopOpened,
         },
       }}
-      navbar={{width: 70, breakpoint: "xs"}}
+      navbar={{ width: 70, breakpoint: "xs" }}
     >
       <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
         <Container size="xl" className={classes.inner}>
@@ -106,6 +106,21 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
           <Group hiddenFrom="sm" gap="md">
             <SearchControlMobile />
             {isLoggedIn() ? <ProfileControl /> : <LoginControl />}
+            <Tooltip label="Nuevo poema">
+              <ActionIcon
+                size={35}
+                variant="light"
+                radius="md"
+                onClick={
+                  isLoggedIn()
+                    ? () => navigate("/poems/add")
+                    : () => navigate("/login")
+                }
+              >
+                {/* <Image src="/src/assets/poempen.png" alt="Nuevo poema" color="blue" /> */}
+                <TbWritingSign size={22} />
+              </ActionIcon>
+            </Tooltip>
             {profileNavbar && (
               <>
                 <Burger
@@ -127,13 +142,15 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
       </AppShell.Header>
 
       {profileNavbar && <ProfileNavbar />}
-      
+
       <AppShell.Navbar p="sm">
         <Navbar />
       </AppShell.Navbar>
 
-      <AppShell.Main >
-        <div className={fillBackground ? classes.main_filled : classes.main}>{children}</div>
+      <AppShell.Main>
+        <div className={fillBackground ? classes.main_filled : classes.main}>
+          {children}
+        </div>
       </AppShell.Main>
     </AppShell>
   );

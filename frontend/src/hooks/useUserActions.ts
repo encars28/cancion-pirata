@@ -13,6 +13,8 @@ const useUserActions = (userId?: string) => {
   const { data: profilePicture } = useQuery({
     queryKey: ['currentUser', 'profilePicture'],
     queryFn: async () => callService(usersGetUserMeProfilePicture),
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
   const { data: userProfilePicture } = useQuery({
@@ -20,6 +22,8 @@ const useUserActions = (userId?: string) => {
     queryFn: async () => {
       return callService(usersGetUserProfilePicture, { path: { user_id: userId! } })
     },
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
 

@@ -65,6 +65,8 @@ const useAuthorActions = (authorId: string) => {
   const {data: AuthorProfilePicture} = useQuery({
     queryKey: ['authors', authorId, 'profilePicture'],
     queryFn: async () => callService(authorsGetAuthorPicture, { path: { author_id: authorId } }),
+    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
   return {

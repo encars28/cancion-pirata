@@ -19,6 +19,7 @@ import {
   Button,
   Divider,
   HoverCard,
+  Badge,
 } from "@mantine/core";
 import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
@@ -31,11 +32,13 @@ import {
   TbPoint,
   TbPointFilled,
   TbTrash,
+  TbUser,
 } from "react-icons/tb";
 import { Interweave } from "interweave";
 import { InfoBox } from "../components/InfoBox";
 import { AddCollection } from "../components/Collection/AddCollection";
 import { AddPoemToCollection } from "../components/Collection/AddPoemToCollection/AddPoemToCollection";
+import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -52,7 +55,7 @@ export function PoemPage() {
   const addPoemModal = () =>
     modals.open({
       title: "Crear colección",
-      children: <AddCollection redirect={false} poemId={poemId}/>,
+      children: <AddCollection redirect={false} poemId={poemId} />,
     });
 
   const { isPending, isError, data, error } = usePoem(poemId!, true);
@@ -149,28 +152,27 @@ export function PoemPage() {
               </HoverCard.Dropdown>
             </HoverCard>
           )}
-          <Stack>
+          <Stack gap="xl">
             <Title ta="center" order={1}>
               {poem.title}
             </Title>
-            <Title ta="center" order={3} c="dimmed" fw="lighter">
-              Escrito por:{" "}
-              {poem.author_names?.length === 0
-                ? "Anónimo"
-                : poem.author_ids?.map((author, index) => (
-                    <Anchor
-                      key={author}
-                      underline="hover"
-                      target="_blank"
-                      c="dimmed"
-                      fw="lighter"
-                      size="xl"
-                      onClick={() => navigate(`/authors/${author}`)}
-                    >
-                      {poem.author_names?.[index] + " "}
-                    </Anchor>
-                  ))}
-            </Title>
+            {poem.author_names?.length === 0 || poem.show_author === false ? (
+              <Group justify="center">
+                <Badge variant="default" size="lg">
+                  <TbUser /> Anónimo
+                </Badge>
+              </Group>
+            ) : (
+              <Group justify="center" gap="md">
+                {poem.author_ids?.map((author, index) => (
+                  <AuthorBadge
+                    authorId={author}
+                    authorName={poem.author_names![index]}
+                    key={author}
+                  />
+                ))}
+              </Group>
+            )}
           </Stack>
         </Group>
         {poem.description && (

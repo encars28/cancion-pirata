@@ -1,0 +1,7 @@
+.link {
+    cursor: pointer;
+  
+    @mixin hover {
+      background-color: var(--mantine-color-default-hover);
+    }
+  }

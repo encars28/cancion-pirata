@@ -13,6 +13,7 @@ import {
   Title,
   Anchor,
   Button,
+  Badge,
   Group,
   LoadingOverlay,
   Skeleton,
@@ -20,6 +21,8 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import { TbUser } from "react-icons/tb";
+import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 
 export function MainPage() {
   const navigate = useNavigate();
@@ -68,29 +71,28 @@ export function MainPage() {
               <Container w="100%" fluid>
                 <Interweave content={poem.content} />
               </Container>
-              <Stack>
+              <Stack gap="lg">
                 <Title ta="center" order={2}>
                   {poem.title}
                 </Title>
-                <Text ta="center" c="dimmed">
-                  Escrito por:{" "}
-                  {poem.author_names?.length === 0
-                    ? "Anónimo"
-                    : poem.author_ids?.map((author, index) => (
-                        <Anchor
-                          key={author}
-                          underline="hover"
-                          target="_blank"
-                          c="dimmed"
-                          onClick={() => navigate(`/authors/${author}`)}
-                        >
-                          {poem.author_names?.[index] + " "}
-                        </Anchor>
-                      ))}
-                </Text>
-                <Group justify="center" mt="xl">
+                {
+                poem.author_names?.length === 0 ||
+                poem.show_author === false ? (
+                  <Group justify="center">
+                    <Badge variant="default" size="lg">
+                      <TbUser /> Anónimo
+                    </Badge>
+                  </Group>
+                ) : (
+                  <Group justify="center" gap="md">
+                    {poem.author_ids?.map((author, index) => (
+                      <AuthorBadge authorId={author} authorName={poem.author_names![index]} key={author} />
+                    ))}
+                  </Group>
+                )}
+                <Group justify="center" mt="lg">
                   <Button
-                    variant="default"
+                    variant="outline"
                     w={250}
                     onClick={() => navigate(`/poems/${poem.id}`)}
                   >
