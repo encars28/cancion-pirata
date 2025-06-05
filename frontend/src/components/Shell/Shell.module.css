@@ -7,13 +7,13 @@
 
 .main {
   padding-bottom: 120px;
-  height: calc(100vh - var(--app-shell-header-height, 0px) - var(--app-shell-footer-height, 0px) - var(--app-shell-padding) * 2);
+  padding-top: 70px;
 }
 
 .main_filled {
   background-color: var(--mantine-color-blue-1);
   padding-bottom: 120px;
-  height: calc(100vh - var(--app-shell-header-height) - var(--app-shell-padding) * 2);
+  padding-top: 70px;
 }
 
 .link {

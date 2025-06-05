@@ -147,7 +147,7 @@ export function Shell({ children, profileNavbar, fillBackground }: ShellProps) {
         <Navbar />
       </AppShell.Navbar>
 
-      <AppShell.Main>
+      <AppShell.Main h="calc(100vh - var(--app-shell-header-height) - var(--app-shell-padding) * 2)">
         <div className={fillBackground ? classes.main_filled : classes.main}>
           {children}
         </div>

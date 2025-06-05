@@ -108,7 +108,7 @@ export function PoemPage() {
 
   return (
     <Shell>
-      <Stack justify="center" align="center" my={50} gap="sm">
+      <Stack justify="center" align="center" gap="sm">
         <Group gap={50}>
           {poem.original && poem.type == PoemType.TRANSLATION && (
             <HoverCard width={250}>
@@ -158,7 +158,7 @@ export function PoemPage() {
             </Title>
             {poem.author_names?.length === 0 || poem.show_author === false ? (
               <Group justify="center">
-                <Badge variant="default" size="lg">
+                <Badge variant="light" size="lg">
                   <TbUser /> Anónimo
                 </Badge>
               </Group>
@@ -166,6 +166,7 @@ export function PoemPage() {
               <Group justify="center" gap="md">
                 {poem.author_ids?.map((author, index) => (
                   <AuthorBadge
+                    variant="light"
                     authorId={author}
                     authorName={poem.author_names![index]}
                     key={author}
