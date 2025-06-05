@@ -11,6 +11,12 @@ const isLoggedIn = () => {
   return localStorage.getItem("access_token") !== null
 }
 
+const isAdmin = () => {
+  if (!isLoggedIn()) return false
+  const token = JSON.parse(atob(localStorage.getItem("access_token")?.split(".")[1]!))
+  return token.is_admin
+}
+
 const useAuth = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
@@ -77,14 +83,6 @@ const useAuth = () => {
     logout,
     user,
   }
-}
-
-const isAdmin = () => {
-  if (!isLoggedIn()) return false
-
-  const { user } = useAuth()
-  console.log(user?.is_superuser)
-  return user?.is_superuser ?? false
 }
 
 export { isLoggedIn, isAdmin }

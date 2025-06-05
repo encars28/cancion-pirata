@@ -4,7 +4,7 @@ import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
 import { NothingFound } from "./components/ErrorPages/NothingFound";
-import { isLoggedIn } from "./hooks/useAuth";
+import useAuth, { isAdmin, isLoggedIn } from "./hooks/useAuth";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
@@ -23,7 +23,6 @@ import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
 import { CollectionPage } from "./pages/collectionpage";
-import { UploadProfilePicture } from "./components/User/UploadProfilePicture/UploadProfilePicture";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -88,7 +87,7 @@ export default function AllRoutes() {
         </Route>
       </Route>
 
-      <Route element={<ProtectedRoute isAllowed={true} />}>
+      <Route element={<ProtectedRoute isAllowed={isAdmin()} />}>
         <Route path="admin" element={<AdminPage />}>
           <Route index element={<TableUsers />} />
           <Route path="authors" element={<TableAuthors />} />
