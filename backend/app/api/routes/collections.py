@@ -1,24 +1,48 @@
 import uuid
 from typing import Any
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 
 from app.api.deps import (
     OptionalCurrentUser,
     SessionDep,
     CurrentUser,
+    get_current_active_superuser,
 )
 
 from app.schemas.common import Message
 from app.schemas.collection import (
     CollectionCreate,
     CollectionPublic,
+    CollectionSearchParams,
     CollectionUpdate,
+    CollectionsPublic,
 )
 from app.crud.collection import collection_crud
 from app.crud.poem import poem_crud
 
 router = APIRouter(prefix="/collections", tags=["collections"])
+
+
+@router.get("/", response_model=CollectionsPublic, dependencies=[Depends(get_current_active_superuser)])
+def read_collections(
+    session: SessionDep,
+    skip: int = 0,
+    limit: int = 100,
+) -> Any:
+    """
+    Retrieve all Collections.
+    """
+    params = CollectionSearchParams(
+        collection_skip=skip, collection_limit=limit
+    )
+    collections = [CollectionPublic.model_validate(collection) for collection in collection_crud.get_many(
+        session, params, public_restricted=False
+    )]
+    count = collection_crud.get_count(
+        session, params, public_restricted=False)
+
+    return CollectionsPublic(data=collections, count=count)
 
 
 @router.post(

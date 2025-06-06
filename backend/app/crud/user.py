@@ -1,19 +1,24 @@
+import email
 from typing import Optional
 import uuid
 import os
 
+from yaml import AliasEvent
+
 from app.core.config import settings
 from app.core.security import verify_password, get_password_hash
+from app.models import user
 from app.models.user import User
 from app.schemas.user import (
     UserCreate,
     UserSchema,
+    UserSearchParams,
     UserUpdate,
     UserUpdateMe,
 )
 
-from sqlalchemy.orm import Session
-from sqlalchemy import select, func
+from sqlalchemy.orm import Session, aliased
+from sqlalchemy import Select, select, func
 
 
 class UserCRUD:
@@ -36,18 +41,55 @@ class UserCRUD:
         return UserSchema.model_validate(db_obj) if db_obj else None
 
     def get_many(
-        self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100
+        self, db: Session, queryParams: UserSearchParams
     ) -> list[UserSchema]:
-        statement = select(User).offset(skip).limit(limit)
-        if query:
-            statement = statement.where(User.username.icontains(query))
+        username_filter = self.filter_by_text(
+            db, queryParams.user_name, "username"
+        )
+        email_filter = self.filter_by_text(db, queryParams.user_email, "email")
+        full_name_filter = self.filter_by_text(
+            db, queryParams.user_full_name, "full_name"
+        )
+        
+        smt = username_filter.intersect(
+            email_filter, full_name_filter
+        ).subquery()
+        alias = aliased(User, smt)
+        
+        if queryParams.user_desc:
+            order = getattr(alias, queryParams.user_order_by).desc().nulls_last()
+        else: 
+            order = getattr(alias, queryParams.user_order_by).nulls_first()
+            
+        db_objs = db.scalars(
+            select(alias)
+            .offset(queryParams.user_skip)
+            .limit(queryParams.user_limit)
+            .order_by(order)
+        ).all()
 
-        return [UserSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
+        return [UserSchema.model_validate(db_obj) for db_obj in db_objs]
 
-    def get_count(self, db: Session) -> int:
-        statement = select(func.count()).select_from(User)
+    def get_count(self, db: Session, queryParams: UserSearchParams) -> int:
+        username_filter = self.filter_by_text(
+            db, queryParams.user_name, "username"
+        )
+        email_filter = self.filter_by_text(db, queryParams.user_email, "email")
+        full_name_filter = self.filter_by_text(
+            db, queryParams.user_full_name, "full_name"
+        )
+        
+        smt = username_filter.intersect(
+            email_filter, full_name_filter
+        ).subquery()
+        alias = aliased(User, smt)
+        
+        statement = select(func.count()).select_from(alias)
         count = db.execute(statement).scalar()
         return count if count else 0
+
+    def filter_by_text(self, db: Session, query: str, attr: str) -> Select:
+        return select(User).where(getattr(User, attr).icontains(query))
 
     def create(self, db: Session, obj_create: UserCreate) -> UserSchema:
         obj_data = obj_create.model_dump(exclude_none=True, exclude_unset=True)

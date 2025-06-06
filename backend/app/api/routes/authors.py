@@ -7,7 +7,6 @@ from fastapi.responses import FileResponse
 from app.core.config import settings
 import os
 from app.api.deps import (
-    AuthorQuery,
     OptionalCurrentUser,
     get_current_active_superuser,
     SessionDep,
@@ -20,6 +19,7 @@ from app.schemas.author import (
     AuthorPublic,
     AuthorPublicBasic,
     AuthorPublicWithPoems,
+    AuthorSearchParams,
     AuthorUpdate,
     AuthorUpdateBasic,
     AuthorsPublic,
@@ -31,35 +31,25 @@ router = APIRouter(prefix="/authors", tags=["authors"])
 
 
 @router.get(
-    "",
-    response_model=AuthorsPublic | AuthorsPublicWithPoems,
+    "/",
+    response_model=AuthorsPublicWithPoems,
+    dependencies=[Depends(get_current_active_superuser)]
 )
 def read_authors(
-    session: SessionDep,
-    current_user: OptionalCurrentUser,
-    queryParams: AuthorQuery,
+    session: SessionDep, skip: int = 0, limit: int = 100
 ) -> Any:
     """
     Retrieve all authors.
     """
-
-    if current_user and current_user.is_superuser:
-        authors = [
-            AuthorPublicWithPoems.model_validate(author)
-            for author in author_crud.get_many(
-                db=session, queryParams=queryParams, public_restricted=False
-            )
-        ]
-        count = author_crud.get_count(
-            db=session, queryParams=queryParams, public_restricted=False
-        )
-        return AuthorsPublicWithPoems(data=authors, count=count)
+    params = AuthorSearchParams(
+        author_skip=skip, author_limit=limit
+    )
 
     authors = [
         AuthorPublicBasic.model_validate(author)
-        for author in author_crud.get_many(db=session, queryParams=queryParams)
+        for author in author_crud.get_many(db=session, queryParams=params)
     ]
-    count = author_crud.get_count(db=session, queryParams=queryParams)
+    count = author_crud.get_count(db=session, queryParams=params)
 
     return AuthorsPublic(data=authors, count=count)
 

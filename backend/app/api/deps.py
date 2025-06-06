@@ -11,7 +11,9 @@ from sqlalchemy.orm import Session
 from app.core import security
 from app.core.config import settings
 from app.core.db import engine
-from app.schemas.user import UserSchema
+from app.schemas.collection import CollectionSearchParams
+from app.schemas.common import SearchParams
+from app.schemas.user import UserSchema, UserSearchParams
 from app.schemas.author import AuthorSearchParams
 from app.schemas.poem import PoemSearchParams
 from app.crud.user import user_crud
@@ -56,8 +58,6 @@ def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optiona
         user = user_crud.get_by_id(session, token_data.sub)  # type: ignore
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        if not user.is_active:
-            raise HTTPException(status_code=400, detail="Inactive user")
         return user
     
     return _get_current_user
@@ -74,5 +74,4 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
         )
     return current_user
 
-PoemQuery = Annotated[PoemSearchParams, Query()]
-AuthorQuery = Annotated[AuthorSearchParams, Query()]
+SearchQuery = Annotated[SearchParams, Query()]

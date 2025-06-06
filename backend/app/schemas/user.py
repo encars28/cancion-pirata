@@ -1,20 +1,30 @@
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
-from typing import Optional
+from typing import Optional, Literal
 import uuid
 from datetime import datetime
 
+from app.crud import author
 from app.schemas.author import AuthorPublic
-from app.schemas.collection import CollectionBasic
+from app.schemas.collection import CollectionPublicBasic
+
+UserParam = Literal["full_name", "email", "username"]
+
+
+class UserSearchParams(BaseModel):
+    user_order_by: UserParam = "username"
+    user_limit: int = Field(default=100, gt=0, le=100)
+    user_skip: int = Field(default=0, ge=0)
+    user_desc: bool = False
+    user_name: str = ""
+    user_email: EmailStr = ""
+    user_full_name: str = ""
 
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
     full_name: Optional[str] = Field(max_length=255, default=None)
     username: str = Field(max_length=255)
-    is_active: bool = Field(default=True)
     is_superuser: bool = Field(default=False)
-
-    full_name: Optional[str] = Field(default=None, max_length=255)
 
 
 class UserCreate(UserBase):
@@ -29,11 +39,12 @@ class UserRegister(BaseModel):
 
 
 class UserUpdate(UserBase):
-    email: Optional[EmailStr] = Field( # type: ignore
-        default=None, max_length=255)  
+    email: Optional[EmailStr] = Field(  # type: ignore
+        default=None, max_length=255)
     password: Optional[str] = Field(default=None, min_length=8, max_length=40)
-    username: Optional[str] = Field( # type: ignore
-        default=None, max_length=255)  
+    username: Optional[str] = Field(  # type: ignore
+        default=None, max_length=255)
+    full_name: Optional[str] = Field(max_length=255, default=None)
     author_id: Optional[uuid.UUID] = Field(default=None)
 
 
@@ -48,12 +59,16 @@ class UpdatePassword(BaseModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
-class UserPublic(UserBase):
+class UserPublicBasic(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
-    collections: list[CollectionBasic] = []
+
+
+class UserPublic(UserPublicBasic):
+    author: Optional[AuthorPublic] = None
+    collections: list[CollectionPublicBasic] = []
 
 
 class UserSchema(UserBase):
@@ -64,16 +79,16 @@ class UserSchema(UserBase):
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     hashed_password: str
-    collections: list[CollectionBasic] = []
+    collections: list[CollectionPublicBasic] = []
     image_path: Optional[str] = None
 
 
-class UsersPublic(BaseModel):
-    data: list[UserPublic]
+class UsersPublicBasic(BaseModel):
+    data: list[UserPublicBasic]
     count: int
 
 
-class UserForSearch(BaseModel):
+class SearchUser(BaseModel):
     id: uuid.UUID
     username: str = Field(max_length=255)
 

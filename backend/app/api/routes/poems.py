@@ -1,24 +1,25 @@
 import uuid
 from typing import Any, Annotated
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
+from httpx import get
 
 from app.api.deps import (
     CurrentUser,
     OptionalCurrentUser,
-    PoemQuery,
     SessionDep,
+    get_current_active_superuser,
 )
 
 from app.poem_parser import PoemParser
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
-    PoemForSearch,
     PoemPublicWithAuthor,
     PoemRandom,
+    PoemSearchParams,
     PoemUpdate,
     PoemPublicWithAllTheInfo,
-    PoemsPublic,
+    PoemsPublicWithAllTheInfo,
 )
 from app.schemas.common import Message
 
@@ -28,33 +29,25 @@ from app.crud.author import author_crud
 router = APIRouter(prefix="/poems", tags=["poems"])
 
 
-@router.get("", response_model=PoemsPublic)
+@router.get("/", response_model=PoemsPublicWithAllTheInfo, dependencies=[Depends(get_current_active_superuser)])
 def read_poems(
-    session: SessionDep, current_user: OptionalCurrentUser, queryParams: PoemQuery
+    session: SessionDep, skip: int = 0, limit: int = 100
 ) -> Any:
     """
     Retrieve all poems.
     """
-    if current_user and current_user.is_superuser:
-        count = poem_crud.get_count(
-            session, queryParams=queryParams, public_restricted=False
+    params = PoemSearchParams(poem_skip=skip, poem_limit=limit)
+    count = poem_crud.get_count(
+        session, queryParams=params, public_restricted=False
+    )
+    poems = [
+        PoemPublicWithAllTheInfo.model_validate(poem)
+        for poem in poem_crud.get_many(
+            session, queryParams=params, public_restricted=False
         )
-        poems = [
-            PoemPublicWithAuthor.model_validate(poem)
-            for poem in poem_crud.get_many(
-                session, queryParams=queryParams, public_restricted=False
-            )
-        ]
+    ]
 
-    # Retrieve public poems
-    else:
-        count = poem_crud.get_count(session, queryParams=queryParams)
-        poems = [
-            PoemPublicWithAuthor.model_validate(poem)
-            for poem in poem_crud.get_many(session, queryParams=queryParams)
-        ]
-
-    return PoemsPublic(data=poems, count=count)
+    return PoemsPublicWithAllTheInfo(data=poems, count=count)
 
 
 @router.get("/random", response_model=PoemRandom)
@@ -126,8 +119,8 @@ def read_poem(
         for derived in poem.derived_poems
         if derived.is_public
         or (current_user
-        and current_user.author_id
-        and current_user.author_id in derived.author_ids)
+            and current_user.author_id
+            and current_user.author_id in derived.author_ids)
     ]
     for derived in poem.derived_poems:
         if not derived.show_author and (
@@ -199,7 +192,8 @@ def update_poem(
             current_user.author_id is None
             or current_user.author_id not in poem.author_ids
         ):
-            raise HTTPException(status_code=400, detail="Not enough permissions")
+            raise HTTPException(
+                status_code=400, detail="Not enough permissions")
 
         if poem_in.author_names or poem_in.original_poem_id or poem_in.type is not None:
             raise HTTPException(
@@ -230,7 +224,8 @@ def delete_poem(
             current_user.author_id is None
             or current_user.author_id not in poem.author_ids
         ):
-            raise HTTPException(status_code=400, detail="Not enough permissions")
+            raise HTTPException(
+                status_code=400, detail="Not enough permissions")
 
     poem_crud.delete(db=session, obj_id=poem.id)
     return Message(message="Poem deleted successfully")

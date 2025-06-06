@@ -41,22 +41,22 @@ class AuthorCRUD:
         stmt = name_filter.intersect(poem_filter, birth_filter, death_filter).subquery()
         alias = aliased(Author, stmt)
 
-        if queryParams.order_by != "poems":
-            if queryParams.desc:
-                order = getattr(alias, queryParams.order_by).desc().nulls_last()
+        if queryParams.author_order_by != "poems":
+            if queryParams.author_desc:
+                order = getattr(alias, queryParams.author_order_by).desc().nulls_last()
             else:
-                order = getattr(alias, queryParams.order_by).nulls_first()
+                order = getattr(alias, queryParams.author_order_by).nulls_first()
 
             db_objs = db.scalars(
                 select(alias)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
+                .offset(queryParams.author_skip)
+                .limit(queryParams.author_limit)
                 .order_by(order)
             ).all()
 
         else:
             label = "poem_count"
-            if queryParams.desc:
+            if queryParams.author_desc:
                 order = desc(label)
             else:
                 order = label
@@ -65,17 +65,11 @@ class AuthorCRUD:
                 select(alias, func.count(Poem.id).label(label))
                 .join(alias.poems)
                 .group_by(alias)
-                .offset(queryParams.skip)
-                .limit(queryParams.limit)
+                .offset(queryParams.author_skip)
+                .limit(queryParams.author_limit)
                 .order_by(order)
             ).all()
 
-        return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
-    
-    def get_many_for_search(
-        self, db: Session, query: str
-    ) -> list[AuthorSchema]:
-        db_objs = db.scalars(self.filter_by_name(AuthorSearchParams(full_name=query))).all()
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
     
     def get_count(self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True) -> int:
@@ -98,7 +92,7 @@ class AuthorCRUD:
         self, db: Session, query: AuthorSearchParams, public_restricted: bool = True
     ) -> list[uuid.UUID]:
         regex = r"(>|<|>=|<=|=|)(\d+)"
-        m = re.match(regex, query.poems)
+        m = re.match(regex, query.author_poems)
 
         if not m:
             return [a.id for a in db.scalars(select(Author)).all()]
@@ -161,7 +155,7 @@ class AuthorCRUD:
         return s
 
     def filter_by_name(self, query: AuthorSearchParams) -> Select:
-        return select(Author).where(Author.full_name.icontains(query.full_name))
+        return select(Author).where(Author.full_name.icontains(query.author_full_name))
 
     def create(self, db: Session, obj_create: AuthorCreate) -> AuthorSchema:
         obj_create_data = obj_create.model_dump(exclude_unset=True)

@@ -9,6 +9,17 @@ from enum import Enum
 PoemParam = Literal["created_at", "updated_at", "title"]
 PoemParamType = Literal["all", "version", "translation", "derived", "original", ""]
 
+class PoemSearchParams(BaseModel):
+    poem_order_by: PoemParam = "title"
+    poem_limit: int = Field(default=100, gt=0, le=100)
+    poem_skip: int = Field(default=0, ge=0)
+    poem_desc: bool = False
+    poem_title: str = ""
+    poem_created_at: str = ""
+    poem_updated_at: str = ""
+    poem_verses: str = ""
+    poem_type: PoemParamType = ""
+    poem_language: str = ""
 
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
@@ -80,28 +91,18 @@ class PoemSchema(PoemBase):
     original: Optional[PoemPublicWithAuthor] = None
 
 
-class PoemsPublic(BaseModel):
-    data: List[PoemPublicWithAuthor]
+class PoemsPublicWithAllTheInfo(BaseModel):
+    data: List[PoemPublicWithAllTheInfo]
     count: int
 
 
-class PoemSearchParams(BaseModel):
-    order_by: PoemParam = "title"
-    limit: int = Field(default=100, gt=0, le=100)
-    skip: int = Field(default=0, ge=0)
-    desc: bool = False
-    title: str = ""
-    created_at: str = ""
-    updated_at: str = ""
-    verses: str = ""
-    type: PoemParamType = ""
-    language: str = ""
 
-
-class PoemForSearch(BaseModel): 
+class SearchPoem(BaseModel): 
     id: uuid.UUID
     title: str = Field(max_length=255)
     author_names: List[str] = []
+    is_public: bool = False
+    show_author: bool = True
     
     model_config = ConfigDict(from_attributes=True)
 

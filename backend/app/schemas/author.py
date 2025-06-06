@@ -7,44 +7,61 @@ from app.schemas.poem import PoemPublic
 
 AuthorParam = Literal["full_name", "birth_date", "poems", "death_date"]
 
+
+class AuthorSearchParams(BaseModel):
+    author_order_by: AuthorParam = "full_name"
+    author_limit: int = Field(default=100, gt=0, le=100)
+    author_skip: int = Field(default=0, ge=0)
+    author_desc: bool = False
+    author_full_name: str = ""
+    author_birth_date: str = ""
+    author_death_date: str = ""
+    author_poems: str = ""
+
+
 class AuthorBase(BaseModel):
     full_name: str = Field(max_length=255)
-    birth_date: Optional[datetime] = None
 
 
 class AuthorSchema(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    poems: List["PoemPublic"] = []
+    birth_date: Optional[datetime] = None
     death_date: Optional[datetime] = None
+
+    poems: List["PoemPublic"] = []
     user_id: Optional[uuid.UUID] = None
     image_path: Optional[str] = Field(default=None, max_length=255)
 
 
 class AuthorCreate(AuthorBase):
+    birth_date: Optional[datetime] = None
     death_date: Optional[datetime] = None
 
 
 class AuthorUpdateBasic(AuthorBase):
-    full_name: Optional[str] = Field(max_length=255, default=None)  # type: ignore
+    full_name: Optional[str] = Field(  # type: ignore
+        max_length=255, default=None)
     birth_date: Optional[datetime] = None
-    
+
+
 class AuthorUpdate(AuthorUpdateBasic):
     death_date: Optional[datetime] = None
 
 
-class AuthorPublicBasic(BaseModel):
+class AuthorPublicBasic(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
-
     id: uuid.UUID
-    full_name: str = Field(max_length=255)
 
 
-class AuthorPublic(AuthorBase):
-    model_config = ConfigDict(from_attributes=True)
-    
-    id: uuid.UUID
+class SearchAuthor(AuthorPublicBasic):
+    pass
+
+
+class AuthorPublic(AuthorPublicBasic):
+    birth_date: Optional[datetime] = None
+    death_date: Optional[datetime] = None
     user_id: Optional[uuid.UUID] = None
 
 
@@ -60,19 +77,3 @@ class AuthorsPublic(BaseModel):
 class AuthorsPublicWithPoems(BaseModel):
     data: list[AuthorPublicWithPoems]
     count: int
-    
-    
-class AuthorForSearch(AuthorPublicBasic): 
-    pass
-
-
-class AuthorSearchParams(BaseModel):
-    order_by: AuthorParam = "full_name"
-    limit: int = Field(default=100, gt=0, le=100)
-    skip: int = Field(default=0, ge=0)
-    desc: bool = False
-    full_name: str = ""
-    birth_date: str = ""
-    death_date: str = ""
-    poems: str = ""
-    

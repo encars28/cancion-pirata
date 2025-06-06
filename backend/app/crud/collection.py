@@ -1,13 +1,14 @@
+from os import name
 from typing import Optional
 import uuid
 
 from app.models.collection import Collection
 
-from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy.orm import Session, aliased
+from sqlalchemy import select, Select, func
 
 from app.models.poem import Poem
-from app.schemas.collection import CollectionCreate, CollectionSchema, CollectionUpdate
+from app.schemas.collection import CollectionCreate, CollectionSchema, CollectionSearchParams, CollectionUpdate
 
 
 class CollectionCRUD:
@@ -18,15 +19,41 @@ class CollectionCRUD:
 
         return CollectionSchema.model_validate(db_obj)
     
-    def get_many(self, db: Session, query: Optional[str] = None, skip: int = 0, limit: int = 100, public_restricted: bool = True) -> list[CollectionSchema]:
-        statement = select(Collection).offset(skip).limit(limit)
-        if query:
-            statement = statement.where(Collection.name.icontains(query))
+    def get_many(self, db: Session, queryParams: CollectionSearchParams, public_restricted: bool = True) -> list[CollectionSchema]:
+        name_filter = self.filter_by_name(db, queryParams.collection_name)
+        if queryParams.collection_desc:
+            order = Collection.name.desc()
+        else: 
+            order = Collection.name.asc()
+            
+        statement = (
+            name_filter
+            .offset(queryParams.collection_skip)
+            .limit(queryParams.collection_limit)
+            .order_by(order)
+        )
             
         if public_restricted:
             statement = statement.where(Collection.is_public == True)
 
         return [CollectionSchema.model_validate(db_obj) for db_obj in db.scalars(statement).all()]
+    
+    def get_count(self, db: Session, queryParams: CollectionSearchParams, public_restricted: bool = True) -> int:
+        name_filter = self.filter_by_name(db, queryParams.collection_name)
+        
+        if public_restricted:
+            name_filter = name_filter.where(Collection.is_public == True)
+            
+        alias = aliased(Collection, name_filter.subquery())
+
+        
+        statement = select(func.count()).select_from(alias)
+        count = db.execute(statement).scalar()
+
+        return count if count else 0
+    
+    def filter_by_name(self, db: Session, query: str) -> Select:
+        return select(Collection).where(Collection.name.icontains(query))
     
     def create(self, db: Session, obj_create: CollectionCreate) -> Optional[CollectionSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
