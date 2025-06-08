@@ -1,7 +1,7 @@
 import {
   Stack,
 } from "@mantine/core";
-import { PoemPublicWithAuthor } from "../../../client";
+import { PoemPublic } from "../../../client";
 import { PoemCard } from "./PoemCard";
 
 export function ShowPoemGrid({
@@ -10,7 +10,7 @@ export function ShowPoemGrid({
   collectionId,
   removePoem = false
 }: {
-  poems: PoemPublicWithAuthor[];
+  poems: PoemPublic[];
   show_author?: boolean;
   collectionId?: string;
   removePoem?: boolean;
@@ -19,6 +19,7 @@ export function ShowPoemGrid({
     <Stack w="100%" gap="xl">
       {poems.map((poem) => (
           <PoemCard
+            key={poem.id}
             poem={poem}
             show_author={show_author}
             collectionId={collectionId}

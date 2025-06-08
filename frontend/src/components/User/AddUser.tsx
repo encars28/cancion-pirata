@@ -39,7 +39,6 @@ export function AddUser() {
       username: '',
       full_name: '',
       is_superuser: false,
-      is_active: true,
     },
     validate: {
       email: isEmail('Correo electrónico inválido'),

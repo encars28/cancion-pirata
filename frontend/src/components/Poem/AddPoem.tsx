@@ -27,8 +27,8 @@ import { callService, showError, showSuccess, PoemType } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
-import useAuthors from "../../hooks/useAuthors";
-import usePoems from "../../hooks/usePoems";
+// import useAuthors from "../../hooks/useAuthors";
+// import usePoems from "../../hooks/usePoems";
 import {
   TbChevronDown,
   TbChevronRight,
@@ -89,8 +89,11 @@ export function AddPoem() {
     }),
   });
 
-  const { data: authorsData } = useAuthors({});
-  const { data: poemsData } = usePoems({});
+  // const { data: authorsData } = useAuthors({});
+  // const { data: poemsData } = usePoems({});
+
+  const authorsData = []; // Placeholder for authors data, replace with actual data fetching logic
+  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
 
   const author_names =
     authorsData?.data.map((author) => author.full_name) ?? [];

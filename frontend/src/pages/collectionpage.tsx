@@ -2,7 +2,7 @@ import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, showError, showSuccess } from "../utils";
-import { CollectionPublic, collectionsReadCollection } from "../client";
+import { CollectionPublicWithPoems, collectionsReadCollection, PoemPublicBasic } from "../client";
 import { Loading } from "../components/Loading";
 import {
   Title,
@@ -18,11 +18,11 @@ import {
 import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
-import { TbBooks, TbEdit, TbPlus, TbTrash } from "react-icons/tb";
+import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
-import usePoems from "../hooks/usePoems";
 import { EditCollection } from "../components/Collection/EditCollection";
+import useSearch from "../hooks/useSearch";
 
 
 export function CollectionPage() {
@@ -42,7 +42,8 @@ export function CollectionPage() {
     }),
   });
 
-  const { data: poemsData } = usePoems({});
+  const { data: searchData } = useSearch({search_type: ["poem"]});
+  const poemsData = searchData?.poems as PoemPublicBasic[];
 
   const { data, error, isPending, isError } = useQuery({
     queryKey: ["collections", collectionId],
@@ -61,9 +62,9 @@ export function CollectionPage() {
     showError(error as any);
   }
 
-  const collection: CollectionPublic = data!;
+  const collection: CollectionPublicWithPoems = data!;
   const poems_info = Object.fromEntries(
-    poemsData?.data?.map((poem) => [
+    poemsData?.map((poem) => [
       `${poem.title} ${
         poem.author_names && poem.author_names?.length > 0 ? " - " : ""
       } ${poem.author_names?.join(", ")}`,

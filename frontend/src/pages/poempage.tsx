@@ -5,10 +5,8 @@ import { Loading } from "../components/Loading";
 import { useNavigate, useParams } from "react-router";
 import useAuth from "../hooks/useAuth";
 import {
-  List,
   Title,
   Container,
-  Flex,
   Stack,
   Text,
   Space,
@@ -17,7 +15,6 @@ import {
   Tooltip,
   Anchor,
   Button,
-  Divider,
   HoverCard,
   Badge,
 } from "@mantine/core";
@@ -25,17 +22,14 @@ import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
 import { modals } from "@mantine/modals";
 import {
-  TbBooks,
   TbEdit,
   TbMessageLanguage,
   TbPlus,
-  TbPoint,
   TbPointFilled,
   TbTrash,
   TbUser,
 } from "react-icons/tb";
 import { Interweave } from "interweave";
-import { InfoBox } from "../components/InfoBox";
 import { AddCollection } from "../components/Collection/AddCollection";
 import { AddPoemToCollection } from "../components/Collection/AddPoemToCollection/AddPoemToCollection";
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";

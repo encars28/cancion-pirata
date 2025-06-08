@@ -1,13 +1,12 @@
-import { CollectionBasic, poemsCreatePoem } from "../../../client";
-import { Text, Paper, Stack, Group, Grid, Space, Image } from "@mantine/core";
+import { CollectionPublic } from "../../../client";
+import { Text, Paper, Stack, Group, Grid, Image } from "@mantine/core";
 import classes from "./CollectionGrid.module.css";
 import { useNavigate } from "react-router";
-import { TbBooks } from "react-icons/tb";
 
 export function CollectionGrid({
   collections,
 }: {
-  collections: CollectionBasic[];
+  collections: CollectionPublic[];
 }) {
   const navigate = useNavigate();
   return (

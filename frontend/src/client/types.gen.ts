@@ -6,31 +6,38 @@ export type AuthorCreate = {
     death_date?: Date | null;
 };
 
-export type AuthorForSearch = {
-    id: string;
-    full_name: string;
-};
-
 export type AuthorPublic = {
     full_name: string;
+    id: string;
     birth_date?: Date | null;
     death_date?: Date | null;
-    id: string;
     user_id?: string | null;
 };
 
 export type AuthorPublicBasic = {
-    id: string;
     full_name: string;
+    id: string;
 };
 
 export type AuthorPublicWithPoems = {
     full_name: string;
+    id: string;
     birth_date?: Date | null;
     death_date?: Date | null;
-    id: string;
     user_id?: string | null;
     poems?: Array<PoemPublic>;
+};
+
+export type AuthorSearchParams = {
+    author_order_by?: 'full_name' | 'birth_date' | 'poems' | 'death_date';
+    author_limit?: number;
+    author_skip?: number;
+    author_desc?: boolean;
+    author_full_name?: string;
+    author_birth_date?: string;
+    author_death_date?: string;
+    author_poems?: string;
+    author_basic?: boolean;
 };
 
 export type AuthorUpdate = {
@@ -39,8 +46,13 @@ export type AuthorUpdate = {
     death_date?: Date | null;
 };
 
+export type AuthorUpdateBasic = {
+    full_name?: string | null;
+    birth_date?: Date | null;
+};
+
 export type AuthorsPublic = {
-    data: Array<AuthorPublicBasic>;
+    data: Array<AuthorPublic>;
     count: number;
 };
 
@@ -66,46 +78,61 @@ export type BodyUsersUpdateUserProfilePicture = {
     image: Blob | File;
 };
 
-export type CollectionBasic = {
-    id: string;
-    name: string;
-    description?: string | null;
-    is_public?: boolean;
-};
-
 export type CollectionCreate = {
     name: string;
-    description?: string | null;
     is_public?: boolean;
+    description?: string | null;
     poem_ids?: Array<string>;
     user_id?: string | null;
 };
 
-export type CollectionForSearch = {
-    id: string;
-    name: string;
-    user_id: string;
-    username: string;
-};
-
 export type CollectionPublic = {
     name: string;
-    description?: string | null;
     is_public?: boolean;
-    poem_ids?: Array<string>;
-    id?: string;
-    created_at?: Date | null;
-    updated_at?: Date | null;
-    user_id: string;
+    id: string;
     username?: string | null;
-    poems?: Array<PoemPublicWithAuthor>;
+    description?: string | null;
+    created_at: Date | null;
+    updated_at: Date | null;
+};
+
+export type CollectionPublicBasic = {
+    name: string;
+    is_public?: boolean;
+    id: string;
+    username?: string | null;
+};
+
+export type CollectionPublicWithPoems = {
+    name: string;
+    is_public?: boolean;
+    id: string;
+    username?: string | null;
+    description?: string | null;
+    created_at: Date | null;
+    updated_at: Date | null;
+    poems?: Array<PoemPublic>;
+    user_id: string;
+};
+
+export type CollectionSearchParams = {
+    collection_limit?: number;
+    collection_skip?: number;
+    collection_desc?: boolean;
+    collection_name?: string;
+    collection_basic?: boolean;
 };
 
 export type CollectionUpdate = {
     name?: string | null;
-    description?: string | null;
     is_public?: boolean | null;
+    description?: string | null;
     poem_ids?: Array<string> | null;
+};
+
+export type CollectionsPublic = {
+    count: number;
+    data: Array<CollectionPublicWithPoems>;
 };
 
 export type HttpValidationError = {
@@ -133,20 +160,24 @@ export type PoemCreate = {
     author_names?: Array<string> | null;
 };
 
-export type PoemForSearch = {
-    id: string;
-    title: string;
-    author_names?: Array<string>;
-};
-
 export type PoemPublic = {
     id: string;
     title: string;
+    author_names?: Array<string>;
+    is_public?: boolean;
+    show_author?: boolean;
     description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
     type?: number | null;
+    author_ids?: Array<string>;
+};
+
+export type PoemPublicBasic = {
+    id: string;
+    title: string;
+    author_names?: Array<string>;
     is_public?: boolean;
     show_author?: boolean;
 };
@@ -154,47 +185,47 @@ export type PoemPublic = {
 export type PoemPublicWithAllTheInfo = {
     id: string;
     title: string;
+    author_names?: Array<string>;
+    is_public?: boolean;
+    show_author?: boolean;
     description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
     type?: number | null;
-    is_public?: boolean;
-    show_author?: boolean;
-    author_names?: Array<string>;
     author_ids?: Array<string>;
     content: string;
-    derived_poems?: Array<PoemPublicWithAuthor>;
-    original?: PoemPublicWithAuthor | null;
-};
-
-export type PoemPublicWithAuthor = {
-    id: string;
-    title: string;
-    description?: string | null;
-    language?: string | null;
-    created_at?: Date | null;
-    updated_at?: Date | null;
-    type?: number | null;
-    is_public?: boolean;
-    show_author?: boolean;
-    author_names?: Array<string>;
-    author_ids?: Array<string>;
+    derived_poems?: Array<PoemPublic>;
+    original?: PoemPublic | null;
 };
 
 export type PoemRandom = {
     id: string;
     title: string;
+    author_names?: Array<string>;
+    is_public?: boolean;
+    show_author?: boolean;
     description?: string | null;
     language?: string | null;
     created_at?: Date | null;
     updated_at?: Date | null;
     type?: number | null;
-    is_public?: boolean;
-    show_author?: boolean;
-    author_names?: Array<string>;
     author_ids?: Array<string>;
     content: string;
+};
+
+export type PoemSearchParams = {
+    poem_order_by?: 'created_at' | 'updated_at' | 'title';
+    poem_limit?: number;
+    poem_skip?: number;
+    poem_desc?: boolean;
+    poem_title?: string;
+    poem_created_at?: string;
+    poem_updated_at?: string;
+    poem_verses?: string;
+    poem_type?: 'all' | 'version' | 'translation' | 'derived' | 'original' | '';
+    poem_language?: string;
+    poem_basic?: boolean;
 };
 
 export type PoemUpdate = {
@@ -210,15 +241,28 @@ export type PoemUpdate = {
 };
 
 export type PoemsPublic = {
-    data: Array<PoemPublicWithAuthor>;
+    data: Array<PoemPublic>;
     count: number;
 };
 
+export type PoemsPublicWithAllTheInfo = {
+    data: Array<PoemPublicWithAllTheInfo>;
+    count: number;
+};
+
+export type SearchParams = {
+    search_type?: Array<'author' | 'poem' | 'collection' | 'user'>;
+    author_params?: AuthorSearchParams | null;
+    poem_params?: PoemSearchParams | null;
+    collection_params?: CollectionSearchParams | null;
+    user_params?: UserSearchParams | null;
+};
+
 export type SearchResult = {
-    authors?: Array<AuthorForSearch>;
-    poems?: Array<PoemForSearch>;
-    collections?: Array<CollectionForSearch>;
-    users?: Array<UserForSearch>;
+    authors?: Array<AuthorPublicBasic> | AuthorsPublic;
+    poems?: Array<PoemPublicBasic> | PoemsPublic;
+    collections?: Array<CollectionPublicBasic> | CollectionsPublic;
+    users?: Array<UserPublicBasic> | UsersPublic;
 };
 
 export type Token = {
@@ -235,26 +279,25 @@ export type UserCreate = {
     email: string;
     full_name?: string | null;
     username: string;
-    is_active?: boolean;
     is_superuser?: boolean;
     password: string;
-};
-
-export type UserForSearch = {
-    id: string;
-    username: string;
 };
 
 export type UserPublic = {
     email: string;
     full_name?: string | null;
     username: string;
-    is_active?: boolean;
     is_superuser?: boolean;
     id: string;
     created_at?: Date | null;
     author_id?: string | null;
-    collections?: Array<CollectionBasic>;
+    author?: AuthorPublic | null;
+    collections?: Array<CollectionPublic>;
+};
+
+export type UserPublicBasic = {
+    id: string;
+    username: string;
 };
 
 export type UserRegister = {
@@ -264,11 +307,21 @@ export type UserRegister = {
     full_name?: string | null;
 };
 
+export type UserSearchParams = {
+    user_order_by?: 'full_name' | 'email' | 'username';
+    user_limit?: number;
+    user_skip?: number;
+    user_desc?: boolean;
+    user_name?: string;
+    user_email?: string;
+    user_full_name?: string;
+    user_basic?: boolean;
+};
+
 export type UserUpdate = {
     email?: string | null;
     full_name?: string | null;
     username?: string | null;
-    is_active?: boolean;
     is_superuser?: boolean;
     password?: string | null;
     author_id?: string | null;
@@ -763,16 +816,10 @@ export type AuthorsReadAuthorsData = {
     body?: never;
     path?: never;
     query?: {
-        order_by?: 'full_name' | 'birth_date' | 'poems' | 'death_date';
-        limit?: number;
         skip?: number;
-        desc?: boolean;
-        full_name?: string;
-        birth_date?: string;
-        death_date?: string;
-        poems?: string;
+        limit?: number;
     };
-    url: '/api/v1/authors';
+    url: '/api/v1/authors/';
 };
 
 export type AuthorsReadAuthorsErrors = {
@@ -788,7 +835,7 @@ export type AuthorsReadAuthorsResponses = {
     /**
      * Successful Response
      */
-    200: AuthorsPublic | AuthorsPublicWithPoems;
+    200: AuthorsPublicWithPoems;
 };
 
 export type AuthorsReadAuthorsResponse = AuthorsReadAuthorsResponses[keyof AuthorsReadAuthorsResponses];
@@ -873,7 +920,7 @@ export type AuthorsReadAuthorByIdResponses = {
 export type AuthorsReadAuthorByIdResponse = AuthorsReadAuthorByIdResponses[keyof AuthorsReadAuthorByIdResponses];
 
 export type AuthorsUpdateAuthorData = {
-    body: AuthorUpdate;
+    body: AuthorUpdate | AuthorUpdateBasic;
     path: {
         author_id: string;
     };
@@ -955,18 +1002,10 @@ export type PoemsReadPoemsData = {
     body?: never;
     path?: never;
     query?: {
-        order_by?: 'created_at' | 'updated_at' | 'title';
-        limit?: number;
         skip?: number;
-        desc?: boolean;
-        title?: string;
-        created_at?: string;
-        updated_at?: string;
-        verses?: string;
-        type?: 'all' | 'version' | 'translation' | 'derived' | 'original' | '';
-        language?: string;
+        limit?: number;
     };
-    url: '/api/v1/poems';
+    url: '/api/v1/poems/';
 };
 
 export type PoemsReadPoemsErrors = {
@@ -982,10 +1021,35 @@ export type PoemsReadPoemsResponses = {
     /**
      * Successful Response
      */
-    200: PoemsPublic;
+    200: PoemsPublicWithAllTheInfo;
 };
 
 export type PoemsReadPoemsResponse = PoemsReadPoemsResponses[keyof PoemsReadPoemsResponses];
+
+export type PoemsCreatePoemData = {
+    body: PoemCreate;
+    path?: never;
+    query?: never;
+    url: '/api/v1/poems/';
+};
+
+export type PoemsCreatePoemErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type PoemsCreatePoemError = PoemsCreatePoemErrors[keyof PoemsCreatePoemErrors];
+
+export type PoemsCreatePoemResponses = {
+    /**
+     * Successful Response
+     */
+    200: PoemPublicWithAllTheInfo;
+};
+
+export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
 
 export type PoemsReadRandomPoemData = {
     body?: never;
@@ -1086,30 +1150,33 @@ export type PoemsUpdatePoemResponses = {
 
 export type PoemsUpdatePoemResponse = PoemsUpdatePoemResponses[keyof PoemsUpdatePoemResponses];
 
-export type PoemsCreatePoemData = {
-    body: PoemCreate;
+export type CollectionsReadCollectionsData = {
+    body?: never;
     path?: never;
-    query?: never;
-    url: '/api/v1/poems/';
+    query?: {
+        skip?: number;
+        limit?: number;
+    };
+    url: '/api/v1/collections/';
 };
 
-export type PoemsCreatePoemErrors = {
+export type CollectionsReadCollectionsErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type PoemsCreatePoemError = PoemsCreatePoemErrors[keyof PoemsCreatePoemErrors];
+export type CollectionsReadCollectionsError = CollectionsReadCollectionsErrors[keyof CollectionsReadCollectionsErrors];
 
-export type PoemsCreatePoemResponses = {
+export type CollectionsReadCollectionsResponses = {
     /**
      * Successful Response
      */
-    200: PoemPublicWithAllTheInfo;
+    200: CollectionsPublic;
 };
 
-export type PoemsCreatePoemResponse = PoemsCreatePoemResponses[keyof PoemsCreatePoemResponses];
+export type CollectionsReadCollectionsResponse = CollectionsReadCollectionsResponses[keyof CollectionsReadCollectionsResponses];
 
 export type CollectionsCreateCollectionData = {
     body: CollectionCreate;
@@ -1131,7 +1198,7 @@ export type CollectionsCreateCollectionResponses = {
     /**
      * Successful Response
      */
-    200: CollectionPublic;
+    200: CollectionPublicWithPoems;
 };
 
 export type CollectionsCreateCollectionResponse = CollectionsCreateCollectionResponses[keyof CollectionsCreateCollectionResponses];
@@ -1185,7 +1252,7 @@ export type CollectionsReadCollectionResponses = {
     /**
      * Successful Response
      */
-    200: CollectionPublic;
+    200: CollectionPublicWithPoems;
 };
 
 export type CollectionsReadCollectionResponse = CollectionsReadCollectionResponses[keyof CollectionsReadCollectionResponses];
@@ -1212,7 +1279,7 @@ export type CollectionsUpdateCollectionResponses = {
     /**
      * Successful Response
      */
-    200: CollectionPublic;
+    200: CollectionPublicWithPoems;
 };
 
 export type CollectionsUpdateCollectionResponse = CollectionsUpdateCollectionResponses[keyof CollectionsUpdateCollectionResponses];
@@ -1266,18 +1333,16 @@ export type CollectionsAddPoemToCollectionResponses = {
     /**
      * Successful Response
      */
-    200: CollectionPublic;
+    200: CollectionPublicWithPoems;
 };
 
 export type CollectionsAddPoemToCollectionResponse = CollectionsAddPoemToCollectionResponses[keyof CollectionsAddPoemToCollectionResponses];
 
 export type SearchSearchData = {
-    body?: never;
+    body: SearchParams;
     path?: never;
-    query?: {
-        q?: string;
-    };
-    url: '/api/v1/search/';
+    query?: never;
+    url: '/api/v1/search';
 };
 
 export type SearchSearchErrors = {

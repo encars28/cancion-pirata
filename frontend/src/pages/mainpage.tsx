@@ -2,32 +2,25 @@ import { Hero } from "../components/Hero/Hero";
 import { Shell } from "../components/Shell/Shell";
 import { Interweave } from "interweave";
 import { useQuery } from "@tanstack/react-query";
-import { callService, showError } from "../utils";
+import { callService } from "../utils";
 import { PoemPublicWithAllTheInfo, poemsReadRandomPoem } from "../client";
 import { Loading } from "../components/Loading";
 import {
   Container,
-  Text,
   SimpleGrid,
   Stack,
   Title,
-  Anchor,
   Button,
   Badge,
   Group,
-  LoadingOverlay,
-  Skeleton,
-  Box,
   Divider,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { useState } from "react";
 import { TbUser } from "react-icons/tb";
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 
 export function MainPage() {
   const navigate = useNavigate();
-  const [overlay, setOverlay] = useState(true);
 
   const { data, isPending } = useQuery({
     queryKey: ["POD"],
@@ -42,24 +35,12 @@ export function MainPage() {
     return <Loading />;
   }
 
-  // if (status === "success") {
-  //   setOverlay(false);
-  // }
-
   const poem = data as PoemPublicWithAllTheInfo;
 
   return (
     <Shell noPaddingTop>
       <Hero />
       <>
-        {/* <LoadingOverlay
-        visible={overlay}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-        loaderProps={{ type: "dots" }}
-      /> */}
-        {/* <Skeleton visible={overlay}> */}
-        {/* {poem ? ( */}
         <SimpleGrid
           cols={{ base: 1, md: 2 }}
           spacing="xl"
@@ -67,11 +48,7 @@ export function MainPage() {
           mt={100}
           mx={50}
         >
-          <Container mx={30} w="100%" fluid>
-            <Interweave content={poem.content} />
-          </Container>
           <Group wrap="nowrap" justify="center">
-            <Divider visibleFrom="md" orientation="vertical" mr="xl" size="sm"/>
             <Stack h="100%" justify="space-around">
               <Stack gap="lg">
                 <Title ta="center" order={2}>
@@ -106,11 +83,12 @@ export function MainPage() {
                 </Button>
               </Group>
             </Stack>
+            <Divider visibleFrom="md" orientation="vertical" ml="xl" size="sm"/>
           </Group>
+          <Container mx={30} w="100%" fluid>
+            <Interweave content={poem.content} />
+          </Container>
         </SimpleGrid>
-        {/* // ) : <Box h={300} w="100%" />} */}
-        {/* ) : null } */}
-        {/* // </Skeleton> */}
       </>
     </Shell>
   );

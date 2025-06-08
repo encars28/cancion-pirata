@@ -1,27 +1,31 @@
 import { Shell } from "../components/Shell/Shell";
 import { ActionIcon, Drawer, Group, Title } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { AuthorQueryParams } from "../hooks/useAuthors";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
 import { TbAdjustments } from "react-icons/tb";
-import React, { useEffect } from "react"
+import { useEffect, useState } from "react";
 import { AuthorGrid } from "../components/Author/AuthorGrid";
 import { useSearchParams, useNavigate } from "react-router";
+import { AuthorSearchParams, SearchParams } from "../client";
 
-export const AUTHORS_PER_PAGE = 36
+
+export const AUTHORS_PER_PAGE = 36;
 
 export function AuthorsPage() {
   const [opened, { open, close }] = useDisclosure(false);
-  const queryClient = useQueryClient()
-  const [filters, setFilters] = React.useState<AuthorQueryParams>({skip: 0, limit: AUTHORS_PER_PAGE} as AuthorQueryParams)
-  const [searchParams] = useSearchParams()
-  const navigate = useNavigate()
+  const queryClient = useQueryClient();
+  const [filters, setFilters] = useState<SearchParams>({
+    search_type: ["author"],
+    author_params: { author_skip: 0, author_limit: AUTHORS_PER_PAGE, author_basic: false },
+  });
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    queryClient.invalidateQueries({ queryKey: ["authors", "filters"] })
-  }, [filters])
+    queryClient.invalidateQueries({ queryKey: ["search", "author"] });
+  }, [filters]);
 
   const form = useForm<AuthorFilters>({
     mode: "controlled",
@@ -31,33 +35,45 @@ export function AuthorsPage() {
       birth_year: "",
       death_year: "",
       poems: "",
-    }
-  })
+    },
+  });
 
-    const page = searchParams.get('page') ? parseInt(searchParams.get('page') as string) : 1
-    const setPage = (page: number) => {
-      navigate({ search: `?page=${page}` });
-      setFilters({
-        ...filters,
-        skip: (page - 1) * AUTHORS_PER_PAGE,
-        limit: AUTHORS_PER_PAGE,
-      })
-    }
+  const page = searchParams.get("page")
+    ? parseInt(searchParams.get("page") as string)
+    : 1;
+  const setPage = (page: number) => {
+    navigate({ search: `?page=${page}` });
+    setFilters({
+      ...filters,
+      author_params: {
+        ...filters.author_params,
+        author_skip: (page - 1) * AUTHORS_PER_PAGE,
+        author_limit: AUTHORS_PER_PAGE,
+      },
+    });
+  };
 
   const handleSubmit = async (values: typeof form.values) => {
-    const updatedFilters: AuthorQueryParams = {
-      order_by: values.order_by === "Año de nacimiento" ? "birth_date" : values.order_by === "Año de fallecimiento" ? "death_date" : values.order_by === "Número de poemas" ? "poems" : "full_name",
-      full_name: values.full_name,
-      birth_year: values.birth_year,
-      death_year: values.death_year,
-      poems: values.poems,
-      desc: values.desc,
-      skip: (page - 1) * AUTHORS_PER_PAGE,
-      limit: AUTHORS_PER_PAGE
-    }
+    const updatedFilters: AuthorSearchParams = {
+      author_order_by:
+        values.order_by === "Año de nacimiento"
+          ? "birth_date"
+          : values.order_by === "Año de fallecimiento"
+          ? "death_date"
+          : values.order_by === "Número de poemas"
+          ? "poems"
+          : "full_name",
+      author_full_name: values.full_name,
+      author_birth_date: values.birth_year,
+      author_death_date: values.death_year,
+      author_poems: values.poems,
+      author_desc: values.desc,
+      author_skip: (page - 1) * AUTHORS_PER_PAGE,
+      author_limit: AUTHORS_PER_PAGE,
+    };
 
-    setFilters(updatedFilters)
-  }
+    setFilters({...filters, author_params: updatedFilters});
+  };
 
   return (
     <Shell>
@@ -83,5 +99,5 @@ export function AuthorsPage() {
         <FilterAuthor form={form} handleSubmit={handleSubmit} />
       </Drawer>
     </Shell>
-  )
+  );
 }

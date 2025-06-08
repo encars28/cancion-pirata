@@ -1,12 +1,12 @@
 import { Pagination, Stack, Text } from "@mantine/core";
 import React from "react";
-import usePoems, { PoemQueryParams } from "../../../hooks/usePoems";
 import { showError } from "../../../utils";
 import { Loading } from "../../Loading";
-import { PoemPublicWithAuthor } from "../../../client";
+import { PoemPublic, SearchParams, PoemsPublic } from "../../../client";
 import { POEMS_PER_PAGE } from "../../../pages/poemspage";
 import { ShowPoemGrid } from "./ShowPoemGrid";
 import { useSearchParams } from "react-router";
+import useSearch from "../../../hooks/useSearch";
 
 export interface CardGridProps {
   path: string;
@@ -18,10 +18,10 @@ export function PoemGrid({
   filter,
   setPage,
 }: {
-  filter: PoemQueryParams;
+  filter: SearchParams
   setPage: (page: number) => void;
 }) {
-  const { data, error, isPending, isError } = usePoems(filter);
+  const { data, error, isPending, isError } = useSearch(filter);
   const [searchParams] = useSearchParams();
 
   if (isPending) {
@@ -32,8 +32,18 @@ export function PoemGrid({
     showError(error as any);
   }
 
-  const poems = data?.data as PoemPublicWithAuthor[];
-  const count = data?.count as number;
+  const poemsData = (data?.poems as PoemsPublic).data;
+  // Since the search model is quite complex hey-api doesn't do the automatic conversion
+  // This can be removed when the library is updated to handle this automatically
+  const poems: PoemPublic[] = poemsData.map((poem) => ({
+    ...poem,
+    // @ts-ignore
+    created_at: new Date(poem.created_at), 
+    // @ts-ignore
+    updated_at: new Date(poem.updated_at),
+  }))
+
+  const count = (data?.poems as PoemsPublic).count as number;
   const totalPages =
     count % POEMS_PER_PAGE === 0
       ? count / POEMS_PER_PAGE
@@ -44,7 +54,6 @@ export function PoemGrid({
       align="center"
       gap={80}
       m="lg"
-      pb={70}
     >
       <ShowPoemGrid poems={poems} show_author />
       <Stack>

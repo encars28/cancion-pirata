@@ -43,8 +43,8 @@ import {
   TbWorld,
 } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
-import useAuthors from "../../../hooks/useAuthors";
-import usePoems from "../../../hooks/usePoems";
+// import useAuthors from "../../../hooks/useAuthors";
+// import usePoems from "../../../hooks/usePoems";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 
@@ -88,8 +88,10 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
     }),
   });
 
-  const { data: authorsData } = useAuthors({});
-  const { data: poemsData } = usePoems({});
+  // const { data: authorsData } = useAuthors({});
+  // const { data: poemsData } = usePoems({});
+  const authorsData = [];
+  const poemsData = [];
 
   const author_names_info =
     authorsData?.data?.map((author) => author.full_name) ?? [];

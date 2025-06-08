@@ -1,7 +1,6 @@
 import {
   ActionIcon,
   Badge,
-  Card,
   Divider,
   Group,
   Image,
@@ -11,14 +10,14 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { TbUser, TbX } from "react-icons/tb";
-import { PoemPublicWithAuthor } from "../../../client";
+import { PoemPublic } from "../../../client";
 import { useNavigate } from "react-router";
 import classes from "./PoemGrid.module.css";
 import { modals } from "@mantine/modals";
 import useCollectionActions from "../../../hooks/useCollectionActions";
 
 interface PoemCardProps {
-  poem: PoemPublicWithAuthor;
+  poem: PoemPublic;
   show_author?: boolean;
   collectionId?: string;
   removePoemCollection?: boolean;

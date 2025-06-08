@@ -26,9 +26,7 @@ const useUserActions = (userId?: string) => {
     gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
-
-
-const updateProfilePicture = useMutation({
+  const updateProfilePicture = useMutation({
     mutationFn: async (file: File) => {
       return callService(usersUpdateUserProfilePicture, { body: { image: file } })
     },
@@ -56,7 +54,7 @@ const updateProfilePicture = useMutation({
       showError(error as any)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['users']})
+      queryClient.invalidateQueries({ queryKey: ['users'] })
       queryClient.invalidateQueries({ queryKey: ['poems'] })
       queryClient.invalidateQueries({ queryKey: ['authors'] })
       queryClient.invalidateQueries({ queryKey: ['POD'] })
@@ -66,7 +64,7 @@ const updateProfilePicture = useMutation({
   return {
     deleteUserMeMutation,
     profilePicture,
-    updateProfilePicture, 
+    updateProfilePicture,
     userProfilePicture
   }
 }

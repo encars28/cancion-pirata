@@ -1,20 +1,20 @@
 import { Stack, ActionIcon, TextInput, PasswordInput, Modal, Group, Button, Checkbox, Select } from '@mantine/core';
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc, TbPencil } from "react-icons/tb";
-import { HttpValidationError, UserUpdate } from '../../client/types.gen';
+import { AuthorPublicBasic, HttpValidationError, UserUpdate } from '../../client/types.gen';
 import { callService, showError, showSuccess } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
-import { UserPublic, AuthorPublicWithPoems } from '../../client/types.gen';
-import useAuthors from '../../hooks/useAuthors';
+import { UserPublic } from '../../client/types.gen';
 import { notifications } from '@mantine/notifications';
+import useSearch from '../../hooks/useSearch';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()
 
-  const { data: authorsData } = useAuthors({})
-  const authors: AuthorPublicWithPoems[] = authorsData?.data ?? []
+  const { data: authorsData } = useSearch({search_type: ['author']})
+  const authors = authorsData?.authors as AuthorPublicBasic[] ?? []
   const author_ids = authors.map(author => author.id) ?? []
 
   const queryClient = useQueryClient()
@@ -129,13 +129,6 @@ export function EditUser({ user }: { user: UserPublic }) {
               placeholder="Escribe para buscar un autor"
               data={author_ids}
               {...form.getInputProps('author_id')}
-            />
-            <Checkbox
-              mt="sm"
-              defaultChecked={user.is_active}
-              key={form.key('is_active')}
-              {...form.getInputProps('is_active')}
-              label="Activo"
             />
             <Checkbox
               defaultChecked={user.is_superuser}

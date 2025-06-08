@@ -9,7 +9,7 @@ import {
   Switch,
 } from "@mantine/core";
 import { Form } from "@mantine/form";
-import usePoems from "../../hooks/usePoems";
+import usePoems from "..k/../hooks/usePoems";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
 import { CollectionCreate, CollectionPublic } from "../../client";
@@ -22,7 +22,8 @@ export function EditCollection({
 }: {
   collection: CollectionPublic;
 }) {
-  const { data: poemsData } = usePoems({});
+  // const { data: poemsData } = usePoems({});
+  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
 
   const poems_info = Object.fromEntries(
     poemsData?.data?.map((poem) => [

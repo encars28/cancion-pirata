@@ -1,17 +1,16 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService, showError } from "../utils";
+import { callService } from "../utils";
 import { UserPublic, usersReadUserById } from "../client";
 import { Loading } from "../components/Loading";
 import { ShowUser } from "../components/User/ShowUser";
-import { NothingFound } from "../components/ErrorPages/NothingFound";
 
 export function UserPage() {
   const params = useParams();
   const userId = params.id;
 
-  const { data, error, isPending, isError } = useQuery({
+  const { data, isPending } = useQuery({
     queryKey: ["users", userId],
     queryFn: async () =>
       callService(usersReadUserById, { path: { user_id: userId! } }),

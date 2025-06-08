@@ -62,7 +62,6 @@ export function TableUsers() {
       is_superuser: user.is_superuser ? 'Admin' : 'Usuario',
       created_at: user.created_at?.toLocaleDateString() ?? '',
       is_author: user.author_id ? 'Sí' : 'No',
-      is_active: user.is_active ? "Activo" : "Inactivo",
       actions: <Group gap="xs"><EditUser user={user} /><DeleteUser user_id={user.id} /></Group>
     }
   })

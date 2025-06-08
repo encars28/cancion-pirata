@@ -9,7 +9,7 @@ import {
   Switch,
 } from "@mantine/core";
 import { Form } from "@mantine/form";
-import usePoems from "../../hooks/usePoems";
+// import usePoems from "../../hooks/usePoems";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
 import { CollectionCreate, collectionsAddPoemToCollection } from "../../client";
@@ -23,7 +23,8 @@ import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 
 export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, poemId?: string }) {
-  const { data: poemsData } = usePoems({});
+  // const { data: poemsData } = usePoems({});
+  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
