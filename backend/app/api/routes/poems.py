@@ -1,7 +1,6 @@
 import uuid
 from typing import Any, Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query
-from httpx import get
 
 from app.api.deps import (
     CurrentUser,
@@ -14,7 +13,6 @@ from app.poem_parser import PoemParser
 from app.schemas.author import AuthorCreate
 from app.schemas.poem import (
     PoemCreate,
-    PoemPublicWithAuthor,
     PoemRandom,
     PoemSearchParams,
     PoemUpdate,

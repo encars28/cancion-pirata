@@ -31,8 +31,8 @@ class AuthorCRUD:
     def get_many(
         self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True
     ) -> list[AuthorSchema]:
-        birth_filter = self.filter_by_dates(queryParams, "birth_date")
-        death_filter = self.filter_by_dates(queryParams, "death_date")
+        birth_filter = self.filter_by_dates(queryParams.author_birth_date, "birth_date")
+        death_filter = self.filter_by_dates(queryParams.author_death_date, "death_date")
         poem_filter = select(Author).where(
             Author.id.in_(self.filter_by_poem(db, queryParams, public_restricted))
         )
@@ -73,8 +73,8 @@ class AuthorCRUD:
         return [AuthorSchema.model_validate(db_obj) for db_obj in db_objs]
     
     def get_count(self, db: Session, queryParams: AuthorSearchParams, public_restricted: bool = True) -> int:
-        birth_filter = self.filter_by_dates(queryParams, "birth_date")
-        death_filter = self.filter_by_dates(queryParams, "death_date")
+        birth_filter = self.filter_by_dates(queryParams.author_birth_date, "birth_date")
+        death_filter = self.filter_by_dates(queryParams.author_death_date, "death_date")
         poem_filter = select(Author).where(
             Author.id.in_(self.filter_by_poem(db, queryParams, public_restricted))
         )
@@ -121,9 +121,9 @@ class AuthorCRUD:
 
         return [a.id for a in db.scalars(s).all()]
 
-    def filter_by_dates(self, query: AuthorSearchParams, date: str) -> Select:
+    def filter_by_dates(self, q: str, date: str) -> Select:
         regex = r"(>|<|>=|<=|=|)(\d+)"
-        m = re.match(regex, getattr(query, date))
+        m = re.match(regex, q)
 
         if not m:
             return select(Author)

@@ -4,7 +4,6 @@ import os
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from fastapi.responses import FileResponse
-from pytest import Session
 
 from app.crud.user import user_crud
 from app.api.deps import (
@@ -19,13 +18,12 @@ from app.schemas.common import Message
 from app.schemas.user import (
     UserCreate,
     UserPublic,
-    UserPublicBasic,
     UserRegister,
     UserSearchParams,
     UserUpdate,
     UserUpdateMe,
     UpdatePassword,
-    UsersPublicBasic,
+    UsersPublic,
 )
 
 from app.external.email import generate_new_account_email, send_email
@@ -37,7 +35,7 @@ router = APIRouter(prefix="/users", tags=["users"])
 @router.get(
     "/",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=UsersPublicBasic,
+    response_model=UsersPublic,
 )
 def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     """
@@ -46,11 +44,11 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     params = UserSearchParams(user_skip=skip, user_limit=limit)
     count = user_crud.get_count(db=session, queryParams=params)
     users = [
-        UserPublicBasic.model_validate(user)
+        UserPublic.model_validate(user)
         for user in user_crud.get_many(db=session, queryParams=params)
     ]
 
-    return UsersPublicBasic(data=users, count=count)
+    return UsersPublic(data=users, count=count)
 
 
 @router.post(

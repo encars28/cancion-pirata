@@ -18,6 +18,7 @@ class UserSearchParams(BaseModel):
     user_name: str = ""
     user_email: EmailStr = ""
     user_full_name: str = ""
+    user_basic: bool = True
 
 
 class UserBase(BaseModel):
@@ -59,14 +60,14 @@ class UpdatePassword(BaseModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
-class UserPublicBasic(UserBase):
+class UserPublic(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
 
 
-class UserPublic(UserPublicBasic):
+class UserPublicWithAllTheInfo(UserPublic):
     author: Optional[AuthorPublic] = None
     collections: list[CollectionPublicBasic] = []
 
@@ -83,12 +84,12 @@ class UserSchema(UserBase):
     image_path: Optional[str] = None
 
 
-class UsersPublicBasic(BaseModel):
-    data: list[UserPublicBasic]
+class UsersPublic(BaseModel):
+    data: list[UserPublic]
     count: int
 
 
-class SearchUser(BaseModel):
+class UserPublicBasic(BaseModel):
     id: uuid.UUID
     username: str = Field(max_length=255)
 

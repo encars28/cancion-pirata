@@ -5,7 +5,7 @@ from typing import Optional, List, Literal
 import uuid
 from datetime import datetime
 
-from app.schemas.poem import PoemPublicWithAuthor
+from app.schemas.poem import PoemPublic
 
 
 class CollectionSearchParams(BaseModel):
@@ -13,6 +13,7 @@ class CollectionSearchParams(BaseModel):
     collection_skip: int = Field(default=0, ge=0)
     collection_desc: bool = False
     collection_name: str = ""
+    collection_basic: bool = True
 
 
 class CollectionBase(BaseModel):
@@ -42,32 +43,25 @@ class CollectionSchema(CollectionBase):
     user_id: uuid.UUID
     username: Optional[str] = Field(default=None, max_length=255)
     poem_ids: List[uuid.UUID] = []
-    poems: List[PoemPublicWithAuthor] = []
+    poems: List[PoemPublic] = []
     
     model_config = ConfigDict(from_attributes=True)
 
 class CollectionPublicBasic(CollectionBase): 
     id: uuid.UUID
-    description: Optional[str] = None
+    username: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(from_attributes=True)
     
 class CollectionPublic(CollectionPublicBasic):
+    description: Optional[str] = None
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
-    poems: List[PoemPublicWithAuthor] = []
-    username: Optional[str] = Field(default=None, max_length=255)
+    poems: List[PoemPublic] = []
+
     
     
 class CollectionsPublic(BaseModel):
     count: int
     data: List[CollectionPublic]
     
-
-class SearchCollection(BaseModel): 
-    id: uuid.UUID
-    name: str = Field(max_length=255)
-    username: str = Field(max_length=255)
-    is_public: bool = False
-
-    model_config = ConfigDict(from_attributes=True)

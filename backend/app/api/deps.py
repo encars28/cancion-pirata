@@ -11,11 +11,8 @@ from sqlalchemy.orm import Session
 from app.core import security
 from app.core.config import settings
 from app.core.db import engine
-from app.schemas.collection import CollectionSearchParams
-from app.schemas.common import SearchParams
-from app.schemas.user import UserSchema, UserSearchParams
-from app.schemas.author import AuthorSearchParams
-from app.schemas.poem import PoemSearchParams
+from app.schemas.search import SearchParams
+from app.schemas.user import UserSchema
 from app.crud.user import user_crud
 from app.schemas.login import TokenPayload
 
@@ -73,5 +70,3 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
-
-SearchQuery = Annotated[SearchParams, Query()]

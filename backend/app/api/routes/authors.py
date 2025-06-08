@@ -22,8 +22,8 @@ from app.schemas.author import (
     AuthorSearchParams,
     AuthorUpdate,
     AuthorUpdateBasic,
-    AuthorsPublic,
     AuthorsPublicWithPoems,
+    AuthorsPublic,
 )
 from app.crud.author import author_crud
 
@@ -46,7 +46,7 @@ def read_authors(
     )
 
     authors = [
-        AuthorPublicBasic.model_validate(author)
+        AuthorPublic.model_validate(author)
         for author in author_crud.get_many(db=session, queryParams=params)
     ]
     count = author_crud.get_count(db=session, queryParams=params)

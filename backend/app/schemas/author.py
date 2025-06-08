@@ -7,7 +7,6 @@ from app.schemas.poem import PoemPublic
 
 AuthorParam = Literal["full_name", "birth_date", "poems", "death_date"]
 
-
 class AuthorSearchParams(BaseModel):
     author_order_by: AuthorParam = "full_name"
     author_limit: int = Field(default=100, gt=0, le=100)
@@ -17,6 +16,7 @@ class AuthorSearchParams(BaseModel):
     author_birth_date: str = ""
     author_death_date: str = ""
     author_poems: str = ""
+    author_basic: bool = True
 
 
 class AuthorBase(BaseModel):
@@ -54,11 +54,6 @@ class AuthorPublicBasic(AuthorBase):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
 
-
-class SearchAuthor(AuthorPublicBasic):
-    pass
-
-
 class AuthorPublic(AuthorPublicBasic):
     birth_date: Optional[datetime] = None
     death_date: Optional[datetime] = None
@@ -70,7 +65,7 @@ class AuthorPublicWithPoems(AuthorPublic):
 
 
 class AuthorsPublic(BaseModel):
-    data: list[AuthorPublicBasic]
+    data: list[AuthorPublic]
     count: int
 
 

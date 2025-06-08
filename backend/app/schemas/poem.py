@@ -7,7 +7,9 @@ from datetime import datetime
 from enum import Enum
 
 PoemParam = Literal["created_at", "updated_at", "title"]
-PoemParamType = Literal["all", "version", "translation", "derived", "original", ""]
+PoemParamType = Literal["all", "version",
+                        "translation", "derived", "original", ""]
+
 
 class PoemSearchParams(BaseModel):
     poem_order_by: PoemParam = "title"
@@ -20,6 +22,8 @@ class PoemSearchParams(BaseModel):
     poem_verses: str = ""
     poem_type: PoemParamType = ""
     poem_language: str = ""
+    poem_basic: bool = True
+
 
 class PoemBase(BaseModel):
     title: str = Field(max_length=255)
@@ -48,33 +52,31 @@ class PoemUpdate(PoemBase):
     original_poem_id: Optional[uuid.UUID] = None
 
 
-# Used for showing poem info in author
-class PoemPublic(BaseModel):
+class PoemPublicBasic(BaseModel):
     id: uuid.UUID
     title: str = Field(max_length=255)
-    description: Optional[str] = None
-    language: Optional[str] = None
-    created_at: Optional[datetime] = Field(default=datetime.now())
-    updated_at: Optional[datetime] = Field(default=datetime.now())
-    type: Optional[int] = None
+    author_names: List[str] = []
     is_public: bool = False
     show_author: bool = True
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class PoemPublicWithAuthor(PoemPublic):
-    author_names: List[str] = []
+class PoemPublic(PoemPublicBasic):
+    description: Optional[str] = None
+    language: Optional[str] = None
+    created_at: Optional[datetime] = Field(default=datetime.now())
+    updated_at: Optional[datetime] = Field(default=datetime.now())
+    type: Optional[int] = None
     author_ids: List[uuid.UUID] = []
-    
 
-class PoemRandom(PoemPublicWithAuthor):
+class PoemRandom(PoemPublic):
     content: str
 
 
 class PoemPublicWithAllTheInfo(PoemRandom):
-    derived_poems: List[PoemPublicWithAuthor] = []
-    original: Optional[PoemPublicWithAuthor] = None
+    derived_poems: List[PoemPublic] = []
+    original: Optional[PoemPublic] = None
 
 
 class PoemSchema(PoemBase):
@@ -87,8 +89,8 @@ class PoemSchema(PoemBase):
     author_names: List[str] = []
 
     type: Optional[int] = None
-    derived_poems: List[PoemPublicWithAuthor] = []
-    original: Optional[PoemPublicWithAuthor] = None
+    derived_poems: List[PoemPublic] = []
+    original: Optional[PoemPublic] = None
 
 
 class PoemsPublicWithAllTheInfo(BaseModel):
@@ -96,15 +98,9 @@ class PoemsPublicWithAllTheInfo(BaseModel):
     count: int
 
 
-
-class SearchPoem(BaseModel): 
-    id: uuid.UUID
-    title: str = Field(max_length=255)
-    author_names: List[str] = []
-    is_public: bool = False
-    show_author: bool = True
-    
-    model_config = ConfigDict(from_attributes=True)
+class PoemsPublic(BaseModel):
+    data: List[PoemPublic]
+    count: int
 
 
 class PoemType(Enum):
