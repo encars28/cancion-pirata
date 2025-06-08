@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 from pydantic import BaseModel
-from app.schemas.author import AuthorPublicBasic, AuthorQuery, AuthorSearchParams, AuthorsPublic
+from app.schemas.author import AuthorPublicBasic, AuthorSearchParams, AuthorsPublic
 from app.schemas.poem import PoemPublicBasic, PoemsPublic, PoemSearchParams
 from app.schemas.collection import CollectionPublicBasic, CollectionsPublic, CollectionSearchParams
 from app.schemas.user import UserPublicBasic, UserSearchParams, UsersPublic

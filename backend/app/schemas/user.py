@@ -5,7 +5,7 @@ from datetime import datetime
 
 from app.crud import author
 from app.schemas.author import AuthorPublic
-from app.schemas.collection import CollectionPublicBasic
+from app.schemas.collection import CollectionPublic
 
 UserParam = Literal["full_name", "email", "username"]
 
@@ -65,11 +65,8 @@ class UserPublic(UserBase):
     id: uuid.UUID
     created_at: Optional[datetime] = Field(default=datetime.now())
     author_id: Optional[uuid.UUID] = None
-
-
-class UserPublicWithAllTheInfo(UserPublic):
     author: Optional[AuthorPublic] = None
-    collections: list[CollectionPublicBasic] = []
+    collections: list[CollectionPublic] = []
 
 
 class UserSchema(UserBase):
@@ -80,7 +77,7 @@ class UserSchema(UserBase):
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     hashed_password: str
-    collections: list[CollectionPublicBasic] = []
+    collections: list[CollectionPublic] = []
     image_path: Optional[str] = None
 
 

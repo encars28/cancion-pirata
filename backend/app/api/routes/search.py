@@ -4,7 +4,7 @@ from fastapi import APIRouter
 
 from app.api.deps import OptionalCurrentUser, SessionDep
 from app.schemas.author import AuthorPublic, AuthorPublicBasic, AuthorSearchParams, AuthorsPublic
-from app.schemas.collection import CollectionPublic, CollectionPublicBasic, CollectionSearchParams, CollectionsPublic
+from app.schemas.collection import CollectionPublicBasic, CollectionPublicWithPoems, CollectionSearchParams, CollectionsPublic
 from app.schemas.search import SearchParams, SearchResult
 
 from app.crud.author import author_crud
@@ -89,7 +89,7 @@ def search(session: SessionDep, current_user: OptionalCurrentUser, params: Searc
         if params.collection_params is None or params.collection_params.collection_basic:
             collections = [CollectionPublicBasic.model_validate(collection) for collection in collections]
         else: 
-            collection_data = [CollectionPublic.model_validate(collection) for collection in collections]
+            collection_data = [CollectionPublicWithPoems.model_validate(collection) for collection in collections]
             count = collection_crud.get_count(session, params.collection_params, public_restricted=public_restricted)
             collections = CollectionsPublic(data=collection_data, count=count)
         

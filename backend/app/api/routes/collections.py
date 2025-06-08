@@ -13,10 +13,10 @@ from app.api.deps import (
 from app.schemas.common import Message
 from app.schemas.collection import (
     CollectionCreate,
-    CollectionPublic,
     CollectionSearchParams,
     CollectionUpdate,
     CollectionsPublic,
+    CollectionPublicWithPoems
 )
 from app.crud.collection import collection_crud
 from app.crud.poem import poem_crud
@@ -36,7 +36,7 @@ def read_collections(
     params = CollectionSearchParams(
         collection_skip=skip, collection_limit=limit
     )
-    collections = [CollectionPublic.model_validate(collection) for collection in collection_crud.get_many(
+    collections = [CollectionPublicWithPoems.model_validate(collection) for collection in collection_crud.get_many(
         session, params, public_restricted=False
     )]
     count = collection_crud.get_count(
@@ -47,7 +47,7 @@ def read_collections(
 
 @router.post(
     "/",
-    response_model=CollectionPublic,
+    response_model=CollectionPublicWithPoems,
 )
 def create_collection(
     *, session: SessionDep, collection_in: CollectionCreate, current_user: CurrentUser
@@ -66,7 +66,7 @@ def create_collection(
     return collection
 
 
-@router.get("/{collection_id}", response_model=CollectionPublic)
+@router.get("/{collection_id}", response_model=CollectionPublicWithPoems)
 def read_collection(
     collection_id: uuid.UUID, session: SessionDep, current_user: OptionalCurrentUser
 ) -> Any:
@@ -118,7 +118,7 @@ def read_collection(
 
 @router.patch(
     "/{collection_id}",
-    response_model=CollectionPublic,
+    response_model=CollectionPublicWithPoems,
 )
 def update_collection(
     *,
@@ -151,7 +151,7 @@ def update_collection(
     return collection
 
 
-@router.put("/{collection_id}/poems/{poem_id}", response_model=CollectionPublic)
+@router.put("/{collection_id}/poems/{poem_id}", response_model=CollectionPublicWithPoems)
 def add_poem_to_collection(
     *,
     session: SessionDep,

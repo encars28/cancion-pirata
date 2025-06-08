@@ -52,16 +52,20 @@ class CollectionPublicBasic(CollectionBase):
     username: Optional[str] = Field(default=None, max_length=255)
 
     model_config = ConfigDict(from_attributes=True)
-    
+
 class CollectionPublic(CollectionPublicBasic):
     description: Optional[str] = None
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+
+class CollectionPublicWithPoems(CollectionPublic):
     poems: List[PoemPublic] = []
+    user_id: uuid.UUID
 
     
     
 class CollectionsPublic(BaseModel):
     count: int
-    data: List[CollectionPublic]
+    data: List[CollectionPublicWithPoems]
     
