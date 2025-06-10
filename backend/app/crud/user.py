@@ -142,6 +142,12 @@ class UserCRUD:
 
         db.commit()
         db.refresh(db_obj)
+        
+        # Update author full_name if it exists
+        if "full_name" in user_data and db_obj.author is not None:
+            db_obj.author.full_name = user_data["full_name"]
+            db.commit()
+            db.refresh(db_obj)
 
         return UserSchema.model_validate(db_obj)
 
