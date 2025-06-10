@@ -216,9 +216,9 @@ def update_author(
     return author
 
 
-@router.delete("/{author_id}")
+@router.delete("/{author_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete_author(
-    session: SessionDep, current_user: CurrentUser, author_id: uuid.UUID
+    session: SessionDep, author_id: uuid.UUID
 ) -> Message:
     """
     Delete a Author.
@@ -226,14 +226,6 @@ def delete_author(
     author = author_crud.get_by_id(session, author_id)
     if not author:
         raise HTTPException(status_code=404, detail="Author not found")
-
-    if not current_user.is_superuser and (
-        not current_user.author_id or not current_user.author_id == author_id
-    ):
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges",
-        )
 
     author_crud.delete(db=session, obj_id=author.id)
     return Message(message="Author deleted successfully")

@@ -41,12 +41,12 @@ class AuthorCreate(AuthorBase):
 
 
 class AuthorUpdateBasic(AuthorBase):
-    full_name: Optional[str] = Field(  # type: ignore
-        max_length=255, default=None)
     birth_date: Optional[datetime] = None
 
 
 class AuthorUpdate(AuthorUpdateBasic):
+    full_name: Optional[str] = Field(  # type: ignore
+        max_length=255, default=None)
     death_date: Optional[datetime] = None
 
 
