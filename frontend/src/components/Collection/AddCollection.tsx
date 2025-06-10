@@ -9,10 +9,9 @@ import {
   Switch,
 } from "@mantine/core";
 import { Form } from "@mantine/form";
-// import usePoems from "../../hooks/usePoems";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
-import { CollectionCreate, collectionsAddPoemToCollection } from "../../client";
+import { CollectionCreate, collectionsAddPoemToCollection, PoemPublicBasic } from "../../client";
 import { collectionsCreateCollection } from "../../client";
 import { callService, showError, showSuccess } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,10 +20,11 @@ import { isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
+import useSearch from "../../hooks/useSearch";
 
 export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, poemId?: string }) {
-  // const { data: poemsData } = usePoems({});
-  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
+  const { data: searchData } = useSearch({search_type: ["poem"]});
+  const poemsData = searchData?.poems as PoemPublicBasic[];
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
@@ -52,7 +52,7 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
   });
   
   const poems_info = Object.fromEntries(
-    poemsData?.data?.map((poem) => [
+    poemsData?.map((poem) => [
       `${poem.title} ${
         poem.author_names && poem.author_names?.length > 0 ? " - " : ""
       } ${poem.author_names?.join(", ")}`,

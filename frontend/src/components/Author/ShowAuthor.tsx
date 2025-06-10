@@ -12,12 +12,14 @@ import {
   Tooltip,
   Button,
 } from "@mantine/core";
-import { TbBook, TbTrash, TbPointFilled } from "react-icons/tb";
-import useAuth from "../../hooks/useAuth";
+import { TbBook, TbTrash, TbPointFilled, TbEdit } from "react-icons/tb";
+import useAuth, { isAdmin } from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import { AuthorAvatar } from "./AuthorAvatar";
+import { UploadAuthorPicture } from "./UploadAuthorPicture/UploadAuthorPicture.module";
+import { EditAuthor } from "./EditAuthor";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
   const { user: currentUser } = useAuth();
@@ -37,50 +39,73 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
       labels: { confirm: "Eliminar", cancel: "Cancelar" },
     });
 
+  const editAuthor = () =>
+    modals.open({
+      title: "Editar autor",
+      children: <Container px="md"><EditAuthor author={author} /></Container>,
+    });
+
   return (
     <Container
-      mt={70}
       mx={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
       fluid
     >
-      <Group justify="space-between" gap="xl">
-        <Flex justify="flex-start" direction="row" align="center" gap="xl">
-        <AuthorAvatar size={100} authorId={author.id} />
+      <Group justify="space-between" gap="xl" wrap="nowrap">
+        <Flex
+          justify="flex-start"
+          direction="row"
+          align="center"
+          gap="xl"
+          wrap="nowrap"
+        >
+          {isAdmin() ? (
+            <UploadAuthorPicture authorId={author.id} />
+          ) : (
+            <AuthorAvatar size={140} authorId={author.id} />
+          )}
+
           <Stack>
             <Title order={1} textWrap="wrap">
               {author.full_name}
             </Title>
-            {author && author.birth_date && (
-              <>
-                {" "}
-                <TbPointFilled color="grey" size={6} />
+            <Group>
+              {" "}
+              {author && author.birth_date && (
                 <Text c="dimmed" fw="lighter">
                   Fecha de nacimiento: {author.birth_date.toLocaleDateString()}
                 </Text>
-              </>
-            )}
-            {author && author.death_date && (
-              <>
-                {" "}
-                <TbPointFilled color="grey" size={6} />
-                <Text c="dimmed" fw="lighter">
-                  Fecha de fallecimiento:{" "}
-                  {author.death_date.toLocaleDateString()}
-                </Text>
-              </>
-            )}
+              )}
+              {author && author.death_date && (
+                <Group wrap="nowrap">
+                  {" "}
+                  <TbPointFilled color="grey" size={6} />
+                  <Text c="dimmed" fw="lighter">
+                    Fecha de fallecimiento:{" "}
+                    {author.death_date.toLocaleDateString()}
+                  </Text>
+                </Group>
+              )}
+            </Group>
           </Stack>
         </Flex>
         {currentUser?.is_superuser && (
           <>
-            <Group hiddenFrom="md">
+            <Group hiddenFrom="lg">
+              <Tooltip label="Editar">
+                <ActionIcon onClick={editAuthor} size={35}>
+                  <TbEdit size={20} />
+                </ActionIcon>
+              </Tooltip>
               <Tooltip label="Eliminar">
                 <ActionIcon color="red" size={35} onClick={deleteAuthor}>
                   <TbTrash size={20} />
                 </ActionIcon>
               </Tooltip>
             </Group>
-            <Group visibleFrom="md">
+            <Group visibleFrom="lg">
+              <Button onClick={editAuthor} w={112} leftSection={<TbEdit size={20} />}>
+                Editar
+              </Button>
               <Button
                 color="red"
                 onClick={deleteAuthor}

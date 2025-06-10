@@ -47,7 +47,7 @@ export type AuthorUpdate = {
 };
 
 export type AuthorUpdateBasic = {
-    full_name?: string | null;
+    full_name: string;
     birth_date?: Date | null;
 };
 
@@ -226,6 +226,7 @@ export type PoemSearchParams = {
     poem_type?: 'all' | 'version' | 'translation' | 'derived' | 'original' | '';
     poem_language?: string;
     poem_basic?: boolean;
+    poem_author?: string;
 };
 
 export type PoemUpdate = {
