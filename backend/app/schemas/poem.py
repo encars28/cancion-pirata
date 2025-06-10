@@ -23,6 +23,7 @@ class PoemSearchParams(BaseModel):
     poem_type: PoemParamType = ""
     poem_language: str = ""
     poem_basic: bool = True
+    poem_author: str = ""
 
 
 class PoemBase(BaseModel):

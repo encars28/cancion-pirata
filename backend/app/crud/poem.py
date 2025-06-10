@@ -7,7 +7,7 @@ from typing import Optional
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import select, func, Select
 from app.models.poem import Poem, Poem_Poem
-from app.models.author import Author
+from app.models.author import Author, author_poem
 
 from app.schemas.poem import (
     PoemCreate,
@@ -46,6 +46,7 @@ class PoemCRUD:
         type_filter = self.filter_by_type(queryParams, db)
         language_filter = self.filter_by_language(queryParams)
         verses_filter = self.filter_by_num_verses(queryParams, db)
+        author_filter = self.filter_by_author(db, queryParams.poem_author)
 
         stmt = title_filter.intersect(
             type_filter,
@@ -53,6 +54,7 @@ class PoemCRUD:
             updated_at_filter,
             language_filter,
             verses_filter,
+            author_filter,
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -82,6 +84,7 @@ class PoemCRUD:
         type_filter = self.filter_by_type(queryParams, db)
         language_filter = self.filter_by_language(queryParams)
         verses_filter = self.filter_by_num_verses(queryParams, db)
+        author_filter = self.filter_by_author(db, queryParams.poem_author)
 
         stmt = title_filter.intersect(
             type_filter,
@@ -89,6 +92,7 @@ class PoemCRUD:
             updated_at_filter,
             language_filter,
             verses_filter,
+            author_filter,
         ).subquery()
         alias = aliased(Poem, stmt)
 
@@ -100,10 +104,7 @@ class PoemCRUD:
         return count if count else 0
 
     def filter_by_language(self, query: PoemSearchParams) -> Select:
-        if not query.poem_language:
-            return select(Poem)
-
-        return select(Poem).where(Poem.language == query.poem_language)
+        return select(Poem).where(Poem.language.icontains(query.poem_language))
 
     def filter_dates(self, date: str, col: str) -> Select:
         regex = r"(>|<|>=|<=|=|)(\d+)"
@@ -198,6 +199,17 @@ class PoemCRUD:
                 return select(Poem).where(Poem.id.not_in(poem_ids))
             case _:
                 return select(Poem)
+            
+    def filter_by_author(self, db:Session, author_name: str) -> Select:
+        authors = db.scalars(
+            select(Author).where(Author.full_name.icontains(author_name))
+        ).all()
+        if not authors:
+            return select(Poem)
+        
+        author_ids = [author.id for author in authors]
+        return select(Poem).join(author_poem, Poem.id == author_poem.c.poem_id).where(author_poem.c.author_id.in_(author_ids))
+
 
     def create(self, db: Session, obj_create: PoemCreate) -> Optional[PoemSchema]:
         obj_create_data = obj_create.model_dump(exclude_unset=True)
