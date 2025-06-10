@@ -11,9 +11,8 @@ import {
 } from '@mantine/core';
 import classes from './LoginForm.module.css';
 
-import { TbAt } from "react-icons/tb";
 import useAuth from '../../../hooks/useAuth';
-import { useForm, isEmail } from '@mantine/form'
+import { isNotEmpty, useForm } from '@mantine/form'
 import { Form } from '@mantine/form';
 import { useNavigate } from 'react-router';
 
@@ -22,19 +21,20 @@ export function LoginForm() {
   const navigate = useNavigate()
 
   interface FormValues {
-    email: string;
+    login: string;
     password: string;
   }
 
   // Form validation
   const form = useForm<FormValues>({
     mode: 'uncontrolled',
-    validate: {
-      email: isEmail('Correo inválido')
-    },
     initialValues: {
-      email: '',
+      login: '',
       password: ''
+    },
+    validate: {
+      login: isNotEmpty('Email o nombre de usuario es requerido'),
+      password: isNotEmpty('Contraseña es requerida'),
     },
     enhanceGetInputProps: () => ({
       disabled: loginMutation.isPending,
@@ -44,18 +44,18 @@ export function LoginForm() {
 
   // Form submission
   const handleSubmit = async () => {
-    const { email, password } = form.getValues()
+    const { login, password } = form.getValues()
 
     try {
-      await loginMutation.mutateAsync({ username: email, password: password });
+      await loginMutation.mutateAsync({ username: login, password: password });
     } catch {
       // error is handled by loginMutation
-      form.setErrors({ email: 'Email o contraseña incorrecto', password: 'Email o contraseña incorrecto' })
+      form.setErrors({ login: 'Email/Usuario o contraseña incorrecto', password: 'Email/Usuario o contraseña incorrecto' })
     }
   }
 
   return (
-    <Container size={420} my={80}>
+    <Container size={420}>
       <Title ta="center" className={classes.title}>
         Iniciar sesión
       </Title>
@@ -69,13 +69,11 @@ export function LoginForm() {
         <Paper withBorder className={classes.paper}>
           <Stack gap="lg">
             <TextInput
-              name='email'
-              label="Email"
+              name='login'
+              label="Email o nombre de usuario"
               placeholder="ejemplo@ejemplo.com"
-              leftSectionPointerEvents="none"
-              leftSection={<TbAt size={15} />}
-              {...form.getInputProps('email')}
-              key={form.key('email')}
+              {...form.getInputProps('login')}
+              key={form.key('login')}
               required
             />
             <PasswordInput
