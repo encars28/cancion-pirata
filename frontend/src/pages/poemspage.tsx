@@ -35,6 +35,7 @@ export function PoemsPage() {
       created_at: "",
       updated_at: "",
       language: "",
+      authors: "",
       desc: false,
     },
   });
@@ -64,6 +65,7 @@ export function PoemsPage() {
           ? "updated_at"
           : "title",
       poem_title: values.title,
+      poem_author: values.authors,
       poem_created_at: values.created_at,
       poem_updated_at: values.updated_at,
       poem_desc: values.desc,

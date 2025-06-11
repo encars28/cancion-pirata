@@ -1,4 +1,13 @@
-import { Stack, Select, Space, TextInput, Button, ActionIcon, Flex, Tooltip } from "@mantine/core";
+import {
+  Stack,
+  Select,
+  Space,
+  TextInput,
+  Button,
+  ActionIcon,
+  Flex,
+  Tooltip,
+} from "@mantine/core";
 import { Form, UseFormReturnType } from "@mantine/form";
 import { FilterInfoButton } from "../FilterInfoButton";
 import { TbChevronDown, TbChevronUp } from "react-icons/tb";
@@ -10,17 +19,24 @@ export interface PoemFilters {
   updated_at?: string;
   language?: string;
   verses?: string;
+  authors?: string;
   type?: "Todos" | "Versión" | "Traducción" | "Original" | "Derivado";
   desc?: boolean;
 }
 
-export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<PoemFilters>, handleSubmit: (values: any) => void }) {
+export function FilterPoem({
+  form,
+  handleSubmit,
+}: {
+  form: UseFormReturnType<PoemFilters>;
+  handleSubmit: (values: any) => void;
+}) {
   const Icon = form.values.desc ? TbChevronUp : TbChevronDown;
   const label = form.values.desc ? "Ascendente" : "Descendente";
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="sm"  mt="md">
+      <Stack gap="sm" mt="md">
         <Flex direction="row" gap="sm">
           <Select
             withCheckIcon={false}
@@ -34,18 +50,18 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
             key={form.key("order_by")}
             {...form.getInputProps("order_by")}
           />
-        <Tooltip label={label}>
-          <ActionIcon
-            variant="light"
-            radius="lg"
-            mt={28}
-            size={30}
-            color="grey"
-            onClick={() => form.setFieldValue("desc", !form.values.desc)}
-          >
-            <Icon />
-          </ActionIcon>
-        </Tooltip>
+          <Tooltip label={label}>
+            <ActionIcon
+              variant="light"
+              radius="lg"
+              mt={28}
+              size={30}
+              color="grey"
+              onClick={() => form.setFieldValue("desc", !form.values.desc)}
+            >
+              <Icon />
+            </ActionIcon>
+          </Tooltip>
         </Flex>
         <Space h="md" />
         <TextInput
@@ -57,7 +73,20 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
           {...form.getInputProps("title")}
         />
         <TextInput
-          label={<>Fecha de publicación<FilterInfoButton /> </>}
+          label="Autores"
+          placeholder="Autores"
+          radius="md"
+          styles={{ input: { color: "grey" } }}
+          key={form.key("authors")}
+          {...form.getInputProps("authors")}
+        />
+        <TextInput
+          label={
+            <>
+              Fecha de publicación
+              <FilterInfoButton />{" "}
+            </>
+          }
           placeholder="Fecha de publicación"
           radius="md"
           styles={{ input: { color: "grey" } }}
@@ -65,7 +94,12 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
           {...form.getInputProps("created_at")}
         />
         <TextInput
-          label={<>Fecha de modificación<FilterInfoButton /> </>}
+          label={
+            <>
+              Fecha de modificación
+              <FilterInfoButton />{" "}
+            </>
+          }
           placeholder="Fecha de publicación"
           radius="md"
           styles={{ input: { color: "grey" } }}
@@ -73,7 +107,12 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
           {...form.getInputProps("updated_at")}
         />
         <TextInput
-          label={<>Número de versos<FilterInfoButton /> </>}
+          label={
+            <>
+              Número de versos
+              <FilterInfoButton />{" "}
+            </>
+          }
           placeholder="Número de versos"
           radius="md"
           styles={{ input: { color: "grey" } }}
@@ -120,5 +159,5 @@ export function FilterPoem({ form, handleSubmit }: { form: UseFormReturnType<Poe
         </Button>
       </Stack>
     </Form>
-  )
+  );
 }
