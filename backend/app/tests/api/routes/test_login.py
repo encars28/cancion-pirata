@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.core.security import verify_password
 from app.crud.user import user_crud
-from app.utils import generate_password_reset_token
+from app.utils import generate_temporary_token
 from app.schemas.user import UserUpdate, UserCreate
 
 from app.tests.utils.user import create_random_user
@@ -115,7 +115,7 @@ def test_recovery_password_user_not_exits(
 def test_reset_password(
     client: TestClient, superuser_token_headers: dict[str, str], db: Session
 ) -> None:
-    token = generate_password_reset_token(email=settings.FIRST_SUPERUSER)
+    token = generate_temporary_token(email=settings.FIRST_SUPERUSER)
     data = {"new_password": "changethis", "token": token}
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
@@ -129,7 +129,7 @@ def test_reset_password(
     assert user
     assert verify_password(data["new_password"], user.hashed_password)
 
-    token = generate_password_reset_token(email=settings.FIRST_SUPERUSER)
+    token = generate_temporary_token(email=settings.FIRST_SUPERUSER)
     data = {"new_password": settings.FIRST_SUPERUSER_PASSWORD, "token": token}
     r = client.post(
         f"{settings.API_V1_STR}/reset-password/",
@@ -159,7 +159,7 @@ def test_reset_password_invalid_token(
 def test_reset_password_no_user(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
-    token = generate_password_reset_token(email=random_email())
+    token = generate_temporary_token(email=random_email())
     data = {"new_password": "changethis", "token": token}
 
     r = client.post(
@@ -181,7 +181,7 @@ def test_reset_password_user_not_active(
     user_in = UserUpdate(is_active=False)
     user = user_crud.update(db=db, obj_id=user.id, obj_update=user_in)
 
-    token = generate_password_reset_token(email=user.email)  # type: ignore
+    token = generate_temporary_token(email=user.email)  # type: ignore
     data = {"new_password": "changethis", "token": token}
 
     r = client.post(

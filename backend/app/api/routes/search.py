@@ -76,6 +76,7 @@ def search(session: SessionDep, current_user: OptionalCurrentUser, params: Searc
             poem_data = [PoemPublic.model_validate(poem) for poem in poems]
             count = poem_crud.get_count(session, params.poem_params, public_restricted=public_restricted)
             poems = PoemsPublic(data=poem_data, count=count)
+        
                     
     else:
         poems = []

@@ -194,6 +194,8 @@ class AuthorCRUD:
         obj_update_data = obj_update.model_dump(exclude_unset=True)
         for field, value in obj_update_data.items():
             setattr(db_obj, field, value)
+            
+        # Update the user full_name 
 
         db.commit()
         db.refresh(db_obj)

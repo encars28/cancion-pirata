@@ -205,7 +205,7 @@ class PoemCRUD:
             select(Author).where(Author.full_name.icontains(author_name))
         ).all()
         if not authors:
-            return select(Poem)
+            return select(Poem).where(False) # type: ignore
         
         author_ids = [author.id for author in authors]
         return select(Poem).join(author_poem, Poem.id == author_poem.c.poem_id).where(author_poem.c.author_id.in_(author_ids))

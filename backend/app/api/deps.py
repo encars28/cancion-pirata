@@ -51,10 +51,18 @@ def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optiona
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Could not validate credentials",
             )
+        
+        if payload["type"] != "access_token":
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Invalid token type",
+            )
 
         user = user_crud.get_by_id(session, token_data.sub)  # type: ignore
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
+        if not user.is_verified:
+            raise HTTPException(status_code=400, detail="Not verified user")
         return user
     
     return _get_current_user

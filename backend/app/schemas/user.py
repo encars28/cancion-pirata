@@ -26,6 +26,7 @@ class UserBase(BaseModel):
     full_name: Optional[str] = Field(max_length=255, default=None)
     username: str = Field(max_length=255)
     is_superuser: bool = Field(default=False)
+    is_verified: bool = Field(default=False)
 
 
 class UserCreate(UserBase):
@@ -47,6 +48,7 @@ class UserUpdate(UserBase):
         default=None, max_length=255)
     full_name: Optional[str] = Field(max_length=255, default=None)
     author_id: Optional[uuid.UUID] = Field(default=None)
+    is_verified: Optional[bool] = Field(default=None) # type: ignore
 
 
 class UserUpdateMe(BaseModel):
