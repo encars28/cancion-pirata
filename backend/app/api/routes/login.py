@@ -21,7 +21,7 @@ from app.utils import (
     verify_account_token,
 )
 
-from app.external.email import generate_new_account_email, generate_reset_password_email, send_email
+from app.external.email import generate_account_verification_email, generate_reset_password_email, send_email
 
 router = APIRouter(tags=["login"])
 
@@ -156,7 +156,7 @@ def verify_account(email: str, session: SessionDep) -> Message:
             detail="The user with this email does not exist in the system.",
         )
     account_verification_token = generate_temporary_token(sub=str(user.id), type="account_verification")
-    email_data = generate_new_account_email(
+    email_data = generate_account_verification_email(
         email_to=user.email, username=user.username, token=account_verification_token
     )
     send_email(

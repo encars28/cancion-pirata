@@ -79,19 +79,35 @@ def generate_reset_password_email(email_to: str, username: str, token: str) -> E
 
 
 def generate_new_account_email(
-    email_to: str, username: str, token: str
+    email_to: str, username: str, password: str
 ) -> EmailData:
     project_name = settings.PROJECT_NAME
     subject = f"{project_name} - New account for user {username}"
-    link = f"{settings.FRONTEND_HOST}/activate-account?token={token}"
     html_content = render_email_template(
         template_name="new_account.html",
         context={
             "project_name": settings.PROJECT_NAME,
             "username": username,
-            # "password": password,
+            "password": password,
             "email": email_to,
-            "valid_hours": settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS,
+            "link": settings.FRONTEND_HOST,
+        },
+    )
+    return EmailData(html_content=html_content, subject=subject)
+
+def generate_account_verification_email(
+    email_to: str, username: str, token: str
+) -> EmailData:
+    project_name = settings.PROJECT_NAME
+    subject = f"{project_name} - Account verification for user {username}"
+    link = f"{settings.FRONTEND_HOST}/verify-account?token={token}"
+    html_content = render_email_template(
+        template_name="account_verification.html",
+        context={
+            "project_name": settings.PROJECT_NAME,
+            "username": username,
+            "email": email_to,
+            "valid_hours": settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS,
             "link": link,
         },
     )
