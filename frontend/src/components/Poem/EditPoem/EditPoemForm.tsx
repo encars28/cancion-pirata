@@ -19,6 +19,8 @@ import {
   Text,
 } from "@mantine/core";
 import {
+  AuthorPublicBasic,
+  PoemPublicBasic,
   PoemPublicWithAllTheInfo,
   PoemUpdate,
 } from "../../../client/types.gen";
@@ -48,6 +50,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { PoemHelp } from "../PoemHelp";
+import useSearch from "../../../hooks/useSearch";
 
 export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
   const [opened, { toggle }] = useDisclosure(false);
@@ -89,15 +92,14 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
     }),
   });
 
-  // const { data: authorsData } = useAuthors({});
-  // const { data: poemsData } = usePoems({});
-  const authorsData = [];
-  const poemsData = [];
-
+  const { data: searchData } = useSearch({search_type: ["poem", "author"]})
+  const authorsData = searchData?.authors as  AuthorPublicBasic[]
+  const poemsData = searchData?.poems as PoemPublicBasic[]
+  
   const author_names_info =
-    authorsData?.data?.map((author) => author.full_name) ?? [];
+    authorsData?.map((author) => author.full_name) ?? [];
   const poems_info = Object.fromEntries(
-    poemsData?.data?.map((poem) => [
+    poemsData?.map((poem) => [
       `${poem.title} - ${poem.author_names?.join(", ")}`,
       poem.id,
     ]) ?? []
