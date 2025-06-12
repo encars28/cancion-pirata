@@ -47,6 +47,7 @@ import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
 import useSearch from "../../hooks/useSearch";
 import { LanguageHelp } from "../LanguageHelp/LanguageHelp";
+import { PoemHelp } from "./PoemHelp";
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
@@ -181,7 +182,6 @@ export function AddPoem() {
                 />
               </Tabs.Panel> */}
           {/* <Tabs.Panel value="editor"> */}
-          <Group justify="space-between" wrap="nowrap"  mt="lg" align="flex-start" gap={1}>
             <Textarea
               resize="vertical"
               w="100%"
@@ -195,10 +195,7 @@ export function AddPoem() {
               key={form.key("content")}
               {...form.getInputProps("content")}
             />
-            {/* <Container>
-            <LanguageHelp />
-            </Container> */}
-          </Group>
+            <PoemHelp />
 
           {/* </Tabs.Panel>
             </Tabs> */}

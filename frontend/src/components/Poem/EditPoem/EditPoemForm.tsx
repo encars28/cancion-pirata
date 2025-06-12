@@ -47,6 +47,7 @@ import { useDisclosure } from "@mantine/hooks";
 // import usePoems from "../../../hooks/usePoems";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
+import { PoemHelp } from "../PoemHelp";
 
 export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
   const [opened, { toggle }] = useDisclosure(false);
@@ -194,6 +195,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
             label="Contenido"
             {...form.getInputProps("content")}
           />
+          <PoemHelp />
           {/* </Tabs.Panel>
             </Tabs> */}
 
