@@ -1,18 +1,13 @@
 import {
-  Checkbox,
   Fieldset,
   Collapse,
   NavLink,
-  Tabs,
-  Input,
   Group,
   Stack,
   TextInput,
   Textarea,
-  Grid,
   Button,
   Container,
-  Space,
   MultiSelect,
   Select,
   Switch,
@@ -45,8 +40,6 @@ import {
   TbWorld,
 } from "react-icons/tb";
 import { useDisclosure } from "@mantine/hooks";
-// import useAuthors from "../../../hooks/useAuthors";
-// import usePoems from "../../../hooks/usePoems";
 import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { PoemHelp } from "../PoemHelp";

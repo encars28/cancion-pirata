@@ -2,16 +2,15 @@ import { TbSearch } from "react-icons/tb";
 import { Spotlight, createSpotlight } from "@mantine/spotlight";
 import { useNavigate } from "react-router";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { callService } from "../../../utils";
-import {
-  AuthorForSearch,
-  CollectionForSearch,
-  PoemForSearch,
-  searchSearch,
-  UserForSearch,
-} from "../../../client";
+
 import { Loader } from "@mantine/core";
+import useSearch from "../../../hooks/useSearch";
+import {
+  AuthorPublicBasic,
+  CollectionPublicBasic,
+  PoemPublicBasic,
+  UserPublicBasic,
+} from "../../../client";
 
 export const [searchStore, searchHandlers] = createSpotlight();
 
@@ -20,16 +19,18 @@ export function Search() {
 
   const [search, setSearch] = useState("");
 
-  const { data, isPending } = useQuery({
-    queryKey: ["search", search],
-    queryFn: async () => callService(searchSearch, { query: { q: search } }),
-    placeholderData: (prevData) => prevData,
+  const { isPending, data: searchData } = useSearch({
+    search_type: ["author", "poem", "user", "collection"],
+    poem_params: { poem_title: search },
+    author_params: { author_full_name: search },
+    user_params: { user_name: search },
+    collection_params: { collection_name: search },
   });
 
-  const poems: PoemForSearch[] = data?.poems ?? [];
-  const authors: AuthorForSearch[] = data?.authors ?? [];
-  const users: UserForSearch[] = data?.users ?? [];
-  const collections: CollectionForSearch[] = data?.collections ?? [];
+  const authors = searchData?.authors as AuthorPublicBasic[];
+  const poems = searchData?.poems as PoemPublicBasic[];
+  const users = searchData?.users as UserPublicBasic[];
+  const collections = searchData?.collections as CollectionPublicBasic[];
 
   const actions = authors
     .map((author) => ({
@@ -40,24 +41,26 @@ export function Search() {
     }))
     .concat(
       poems.map((poem) => ({
-      id: poem.id,
-      label: poem.title,
-      description: "Poema",
-      onClick: () => navigate(`/poems/${poem.id}`),
+        id: poem.id,
+        label: poem.title,
+        description: "Poema",
+        onClick: () => navigate(`/poems/${poem.id}`),
       }))
-    ).concat(
+    )
+    .concat(
       users.map((user) => ({
-      id: user.id,
-      label: user.username,
-      description: "Usuario",
-      onClick: () => navigate(`/users/${user.id}`),
+        id: user.id,
+        label: user.username,
+        description: "Usuario",
+        onClick: () => navigate(`/users/${user.id}`),
       }))
-    ).concat(
+    )
+    .concat(
       collections.map((collection) => ({
-      id: collection.id,
-      label: collection.name,
-      description: "Colección",
-      onClick: () => navigate(`/collections/${collection.id}`),
+        id: collection.id,
+        label: collection.name,
+        description: "Colección",
+        onClick: () => navigate(`/collections/${collection.id}`),
       }))
     );
 

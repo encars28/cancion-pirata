@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { SearchControl } from "../Header/Search/SearchControl/SearchControl";
 import { useNavigate } from "react-router";
-import { TbBook, TbLogin, TbWritingSign } from "react-icons/tb";
+import { TbLogin, TbWritingSign } from "react-icons/tb";
 import classes from "./Shell.module.css";
 import { SearchControlMobile } from "../Header/Search/SearchControlMobile/SearchControlMobile";
 import { LoginControl } from "../Header/LoginControl/LoginControl";

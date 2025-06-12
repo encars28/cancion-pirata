@@ -1,18 +1,12 @@
 import {
-  Checkbox,
   Fieldset,
   Collapse,
   NavLink,
-  Tabs,
-  Input,
   Group,
   Stack,
   TextInput,
   Textarea,
-  Grid,
   Button,
-  Center,
-  Space,
   MultiSelect,
   Select,
   Container,
@@ -31,14 +25,11 @@ import { callService, showError, showSuccess, PoemType } from "../../utils";
 import { HttpValidationError } from "../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
-// import useAuthors from "../../hooks/useAuthors";
-// import usePoems from "../../hooks/usePoems";
 import {
   TbChevronDown,
   TbChevronRight,
   TbLock,
   TbSpy,
-  TbSpyOff,
   TbUser,
   TbWorld,
 } from "react-icons/tb";
@@ -46,7 +37,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
 import useSearch from "../../hooks/useSearch";
-import { LanguageHelp } from "../LanguageHelp/LanguageHelp";
 import { PoemHelp } from "./PoemHelp";
 
 export function AddPoem() {
