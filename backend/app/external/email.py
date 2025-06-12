@@ -63,7 +63,7 @@ def generate_test_email(email_to: str) -> EmailData:
 
 def generate_reset_password_email(email_to: str, username: str, token: str) -> EmailData:
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Password recovery for user {username}"
+    subject = f"{project_name} - Restablecer contraseña para usuario {username}"
     link = f"{settings.FRONTEND_HOST}/reset-password?token={token}"
     html_content = render_email_template(
         template_name="reset_password.html",
@@ -82,7 +82,7 @@ def generate_new_account_email(
     email_to: str, username: str, password: str
 ) -> EmailData:
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - New account for user {username}"
+    subject = f"{project_name} - Nueva cuenta para usuario {username}"
     html_content = render_email_template(
         template_name="new_account.html",
         context={
@@ -99,7 +99,7 @@ def generate_account_verification_email(
     email_to: str, username: str, token: str
 ) -> EmailData:
     project_name = settings.PROJECT_NAME
-    subject = f"{project_name} - Account verification for user {username}"
+    subject = f"{project_name} - Verificación de cuenta para usuario {username}"
     link = f"{settings.FRONTEND_HOST}/verify-account?token={token}"
     html_content = render_email_template(
         template_name="account_verification.html",

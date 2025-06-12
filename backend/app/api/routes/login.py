@@ -12,7 +12,7 @@ from app.crud.user import user_crud
 from app.api.deps import CurrentUser, SessionDep, get_current_active_superuser
 from app.core import security
 from app.core.config import settings
-from app.schemas.login import NewPassword, Token
+from app.schemas.login import NewPassword, Token, VerifyToken
 from app.schemas.user import UserPublic, UserUpdate
 from app.schemas.common import Message
 from app.utils import (
@@ -143,35 +143,13 @@ def recover_password_html_content(email: str, session: SessionDep) -> Any:
         content=email_data.html_content, headers={"subject:": email_data.subject}
     )
 
-@router.post("/verify-account/{email}")
-def verify_account(email: str, session: SessionDep) -> Message:
-    """
-    Verify account
-    """
-    user = user_crud.get_by_email(session, email)
-
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="The user with this email does not exist in the system.",
-        )
-    account_verification_token = generate_temporary_token(sub=str(user.id), type="account_verification")
-    email_data = generate_account_verification_email(
-        email_to=user.email, username=user.username, token=account_verification_token
-    )
-    send_email(
-        email_to=user.email,
-        subject=email_data.subject,
-        html_content=email_data.html_content,
-    )
-    return Message(message="Password recovery email sent")
 
 @router.post("/activate-account/")
-def activate_account(session: SessionDep, token: str) -> Message:
+def activate_account(session: SessionDep, token: VerifyToken) -> Message:
     """
     Activate user account
     """
-    user_id = verify_account_token(token=token)
+    user_id = verify_account_token(token=token.token)
     if not user_id:
         raise HTTPException(status_code=400, detail="Invalid token")
     try:

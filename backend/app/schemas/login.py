@@ -11,3 +11,6 @@ class TokenPayload(BaseModel):
 class NewPassword(BaseModel):
     token: str
     new_password: str = Field(min_length=8, max_length=40)
+    
+class VerifyToken(BaseModel):
+    token: str

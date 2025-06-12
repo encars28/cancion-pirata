@@ -26,7 +26,8 @@ from app.schemas.user import (
     UsersPublic,
 )
 
-from app.external.email import generate_new_account_email, send_email
+from app.external.email import generate_new_account_email, send_email, generate_account_verification_email
+from app.utils import generate_temporary_token
 from PIL import Image
 
 router = APIRouter(prefix="/users", tags=["users"])
@@ -218,31 +219,42 @@ def delete_user_me(session: SessionDep, current_user: CurrentUser) -> Any:
     return Message(message="User deleted successfully")
 
 
-@router.post("/signup", response_model=UserPublic)
+@router.post("/signup", response_model=Message)
 def register_user(session: SessionDep, user_in: UserRegister) -> Any:
     """
     Create new user without the need to be logged in.
     """
     user = user_crud.get_by_email(session, user_in.email)
-    if user:
+    if user and user.is_verified:
         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system",
         )
-        
-    user = user_crud.get_by_username(session, user_in.username)
-    if user:
-        raise HTTPException(
-            status_code=400,
-            detail="The user with this username already exists in the system",
-        )
+    elif user is None:
+        user = user_crud.get_by_username(session, user_in.username)
+        if user:
+            raise HTTPException(
+                status_code=400,
+                detail="The user with this username already exists in the system",
+            )
 
-    user_data = user_in.model_dump(exclude_unset=True)
-    user_create = UserCreate.model_validate(user_data)
-    user_create.is_verified = False
+        user_data = user_in.model_dump(exclude_unset=True)
+        user_create = UserCreate.model_validate(user_data)
+        user_create.is_verified = False
 
-    user = user_crud.create(db=session, obj_create=user_create)
-    return user
+        user = user_crud.create(db=session, obj_create=user_create)
+    
+    account_verification_token = generate_temporary_token(sub=str(user.id), type="account_verification")
+    email_data = generate_account_verification_email(
+        email_to=user.email, username=user.username, token=account_verification_token
+    )
+    send_email(
+        email_to=user.email,
+        subject=email_data.subject,
+        html_content=email_data.html_content,
+    )
+    
+    return Message(message="Verification email sent")
 
 
 @router.get("/{user_id}", response_model=UserPublic)
