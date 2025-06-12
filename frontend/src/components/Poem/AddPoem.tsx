@@ -19,7 +19,11 @@ import {
   Switch,
   Text,
 } from "@mantine/core";
-import { AuthorPublicBasic, PoemCreate, PoemPublicBasic } from "../../client/types.gen";
+import {
+  AuthorPublicBasic,
+  PoemCreate,
+  PoemPublicBasic,
+} from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
@@ -42,6 +46,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
 import useSearch from "../../hooks/useSearch";
+import { LanguageHelp } from "../LanguageHelp/LanguageHelp";
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
@@ -90,12 +95,11 @@ export function AddPoem() {
     }),
   });
 
-  const { data: searchData } = useSearch({search_type: ["poem", "author"]});
+  const { data: searchData } = useSearch({ search_type: ["poem", "author"] });
   const authorsData = searchData?.authors as AuthorPublicBasic[];
   const poemsData = searchData?.poems as PoemPublicBasic[];
 
-  const author_names =
-    authorsData?.map((author) => author.full_name) ?? [];
+  const author_names = authorsData?.map((author) => author.full_name) ?? [];
   const poems_info = Object.fromEntries(
     poemsData?.map((poem) => [
       `${poem.title} - ${poem.author_names?.join(", ")}`,
@@ -177,18 +181,25 @@ export function AddPoem() {
                 />
               </Tabs.Panel> */}
           {/* <Tabs.Panel value="editor"> */}
-          <Textarea
-            resize="vertical"
-            required
-            autosize
-            maxRows={15}
-            mt="lg"
-            label="Contenido"
-            name="content"
-            placeholder="Tu contenido"
-            key={form.key("content")}
-            {...form.getInputProps("content")}
-          />
+          <Group justify="space-between" wrap="nowrap"  mt="lg" align="flex-start" gap={1}>
+            <Textarea
+              resize="vertical"
+              w="100%"
+              required
+              autosize
+              maxRows={15}
+              mt="xs"
+              label="Contenido"
+              name="content"
+              placeholder="Tu contenido"
+              key={form.key("content")}
+              {...form.getInputProps("content")}
+            />
+            {/* <Container>
+            <LanguageHelp />
+            </Container> */}
+          </Group>
+
           {/* </Tabs.Panel>
             </Tabs> */}
           <Stack mt="sm" gap={5}>

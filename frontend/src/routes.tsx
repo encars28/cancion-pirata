@@ -24,6 +24,7 @@ import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
 import { CollectionPage } from "./pages/collectionpage";
 import { VerifyAccount } from "./components/Auth/VerifyAccount";
+import { LanguageHelp } from "./components/LanguageHelp/LanguageHelp";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -50,6 +51,7 @@ export default function AllRoutes() {
       <Route element={<BasePage />}>
         <Route path="signup" element={<RegisterForm />} />
         <Route path="password-recovery" element={<PasswordForm />} />
+        <Route path="help" element={<LanguageHelp />} />
       </Route>
 
       <Route path="poems" element={<PoemsPage />} />

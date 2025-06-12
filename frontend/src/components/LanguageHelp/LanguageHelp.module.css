@@ -1,0 +1,22 @@
+.code {
+    font-family: monospace;
+    color: var(--mantine-primary-color-5);
+    font-weight: bold;
+}
+
+.example {
+    font-family: monospace;
+    padding: var(--mantine-spacing-sm);
+    background-color: var(--mantine-color-gray-3);
+    font-size: var(--mantine-font-size-xs)
+}
+
+.title {
+    font-weight: 600;
+}
+
+.contents {
+    position: fixed;
+    top: 120px;
+    right: 60px
+}
