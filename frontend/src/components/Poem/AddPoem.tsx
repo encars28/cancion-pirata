@@ -19,7 +19,7 @@ import {
   Switch,
   Text,
 } from "@mantine/core";
-import { PoemCreate } from "../../client/types.gen";
+import { AuthorPublicBasic, PoemCreate, PoemPublicBasic } from "../../client/types.gen";
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
@@ -41,6 +41,7 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
+import useSearch from "../../hooks/useSearch";
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
@@ -89,16 +90,14 @@ export function AddPoem() {
     }),
   });
 
-  // const { data: authorsData } = useAuthors({});
-  // const { data: poemsData } = usePoems({});
-
-  const authorsData = []; // Placeholder for authors data, replace with actual data fetching logic
-  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
+  const { data: searchData } = useSearch({search_type: ["poem", "author"]});
+  const authorsData = searchData?.authors as AuthorPublicBasic[];
+  const poemsData = searchData?.poems as PoemPublicBasic[];
 
   const author_names =
-    authorsData?.data.map((author) => author.full_name) ?? [];
+    authorsData?.map((author) => author.full_name) ?? [];
   const poems_info = Object.fromEntries(
-    poemsData?.data?.map((poem) => [
+    poemsData?.map((poem) => [
       `${poem.title} - ${poem.author_names?.join(", ")}`,
       poem.id,
     ]) ?? []
@@ -147,7 +146,7 @@ export function AddPoem() {
   };
 
   return (
-    <Container py={50}>
+    <Container>
       <Form form={form} onSubmit={handleSubmit}>
         <Stack gap="xs">
           <TextInput
@@ -179,6 +178,7 @@ export function AddPoem() {
               </Tabs.Panel> */}
           {/* <Tabs.Panel value="editor"> */}
           <Textarea
+            resize="vertical"
             required
             autosize
             maxRows={15}

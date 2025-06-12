@@ -17,12 +17,12 @@ import {
 } from "react-icons/tb";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
-import useUserActions from "../hooks/useUserActions";
-import { showSuccess } from "../utils";
-import { ProfileAvatar } from "./User/ProfileAvatar";
-import { UploadProfilePicture } from "./User/UploadProfilePicture/UploadProfilePicture";
+import useUserActions from "../../hooks/useUserActions";
+import { showSuccess } from "../../utils";
+import { ProfileAvatar } from "./ProfileAvatar";
+import { UploadProfilePicture } from "./UploadProfilePicture/UploadProfilePicture";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();

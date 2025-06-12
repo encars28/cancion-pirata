@@ -61,7 +61,7 @@ export function RegisterForm() {
   }
 
   return (
-    <Container my={80} maw={{ base: 420, sm: 700, md: 800 }}>
+    <Container maw={{ base: 420, sm: 700, md: 800 }}>
       <Title ta="center" className={classes.title}>
         Regístrate
       </Title>

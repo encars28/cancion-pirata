@@ -14,15 +14,27 @@ import classes from './LoginForm.module.css';
 import useAuth from '../../../hooks/useAuth';
 import { isNotEmpty, useForm } from '@mantine/form'
 import { Form } from '@mantine/form';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
+import { Loading } from '../../Loading';
+
+interface FormValues {
+  login: string;
+  password: string;
+}
 
 export function LoginForm() {
   const { loginMutation } = useAuth()
   const navigate = useNavigate()
 
-  interface FormValues {
-    login: string;
-    password: string;
+  const [searchParams] = useSearchParams()
+  const token = searchParams.get("token");
+  const { activateAccountMutation: activateAccount } = useAuth()
+
+  if (token) {
+    activateAccount.mutate({ token: token });
+    if (activateAccount.isPending) {
+      return <Loading />
+    }
   }
 
   // Form validation

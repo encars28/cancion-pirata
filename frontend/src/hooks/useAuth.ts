@@ -1,10 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
-import { BodyLoginLoginAccessToken as AccessToken } from "../client/types.gen"
+import { BodyLoginLoginAccessToken as AccessToken, VerifyToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
 import { showError, showSuccess, callService } from "../utils"
 import { client } from "../client/client.gen"
-import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken } from "../client/sdk.gen"
+import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken, loginActivateAccount } from "../client/sdk.gen"
 import { notifications } from "@mantine/notifications"
 
 const isLoggedIn = () => {
@@ -30,16 +30,19 @@ const useAuth = () => {
   const signUpMutation = useMutation({
     mutationFn: async (data: UserRegister) => callService(usersRegisterUser, { body: data }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
-      showSuccess()
-      navigate("/login")
+      notifications.show({
+        title: "Usuario registrado",
+        message: "Revisa tu correo electrónico y sigue las instrucciones para activar tu cuenta.",
+        color: "green",
+      })
     },
     onError: (error) => {
       showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
     },
   })
 
@@ -73,15 +76,39 @@ const useAuth = () => {
   const logout = () => {
     localStorage.removeItem("access_token")
     client.setConfig({ headers: { "Authorization": "" } })
-    isLoggedIn() // Temporary solution to force refresh
+    location.reload()
     navigate("/login")
   }
+
+  const activateAccountMutation = useMutation({
+    mutationFn: async (token: VerifyToken) => callService(loginActivateAccount, { body: token }),
+    onSuccess: () => {
+      notifications.clean()
+      notifications.show({
+        title: "Cuenta activada",
+        message: "Tu cuenta ha sido activada correctamente. Ya puedes iniciar sesión.",
+        color: "green",
+      })
+
+      navigate("/login")
+    }
+    ,
+    onError: (error) => {
+      showError(error as any)
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] })
+      queryClient.invalidateQueries({ queryKey: ["users"] })
+    }
+  })
+
 
   return {
     signUpMutation,
     loginMutation,
     logout,
     user,
+    activateAccountMutation,
   }
 }
 

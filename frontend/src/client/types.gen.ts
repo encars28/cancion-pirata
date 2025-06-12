@@ -281,6 +281,7 @@ export type UserCreate = {
     full_name?: string | null;
     username: string;
     is_superuser?: boolean;
+    is_verified?: boolean;
     password: string;
 };
 
@@ -289,6 +290,7 @@ export type UserPublic = {
     full_name?: string | null;
     username: string;
     is_superuser?: boolean;
+    is_verified?: boolean;
     id: string;
     created_at?: Date | null;
     author_id?: string | null;
@@ -324,6 +326,7 @@ export type UserUpdate = {
     full_name?: string | null;
     username?: string | null;
     is_superuser?: boolean;
+    is_verified?: boolean | null;
     password?: string | null;
     author_id?: string | null;
 };
@@ -343,6 +346,10 @@ export type ValidationError = {
     loc: Array<string | number>;
     msg: string;
     type: string;
+};
+
+export type VerifyToken = {
+    token: string;
 };
 
 export type LoginLoginAccessTokenData = {
@@ -464,6 +471,58 @@ export type LoginRecoverPasswordHtmlContentResponses = {
 };
 
 export type LoginRecoverPasswordHtmlContentResponse = LoginRecoverPasswordHtmlContentResponses[keyof LoginRecoverPasswordHtmlContentResponses];
+
+export type LoginVerifyAccountData = {
+    body?: never;
+    path: {
+        email: string;
+    };
+    query?: never;
+    url: '/api/v1/verify-account/{email}';
+};
+
+export type LoginVerifyAccountErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LoginVerifyAccountError = LoginVerifyAccountErrors[keyof LoginVerifyAccountErrors];
+
+export type LoginVerifyAccountResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type LoginVerifyAccountResponse = LoginVerifyAccountResponses[keyof LoginVerifyAccountResponses];
+
+export type LoginActivateAccountData = {
+    body: VerifyToken;
+    path?: never;
+    query?: never;
+    url: '/api/v1/activate-account/';
+};
+
+export type LoginActivateAccountErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type LoginActivateAccountError = LoginActivateAccountErrors[keyof LoginActivateAccountErrors];
+
+export type LoginActivateAccountResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type LoginActivateAccountResponse = LoginActivateAccountResponses[keyof LoginActivateAccountResponses];
 
 export type UsersReadUsersData = {
     body?: never;

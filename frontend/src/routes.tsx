@@ -4,13 +4,13 @@ import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
 import { NothingFound } from "./components/ErrorPages/NothingFound";
-import useAuth, { isAdmin, isLoggedIn } from "./hooks/useAuth";
+import { isAdmin, isLoggedIn } from "./hooks/useAuth";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
 import { TableUsers } from "./components/Tables/TableUsers";
 import { TablePoems } from "./components/Tables/TablePoems";
-import { Profile } from "./components/Profile";
+import { Profile } from "./components/User/Profile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 import { AddPoem } from "./components/Poem/AddPoem";
 import { PageSettings } from "./components/PageSettings";
@@ -23,6 +23,7 @@ import { EditPoem } from "./components/Poem/EditPoem/EditPoem";
 import { MainPage } from "./pages/mainpage";
 import { UserPage } from "./pages/userpage";
 import { CollectionPage } from "./pages/collectionpage";
+import { VerifyAccount } from "./components/Auth/VerifyAccount";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -84,6 +85,7 @@ export default function AllRoutes() {
         <Route element={<BasePage />}>
           <Route path="login" element={<LoginForm />} />
           <Route path="reset-password" element={<ResetPassword />} />
+          <Route path="verify-account" element={<LoginForm />} />
         </Route>
       </Route>
 

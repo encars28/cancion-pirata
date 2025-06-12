@@ -18,7 +18,7 @@ import { LoginControl } from "../Header/LoginControl/LoginControl";
 import { isLoggedIn } from "../../hooks/useAuth";
 import { useDisclosure } from "@mantine/hooks";
 import { ProfileControl } from "../Header/ProfileControl";
-import { ProfileNavbar } from "../ProfileNavbar";
+import { ProfileNavbar } from "../User/ProfileNavbar";
 import { Navbar } from "../Navbar/Navbar";
 
 interface ShellProps {
