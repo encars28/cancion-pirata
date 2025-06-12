@@ -22,6 +22,11 @@ def search(session: SessionDep, current_user: OptionalCurrentUser, params: Searc
     """
     Universal search
     """
+
+    if current_user and current_user.is_superuser: 
+        public_restricted = False
+    else: 
+        public_restricted = True
     
     if "author" in params.search_type:
         if params.author_params is None:
@@ -40,24 +45,20 @@ def search(session: SessionDep, current_user: OptionalCurrentUser, params: Searc
         
     if "user" in params.search_type:
         if params.user_params is None:
-            users = user_crud.get_many(session, UserSearchParams())
+            users = user_crud.get_many(session, UserSearchParams(), public_restricted=public_restricted)
         else: 
-            users = user_crud.get_many(session, params.user_params)
+            users = user_crud.get_many(session, params.user_params, public_restricted=public_restricted)
         
         if params.user_params is None or params.user_params.user_basic:
             users = [UserPublicBasic.model_validate(user) for user in users]
         else: 
             user_data = [UserPublic.model_validate(user) for user in users]
-            count = user_crud.get_count(session, params.user_params)
+            count = user_crud.get_count(session, params.user_params, public_restricted=public_restricted)
             users = UsersPublic(data=user_data, count=count)
             
     else:
         users = []
     
-    if current_user and current_user.is_superuser: 
-        public_restricted = False
-    else: 
-        public_restricted = True
         
     if "poem" in params.search_type:
         if params.poem_params is None:

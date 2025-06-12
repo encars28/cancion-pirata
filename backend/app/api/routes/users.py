@@ -43,10 +43,10 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
     Retrieve users.
     """
     params = UserSearchParams(user_skip=skip, user_limit=limit)
-    count = user_crud.get_count(db=session, queryParams=params)
+    count = user_crud.get_count(db=session, queryParams=params, public_restricted=False)
     users = [
         UserPublic.model_validate(user)
-        for user in user_crud.get_many(db=session, queryParams=params)
+        for user in user_crud.get_many(db=session, queryParams=params, public_restricted=False)
     ]
 
     return UsersPublic(data=users, count=count)

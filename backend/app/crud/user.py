@@ -41,7 +41,7 @@ class UserCRUD:
         return UserSchema.model_validate(db_obj) if db_obj else None
 
     def get_many(
-        self, db: Session, queryParams: UserSearchParams
+        self, db: Session, queryParams: UserSearchParams, public_restricted: bool = True
     ) -> list[UserSchema]:
         username_filter = self.filter_by_text(
             db, queryParams.user_name, "username"
@@ -61,16 +61,17 @@ class UserCRUD:
         else: 
             order = getattr(alias, queryParams.user_order_by).nulls_first()
             
+        statement = select(alias).offset(queryParams.user_skip).limit(queryParams.user_limit).order_by(order)
+        if public_restricted:
+            statement = statement.where(alias.is_verified == True)
+            
         db_objs = db.scalars(
-            select(alias)
-            .offset(queryParams.user_skip)
-            .limit(queryParams.user_limit)
-            .order_by(order)
+            statement
         ).all()
 
         return [UserSchema.model_validate(db_obj) for db_obj in db_objs]
 
-    def get_count(self, db: Session, queryParams: UserSearchParams) -> int:
+    def get_count(self, db: Session, queryParams: UserSearchParams, public_restricted: bool = True) -> int:
         username_filter = self.filter_by_text(
             db, queryParams.user_name, "username"
         )
@@ -85,6 +86,8 @@ class UserCRUD:
         alias = aliased(User, smt)
         
         statement = select(func.count()).select_from(alias)
+        if public_restricted:
+            statement = statement.where(alias.is_verified == True)
         count = db.execute(statement).scalar()
         return count if count else 0
 
