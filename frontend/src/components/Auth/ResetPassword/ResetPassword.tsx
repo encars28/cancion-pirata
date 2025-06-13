@@ -10,11 +10,12 @@ import {
 import { hasLength, useForm } from "@mantine/form";
 import classes from "./ResetPassword.module.css"
 import { Form } from "@mantine/form";
-import { HttpValidationError, NewPassword, loginResetPassword } from '../../../client';
-import { callService, showError, showSuccess } from '../../../utils';
+import { NewPassword, loginResetPassword } from '../../../client';
+import { callService } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
+import { successNotification } from '../../Notifications/notifications';
 
 interface ResetPasswordForm extends NewPassword {
   confirm_password: string
@@ -36,11 +37,10 @@ export function ResetPassword() {
     mutationFn: resetPassword,
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({
+        title: "Contraseña cambiada",
+        description: "Tu contraseña ha sido cambiada correctamente. Ahora puedes iniciar sesión con la contraseña nueva.",}))
       navigate("/login")
-    },
-    onError: (error: HttpValidationError) => {
-      showError(error)
     },
   })
 

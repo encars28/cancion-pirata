@@ -1,5 +1,4 @@
 import { Shell } from "../components/Shell/Shell";
-import { showError } from "../utils";
 import { PoemPublicWithAllTheInfo } from "../client/types.gen";
 import { Loading } from "../components/Loading";
 import { useNavigate, useParams } from "react-router";
@@ -33,6 +32,8 @@ import { Interweave } from "interweave";
 import { AddCollection } from "../components/Collection/AddCollection";
 import { AddPoemToCollection } from "../components/Collection/AddPoemToCollection/AddPoemToCollection";
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../components/Notifications/notifications";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -60,7 +61,8 @@ export function PoemPage() {
 
   if (isError) {
     navigate("/poems");
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error al cargar el poema", description: error.message}));
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;

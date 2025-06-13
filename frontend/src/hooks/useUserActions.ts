@@ -1,9 +1,10 @@
 import { usersDeleteUserMe, usersGetUserMeProfilePicture, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
-import { callService, showError, showSuccess } from '../utils'
+import { callService } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
+import { successNotification } from '../components/Notifications/notifications'
 
 const useUserActions = (userId?: string) => {
   const queryClient = useQueryClient()
@@ -34,13 +35,6 @@ const useUserActions = (userId?: string) => {
       queryClient.invalidateQueries({ queryKey: ['users', userId] })
       queryClient.invalidateQueries({ queryKey: ['currentUser'] })
     },
-    onSuccess: () => {
-      notifications.clean()
-      showSuccess()
-    },
-    onError: (error) => {
-      showError(error as any)
-    }
   })
 
   const deleteUserMeMutation = useMutation({
@@ -48,10 +42,10 @@ const useUserActions = (userId?: string) => {
     onSuccess: () => {
       logout()
       navigate('/')
-      showSuccess()
-    },
-    onError: (error) => {
-      showError(error as any)
+      notifications.show(successNotification({
+        title: "Cuenta eliminada",
+        description: "Tu cuenta ha sido eliminada correctamente. Lamentamos que te vayas."
+      }))
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })

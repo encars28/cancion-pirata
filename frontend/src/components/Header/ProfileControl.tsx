@@ -1,23 +1,16 @@
 import {
-  ActionIcon,
   Text,
-  Avatar,
-  Group,
   Menu,
-  Tooltip,
   Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
-import useAuth, { isLoggedIn } from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import {
-  TbChevronRight,
   TbLogout,
   TbSettings,
   TbUser,
-  TbX,
 } from "react-icons/tb";
 import { modals } from "@mantine/modals";
-import { showSuccess } from "../../utils";
 import { ProfileAvatar } from "../User/ProfileAvatar";
 
 export function ProfileControl() {
@@ -30,7 +23,6 @@ export function ProfileControl() {
       children: <Text size="sm">¿Está seguro de que desea cerrar sesión?</Text>,
       onConfirm: () => {
         logout();
-        showSuccess();
       },
       confirmProps: { color: "red" },
       labels: { confirm: "Cerrar sesión", cancel: "Cancelar" },

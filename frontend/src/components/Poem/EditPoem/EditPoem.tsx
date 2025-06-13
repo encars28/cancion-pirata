@@ -1,9 +1,10 @@
 import usePoem from "../../../hooks/usePoem"
 import { Loading } from "../../Loading"
-import { showError } from "../../../utils"
 import { useNavigate, useParams } from "react-router"
 import { PoemPublicWithAllTheInfo } from "../../../client/types.gen"
 import { EditPoemForm } from "./EditPoemForm"
+import { notifications } from "@mantine/notifications"
+import { errorNotification } from "../../Notifications/notifications"
 
 export function EditPoem() {
   const navigate = useNavigate()
@@ -15,7 +16,7 @@ export function EditPoem() {
   }
   if (isError) {
     navigate("/poems")
-    showError(error as any)
+    notifications.show(errorNotification({title: "Error cargando el poema", description: error.message}))
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;

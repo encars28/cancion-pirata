@@ -3,10 +3,11 @@ import { TableSort } from "../Tables/TableSort";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { showError, callService } from "../../utils";
-import { PoemPublicWithAuthor, poemsReadPoems } from "../../client";
-import { DeletePoem } from "../Poem/DeletePoem";
+import {callService } from "../../utils";
+import { poemsReadPoems } from "../../client";
 import { TbEye } from "react-icons/tb";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../Notifications/notifications";
 
 const PER_PAGE = 8
 
@@ -35,10 +36,13 @@ export function TablePoems() {
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error cargando poemas",
+      description: error.message
+    }))
   }
 
-  const poems: PoemPublicWithAuthor[] = data?.data.slice(0, PER_PAGE) ?? []
+  const poems = data?.data.slice(0, PER_PAGE) ?? []
   const count = data?.count ?? 0
 
   const poemHeaders = {
@@ -61,7 +65,6 @@ export function TablePoems() {
         <ActionIcon variant="outline" onClick={() => navigate(`/poems/${poem.id}`)}>
           <TbEye />
         </ActionIcon>
-        <DeletePoem poem_id={poem.id} icon/>
       </Group>
   }))
 

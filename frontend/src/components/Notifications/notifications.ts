@@ -1,16 +1,17 @@
-import classes from "./notifications.module.css"
+import { TbCheck, TbX } from "react-icons/tb"
+import React from "react";
 
-export const errorNotification = (errorMessage: string) => ({
-    title: 'Error',
-    message: errorMessage,
+export const errorNotification = ({ title, description }: { title?: string; description?: string}) => ({
+    title: title || 'Error',
+    message: description || 'Ha ocurrido un error inesperado.',
     autoClose: 10000,
     color: 'red',
-    classNames: classes,
+    icon: React.createElement(TbX, {size: 18})
 })
 
-export const successNotification = (message?: string ) => ({
+export const successNotification = ({title, description}: {title?: string, description?: string})  => ({
     color: 'green',
-    title: 'Éxito',
-    message: message || 'La operación se ha completado!',
-    classNames: classes,
+    title: title || 'Éxito',
+    message: description || 'La operación se ha completado!',
+    icon: React.createElement(TbCheck, {size: 18}),
 })

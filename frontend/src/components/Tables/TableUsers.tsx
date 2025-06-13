@@ -3,11 +3,13 @@ import { TableSort } from "../Tables/TableSort";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { showError, callService } from "../../utils";
+import { callService } from "../../utils";
 import { UserPublic, usersReadUsers } from "../../client";
 import { EditUser } from "../User/EditUser";
 import { DeleteUser } from "../User/DeleteUser";
 import { AddUser } from "../User/AddUser";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../Notifications/notifications";
 
 const PER_PAGE = 6
 
@@ -36,7 +38,10 @@ export function TableUsers() {
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error cargando usuarios",
+      description: error.message
+    }))
   }
 
   const users: UserPublic[] = data?.data.slice(0, PER_PAGE) ?? []

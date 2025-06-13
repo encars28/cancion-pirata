@@ -3,9 +3,10 @@ import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 import { TbPencil } from "react-icons/tb";
 import classes from "./UploadAuthorPicture.module.css";
 import { useHover } from "@mantine/hooks";
-import { showError } from "../../../utils";
 import useAuthorActions from "../../../hooks/useAuthorActions";
 import { AuthorAvatar } from "../AuthorAvatar";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../../Notifications/notifications";
 
 export function UploadAuthorPicture({authorId}: { authorId: string }) {
   const { updateProfilePicture } = useAuthorActions(authorId);
@@ -24,7 +25,7 @@ export function UploadAuthorPicture({authorId}: { authorId: string }) {
     <div ref={ref} className={classes.container}>
       <Dropzone
         onDrop={(files) => handleSubmit(files[0])}
-        onReject={() => showError("Formato de archivo no permitido o archivo mayor a 5MB")}
+        onReject={() => notifications.show(errorNotification({title: "Error al subir la imagen", description: "Formato de archivo no permitido o archivo mayor a 5MB"}))}
         maxSize={5 * 1024 ** 2}
         accept={IMAGE_MIME_TYPE}
         multiple={false}

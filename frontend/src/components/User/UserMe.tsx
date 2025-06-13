@@ -3,7 +3,7 @@ import { UserPublic, UserUpdateMe, usersUpdateUserMe } from '../../client';
 import { TextInput, Stack, Button, Group } from '@mantine/core';
 import { TbAbc, TbAt, TbUser } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { callService, showError, showSuccess } from '../../utils';
+import { callService } from '../../utils';
 import { HttpValidationError } from '../../client/types.gen';
 import { notifications } from '@mantine/notifications';
 
@@ -13,14 +13,6 @@ export function UserMe({ user }: { user: UserPublic }) {
   const mutation = useMutation({
     mutationFn: async (data: UserUpdateMe) =>
       callService(usersUpdateUserMe, { body: data }),
-    onSuccess: () => {
-      notifications.clean()
-      showSuccess()
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error)
-    },
 
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })

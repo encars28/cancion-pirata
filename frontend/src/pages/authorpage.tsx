@@ -2,9 +2,10 @@ import { Navigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import useAuthor from "../hooks/useAuthor";
 import { Loading } from "../components/Loading";
-import { showError } from "../utils";
 import { AuthorPublicWithPoems } from "../client";
 import { ShowAuthor } from "../components/Author/ShowAuthor";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../components/Notifications/notifications";
 
 export function AuthorPage() {
   const params = useParams()
@@ -17,7 +18,8 @@ export function AuthorPage() {
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error al cargar el autor", description: error.message || "No se pudo cargar el autor."}))
   }
 
   const author: AuthorPublicWithPoems = data!;

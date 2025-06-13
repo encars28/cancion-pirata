@@ -2,12 +2,13 @@ import { Stack, TextInput, Modal, Group, Button } from '@mantine/core';
 import { Form, isNotEmpty, useForm } from '@mantine/form';
 import { DateInput } from '@mantine/dates';
 import { TbCalendar } from "react-icons/tb";
-import { AuthorCreate, HttpValidationError } from '../../client/types.gen';
-import { callService, showError, showSuccess } from '../../utils';
+import { AuthorCreate } from '../../client/types.gen';
+import { callService } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authorsCreateAuthor } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
+import { successNotification } from '../Notifications/notifications';
 
 export function AddAuthor() {
   const [opened, { open, close }] = useDisclosure()
@@ -17,14 +18,11 @@ export function AddAuthor() {
       callService(authorsCreateAuthor, { body: data }),
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({
+        title: "Autor creado",
+        description: "El autor ha sido creado correctamente.",}))
       close()
     },
-
-    onError: (error: HttpValidationError) => {
-      showError(error)
-    },
-
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["authors"] })
     },

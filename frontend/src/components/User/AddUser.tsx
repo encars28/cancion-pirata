@@ -2,11 +2,12 @@ import { Stack, TextInput, PasswordInput, Modal, Group, Button, Checkbox } from 
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc } from "react-icons/tb";
 import { HttpValidationError, UserCreate } from '../../client/types.gen';
-import { callService, showError, showSuccess } from '../../utils';
+import { callService } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersCreateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
+import { successNotification } from '../Notifications/notifications';
 
 export function AddUser() {
   const [opened, { open, close }] = useDisclosure()
@@ -17,12 +18,11 @@ export function AddUser() {
       callService(usersCreateUser, { body: data }),
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({
+        title: "Usuario creado",
+        description: "El usuario se ha creado correctamente"
+      }))
       close()
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error)
     },
 
     onSettled: () => {

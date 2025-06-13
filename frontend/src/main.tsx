@@ -8,7 +8,9 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router";
-import { FetchError, handleFetchError, showError, showSuccess } from "./utils.ts";
+import { FetchError, handleFetchError } from "./utils.ts";
+import { notifications } from "@mantine/notifications";
+import { errorNotification, successNotification } from "./components/Notifications/notifications.ts";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,13 +39,12 @@ const queryClient = new QueryClient({
       console.log("Error during mutation: ", error.message);
       if (error instanceof FetchError) {
         handleFetchError(error);
-        showError(error.message);
-      } else {
-        showError(error as any);
+        notifications.show(errorNotification({description: error.message}));
       }
     },
     onSuccess: () => {
-      showSuccess();
+      notifications.clean();
+      notifications.show(successNotification({}))
     },
   }),
 });

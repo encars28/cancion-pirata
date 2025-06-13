@@ -27,10 +27,10 @@ export function Search() {
     collection_params: { collection_name: search },
   });
 
-  const authors = searchData?.authors as AuthorPublicBasic[];
-  const poems = searchData?.poems as PoemPublicBasic[];
-  const users = searchData?.users as UserPublicBasic[];
-  const collections = searchData?.collections as CollectionPublicBasic[];
+  const authors = searchData?.authors as AuthorPublicBasic[] ?? [];
+  const poems = searchData?.poems as PoemPublicBasic[] ?? [];
+  const users = searchData?.users as UserPublicBasic[] ?? [];
+  const collections = searchData?.collections as CollectionPublicBasic[] ?? [];
 
   const actions = authors
     .map((author) => ({

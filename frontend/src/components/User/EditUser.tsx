@@ -1,14 +1,15 @@
 import { Stack, ActionIcon, TextInput, PasswordInput, Modal, Group, Button, Checkbox, Select } from '@mantine/core';
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc, TbPencil } from "react-icons/tb";
-import { AuthorPublicBasic, HttpValidationError, UserUpdate } from '../../client/types.gen';
-import { callService, showError, showSuccess } from '../../utils';
+import { AuthorPublicBasic, UserUpdate } from '../../client/types.gen';
+import { callService } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic } from '../../client/types.gen';
 import { notifications } from '@mantine/notifications';
 import useSearch from '../../hooks/useSearch';
+import { successNotification } from '../Notifications/notifications';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()
@@ -23,12 +24,8 @@ export function EditUser({ user }: { user: UserPublic }) {
       callService(usersUpdateUser, { path: { user_id: user.id }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({}))
       close()
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error)
     },
 
     onSettled: () => {

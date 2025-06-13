@@ -5,8 +5,10 @@ import { modals } from "@mantine/modals";
 import { isNotEmpty, Form, useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { collectionsAddPoemToCollection } from "../../../client/";
-import { callService, showError, showSuccess } from "../../../utils";
+import { callService } from "../../../utils";
 import useAuth from "../../../hooks/useAuth";
+import { notifications } from "@mantine/notifications";
+import { successNotification } from "../../Notifications/notifications";
 
 export function AddPoemToCollection({ poemId }: { poemId: string }) {
   const queryClient = useQueryClient();
@@ -31,11 +33,11 @@ export function AddPoemToCollection({ poemId }: { poemId: string }) {
         path: { collection_id: collectionId, poem_id: poemId },
       }),
     onSuccess: () => {
-      showSuccess();
+      notifications.show(successNotification({
+        title: "Poema añadido a colección",
+        description: "El poema ha sido añadido a la colección correctamente.",
+      }));
       modals.closeAll();
-    },
-    onError: (error) => {
-      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });

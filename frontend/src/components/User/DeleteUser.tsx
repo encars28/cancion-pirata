@@ -1,9 +1,11 @@
 import { Button, Modal, Group, Text, ActionIcon } from '@mantine/core'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { usersDeleteUser } from '../../client'
-import { callService, showError, showSuccess } from '../../utils'
+import { callService } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { TbTrash } from 'react-icons/tb'
+import { notifications } from '@mantine/notifications'
+import { successNotification } from '../Notifications/notifications'
 
 export function DeleteUser({user_id}: {user_id: string}) {
   const queryClient = useQueryClient()
@@ -12,11 +14,8 @@ export function DeleteUser({user_id}: {user_id: string}) {
   const mutation = useMutation({
     mutationFn: async () => callService(usersDeleteUser, {path: {user_id: user_id}}),
     onSuccess: () => {
-      showSuccess()
+      notifications.show(successNotification({}))
       close()
-    },
-    onError: (error) => {
-      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users'] })

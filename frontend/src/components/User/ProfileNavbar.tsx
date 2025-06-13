@@ -1,6 +1,5 @@
 import {
   AppShell,
-  Avatar,
   Button,
   Container,
   NavLink,
@@ -8,7 +7,6 @@ import {
   Text,
 } from "@mantine/core";
 import {
-  TbChevronRight,
   TbLock,
   TbLogout,
   TbSettings,
@@ -20,9 +18,9 @@ import { useNavigate, useLocation } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useUserActions from "../../hooks/useUserActions";
-import { showSuccess } from "../../utils";
-import { ProfileAvatar } from "./ProfileAvatar";
 import { UploadProfilePicture } from "./UploadProfilePicture/UploadProfilePicture";
+import { notifications } from "@mantine/notifications";
+import { successNotification } from "../Notifications/notifications";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();
@@ -53,7 +51,7 @@ export function ProfileNavbar() {
       children: <Text size="sm">¿Está seguro de que desea cerrar sesión?</Text>,
       onConfirm: () => {
         logout();
-        showSuccess();
+        notifications.show(successNotification({title: "Sesión cerrada", description: "La sesión se ha cerrado correctamente."}));
       },
       confirmProps: { color: "red" },
       labels: { confirm: "Cerrar sesión", cancel: "Cancelar" },

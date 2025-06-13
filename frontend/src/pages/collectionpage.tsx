@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService, showError, showSuccess } from "../utils";
+import { callService } from "../utils";
 import { CollectionPublicWithPoems, collectionsReadCollection, PoemPublicBasic } from "../client";
 import { Loading } from "../components/Loading";
 import {
@@ -23,6 +23,8 @@ import { ShowPoemGrid } from "../components/Poem/PoemGrid/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import { EditCollection } from "../components/Collection/EditCollection";
 import useSearch from "../hooks/useSearch";
+import { notifications } from "@mantine/notifications";
+import { errorNotification, successNotification } from "../components/Notifications/notifications";
 
 
 export function CollectionPage() {
@@ -59,7 +61,10 @@ export function CollectionPage() {
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error al cargar la colección",
+      description: error.message || "No se pudo cargar la colección.",
+    }))
   }
 
   const collection: CollectionPublicWithPoems = data!;
@@ -78,7 +83,7 @@ export function CollectionPage() {
         await addPoemToCollection.mutateAsync(poems_info[poem]);
         modals.closeAll();
       });
-      showSuccess();
+      notifications.show(successNotification({title: "Poema(s) añadido(s)", description: "El poema(s) se ha añadido a la colección correctamente."}));
     } catch {
       //
     }

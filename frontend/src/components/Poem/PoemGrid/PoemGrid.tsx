@@ -1,12 +1,13 @@
 import { Pagination, Stack, Text } from "@mantine/core";
 import React from "react";
-import { showError } from "../../../utils";
 import { Loading } from "../../Loading";
 import { PoemPublic, SearchParams, PoemsPublic } from "../../../client";
 import { POEMS_PER_PAGE } from "../../../pages/poemspage";
 import { ShowPoemGrid } from "./ShowPoemGrid";
 import { useSearchParams } from "react-router";
 import useSearch from "../../../hooks/useSearch";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../../Notifications/notifications";
 
 export interface CardGridProps {
   path: string;
@@ -29,7 +30,7 @@ export function PoemGrid({
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({title: "Error cargando poemas", description: error.message}));
   }
 
   const poemsData = (data?.poems as PoemsPublic).data;

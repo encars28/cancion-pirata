@@ -21,8 +21,7 @@ import {
 import { Form, isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import { poemsCreatePoem } from "../../client";
-import { callService, showError, showSuccess, PoemType } from "../../utils";
-import { HttpValidationError } from "../../client/types.gen";
+import { callService, PoemType } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import {
@@ -38,6 +37,7 @@ import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
 import useSearch from "../../hooks/useSearch";
 import { PoemHelp } from "./PoemHelp";
+import { successNotification } from "../Notifications/notifications";
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);
@@ -51,12 +51,8 @@ export function AddPoem() {
       callService(poemsCreatePoem, { body: data }),
     onSuccess: () => {
       notifications.clean();
-      showSuccess();
+      notifications.show(successNotification({title: "Poema creado", description: "El poema ha sido creado exitosamente."}));
       navigate(`/authors/${user?.author_id}`);
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error);
     },
 
     onSettled: () => {

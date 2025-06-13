@@ -24,11 +24,8 @@ import { useForm } from "@mantine/form";
 import { poemsUpdatePoem } from "../../../client";
 import {
   callService,
-  showError,
-  showSuccess,
   PoemType,
 } from "../../../utils";
-import { HttpValidationError } from "../../../client/types.gen";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import {
@@ -44,6 +41,7 @@ import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { PoemHelp } from "../PoemHelp";
 import useSearch from "../../../hooks/useSearch";
+import { successNotification } from "../../Notifications/notifications";
 
 export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
   const [opened, { toggle }] = useDisclosure(false);
@@ -55,11 +53,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
     onSuccess: () => {
       notifications.clean();
       navigate(`/poems/${poem.id}`);
-      showSuccess();
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error);
+      notifications.show(successNotification({title: "Poema actualizado", description: "El poema se ha actualizado correctamente"}));
     },
 
     onSettled: () => {

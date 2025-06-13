@@ -1,10 +1,11 @@
-import { callService, showError, showSuccess } from '../utils'
+import { callService } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { notifications } from '@mantine/notifications'
-import {collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
+import { collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
 import useAuth from './useAuth'
 import { modals } from '@mantine/modals'
+import { successNotification } from '../components/Notifications/notifications'
 
 const useCollectionActions = (collectionId: string) => {
   const queryClient = useQueryClient()
@@ -16,11 +17,8 @@ const useCollectionActions = (collectionId: string) => {
       callService(collectionsUpdateCollection, { path: { collection_id: collectionId }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({ title: "Colección actualizada", description: "La colección se ha actualizado correctamente." }))
       navigate(`/collections/${collectionId}`)
-    },
-    onError: (error) => {
-      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
@@ -29,17 +27,13 @@ const useCollectionActions = (collectionId: string) => {
     }
   })
 
-    const addPoemToCollection = useMutation({
+  const addPoemToCollection = useMutation({
     mutationFn: async (poemId: string) =>
       callService(collectionsAddPoemToCollection, {
         path: { collection_id: collectionId, poem_id: poemId },
       }),
     onSuccess: () => {
-      showSuccess();
       modals.closeAll();
-    },
-    onError: (error) => {
-      showError(error as any);
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
@@ -49,12 +43,6 @@ const useCollectionActions = (collectionId: string) => {
   const removePoemFromCollection = useMutation({
     mutationFn: async (poemId: string) =>
       callService(collectionsRemovePoemFromCollection, { path: { collection_id: collectionId, poem_id: poemId } }),
-    onSuccess: () => {
-      showSuccess()
-    },
-    onError: (error) => {
-      showError(error as any)
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })
     }
@@ -63,11 +51,8 @@ const useCollectionActions = (collectionId: string) => {
   const deleteCollectionMutation = useMutation({
     mutationFn: async () => callService(collectionsDeleteCollection, { path: { collection_id: collectionId } }),
     onSuccess: () => {
-      showSuccess()
+      notifications.show(successNotification({ title: "Colección eliminada", description: "La colección se ha eliminado correctamente." }))
       navigate(`/users/${currentUser?.id}`)
-    },
-    onError: (error) => {
-      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })

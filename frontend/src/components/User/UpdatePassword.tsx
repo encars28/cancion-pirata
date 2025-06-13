@@ -8,11 +8,12 @@ import {
 } from '@mantine/core';
 import { hasLength, useForm } from "@mantine/form";
 import { Form } from "@mantine/form";
-import { HttpValidationError, UpdatePassword, usersUpdatePasswordMe } from '../../client';
-import { callService, showError, showSuccess } from '../../utils';
+import { UpdatePassword, usersUpdatePasswordMe } from '../../client';
+import { callService } from '../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
+import { successNotification } from '../Notifications/notifications';
 
 export function UpdatePasswordForm() {
   const navigate = useNavigate()
@@ -23,11 +24,11 @@ export function UpdatePasswordForm() {
     },
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({
+        title: 'Contraseña actualizada',
+        description: 'Tu contraseña ha sido actualizada correctamente.',
+      }))
       navigate("/me")
-    },
-    onError: (error: HttpValidationError) => {
-      showError(error)
     },
   })
 

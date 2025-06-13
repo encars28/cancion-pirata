@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { BodyLoginLoginAccessToken as AccessToken, VerifyToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
-import { showError, showSuccess, callService } from "../utils"
+import { callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken, loginActivateAccount } from "../client/sdk.gen"
 import { notifications } from "@mantine/notifications"
@@ -37,9 +37,6 @@ const useAuth = () => {
         color: "green",
       })
     },
-    onError: (error) => {
-      showError(error as any)
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
@@ -68,9 +65,6 @@ const useAuth = () => {
       notifications.clean()
       navigate("/")
     },
-    // onError: (error) => {
-    //   showError(error as any)
-    // },
   })
 
   const logout = () => {
@@ -78,6 +72,12 @@ const useAuth = () => {
     client.setConfig({ headers: { "Authorization": "" } })
     location.reload()
     navigate("/login")
+    notifications.clean()
+    notifications.show({
+      title: "Sesión cerrada",
+      message: "Has cerrado sesión correctamente.",
+      color: "green",
+    })
   }
 
   const activateAccountMutation = useMutation({
@@ -93,9 +93,6 @@ const useAuth = () => {
       navigate("/login")
     }
     ,
-    onError: (error) => {
-      showError(error as any)
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       queryClient.invalidateQueries({ queryKey: ["users"] })

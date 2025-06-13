@@ -2,13 +2,14 @@ import { Stack, Group, Pagination, Text, ActionIcon, ScrollArea, Table } from "@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useSearchParams } from "react-router";
 import { Loading } from "../Loading";
-import { showError, callService } from "../../utils";
-import { AuthorPublic, AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
-import { EditAuthor } from "../Author/EditAuthor";
+import { callService } from "../../utils";
+import { AuthorPublicWithPoems, authorsReadAuthors } from "../../client";
 import { TbEye } from "react-icons/tb";
 import { AddAuthor } from "../Author/AddAuthor";
 import { Th } from "./Th/Th";
 import { useState } from "react";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../Notifications/notifications";
 
 export const PER_PAGE = 6
 
@@ -54,7 +55,9 @@ export function TableAuthors() {
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error cargando autores", description: error.message
+    }))
   }
 
   const authors: AuthorPublicWithPoems[] = data?.data.slice(0, PER_PAGE) ?? []

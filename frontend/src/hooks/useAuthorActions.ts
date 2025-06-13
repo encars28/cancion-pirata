@@ -1,9 +1,10 @@
-import { authorsDeleteAuthor, authorsGetAuthorPicture, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate, HttpValidationError } from '../client'
-import { callService, showError, showSuccess } from '../utils'
+import { authorsDeleteAuthor, authorsGetAuthorPicture, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate } from '../client'
+import { callService } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
+import { successNotification } from '../components/Notifications/notifications'
 
 const useAuthorActions = (authorId: string) => {
   const queryClient = useQueryClient()
@@ -13,16 +14,13 @@ const useAuthorActions = (authorId: string) => {
   const deleteAuthorMutation = useMutation({
     mutationFn: async () => callService(authorsDeleteAuthor, { path: { author_id: authorId } }),
     onSuccess: () => {
-      showSuccess()
+      notifications.show(successNotification({ title: 'Autor eliminado', description: 'El autor ha sido eliminado correctamente.' }))
       if (currentUser?.is_superuser) {
         navigate('/admin')
       }
       else {
         navigate('/my')
       }
-    },
-    onError: (error) => {
-      showError(error as any)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })
@@ -35,12 +33,11 @@ const useAuthorActions = (authorId: string) => {
       callService(authorsUpdateAuthor, { path: { author_id: authorId }, body: data }),
     onSuccess: () => {
       notifications.clean()
-      showSuccess()
+      notifications.show(successNotification({
+        title: 'Autor actualizado',
+        description: 'El autor ha sido actualizado correctamente.',
+      }))
       close()
-    },
-
-    onError: (error: HttpValidationError) => {
-      showError(error)
     },
 
     onSettled: () => {
@@ -50,13 +47,6 @@ const useAuthorActions = (authorId: string) => {
 
   const updateProfilePicture = useMutation({
     mutationFn: async (file: File) => callService(authorsUploadAuthorPicture, {path: { author_id: authorId }, body: { file: file }}),
-    onSuccess: () => {
-      notifications.clean()
-      showSuccess()
-    },
-    onError: (error) => {
-      showError(error as any)
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['authors', authorId] })
     }

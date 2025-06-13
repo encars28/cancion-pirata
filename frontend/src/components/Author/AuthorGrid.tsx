@@ -1,12 +1,13 @@
 import { Avatar, Pagination, Stack, Text } from "@mantine/core";
 import React from "react";
-import { showError } from "../../utils";
 import { Loading } from "../Loading";
 import { AuthorPublic, AuthorsPublic, SearchParams } from "../../client";
 import { CardGrid } from "../CardGrid";
 import { AUTHORS_PER_PAGE } from "../../pages/authorspage";
 import { useSearchParams } from "react-router";
 import useSearch from "../../hooks/useSearch";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../Notifications/notifications";
 
 export interface CardGridProps {
   path: string;
@@ -29,7 +30,10 @@ export function AuthorGrid({
   }
 
   if (isError) {
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error al cargar los autores",
+      description: error.message || "Ha ocurrido un error al cargar los autores.",
+    }));
   }
 
   const authors = (data?.authors as AuthorsPublic).data as AuthorPublic[];

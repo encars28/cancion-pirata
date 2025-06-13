@@ -2,17 +2,15 @@ import { UserPublic, usersReadUserMe } from "../../client";
 import { UserMe } from "./UserMe";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "../Loading";
-import { showError, callService } from "../../utils";
+import { callService } from "../../utils";
 import { useNavigate } from "react-router";
 import {
-  Group,
   Title,
   Container,
-  Stack,
-  Flex,
-  Center,
   Paper,
 } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "../Notifications/notifications";
 
 export function Profile() {
   const navigate = useNavigate();
@@ -28,7 +26,8 @@ export function Profile() {
 
   if (isError) {
     navigate("/");
-    showError(error as any);
+    notifications.show(errorNotification({
+      title: "Error al cargar el perfil", description: error.message}))
   }
 
   const user: UserPublic = data!;

@@ -11,9 +11,13 @@ import {
 import { Form } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
-import { CollectionCreate, collectionsAddPoemToCollection, PoemPublicBasic } from "../../client";
+import {
+  CollectionCreate,
+  collectionsAddPoemToCollection,
+  PoemPublicBasic,
+} from "../../client";
 import { collectionsCreateCollection } from "../../client";
-import { callService, showError, showSuccess } from "../../utils";
+import { callService } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notifications } from "@mantine/notifications";
 import { isNotEmpty } from "@mantine/form";
@@ -21,9 +25,19 @@ import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import useSearch from "../../hooks/useSearch";
+import {
+  errorNotification,
+  successNotification,
+} from "../Notifications/notifications";
 
-export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, poemId?: string }) {
-  const { data: searchData } = useSearch({search_type: ["poem"]});
+export function AddCollection({
+  redirect = true,
+  poemId,
+}: {
+  redirect?: boolean;
+  poemId?: string;
+}) {
+  const { data: searchData } = useSearch({ search_type: ["poem"] });
   const poemsData = searchData?.poems as PoemPublicBasic[];
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -43,14 +57,11 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
     onSuccess: () => {
       modals.closeAll();
     },
-    onError: (error) => {
-      showError(error as any);
-    },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
     },
   });
-  
+
   const poems_info = Object.fromEntries(
     poemsData?.map((poem) => [
       `${poem.title} ${
@@ -65,16 +76,18 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
       callService(collectionsCreateCollection, { body: data }),
     onSuccess: () => {
       notifications.clean();
-      modals.closeAll()
-      showSuccess();
-    },
-    onError: (error) => {
-      showError(error as any);
+      modals.closeAll();
+      notifications.show(
+        successNotification({
+          title: "Colección creada",
+          description: "La colección ha sido creada exitosamente.",
+        })
+      );
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["collections"] });
       queryClient.invalidateQueries({ queryKey: ["users", currentUser?.id] });
-      queryClient.invalidateQueries({ queryKey: ["currentUser"]})
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     },
   });
 
@@ -101,9 +114,7 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
       }
 
       if (values.poem_ids && values.poem_ids?.length !== 0) {
-        values.poem_ids = values.poem_ids.map(
-          (poem) => poems_info[poem]
-        );
+        values.poem_ids = values.poem_ids.map((poem) => poems_info[poem]);
       }
 
       const collection = await addCollectionMutation.mutateAsync(values);
@@ -113,7 +124,12 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
           collectionId: collection.id!,
         });
       } else if (poemId) {
-        showError("No se ha podido añadir el poema a la colección");
+        notifications.show(
+          errorNotification({
+            title: "Error al añadir poema",
+            description: "No se ha podido añadir el poema a la colección",
+          })
+        );
       }
 
       if (redirect) {
@@ -123,13 +139,12 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
           navigate(`/users/${currentUser?.id}`);
         }
       }
-
     } catch {}
   };
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="lg" p="lg" >
+      <Stack gap="lg" p="lg">
         <TextInput
           label="Nombre de la colección"
           placeholder="Mi colección"
@@ -150,7 +165,6 @@ export function AddCollection({ redirect = true, poemId}: { redirect?: boolean, 
         <MultiSelect
           data={Object.keys(poems_info)}
           label="Poemas"
-          
           placeholder="Seleccione uno o más poemas"
           searchable
           nothingFoundMessage="No se encontraron poemas"
