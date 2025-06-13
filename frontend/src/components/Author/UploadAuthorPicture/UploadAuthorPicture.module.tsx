@@ -20,7 +20,6 @@ export function UploadAuthorPicture({authorId}: { authorId: string }) {
     }
   };
 
-  console.log(hovered);
   return (
     <div ref={ref} className={classes.container}>
       <Dropzone

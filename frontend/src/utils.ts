@@ -37,4 +37,3 @@ export async function callService<R, E, P = undefined>(
 
   return result.data;
 }
-

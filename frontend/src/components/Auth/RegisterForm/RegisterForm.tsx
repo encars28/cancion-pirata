@@ -55,8 +55,7 @@ export function RegisterForm() {
     try {
       await signUpMutation.mutateAsync(values);
     } catch {
-      // error is handled by loginMutation
-      form.setErrors({ email: "Correo incorrecto o usuario incorrecto", username: "Correo incorrecto o usuario incorrecto" })
+      form.setErrors({ email: "Datos incorrectos", username: "Datos incorrectos" })
     }
   }
 

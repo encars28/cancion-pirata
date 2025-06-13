@@ -6,6 +6,8 @@ import { AuthorPublicWithPoems } from "../client";
 import { ShowAuthor } from "../components/Author/ShowAuthor";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
+import { FetchError } from "../utils";
+import { QueryError } from "../components/ErrorPages/QueryError";
 
 export function AuthorPage() {
   const params = useParams()
@@ -20,6 +22,12 @@ export function AuthorPage() {
   if (isError) {
     notifications.show(errorNotification({
       title: "Error al cargar el autor", description: error.message || "No se pudo cargar el autor."}))
+
+    if (error instanceof FetchError) {
+      return <QueryError status={error.res.status} />;
+    }
+
+    return <Navigate to="/" replace />;
   }
 
   const author: AuthorPublicWithPoems = data!;

@@ -1,7 +1,7 @@
 import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
-import { callService } from "../utils";
+import { callService, FetchError } from "../utils";
 import { CollectionPublicWithPoems, collectionsReadCollection, PoemPublicBasic } from "../client";
 import { Loading } from "../components/Loading";
 import {
@@ -25,6 +25,8 @@ import { EditCollection } from "../components/Collection/EditCollection";
 import useSearch from "../hooks/useSearch";
 import { notifications } from "@mantine/notifications";
 import { errorNotification, successNotification } from "../notifications";
+import { Navigate } from "react-router";
+import { QueryError } from "../components/ErrorPages/QueryError";
 
 
 export function CollectionPage() {
@@ -65,6 +67,12 @@ export function CollectionPage() {
       title: "Error al cargar la colección",
       description: error.message || "No se pudo cargar la colección.",
     }))
+
+    if (error instanceof FetchError) {
+      return <QueryError status={error.res.status} />;
+    }
+
+    return <Navigate to="/" replace />;
   }
 
   const collection: CollectionPublicWithPoems = data!;

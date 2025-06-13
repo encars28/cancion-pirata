@@ -1,7 +1,7 @@
 import { Shell } from "../components/Shell/Shell";
 import { PoemPublicWithAllTheInfo } from "../client/types.gen";
 import { Loading } from "../components/Loading";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, Navigate } from "react-router";
 import useAuth from "../hooks/useAuth";
 import {
   Title,
@@ -34,6 +34,8 @@ import { AddPoemToCollection } from "../components/Collection/AddPoemToCollectio
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
+import { FetchError } from "../utils";
+import { QueryError } from "../components/ErrorPages/QueryError";
 
 enum PoemType {
   TRANSLATION = 0,
@@ -61,8 +63,18 @@ export function PoemPage() {
 
   if (isError) {
     navigate("/poems");
-    notifications.show(errorNotification({
-      title: "Error al cargar el poema", description: error.message}));
+    notifications.show(
+      errorNotification({
+        title: "Error al cargar el poema",
+        description: error.message,
+      })
+    );
+
+    if (error instanceof FetchError) {
+      return <QueryError status={error.res.status} />;
+    }
+
+    return <Navigate to="/" replace />;
   }
 
   const poem: PoemPublicWithAllTheInfo = data!;

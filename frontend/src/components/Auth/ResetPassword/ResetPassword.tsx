@@ -13,9 +13,9 @@ import { Form } from "@mantine/form";
 import { NewPassword, loginResetPassword } from '../../../client';
 import { callService } from '../../../utils';
 import { useMutation } from '@tanstack/react-query';
-import { useNavigate } from 'react-router';
+import { Navigate, useNavigate, useSearchParams } from 'react-router';
 import { notifications } from '@mantine/notifications';
-import { successNotification } from '../../../notifications';
+import { errorNotification, successNotification } from '../../../notifications';
 
 interface ResetPasswordForm extends NewPassword {
   confirm_password: string
@@ -23,11 +23,17 @@ interface ResetPasswordForm extends NewPassword {
 
 export function ResetPassword() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
 
   const resetPassword = async (data: NewPassword) => {
-    const token = new URLSearchParams(window.location.search).get("token")
+    const token = searchParams.get("token")
     if (!token) {
-      throw new Error("Token not found") // TODO: Handle error well 
+      notifications.show(errorNotification({
+        title: "Error al cambiar la contraseña",
+        description: "No se ha proporcionado un token de recuperación. Por favor, asegúrate de que el enlace es correcto.",
+      }))
+
+      return <Navigate to="/" replace />
     }
 
     await callService(loginResetPassword, { body: { new_password: data.new_password, token: token } })
@@ -71,7 +77,7 @@ export function ResetPassword() {
   }
 
   return (
-    <Center mt="xl">
+    <Center>
       <Form form={form} onSubmit={handleSubmit}>
         <Title className={classes.title} ta="center">
           Recuperar contraseña

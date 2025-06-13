@@ -1,4 +1,4 @@
-import { Pagination, Stack, Text } from "@mantine/core";
+import { Pagination, Title, Stack, Text } from "@mantine/core";
 import React from "react";
 import { Loading } from "../../Loading";
 import { PoemPublic, SearchParams, PoemsPublic } from "../../../client";
@@ -30,7 +30,13 @@ export function PoemGrid({
   }
 
   if (isError) {
+    notifications.clean()
     notifications.show(errorNotification({title: "Error cargando poemas", description: error.message}));
+    return (
+      <Title order={3} fw="lighter" ta="center" c="dimmed" mt={100}>
+        No se pudieron cargar los poemas.<br/> Por favor, inténtalo de nuevo más tarde.
+      </Title>
+    )
   }
 
   const poemsData = (data?.poems as PoemsPublic).data;

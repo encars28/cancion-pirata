@@ -1,10 +1,10 @@
 import { Flex, Stack, Text, Title } from '@mantine/core';
-import classes from './NothingFound.module.css';
+import classes from './ErrorPages.module.css';
 import { Shell } from '../Shell/Shell';
 
 export function NothingFound() {
   return (
-    <Shell>
+    <Shell noPaddingTop>
       <Flex className={classes.background} justify="center" align="center">
         <Text
           className={classes.text}

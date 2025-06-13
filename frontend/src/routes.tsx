@@ -87,8 +87,8 @@ export default function AllRoutes() {
         <Route element={<BasePage />}>
           <Route path="login" element={<LoginForm />} />
           <Route path="reset-password" element={<ResetPassword />} />
-          <Route path="verify-account" element={<VerifyAccount />} />
         </Route>
+        <Route path="verify-account" element={<VerifyAccount />} />
       </Route>
 
       <Route element={<ProtectedRoute isAllowed={isAdmin()} />}>

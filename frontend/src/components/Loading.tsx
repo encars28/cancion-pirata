@@ -1,10 +1,7 @@
-import { Center, Loader } from "@mantine/core";
-import { Shell } from "./Shell/Shell";
+import { Loader } from "@mantine/core";
 
 export function Loading() {
   return (
-      <Center h={300} w="100%">
-        <Loader />
-      </Center>
+    <Loader size="md" type="dots" style={{position: "fixed", top: "45%", left: "50%"}}/>
   );
 }

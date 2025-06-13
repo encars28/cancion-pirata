@@ -1,9 +1,9 @@
 .background {
   margin: 0;
   z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: calc(100vh - var(--app-shell-header-height, 0px) - var(--app-shell-footer-height, 0px) - var(--app-shell-padding) * 2);
+  position: fixed;
+  width: 90%;
+  height: 95%;
 }
 
 .text {
@@ -17,14 +17,12 @@
 }
 
 .content {
-  position: relative;
+  position: fixed;
   z-index: 1;
   margin-left: var(--mantine-spacing-xl);
   margin-right: var(--mantine-spacing-xl);
-
-  @media (max-width: $mantine-breakpoint-sm) {
-    padding-top: 120px;
-  }
+  height: 95%;
+  width: 90%;
 }
 
 .title {

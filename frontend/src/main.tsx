@@ -26,7 +26,6 @@ const queryClient = new QueryClient({
       if (
         error instanceof FetchError &&
         !(
-          query.queryKey.includes("search") ||
           query.queryKey.includes("profilePicture")
         )
       ) {
@@ -36,11 +35,16 @@ const queryClient = new QueryClient({
   }),
   mutationCache: new MutationCache({
     onError: (error) => {
-      console.log("Error during mutation: ", error.message);
+      console.log("Error during mutation: ", error);
       if (error instanceof FetchError) {
         handleFetchError(error);
-        notifications.show(errorNotification({description: error.message}));
+        notifications.show(errorNotification({description: error.message}))
+      } else if ('detail' in error && typeof error === 'object') {
+        notifications.show(errorNotification({description: error.detail as string ?? "Error desconocido"}));
+      } else {
+        notifications.show(errorNotification({}))
       }
+
     },
     onSuccess: () => {
       notifications.clean();

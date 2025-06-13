@@ -61,8 +61,7 @@ export function LoginForm() {
     try {
       await loginMutation.mutateAsync({ username: login, password: password });
     } catch {
-      // error is handled by loginMutation
-      form.setErrors({ login: 'Email/Usuario o contraseña incorrecto', password: 'Email/Usuario o contraseña incorrecto' })
+      form.setErrors({ login: 'Datos incorrectos', password: 'Datos incorrectos' })
     }
   }
 

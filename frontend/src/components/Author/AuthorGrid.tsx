@@ -1,4 +1,4 @@
-import { Avatar, Pagination, Stack, Text } from "@mantine/core";
+import { Avatar, Pagination, Stack, Text, Title } from "@mantine/core";
 import React from "react";
 import { Loading } from "../Loading";
 import { AuthorPublic, AuthorsPublic, SearchParams } from "../../client";
@@ -22,18 +22,29 @@ export function AuthorGrid({
   filter: SearchParams;
   setPage: (page: number) => void;
 }) {
-  const { data, error, isPending, isError } = useSearch(filter)
+  const { data, error, isPending, isError } = useSearch(filter);
   const [searchParams] = useSearchParams();
 
   if (isPending) {
-    return (<Loading />)
+    return <Loading />;
   }
 
   if (isError) {
-    notifications.show(errorNotification({
-      title: "Error al cargar los autores",
-      description: error.message || "Ha ocurrido un error al cargar los autores.",
-    }));
+    notifications.clean();
+    notifications.show(
+      errorNotification({
+        title: "Error al cargar los autores",
+        description:
+          error.message || "Ha ocurrido un error al cargar los autores.",
+      })
+    );
+
+    return (
+      <Title order={3} fw="lighter" ta="center" c="dimmed" mt={100}>
+        No se pudieron cargar los autores.
+        <br /> Por favor, inténtalo de nuevo más tarde.
+      </Title>
+    );
   }
 
   const authors = (data?.authors as AuthorsPublic).data as AuthorPublic[];

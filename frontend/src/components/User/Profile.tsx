@@ -3,7 +3,6 @@ import { UserMe } from "./UserMe";
 import { useQuery } from "@tanstack/react-query";
 import { Loading } from "../Loading";
 import { callService } from "../../utils";
-import { useNavigate } from "react-router";
 import {
   Title,
   Container,
@@ -13,7 +12,6 @@ import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../../notifications";
 
 export function Profile() {
-  const navigate = useNavigate();
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["users", "me"],
     queryFn: async () => callService(usersReadUserMe),
@@ -25,9 +23,15 @@ export function Profile() {
   }
 
   if (isError) {
-    navigate("/");
+    notifications.clean()
     notifications.show(errorNotification({
       title: "Error al cargar el perfil", description: error.message}))
+    
+    return (
+      <Title order={3} fw="lighter" ta="center" c="dimmed" mt={100}>
+        No se pudieron cargar los poemas.<br/> Por favor, inténtalo de nuevo más tarde.
+      </Title>
+    )
   }
 
   const user: UserPublic = data!;

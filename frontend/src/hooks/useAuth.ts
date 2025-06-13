@@ -6,6 +6,7 @@ import { callService } from "../utils"
 import { client } from "../client/client.gen"
 import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken, loginActivateAccount } from "../client/sdk.gen"
 import { notifications } from "@mantine/notifications"
+import { successNotification } from "../notifications"
 
 const isLoggedIn = () => {
   return localStorage.getItem("access_token") !== null
@@ -31,11 +32,11 @@ const useAuth = () => {
     mutationFn: async (data: UserRegister) => callService(usersRegisterUser, { body: data }),
     onSuccess: () => {
       notifications.clean()
-      notifications.show({
+      notifications.show(successNotification({
         title: "Usuario registrado",
-        message: "Revisa tu correo electrónico y sigue las instrucciones para activar tu cuenta.",
-        color: "green",
-      })
+        description: "Revisa tu correo electrónico y sigue las instrucciones para activar tu cuenta.",
+      }))
+      navigate("/login")
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] })
