@@ -33,7 +33,7 @@ import { AddCollection } from "../components/Collection/AddCollection";
 import { AddPoemToCollection } from "../components/Collection/AddPoemToCollection/AddPoemToCollection";
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../components/Notifications/notifications";
+import { errorNotification } from "../notifications";
 
 enum PoemType {
   TRANSLATION = 0,

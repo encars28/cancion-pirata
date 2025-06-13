@@ -8,7 +8,7 @@ import { collectionsAddPoemToCollection } from "../../../client/";
 import { callService } from "../../../utils";
 import useAuth from "../../../hooks/useAuth";
 import { notifications } from "@mantine/notifications";
-import { successNotification } from "../../Notifications/notifications";
+import { successNotification } from "../../../notifications";
 
 export function AddPoemToCollection({ poemId }: { poemId: string }) {
   const queryClient = useQueryClient();

@@ -41,7 +41,7 @@ import { notifications } from "@mantine/notifications";
 import { useNavigate } from "react-router";
 import { PoemHelp } from "../PoemHelp";
 import useSearch from "../../../hooks/useSearch";
-import { successNotification } from "../../Notifications/notifications";
+import { successNotification } from "../../../notifications";
 
 export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
   const [opened, { toggle }] = useDisclosure(false);

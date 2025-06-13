@@ -37,7 +37,7 @@ import { useNavigate } from "react-router";
 import { notifications } from "@mantine/notifications";
 import useSearch from "../../hooks/useSearch";
 import { PoemHelp } from "./PoemHelp";
-import { successNotification } from "../Notifications/notifications";
+import { successNotification } from "../../notifications";
 
 export function AddPoem() {
   const [opened, { toggle }] = useDisclosure(false);

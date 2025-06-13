@@ -24,7 +24,7 @@ import { Form, useForm } from "@mantine/form";
 import { EditCollection } from "../components/Collection/EditCollection";
 import useSearch from "../hooks/useSearch";
 import { notifications } from "@mantine/notifications";
-import { errorNotification, successNotification } from "../components/Notifications/notifications";
+import { errorNotification, successNotification } from "../notifications";
 
 
 export function CollectionPage() {

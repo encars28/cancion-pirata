@@ -9,7 +9,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { UserPublic } from '../../client/types.gen';
 import { notifications } from '@mantine/notifications';
 import useSearch from '../../hooks/useSearch';
-import { successNotification } from '../Notifications/notifications';
+import { successNotification } from '../../notifications';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()

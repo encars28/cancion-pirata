@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersCreateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { successNotification } from '../Notifications/notifications';
+import { successNotification } from '../../notifications';
 
 export function AddUser() {
   const [opened, { open, close }] = useDisclosure()

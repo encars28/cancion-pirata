@@ -6,7 +6,7 @@ import { ProfileAvatar } from "../ProfileAvatar";
 import classes from "./UploadProfilePicture.module.css";
 import { useHover } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../../Notifications/notifications";
+import { errorNotification } from "../../../notifications";
 
 export function UploadProfilePicture() {
   const { updateProfilePicture } = useUserActions();

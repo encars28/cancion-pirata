@@ -9,7 +9,7 @@ import { AddAuthor } from "../Author/AddAuthor";
 import { Th } from "./Th/Th";
 import { useState } from "react";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../Notifications/notifications";
+import { errorNotification } from "../../notifications";
 
 export const PER_PAGE = 6
 

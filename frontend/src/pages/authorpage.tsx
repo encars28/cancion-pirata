@@ -5,7 +5,7 @@ import { Loading } from "../components/Loading";
 import { AuthorPublicWithPoems } from "../client";
 import { ShowAuthor } from "../components/Author/ShowAuthor";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../components/Notifications/notifications";
+import { errorNotification } from "../notifications";
 
 export function AuthorPage() {
   const params = useParams()

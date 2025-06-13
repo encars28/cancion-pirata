@@ -7,7 +7,7 @@ import { AUTHORS_PER_PAGE } from "../../pages/authorspage";
 import { useSearchParams } from "react-router";
 import useSearch from "../../hooks/useSearch";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../Notifications/notifications";
+import { errorNotification } from "../../notifications";
 
 export interface CardGridProps {
   path: string;

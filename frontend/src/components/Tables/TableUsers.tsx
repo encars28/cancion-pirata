@@ -9,7 +9,7 @@ import { EditUser } from "../User/EditUser";
 import { DeleteUser } from "../User/DeleteUser";
 import { AddUser } from "../User/AddUser";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../Notifications/notifications";
+import { errorNotification } from "../../notifications";
 
 const PER_PAGE = 6
 

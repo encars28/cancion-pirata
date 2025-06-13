@@ -5,7 +5,7 @@ import { callService } from '../../utils'
 import { useDisclosure } from '@mantine/hooks'
 import { TbTrash } from 'react-icons/tb'
 import { notifications } from '@mantine/notifications'
-import { successNotification } from '../Notifications/notifications'
+import { successNotification } from '../../notifications'
 
 export function DeleteUser({user_id}: {user_id: string}) {
   const queryClient = useQueryClient()

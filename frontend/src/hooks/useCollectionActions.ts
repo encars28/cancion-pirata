@@ -5,7 +5,7 @@ import { notifications } from '@mantine/notifications'
 import { collectionsAddPoemToCollection, collectionsDeleteCollection, collectionsRemovePoemFromCollection, collectionsUpdateCollection, CollectionUpdate } from '../client'
 import useAuth from './useAuth'
 import { modals } from '@mantine/modals'
-import { successNotification } from '../components/Notifications/notifications'
+import { successNotification } from '../notifications'
 
 const useCollectionActions = (collectionId: string) => {
   const queryClient = useQueryClient()

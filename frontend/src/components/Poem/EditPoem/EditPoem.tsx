@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router"
 import { PoemPublicWithAllTheInfo } from "../../../client/types.gen"
 import { EditPoemForm } from "./EditPoemForm"
 import { notifications } from "@mantine/notifications"
-import { errorNotification } from "../../Notifications/notifications"
+import { errorNotification } from "../../../notifications"
 
 export function EditPoem() {
   const navigate = useNavigate()

@@ -10,7 +10,7 @@ import {
 import { BrowserRouter } from "react-router";
 import { FetchError, handleFetchError } from "./utils.ts";
 import { notifications } from "@mantine/notifications";
-import { errorNotification, successNotification } from "./components/Notifications/notifications.ts";
+import { errorNotification, successNotification } from "./notifications.ts";
 
 const queryClient = new QueryClient({
   defaultOptions: {

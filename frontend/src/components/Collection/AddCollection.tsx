@@ -28,7 +28,7 @@ import useSearch from "../../hooks/useSearch";
 import {
   errorNotification,
   successNotification,
-} from "../Notifications/notifications";
+} from "../../notifications";
 
 export function AddCollection({
   redirect = true,

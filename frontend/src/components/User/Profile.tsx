@@ -10,7 +10,7 @@ import {
   Paper,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../Notifications/notifications";
+import { errorNotification } from "../../notifications";
 
 export function Profile() {
   const navigate = useNavigate();

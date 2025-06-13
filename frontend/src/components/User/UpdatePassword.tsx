@@ -13,7 +13,7 @@ import { callService } from '../../utils';
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
-import { successNotification } from '../Notifications/notifications';
+import { successNotification } from '../../notifications';
 
 export function UpdatePasswordForm() {
   const navigate = useNavigate()

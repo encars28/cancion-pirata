@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
-import { successNotification } from '../components/Notifications/notifications'
+import { successNotification } from '../notifications'
 
 const usePoemActions = (poemId: string) => {
   const queryClient = useQueryClient()

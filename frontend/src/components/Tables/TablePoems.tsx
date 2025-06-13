@@ -7,7 +7,7 @@ import {callService } from "../../utils";
 import { poemsReadPoems } from "../../client";
 import { TbEye } from "react-icons/tb";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../Notifications/notifications";
+import { errorNotification } from "../../notifications";
 
 const PER_PAGE = 8
 

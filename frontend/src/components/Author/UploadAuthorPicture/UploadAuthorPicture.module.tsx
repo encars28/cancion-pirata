@@ -6,7 +6,7 @@ import { useHover } from "@mantine/hooks";
 import useAuthorActions from "../../../hooks/useAuthorActions";
 import { AuthorAvatar } from "../AuthorAvatar";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../../Notifications/notifications";
+import { errorNotification } from "../../../notifications";
 
 export function UploadAuthorPicture({authorId}: { authorId: string }) {
   const { updateProfilePicture } = useAuthorActions(authorId);
