@@ -43,9 +43,10 @@ export function Navbar() {
   const { pathname } = useLocation();
   const [active, setActive] = useState("");
 
-  const { data: randomPoem } = useQuery({
+  const { data: randomPoem, refetch } = useQuery({
     queryKey: ["randomPoem"],
     queryFn: async () => callService(poemsReadRandomPoem),
+    enabled: false
   })
 
   useEffect(() => {
@@ -75,7 +76,7 @@ export function Navbar() {
     } else {
       notifications.show({
         title: "Acción no permitida",
-        message: "Debes iniciar sesión para acceder a las colecciones.",
+        message: "Debes iniciar sesión para poder crear colecciones.",
       });
     }
   };
@@ -121,6 +122,7 @@ export function Navbar() {
             icon={TbArrowsShuffle}
             label="Poema aleatorio"
             onClick={() => {
+              refetch()
               randomPoem ? navigate(`/poems/${randomPoem.id}`) : null;
             }}
           />
