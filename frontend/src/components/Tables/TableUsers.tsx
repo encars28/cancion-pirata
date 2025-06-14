@@ -6,7 +6,6 @@ import { Loading } from "../Loading";
 import { callService } from "../../utils";
 import { UserPublic, usersReadUsers } from "../../client";
 import { EditUser } from "../User/EditUser";
-import { DeleteUser } from "../User/DeleteUser";
 import { AddUser } from "../User/AddUser";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../../notifications";
@@ -67,16 +66,16 @@ export function TableUsers() {
       is_superuser: user.is_superuser ? 'Admin' : 'Usuario',
       created_at: user.created_at?.toLocaleDateString() ?? '',
       is_author: user.author_id ? 'Sí' : 'No',
-      actions: <Group gap="xs"><EditUser user={user} /><DeleteUser user_id={user.id} /></Group>
+      actions: <Group gap="xs"><EditUser user={user} /></Group>
     }
   })
 
   return (
-    <Stack m="xl">
+    <Stack mx="xl">
       <Group
-        justify="flex-end"
+        justify="flex-start"
         mb="xl"
-        mr={{ base: 0, lg: "lg" }}
+        ml={{ base: 0, lg: "lg" }}
       >
         <AddUser />
       </Group>

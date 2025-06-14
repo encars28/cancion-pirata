@@ -1,4 +1,4 @@
-import { usersDeleteUserMe, usersGetUserMeProfilePicture, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
+import { usersDeleteUserMe, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
 import { callService } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
@@ -6,17 +6,10 @@ import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
 import { successNotification } from '../notifications'
 
-const useUserActions = (userId?: string) => {
+const useUserActions = (userId: string) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { logout } = useAuth()
-
-  const { data: profilePicture } = useQuery({
-    queryKey: ['currentUser', 'profilePicture'],
-    queryFn: async () => callService(usersGetUserMeProfilePicture),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 48, // 48 hours
-  })
 
   const { data: userProfilePicture } = useQuery({
     queryKey: ['users', userId, 'profilePicture'],
@@ -57,7 +50,6 @@ const useUserActions = (userId?: string) => {
 
   return {
     deleteUserMeMutation,
-    profilePicture,
     updateProfilePicture,
     userProfilePicture
   }

@@ -1,8 +1,8 @@
-import useUserActions from "../../hooks/useUserActions";
+import useAuth from "../../hooks/useAuth";
 import { Avatar } from "@mantine/core";
 
 export function ProfileAvatar({...props}) {
-  const { profilePicture } = useUserActions();
+  const { profilePicture } = useAuth();
   return profilePicture ? (
     <Avatar
       src={URL.createObjectURL(profilePicture as Blob)}

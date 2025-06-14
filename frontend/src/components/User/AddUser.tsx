@@ -1,7 +1,7 @@
 import { Stack, TextInput, PasswordInput, Modal, Group, Button, Checkbox } from '@mantine/core';
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc } from "react-icons/tb";
-import { HttpValidationError, UserCreate } from '../../client/types.gen';
+import { UserCreate } from '../../client/types.gen';
 import { callService } from '../../utils';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usersCreateUser } from '../../client';
@@ -125,9 +125,9 @@ export function AddUser() {
             <Checkbox
               mt="sm"
               defaultChecked
-              key={form.key('is_active')}
-              {...form.getInputProps('is_active')}
-              label="Activo"
+              key={form.key('is_verified')}
+              {...form.getInputProps('is_verified')}
+              label="Verificado"
             />
             <Checkbox
               key={form.key('is_superuser')}

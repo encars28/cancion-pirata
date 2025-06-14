@@ -18,7 +18,8 @@ export function AdminTabs({tabsDefault}: {tabsDefault: string}) {
       variant="none" 
       value={value} 
       onChange={setValue}
-      m="xl"
+      mb="xl"
+      mx="xl"
     >
       <Tabs.List ref={setRootRef} className={classes.list} grow>
         <Tabs.Tab 
