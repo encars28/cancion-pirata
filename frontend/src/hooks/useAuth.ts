@@ -4,7 +4,7 @@ import { BodyLoginLoginAccessToken as AccessToken, VerifyToken } from "../client
 import { UserRegister} from "../client/types.gen"
 import { callService } from "../utils"
 import { client } from "../client/client.gen"
-import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken, loginActivateAccount, usersGetUserMeProfilePicture } from "../client/sdk.gen"
+import { usersReadUserMe, usersRegisterUser, loginLoginAccessToken, loginActivateAccount } from "../client/sdk.gen"
 import { notifications } from "@mantine/notifications"
 import { successNotification } from "../notifications"
 
@@ -26,13 +26,6 @@ const useAuth = () => {
     queryKey: ["currentUser"],
     queryFn: async () => callService(usersReadUserMe),
     enabled: isLoggedIn(),
-  })
-
-  const { data: profilePicture } = useQuery({
-    queryKey: ['currentUser', 'profilePicture'],
-    queryFn: async () => callService(usersGetUserMeProfilePicture),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
   const signUpMutation = useMutation({
@@ -115,7 +108,6 @@ const useAuth = () => {
     logout,
     user,
     activateAccountMutation,
-    profilePicture,
   }
 }
 
