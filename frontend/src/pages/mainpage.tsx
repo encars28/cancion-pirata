@@ -33,6 +33,20 @@ export function MainPage() {
     refetchOnMount: false,
   });
 
+  if (isPending) {
+    return (
+      <Shell noPaddingTop>
+        <Hero />
+        <LoadingOverlay
+          loaderProps={{ type: "dots" }}
+          pos="relative"
+          mt={100}
+        >    
+        </LoadingOverlay>
+      </Shell>
+    )
+  }
+
   if (isError) {
     notifications.clean();
     notifications.show(
@@ -44,17 +58,10 @@ export function MainPage() {
   }
 
   const poem = data as PoemPublicWithAllTheInfo;
-
   return (
     <Shell noPaddingTop>
       <Hero />
-      <LoadingOverlay
-        visible={isPending}
-        loaderProps={{ type: "dots" }}
-        pos="relative"
-        mt={100}
-      >
-        {poem && (
+        { poem && (
           <SimpleGrid
             cols={{ base: 1, md: 2 }}
             spacing="xl"
@@ -109,7 +116,6 @@ export function MainPage() {
             </Container>
           </SimpleGrid>
         )}
-      </LoadingOverlay>
       {isError && (
         <Title ta="center" c="dimmed" fw="lighter" order={3} mt={100}>
           No se pudo cargar el poema. Por favor, inténtalo de nuevo más tarde.
