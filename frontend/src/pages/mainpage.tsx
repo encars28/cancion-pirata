@@ -40,7 +40,7 @@ export function MainPage() {
         title: "Error al cargar el poema",
         description: error.message || "No se pudo cargar el poema aleatorio.",
       })
-    );
+    )
   }
 
   const poem = data as PoemPublicWithAllTheInfo;

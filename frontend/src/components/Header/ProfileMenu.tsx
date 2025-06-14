@@ -13,7 +13,7 @@ import {
 import { modals } from "@mantine/modals";
 import { ProfileAvatar } from "../User/ProfileAvatar";
 
-export function ProfileControl() {
+export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
 

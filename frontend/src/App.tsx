@@ -12,7 +12,7 @@ import {
 import { Notifications } from '@mantine/notifications';
 
 import AllRoutes from './routes';
-import { Search } from './components/Header/Search/Search';
+import { Search } from './components/Search';
 import { client } from './client/client.gen';
 import { isLoggedIn } from './hooks/useAuth';
 import dayjs from 'dayjs';

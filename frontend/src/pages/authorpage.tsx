@@ -22,7 +22,7 @@ export function AuthorPage() {
   if (isError) {
     notifications.show(errorNotification({
       title: "Error al cargar el autor", description: error.message || "No se pudo cargar el autor."}))
-
+    
     if (error instanceof FetchError) {
       return <QueryError status={error.res.status} />;
     }

@@ -4,13 +4,13 @@ import { useNavigate } from "react-router";
 import { useState } from "react";
 
 import { Loader } from "@mantine/core";
-import useSearch from "../../../hooks/useSearch";
+import useSearch from "../hooks/useSearch";
 import {
   AuthorPublicBasic,
   CollectionPublicBasic,
   PoemPublicBasic,
   UserPublicBasic,
-} from "../../../client";
+} from "../client";
 
 export const [searchStore, searchHandlers] = createSpotlight();
 
