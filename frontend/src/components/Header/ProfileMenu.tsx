@@ -31,7 +31,7 @@ export function ProfileMenu() {
   return (
     <Menu shadow="lg" width={250} position="bottom" trigger="hover">
       <Menu.Target>
-        <ProfileAvatar size={35} style={{cursor: "pointer"}} onClick={() => navigate("/me")} />
+        <ProfileAvatar size={35} style={{cursor: "pointer"}} onClick={() => navigate(`/users/${user?.id}`)} />
       </Menu.Target>
       <Menu.Dropdown ta="left">
         <Text size="md" ta="center" m={10} fw="bold">

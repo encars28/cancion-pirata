@@ -23,30 +23,25 @@ reusable_oauth2 = OAuth2PasswordBearer(
 
 
 def get_db() -> Generator[Session, None, None]:
-    try:
-        with Session(engine) as session:
-            yield session
-    except Exception as e: 
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Database connection error"
-        )
+    with Session(engine) as session:
+        yield session
 
 
 SessionDep = Annotated[Session, Depends(get_db)]
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
 
-def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optional[UserSchema]]: 
+
+def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optional[UserSchema]]:
     def _get_current_user(session: SessionDep, token: TokenDep) -> Optional[UserSchema]:
         if not required and not token:
             return None
-        
+
         if required and not token:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not authenticated"
             )
-        
+
         try:
             payload = jwt.decode(
                 token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
@@ -57,7 +52,7 @@ def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optiona
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Could not validate credentials",
             )
-        
+
         if payload["type"] != "access_token":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -70,12 +65,13 @@ def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optiona
         if not user.is_verified:
             raise HTTPException(status_code=400, detail="Not verified user")
         return user
-    
+
     return _get_current_user
 
 
 CurrentUser = Annotated[UserSchema, Depends(get_current_user(required=True))]
-OptionalCurrentUser = Annotated[Optional[UserSchema], Depends(get_current_user(required=False))]
+OptionalCurrentUser = Annotated[Optional[UserSchema], Depends(
+    get_current_user(required=False))]
 
 
 def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:

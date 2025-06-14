@@ -64,6 +64,7 @@ const useAuth = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
+      location.reload()
       navigate("/")
     },
   })

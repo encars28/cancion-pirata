@@ -1,4 +1,10 @@
-import { Group, Button, Text, ActionIcon, Tooltip } from "@mantine/core";
+import {
+  Group,
+  Button,
+  Text,
+  ActionIcon,
+  Tooltip,
+} from "@mantine/core";
 import { TbLogin, TbSearch, TbWritingSign } from "react-icons/tb";
 import { searchHandlers } from "../Search";
 import { useNavigate } from "react-router";
@@ -8,22 +14,23 @@ import { ProfileMenu } from "./ProfileMenu";
 export function Header() {
   const navigate = useNavigate();
   return (
-    <Group justify="space-between">
+    <Group justify="space-between" w="100%" wrap="nowrap" gap={100}>
       <Button
         variant="default"
-        w={350}
+        fullWidth
         ta="left"
         c="dimmed"
         radius="md"
         justify="space-between"
         onClick={searchHandlers.open}
+        ml={100}
       >
         <Group>
           <TbSearch size={16} />
           <Text size="sm">Buscar</Text>
         </Group>
       </Button>
-      <Group>
+      <Group wrap="nowrap">
         <Tooltip label="Nuevo poema">
           <ActionIcon
             size={35}

@@ -41,7 +41,7 @@ export function Shell({
       }}
       navbar={{
         width: 70,
-        breakpoint: "xs",
+        breakpoint: 70
       }}
     >
       <AppShell.Header
@@ -53,6 +53,7 @@ export function Shell({
             justify="space-between"
             visibleFrom={profileNavbar ? "lg" : "sm"}
             gap={60}
+            w="100%"
           >
             <Header />
             {profileNavbar && (
