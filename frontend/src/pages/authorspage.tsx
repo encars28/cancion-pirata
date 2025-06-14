@@ -77,7 +77,7 @@ export function AuthorsPage() {
 
   return (
     <Shell>
-      <Group justify="center" gap="xl">
+      <Group justify="center" gap="xl" mb={80}>
         <Title ta="center" order={1}>
           Autores
         </Title>

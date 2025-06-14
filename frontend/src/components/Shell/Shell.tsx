@@ -4,9 +4,7 @@ import {
   Container,
   Group,
   RemoveScroll,
-  UnstyledButton,
 } from "@mantine/core";
-import { useNavigate } from "react-router";
 import classes from "./Shell.module.css";
 import { useDisclosure } from "@mantine/hooks";
 import { ProfileNavbar } from "../User/ProfileNavbar";
@@ -27,17 +25,15 @@ export function Shell({
   fillBackground,
   noPaddingTop,
 }: ShellProps) {
-  const navigate = useNavigate();
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-
   const navwidth = profileNavbar ? 400 : 0;
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 65 }}
       aside={{
         width: navwidth,
-        breakpoint: "sm",
+        breakpoint: "md",
         collapsed: {
           mobile: !mobileOpened,
           desktop: !desktopOpened,
@@ -46,56 +42,52 @@ export function Shell({
       navbar={{
         width: 70,
         breakpoint: "xs",
-        collapsed: {
-          mobile: !mobileOpened,
-          desktop: !desktopOpened,
-        },
       }}
     >
-      <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
+      <AppShell.Header
+        style={{ border: 0 }}
+        className={RemoveScroll.classNames.zeroRight}
+      >
         <Container size="xl" className={classes.inner}>
-          <UnstyledButton
-            onClick={() => navigate("/")}
-            className={classes.link}
+          <Group
+            justify="space-between"
+            visibleFrom={profileNavbar ? "lg" : "sm"}
+            gap={60}
           >
-            Tremendo Logo
-          </UnstyledButton>
-
-          <Group justify="space-between" visibleFrom="sm" gap={60}>
             <Header />
             {profileNavbar && (
               <>
                 <Burger
                   opened={mobileOpened}
                   onClick={toggleMobile}
-                  hiddenFrom="sm"
-                  size="sm"
+                  hiddenFrom="md"
+                  size="md"
                 />
                 <Burger
                   opened={desktopOpened}
                   onClick={toggleDesktop}
-                  visibleFrom="sm"
-                  size="sm"
+                  visibleFrom="md"
+                  size="md"
                 />
               </>
             )}
           </Group>
 
-          <Group hiddenFrom="sm" gap="md">
+          <Group hiddenFrom={profileNavbar ? "lg" : "sm"} gap={40}>
             <HeaderMobile />
             {profileNavbar && (
               <>
                 <Burger
                   opened={mobileOpened}
                   onClick={toggleMobile}
-                  hiddenFrom="sm"
-                  size="sm"
+                  hiddenFrom="md"
+                  size="md"
                 />
                 <Burger
                   opened={desktopOpened}
                   onClick={toggleDesktop}
-                  visibleFrom="sm"
-                  size="sm"
+                  visibleFrom="md"
+                  size="md"
                 />
               </>
             )}

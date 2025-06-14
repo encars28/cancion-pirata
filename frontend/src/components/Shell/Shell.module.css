@@ -1,8 +1,10 @@
 .inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: 100%;
+  width: 100%;
+  padding-right: 40px;
 }
 
 .main {
@@ -16,8 +18,8 @@
 
 .main_filled {
   background-color: var(--mantine-color-blue-1);
-  padding-bottom: 120px;
-  padding-top: 70px;
+  height: 100%;
+  padding-bottom: 60px;
 }
 
 .link {

@@ -38,7 +38,6 @@ export function ShowUser({ user }: { user: UserPublic }) {
 
   return (
     <Container
-      mt={70}
       mx={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
       fluid
     >

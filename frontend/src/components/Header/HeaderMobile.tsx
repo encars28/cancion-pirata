@@ -21,20 +21,6 @@ export function HeaderMobile() {
           <TbSearch size={20} />
         </ActionIcon>
       </Tooltip>
-      {isLoggedIn() ? (
-        <ProfileMenu />
-      ) : (
-        <Tooltip label="Iniciar sesión">
-          <ActionIcon
-            variant="filled"
-            size="lg"
-            radius="md"
-            onClick={() => navigate("/login")}
-          >
-            <TbUser size={22} />
-          </ActionIcon>
-        </Tooltip>
-      )}
       <Tooltip label="Nuevo poema">
         <ActionIcon
           size={35}
@@ -49,6 +35,20 @@ export function HeaderMobile() {
           <TbWritingSign size={22} />
         </ActionIcon>
       </Tooltip>
+      {isLoggedIn() ? (
+        <ProfileMenu />
+      ) : (
+        <Tooltip label="Iniciar sesión">
+          <ActionIcon
+            variant="filled"
+            size="lg"
+            radius="md"
+            onClick={() => navigate("/login")}
+          >
+            <TbUser size={22} />
+          </ActionIcon>
+        </Tooltip>
+      )}
     </Group>
   );
 }

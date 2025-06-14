@@ -8,7 +8,7 @@ import { ProfileMenu } from "./ProfileMenu";
 export function Header() {
   const navigate = useNavigate();
   return (
-    <Group>
+    <Group justify="space-between">
       <Button
         variant="default"
         w={350}
@@ -23,31 +23,33 @@ export function Header() {
           <Text size="sm">Buscar</Text>
         </Group>
       </Button>
-      {isLoggedIn() ? (
-        <ProfileMenu />
-      ) : (
-        <Button
-          radius="md"
-          onClick={() => navigate("/login")}
-          leftSection={<TbLogin />}
-        >
-          Iniciar sesión
-        </Button>
-      )}
-      <Tooltip label="Nuevo poema">
-        <ActionIcon
-          size={35}
-          variant="light"
-          radius="md"
-          onClick={
-            isLoggedIn()
-              ? () => navigate("/poems/add")
-              : () => navigate("/login")
-          }
-        >
-          <TbWritingSign size={22} />
-        </ActionIcon>
-      </Tooltip>
+      <Group>
+        <Tooltip label="Nuevo poema">
+          <ActionIcon
+            size={35}
+            variant="light"
+            radius="md"
+            onClick={
+              isLoggedIn()
+                ? () => navigate("/poems/add")
+                : () => navigate("/login")
+            }
+          >
+            <TbWritingSign size={22} />
+          </ActionIcon>
+        </Tooltip>
+        {isLoggedIn() ? (
+          <ProfileMenu />
+        ) : (
+          <Button
+            radius="md"
+            onClick={() => navigate("/login")}
+            leftSection={<TbLogin />}
+          >
+            Iniciar sesión
+          </Button>
+        )}
+      </Group>
     </Group>
   );
 }
