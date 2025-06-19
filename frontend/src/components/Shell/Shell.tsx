@@ -4,6 +4,7 @@ import {
   Container,
   Group,
   RemoveScroll,
+  useMantineTheme,
 } from "@mantine/core";
 import classes from "./Shell.module.css";
 import { useDisclosure } from "@mantine/hooks";
@@ -11,6 +12,8 @@ import { ProfileNavbar } from "../User/ProfileNavbar";
 import { Navbar } from "../Navbar/Navbar";
 import { Header } from "../Header/Header";
 import { HeaderMobile } from "../Header/HeaderMobile";
+import { useMediaQuery } from "@mantine/hooks";
+import { Footer } from "../Footer/Footer";
 
 interface ShellProps {
   children: React.ReactNode;
@@ -25,48 +28,64 @@ export function Shell({
   fillBackground,
   noPaddingTop,
 }: ShellProps) {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [asideMobileOpened, { toggle: toggleAsideMobile }] = useDisclosure();
+  const [asideDesktopOpened, { toggle: toggleAsideDesktop }] =
+    useDisclosure(true);
   const navwidth = profileNavbar ? 400 : 0;
+  const theme = useMantineTheme();
+  const isMediumBreakpoint = useMediaQuery(
+    `(max-width: ${theme.breakpoints.md})`
+  );
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
+  const footerheight = isMobile ? 65 : 0;
   return (
     <AppShell
-      header={{ height: 65 }}
+      header={{ height: 60 }}
       aside={{
         width: navwidth,
         breakpoint: "md",
         collapsed: {
-          mobile: !mobileOpened,
-          desktop: !desktopOpened,
+          mobile: !asideMobileOpened,
+          desktop: !asideDesktopOpened,
         },
       }}
       navbar={{
         width: 70,
-        breakpoint: 70
+        breakpoint: "xs",
+        collapsed: {
+          mobile: true,
+          desktop:
+            profileNavbar && (isMediumBreakpoint ? asideMobileOpened : false),
+        },
+      }}
+      footer={{
+        height: footerheight,
       }}
     >
       <AppShell.Header
         style={{ border: 0 }}
         className={RemoveScroll.classNames.zeroRight}
       >
-        <Container size="xl" className={classes.inner}>
+        <Container className={classes.inner}>
           <Group
             justify="space-between"
-            visibleFrom={profileNavbar ? "lg" : "sm"}
+            visibleFrom={profileNavbar ? "md" : "sm"}
             gap={60}
             w="100%"
+            wrap="nowrap"
           >
             <Header />
             {profileNavbar && (
               <>
                 <Burger
-                  opened={mobileOpened}
-                  onClick={toggleMobile}
+                  opened={asideMobileOpened}
+                  onClick={toggleAsideMobile}
                   hiddenFrom="md"
                   size="md"
                 />
                 <Burger
-                  opened={desktopOpened}
-                  onClick={toggleDesktop}
+                  opened={asideDesktopOpened}
+                  onClick={toggleAsideDesktop}
                   visibleFrom="md"
                   size="md"
                 />
@@ -74,19 +93,19 @@ export function Shell({
             )}
           </Group>
 
-          <Group hiddenFrom={profileNavbar ? "lg" : "sm"} gap={40}>
+          <Group hiddenFrom={profileNavbar ? "md" : "sm"} gap="md" wrap="nowrap">
             <HeaderMobile />
             {profileNavbar && (
               <>
                 <Burger
-                  opened={mobileOpened}
-                  onClick={toggleMobile}
+                  opened={asideMobileOpened}
+                  onClick={toggleAsideMobile}
                   hiddenFrom="md"
                   size="md"
                 />
                 <Burger
-                  opened={desktopOpened}
-                  onClick={toggleDesktop}
+                  opened={asideDesktopOpened}
+                  onClick={toggleAsideDesktop}
                   visibleFrom="md"
                   size="md"
                 />
@@ -101,6 +120,12 @@ export function Shell({
       <AppShell.Navbar p="sm">
         <Navbar />
       </AppShell.Navbar>
+
+      {isMobile && (
+        <AppShell.Footer>
+          <Footer />
+        </AppShell.Footer>
+      )}
 
       <AppShell.Main h="calc(100vh - var(--app-shell-header-height) - var(--app-shell-padding) * 2)">
         <div

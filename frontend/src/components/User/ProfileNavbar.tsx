@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   NavLink,
+  ScrollArea,
   Stack,
   Text,
 } from "@mantine/core";
@@ -59,6 +60,7 @@ export function ProfileNavbar() {
 
   return (
     <AppShell.Aside>
+      <ScrollArea>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
           <UploadPicture currentPicture={profilePicture as Blob ?? null} updatePicture={updateProfilePicture}/>
@@ -136,6 +138,7 @@ export function ProfileNavbar() {
           Cerrar sesión
         </Button>
       </AppShell.Section>
+      </ScrollArea>
     </AppShell.Aside>
   );
 }

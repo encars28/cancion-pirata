@@ -1,0 +1,123 @@
+import classes from "./Footer.module.css";
+import { Tooltip, UnstyledButton, Group } from "@mantine/core";
+import { IconType } from "react-icons/lib";
+import { useEffect, useState } from "react";
+import {
+  TbArrowsShuffle,
+  TbBook,
+  TbBookmarks,
+  TbHome,
+  TbUsersGroup,
+} from "react-icons/tb";
+import { useLocation, useNavigate } from "react-router";
+import useAuth, { isLoggedIn } from "../../hooks/useAuth";
+import { notifications } from "@mantine/notifications";
+import { useQuery } from "@tanstack/react-query";
+import { callService } from "../../utils";
+import { poemsReadRandomPoem } from "../../client";
+
+interface NavbarLinkProps {
+  icon: IconType;
+  label: string;
+  active?: boolean;
+  onClick?: () => void;
+}
+
+function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+  return (
+    <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
+      <UnstyledButton
+        onClick={onClick}
+        className={classes.link}
+        data-active={active || undefined}
+      >
+        <Icon size={22} />
+      </UnstyledButton>
+    </Tooltip>
+  );
+}
+
+export function Footer() {
+  const { pathname } = useLocation();
+  const [active, setActive] = useState("");
+
+  const { data: randomPoem, refetch } = useQuery({
+    queryKey: ["randomPoem"],
+    queryFn: async () => callService(poemsReadRandomPoem),
+    enabled: false
+  })
+
+  useEffect(() => {
+    if (pathname === "/" || pathname === "") {
+      setActive("main_page");
+    } else if (pathname.startsWith("/poems")) {
+      setActive("explore_poems");
+    } else if (
+      pathname.startsWith("/authors") ||
+      pathname.startsWith("/author")
+    ) {
+      setActive("explore_authors");
+    } else if (pathname.startsWith("/collections")) {
+      setActive("collections");
+    } 
+  }, [pathname]);
+
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const handleCollectionsClick = () => {
+    if (isLoggedIn()) {
+      navigate(`/users/${user?.id}`);
+    } else {
+      notifications.show({
+        title: "Acción no permitida",
+        message: "Debes iniciar sesión para poder crear colecciones.",
+      });
+    }
+  };
+
+  return (
+    <nav className={classes.navbar}>
+          <NavbarLink
+            icon={TbBook}
+            label="Explorar poemas"
+            active={active === "explore_poems"}
+            onClick={() => {
+              setActive("explore_poems");
+              navigate("/poems");
+            }}
+          />
+          <NavbarLink
+            icon={TbUsersGroup}
+            label="Explorar autores y usuarios"
+            active={active === "explore_authors"}
+            onClick={() => {
+              setActive("explore_authors");
+              navigate("/authors");
+            }}
+          />
+          <NavbarLink
+            icon={TbHome}
+            label="Página principal"
+            active={active === "main_page"}
+            onClick={() => {
+              setActive("main_page");
+              navigate("/");
+            }}
+          />
+          <NavbarLink
+            icon={TbBookmarks}
+            label="Colecciones"
+            active={active === "collections"}
+            onClick={handleCollectionsClick}
+          />
+          <NavbarLink
+            icon={TbArrowsShuffle}
+            label="Poema aleatorio"
+            onClick={() => {
+              refetch()
+              randomPoem ? navigate(`/poems/${randomPoem.id}`) : null;
+            }}
+          />
+    </nav>
+  );
+}
