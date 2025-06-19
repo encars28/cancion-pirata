@@ -262,6 +262,7 @@ export type PoemsPublicWithAllTheInfo = {
 
 export type SearchParams = {
     search_type?: Array<'author' | 'poem' | 'collection' | 'user'>;
+    merge_author_user?: boolean;
     author_params?: AuthorSearchParams | null;
     poem_params?: PoemSearchParams | null;
     collection_params?: CollectionSearchParams | null;
@@ -333,6 +334,7 @@ export type UserSearchParams = {
     user_email?: string;
     user_full_name?: string;
     user_basic?: boolean;
+    user_skip_authors?: boolean;
 };
 
 export type UserUpdate = {

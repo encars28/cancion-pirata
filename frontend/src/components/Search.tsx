@@ -1,7 +1,7 @@
 import { TbSearch } from "react-icons/tb";
 import { Spotlight, createSpotlight } from "@mantine/spotlight";
 import { useNavigate } from "react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { Loader } from "@mantine/core";
 import useSearch from "../hooks/useSearch";
@@ -11,21 +11,25 @@ import {
   PoemPublicBasic,
   UserPublicBasic,
 } from "../client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const [searchStore, searchHandlers] = createSpotlight();
 
 export function Search() {
   const navigate = useNavigate();
-
   const [search, setSearch] = useState("");
-
+  const queryClient = useQueryClient()
   const { isPending, data: searchData } = useSearch({
     search_type: ["author", "poem", "user", "collection"],
     poem_params: { poem_title: search },
     author_params: { author_full_name: search },
-    user_params: { user_name: search },
+    user_params: { user_name: search, user_skip_authors: true },
     collection_params: { collection_name: search },
   });
+
+  useEffect(() => {
+    queryClient.invalidateQueries({queryKey: ["search"]});
+  }, [search]);
 
   const authors = searchData?.authors as AuthorPublicBasic[] ?? [];
   const poems = searchData?.poems as PoemPublicBasic[] ?? [];
@@ -66,6 +70,10 @@ export function Search() {
 
   return (
     <Spotlight
+      query={search}
+      onQueryChange={(search) => {
+        setSearch(search);
+      }}
       store={searchStore}
       actions={actions || []}
       highlightQuery
@@ -77,10 +85,10 @@ export function Search() {
         leftSection: isPending ? <Loader size="xs" /> : <TbSearch size={20} />,
         placeholder: "Buscando...",
       }}
-      filter={(query, actions) => {
-        setSearch(query);
-        return actions;
-      }}
+      filter={(_, actions) =>
+        // Don't filter; search is already done
+        actions
+      }
     />
   );
 }
