@@ -14,7 +14,7 @@ import { TbListSearch } from "react-icons/tb";
 export function LanguageHelp() {
   return (
     <Group wrap="nowrap">
-      <Stack pl={80} pr={{ base: 80, md: "md" }} gap={80} pb={200}>
+      <Stack pl={{base: 80, md: 100}} pr={{ base: 80, md: 0 }} gap={80} pb={200}>
         <Title order={1} ta="center">
           Ayuda para escribir poemas
         </Title>

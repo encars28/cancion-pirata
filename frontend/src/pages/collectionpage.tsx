@@ -19,7 +19,7 @@ import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
 import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
-import { ShowPoemGrid } from "../components/Poem/PoemCard/ShowPoemGrid";
+import { ShowPoemGrid } from "../components/Poem/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import { EditCollection } from "../components/Collection/EditCollection";
 import useSearch from "../hooks/useSearch";
