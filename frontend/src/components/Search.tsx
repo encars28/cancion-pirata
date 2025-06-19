@@ -1,5 +1,5 @@
-import { TbSearch } from "react-icons/tb";
-import { Spotlight, createSpotlight } from "@mantine/spotlight";
+import { TbBook, TbBookmarks, TbPencil, TbSearch, TbUser } from "react-icons/tb";
+import { Spotlight, SpotlightActionData, createSpotlight } from "@mantine/spotlight";
 import { useNavigate } from "react-router";
 import { useState, useEffect } from "react";
 
@@ -36,11 +36,12 @@ export function Search() {
   const users = searchData?.users as UserPublicBasic[] ?? [];
   const collections = searchData?.collections as CollectionPublicBasic[] ?? [];
 
-  const actions = authors
+  const actions: SpotlightActionData[] = authors
     .map((author) => ({
       id: author.id,
       label: author.full_name,
       description: "Autor",
+      leftSection: <TbPencil size={20} />,
       onClick: () => navigate(`/authors/${author.id}`),
     }))
     .concat(
@@ -48,6 +49,7 @@ export function Search() {
         id: poem.id,
         label: poem.title,
         description: "Poema",
+        leftSection: <TbBook size={20} />,
         onClick: () => navigate(`/poems/${poem.id}`),
       }))
     )
@@ -56,6 +58,7 @@ export function Search() {
         id: user.id,
         label: user.username,
         description: "Usuario",
+        leftSection: <TbUser size={20} />,
         onClick: () => navigate(`/users/${user.id}`),
       }))
     )
@@ -64,6 +67,7 @@ export function Search() {
         id: collection.id,
         label: collection.name,
         description: "Colección",
+        leftSection: <TbBookmarks size={20} />,
         onClick: () => navigate(`/collections/${collection.id}`),
       }))
     );
