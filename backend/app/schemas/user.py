@@ -19,6 +19,7 @@ class UserSearchParams(BaseModel):
     user_email: EmailStr = ""
     user_full_name: str = ""
     user_basic: bool = True
+    user_skip_authors: bool = False
 
 
 class UserBase(BaseModel):

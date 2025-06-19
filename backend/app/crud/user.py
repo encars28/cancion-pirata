@@ -78,9 +78,16 @@ class UserCRUD:
             db, queryParams.user_full_name, "full_name"
         )
         
-        smt = username_filter.intersect(
-            email_filter, full_name_filter
-        ).subquery()
+        if queryParams.user_skip_authors:
+            author_filter = self.filter_no_authors(db)
+            smt = username_filter.intersect(
+                email_filter, full_name_filter, author_filter
+            ).subquery()
+        else:
+            smt = username_filter.intersect(
+                email_filter, full_name_filter
+            ).subquery()
+            
         alias = aliased(User, smt)
         
         statement = select(func.count()).select_from(alias)
@@ -91,6 +98,9 @@ class UserCRUD:
 
     def filter_by_text(self, db: Session, query: str, attr: str) -> Select:
         return select(User).where(getattr(User, attr).icontains(query))
+    
+    def filter_no_authors(self, db: Session) -> Select:
+        return select(User).where(User.author_id.is_(None))
 
     def create(self, db: Session, obj_create: UserCreate) -> UserSchema:
         obj_data = obj_create.model_dump(exclude_none=True, exclude_unset=True)
