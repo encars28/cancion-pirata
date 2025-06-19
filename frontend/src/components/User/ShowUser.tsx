@@ -18,8 +18,8 @@ import { modals } from "@mantine/modals";
 import { AddCollection } from "../Collection/AddCollection";
 import useUserActions from "../../hooks/useUserActions";
 import { isAdmin } from "../../hooks/useAuth";
-import { PersonAvatar } from "../PersonAvatar";
-import { UploadPicture } from "./UploadProfilePicture/UploadPicture";
+import { PersonAvatar } from "../PersonPicture/PersonAvatar";
+import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
 
 
 export function ShowUser({ user }: { user: UserPublic }) {

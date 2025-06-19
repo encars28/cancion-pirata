@@ -18,8 +18,8 @@ import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import { EditAuthor } from "./EditAuthor";
-import { PersonAvatar } from "../PersonAvatar";
-import { UploadPicture } from "../User/UploadProfilePicture/UploadPicture";
+import { PersonAvatar } from "../PersonPicture/PersonAvatar";
+import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
   const { deleteAuthorMutation, authorProfilePicture, updateProfilePicture } =

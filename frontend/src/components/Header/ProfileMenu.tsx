@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import useUserMe from "../../hooks/useUserMe";
-import { PersonAvatar } from "../PersonAvatar";
+import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 
 export function ProfileMenu() {
   const navigate = useNavigate();

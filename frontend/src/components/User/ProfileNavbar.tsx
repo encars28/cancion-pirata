@@ -20,7 +20,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { successNotification } from "../../notifications";
 import useUserMe from "../../hooks/useUserMe";
-import { UploadPicture } from "./UploadProfilePicture/UploadPicture";
+import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();

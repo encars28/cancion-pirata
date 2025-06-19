@@ -4,10 +4,10 @@ import { TbPencil } from "react-icons/tb";
 import classes from "./UploadPicture.module.css";
 import { useHover } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../../../notifications";
-import { PersonAvatar } from "../../PersonAvatar";
+import { errorNotification } from "../../notifications";
+import { PersonAvatar } from "../PersonAvatar";
 import { UseMutationResult } from "@tanstack/react-query";
-import { Message } from "../../../client";
+import { Message } from "../../client";
 
 export function UploadPicture({
   updatePicture,
