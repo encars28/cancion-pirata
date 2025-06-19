@@ -59,12 +59,12 @@ class UserUpdateMe(BaseModel):
 
 class UpdatePassword(BaseModel):
     current_password: str = Field(min_length=8, max_length=40)
-    new_password: EmailStr = Field(max_length=255)
+    new_password: EmailStr = Field(min_length=8, max_length=40)
 
 
 class UpdateEmail(BaseModel):
     current_password: str = Field(min_length=8, max_length=40)
-    new_email: str = Field(min_length=8, max_length=40)
+    new_email: str = Field(max_length=255)
 
 class EmailToken(BaseModel): 
     token: str
