@@ -11,7 +11,7 @@ import {
   Text,
 } from "@mantine/core";
 import { TbBook, TbBookmarks, TbPointFilled } from "react-icons/tb";
-import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
+import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
 import { CollectionGrid } from "../Collection/CollectionGrid/CollectionGrid";
 import { modals } from "@mantine/modals";

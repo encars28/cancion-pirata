@@ -1,13 +1,13 @@
 import { Pagination, Title, Stack, Text } from "@mantine/core";
 import React from "react";
-import { Loading } from "../../Loading";
-import { PoemPublic, SearchParams, PoemsPublic } from "../../../client";
-import { POEMS_PER_PAGE } from "../../../pages/poemspage";
+import { Loading } from "../Loading";
+import { PoemPublic, SearchParams, PoemsPublic } from "../../client";
+import { POEMS_PER_PAGE } from "../../pages/poemspage";
 import { ShowPoemGrid } from "./ShowPoemGrid";
 import { useSearchParams } from "react-router";
-import useSearch from "../../../hooks/useSearch";
+import useSearch from "../../hooks/useSearch";
 import { notifications } from "@mantine/notifications";
-import { errorNotification } from "../../../notifications";
+import { errorNotification } from "../../notifications";
 
 export interface CardGridProps {
   path: string;

@@ -16,7 +16,7 @@ import { TbBook, TbTrash, TbPointFilled, TbEdit } from "react-icons/tb";
 import { isAdmin } from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
-import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
+import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import { EditAuthor } from "./EditAuthor";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";

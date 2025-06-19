@@ -12,7 +12,7 @@ import {
 import { TbUser, TbX } from "react-icons/tb";
 import { PoemPublic } from "../../../client";
 import { useNavigate } from "react-router";
-import classes from "./PoemGrid.module.css";
+import classes from "./PoemCard.module.css";
 import { modals } from "@mantine/modals";
 import useCollectionActions from "../../../hooks/useCollectionActions";
 

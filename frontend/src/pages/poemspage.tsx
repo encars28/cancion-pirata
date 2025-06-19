@@ -5,7 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
-import { PoemGrid } from "../components/Poem/PoemGrid/PoemGrid";
+import { PoemGrid } from "../components/Poem/PoemGrid";
 import { TbAdjustments } from "react-icons/tb";
 import { Container, Drawer, Group } from "@mantine/core";
 import { useSearchParams, useNavigate } from "react-router";

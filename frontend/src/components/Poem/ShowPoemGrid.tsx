@@ -1,8 +1,8 @@
 import {
   Stack,
 } from "@mantine/core";
-import { PoemPublic } from "../../../client";
-import { PoemCard } from "./PoemCard";
+import { PoemPublic } from "../../client";
+import { PoemCard } from "./PoemCard/PoemCard";
 
 export function ShowPoemGrid({
   poems,
