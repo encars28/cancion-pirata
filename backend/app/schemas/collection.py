@@ -55,6 +55,7 @@ class CollectionPublicBasic(CollectionBase):
 
 class CollectionPublic(CollectionPublicBasic):
     description: Optional[str] = None
+    poem_ids: List[uuid.UUID] = []
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
@@ -63,8 +64,6 @@ class CollectionPublicWithPoems(CollectionPublic):
     poems: List[PoemPublic] = []
     user_id: uuid.UUID
 
-    
-    
 class CollectionsPublic(BaseModel):
     count: int
     data: List[CollectionPublicWithPoems]

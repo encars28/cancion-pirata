@@ -3,11 +3,8 @@ from typing import Optional
 import uuid
 import os
 
-from yaml import AliasEvent
-
-from app.core.config import settings
 from app.core.security import verify_password, get_password_hash
-from app.models import user
+from app.crud import author
 from app.models.user import User
 from app.schemas.user import (
     UserCreate,
@@ -19,6 +16,7 @@ from app.schemas.user import (
 
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import Select, select, func
+from app.crud.author import author_crud
 
 
 class UserCRUD:
@@ -159,6 +157,15 @@ class UserCRUD:
         if not db_obj:
             return None
 
+        if db_obj.image_path and os.path.exists(db_obj.image_path):
+            try:
+                os.remove(db_obj.image_path)
+            except: 
+                pass
+            
+        if db_obj.author: 
+            author_crud.delete(db, db_obj.author.id)
+        
         db.delete(db_obj)
         db.commit()
 

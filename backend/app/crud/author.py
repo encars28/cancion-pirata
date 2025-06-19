@@ -2,6 +2,7 @@ from typing import Optional
 import uuid
 import datetime
 import re
+import os
 
 from app.models.author import Author
 from app.models.poem import Poem
@@ -210,6 +211,12 @@ class AuthorCRUD:
         # TODO: See if I can get this to work with cascades
         for poem in db_obj.poems:
             db.delete(poem)
+            
+        if db_obj.image_path and os.path.exists(db_obj.image_path):
+            try:
+                os.remove(db_obj.image_path)
+            except: 
+                pass
 
         db.delete(db_obj)
         db.commit()
