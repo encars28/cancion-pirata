@@ -1,14 +1,14 @@
-import { Stack, TextInput, Group, Button } from "@mantine/core";
+import { Stack, Group, Button } from "@mantine/core";
 import { Form, useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
-import { TbCake, TbGrave2 } from "react-icons/tb";
-import { AuthorUpdate, AuthorPublic } from "../../client/types.gen";
-import useAuthorActions from "../../hooks/useAuthorActions";
+import { TbCake } from "react-icons/tb";
+import { AuthorPublic, AuthorUpdateBasic } from "../../client/types.gen";
+import useUserMe from "../../hooks/useUserMe";
 
-export function EditAuthor({ author }: { author: AuthorPublic }) {
-  const { editAuthorMutation: mutation } = useAuthorActions(author.id);
+export function EditAuthorMe({ author }: { author: AuthorPublic }) {
+  const { editAuthorMe: mutation } = useUserMe();
 
-  const form = useForm<AuthorUpdate>({
+  const form = useForm<AuthorUpdateBasic>({
     mode: "uncontrolled",
     initialValues: {
       ...author,
@@ -18,13 +18,9 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
     }),
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (values: AuthorUpdateBasic) => {
     try {
       if (form.isDirty()) {
-        const values = form.getValues();
-        if (values.full_name === "") {
-          values.full_name = undefined;
-        }
         await mutation.mutateAsync(values);
         form.resetDirty();
       }
@@ -37,13 +33,6 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
   return (
     <Form form={form} onSubmit={handleSubmit}>
       <Stack gap="lg" m="md" pb="md">
-        <TextInput
-          name="full_name"
-          label="Nombre completo"
-          placeholder={author.full_name}
-          {...form.getInputProps("full_name")}
-          key={form.key("full_name")}
-        />
         <DateInput
           clearable
           name="birth_date"
@@ -55,18 +44,6 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
           {...form.getInputProps("birth_date")}
           key={form.key("birth_date")}
         />
-        <DateInput
-          clearable
-          name="death_date"
-          leftSection={<TbGrave2 size={18} />}
-          leftSectionPointerEvents="none"
-          label="Fecha de fallecimiento"
-          placeholder="Fecha de fallecimiento"
-          valueFormat="DD/MM/YYYY"
-          {...form.getInputProps("death_date")}
-          key={form.key("death_date")}
-        />
-
         <Group justify="flex-end" pt="lg">
           <Button
             variant="filled"

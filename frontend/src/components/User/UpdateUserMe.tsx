@@ -4,11 +4,9 @@ import { TextInput, Stack, Button, Group } from '@mantine/core';
 import { TbAbc, TbAt, TbUser } from 'react-icons/tb';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { callService } from '../../utils';
-import { HttpValidationError } from '../../client/types.gen';
-import { notifications } from '@mantine/notifications';
 
 
-export function UserMe({ user }: { user: UserPublic }) {
+export function UpdateUserMe({ user }: { user: UserPublic }) {
   const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async (data: UserUpdateMe) =>

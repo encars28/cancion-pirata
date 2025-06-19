@@ -41,13 +41,12 @@ export type AuthorSearchParams = {
 };
 
 export type AuthorUpdate = {
-    full_name?: string | null;
     birth_date?: Date | null;
+    full_name?: string | null;
     death_date?: Date | null;
 };
 
 export type AuthorUpdateBasic = {
-    full_name: string;
     birth_date?: Date | null;
 };
 
@@ -172,8 +171,8 @@ export type PoemPublic = {
     show_author?: boolean;
     description?: string | null;
     language?: string | null;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at: Date | null;
+    updated_at: Date | null;
     type?: number | null;
     author_ids?: Array<string>;
 };
@@ -194,8 +193,8 @@ export type PoemPublicWithAllTheInfo = {
     show_author?: boolean;
     description?: string | null;
     language?: string | null;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at: Date | null;
+    updated_at: Date | null;
     type?: number | null;
     author_ids?: Array<string>;
     content: string;
@@ -211,8 +210,8 @@ export type PoemRandom = {
     show_author?: boolean;
     description?: string | null;
     language?: string | null;
-    created_at?: Date | null;
-    updated_at?: Date | null;
+    created_at: Date | null;
+    updated_at: Date | null;
     type?: number | null;
     author_ids?: Array<string>;
     content: string;
@@ -296,7 +295,7 @@ export type UserPublic = {
     is_superuser?: boolean;
     is_verified?: boolean;
     id: string;
-    created_at?: Date | null;
+    created_at: Date | null;
     author_id?: string | null;
     author?: AuthorPublic | null;
     collections?: Array<CollectionPublic>;
@@ -929,6 +928,31 @@ export type AuthorsCreateAuthorResponses = {
 
 export type AuthorsCreateAuthorResponse = AuthorsCreateAuthorResponses[keyof AuthorsCreateAuthorResponses];
 
+export type AuthorsUpdateAuthorMeData = {
+    body: AuthorUpdateBasic;
+    path?: never;
+    query?: never;
+    url: '/api/v1/authors/me';
+};
+
+export type AuthorsUpdateAuthorMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type AuthorsUpdateAuthorMeError = AuthorsUpdateAuthorMeErrors[keyof AuthorsUpdateAuthorMeErrors];
+
+export type AuthorsUpdateAuthorMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: AuthorPublic;
+};
+
+export type AuthorsUpdateAuthorMeResponse = AuthorsUpdateAuthorMeResponses[keyof AuthorsUpdateAuthorMeResponses];
+
 export type AuthorsDeleteAuthorData = {
     body?: never;
     path: {
@@ -984,7 +1008,7 @@ export type AuthorsReadAuthorByIdResponses = {
 export type AuthorsReadAuthorByIdResponse = AuthorsReadAuthorByIdResponses[keyof AuthorsReadAuthorByIdResponses];
 
 export type AuthorsUpdateAuthorData = {
-    body: AuthorUpdate | AuthorUpdateBasic;
+    body: AuthorUpdate;
     path: {
         author_id: string;
     };

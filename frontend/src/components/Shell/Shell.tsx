@@ -69,7 +69,7 @@ export function Shell({
         <Container className={classes.inner}>
           <Group
             justify="space-between"
-            visibleFrom={profileNavbar ? "md" : "sm"}
+            visibleFrom="xs"
             gap={60}
             w="100%"
             wrap="nowrap"
@@ -93,7 +93,7 @@ export function Shell({
             )}
           </Group>
 
-          <Group hiddenFrom={profileNavbar ? "md" : "sm"} gap="md" wrap="nowrap">
+          <Group hiddenFrom="xs" gap="md" wrap="nowrap">
             <HeaderMobile />
             {profileNavbar && (
               <>

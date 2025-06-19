@@ -10,7 +10,7 @@ import { AdminPage } from "./pages/adminpage";
 import { TableAuthors } from "./components/Tables/TableAuthors";
 import { TableUsers } from "./components/Tables/TableUsers";
 import { TablePoems } from "./components/Tables/TablePoems";
-import { Profile } from "./components/User/Profile";
+import { UpdateProfile } from "./components/User/UpdateProfile/UpdateProfile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 import { AddPoem } from "./components/Poem/AddPoem";
 import { PageSettings } from "./components/PageSettings";
@@ -75,11 +75,11 @@ export default function AllRoutes() {
         </Route>
 
         <Route path="me" element={<MePage />}>
-          <Route index element={<Profile />} />
-          <Route path="profile" element={<Profile />} />
+          <Route index element={<UpdateProfile />} />
+          <Route path="profile" element={<UpdateProfile />} />
           <Route path="password" element={<UpdatePasswordForm />} />
           <Route path="settings" element={<PageSettings />} />
-          <Route path="*" element={<Profile />} />
+          <Route path="*" element={<UpdateProfile />} />
         </Route>
       </Route>
 

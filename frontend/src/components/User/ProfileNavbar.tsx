@@ -73,7 +73,7 @@ export function ProfileNavbar() {
           variant="default"
           fullWidth
         >
-          Ver usuario
+          Ver página de usuario
         </Button>
       </AppShell.Section>
       <AppShell.Section grow>
@@ -98,7 +98,7 @@ export function ProfileNavbar() {
           </Text>
           <NavLink
             px="xl"
-            label="Datos Perfil"
+            label="Datos"
             leftSection={<TbUser size={16} />}
             onClick={() => {
               setActive("profile");
