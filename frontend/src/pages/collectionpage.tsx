@@ -2,7 +2,11 @@ import { useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, FetchError } from "../utils";
-import { CollectionPublicWithPoems, collectionsReadCollection, PoemPublicBasic } from "../client";
+import {
+  CollectionPublicWithPoems,
+  collectionsReadCollection,
+  PoemPublicBasic,
+} from "../client";
 import { Loading } from "../components/Loading";
 import {
   Title,
@@ -28,7 +32,6 @@ import { errorNotification, successNotification } from "../notifications";
 import { Navigate } from "react-router";
 import { QueryError } from "../components/Error/QueryError";
 
-
 export function CollectionPage() {
   const params = useParams();
   const collectionId = params.id;
@@ -46,7 +49,7 @@ export function CollectionPage() {
     }),
   });
 
-  const { data: searchData } = useSearch({search_type: ["poem"]});
+  const { data: searchData } = useSearch({ search_type: ["poem"] });
   const poemsData = searchData?.poems as PoemPublicBasic[];
 
   const { data, error, isPending, isError } = useQuery({
@@ -63,10 +66,12 @@ export function CollectionPage() {
   }
 
   if (isError) {
-    notifications.show(errorNotification({
-      title: "Error al cargar la colección",
-      description: error.message || "No se pudo cargar la colección.",
-    }))
+    notifications.show(
+      errorNotification({
+        title: "Error al cargar la colección",
+        description: error.message || "No se pudo cargar la colección.",
+      })
+    );
 
     if (error instanceof FetchError) {
       return <QueryError status={error.res.status} />;
@@ -91,7 +96,13 @@ export function CollectionPage() {
         await addPoemToCollection.mutateAsync(poems_info[poem]);
         modals.closeAll();
       });
-      notifications.show(successNotification({title: "Poema(s) añadido(s)", description: "El poema(s) se ha añadido a la colección correctamente."}));
+      notifications.show(
+        successNotification({
+          title: "Poema(s) añadido(s)",
+          description:
+            "El poema(s) se ha añadido a la colección correctamente.",
+        })
+      );
     } catch {
       //
     }
@@ -101,7 +112,7 @@ export function CollectionPage() {
     modals.openConfirmModal({
       title: "Eliminar colección",
       children: (
-        <Text size="sm" >
+        <Text size="sm">
           ¿Está seguro de que desea eliminar esta colección? La acción es {""}
           <Text component="span" fw="bolder" inherit>
             irreversible
@@ -121,7 +132,6 @@ export function CollectionPage() {
           <MultiSelect
             data={Object.keys(poems_info)}
             label="Poemas"
-            
             placeholder="Seleccione uno o más poemas"
             searchable
             nothingFoundMessage="No se encontraron poemas"
@@ -146,16 +156,26 @@ export function CollectionPage() {
       ),
     });
 
-  const editCollection = () => modals.open({
-    title: "Editar colección", 
-    children: (<EditCollection collection={collection} />),
-  })
+  const editCollection = () =>
+    modals.open({
+      title: "Editar colección",
+      children: <EditCollection collection={collection} />,
+    });
 
   return (
     <Shell>
-      <Stack mt={60}>
-        <Title ta="center" order={1}>{collection.name}</Title>
-        <Text ta="center" size="md">{collection.description ?? ""}</Text>
+      <Stack mt={60} gap={50}>
+        <Stack gap="xs">
+          <Title ta="center" order={1}>
+            {collection.name}
+          </Title>
+          <Text ta="center" c="dimmed" size="md">
+            Creado por: {collection.username}
+          </Text>
+        </Stack>
+        <Text ta="center" size="md">
+          {collection.description ?? ""}
+        </Text>
         {(currentUser?.id === collection.user_id ||
           currentUser?.is_superuser) && (
           <Group mt="sm" justify="center">
@@ -170,11 +190,7 @@ export function CollectionPage() {
               </ActionIcon>
             </Tooltip>
             <Tooltip position="bottom" label="Editar">
-              <ActionIcon
-                variant="filled"
-                size="lg"
-                onClick={editCollection}
-              >
+              <ActionIcon variant="filled" size="lg" onClick={editCollection}>
                 <TbEdit size={20} />
               </ActionIcon>
             </Tooltip>

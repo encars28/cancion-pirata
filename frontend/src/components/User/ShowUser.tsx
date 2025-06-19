@@ -9,8 +9,16 @@ import {
   Stack,
   Button,
   Text,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
-import { TbBook, TbBookmarks, TbPointFilled } from "react-icons/tb";
+import {
+  TbBook,
+  TbBookmarks,
+  TbEdit,
+  TbPointFilled,
+  TbTrash,
+} from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
 import { CollectionGrid } from "../Collection/CollectionGrid/CollectionGrid";
@@ -20,7 +28,9 @@ import useUserActions from "../../hooks/useUserActions";
 import { isAdmin } from "../../hooks/useAuth";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
-
+import { EditUser } from "./EditUser";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 export function ShowUser({ user }: { user: UserPublic }) {
   let authorData = undefined;
@@ -29,7 +39,11 @@ export function ShowUser({ user }: { user: UserPublic }) {
     authorData = data;
   }
 
-  const { userProfilePicture, updateUserProfilePicture } = useUserActions(user.id);
+  const navigate = useNavigate();
+  const { userProfilePicture, updateUserProfilePicture, deleteUserMutation } =
+    useUserActions(user.id);
+  const { user: currentUser } = useAuth();
+
   const author: AuthorPublicWithPoems | undefined = authorData;
 
   const addPoemModal = () =>
@@ -38,17 +52,54 @@ export function ShowUser({ user }: { user: UserPublic }) {
       children: <AddCollection />,
     });
 
+  const deleteUser = () =>
+    modals.openConfirmModal({
+      title: "Por favor confirme su acción",
+      children: (
+        <Text size="sm">
+          ¿Está seguro de que desea borrar este elemento? La acción es
+          irreversible
+        </Text>
+      ),
+      onConfirm: async () => deleteUserMutation.mutateAsync(),
+      confirmProps: { color: "red" },
+      labels: { confirm: "Eliminar", cancel: "Cancelar" },
+    });
+
+  const editUser = () =>
+    modals.open({
+      title: "Editar autor",
+      children: (
+        <Container px="md">
+          <EditUser user={user} />
+        </Container>
+      ),
+    });
+
   return (
     <Container
       mx={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
       fluid
     >
       <Group justify="space-between" gap="xl" wrap="nowrap">
-        <Flex justify="flex-start" direction="row" align="center" gap="xl" wrap="nowrap">
-        {isAdmin() ? (
-            <UploadPicture currentPicture={userProfilePicture as Blob ?? null} updatePicture={updateUserProfilePicture} small/>
+        <Flex
+          justify="flex-start"
+          direction="row"
+          align="center"
+          gap="xl"
+          wrap="nowrap"
+        >
+          {isAdmin() ? (
+            <UploadPicture
+              currentPicture={(userProfilePicture as Blob) ?? null}
+              updatePicture={updateUserProfilePicture}
+              small
+            />
           ) : (
-            <PersonAvatar size={120} picture={userProfilePicture as Blob ?? null} />
+            <PersonAvatar
+              size={120}
+              picture={(userProfilePicture as Blob) ?? null}
+            />
           )}
           <Stack gap={2}>
             <Title order={1} textWrap="wrap">
@@ -71,7 +122,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
                   </Text>
                 </>
               )}
-              {author && author.death_date &&(
+              {author && author.death_date && (
                 <>
                   {" "}
                   <TbPointFilled color="grey" size={6} />
@@ -84,6 +135,65 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Group>
           </Stack>
         </Flex>
+        {isAdmin() && (
+          <>
+            <Group hiddenFrom="lg">
+              <Tooltip label="Editar">
+                <ActionIcon onClick={editUser} size={35}>
+                  <TbEdit size={20} />
+                </ActionIcon>
+              </Tooltip>
+              <Tooltip label="Eliminar">
+                <ActionIcon color="red" size={35} onClick={deleteUser}>
+                  <TbTrash size={20} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Group visibleFrom="lg">
+              <Button
+                onClick={editUser}
+                w={112}
+                leftSection={<TbEdit size={20} />}
+              >
+                Editar
+              </Button>
+              <Button
+                color="red"
+                onClick={deleteUser}
+                leftSection={<TbTrash size={20} />}
+              >
+                Eliminar
+              </Button>
+            </Group>
+          </>
+        )}
+        {currentUser?.id === user.id && (
+          <>
+            <Group hiddenFrom="lg">
+              <Tooltip label="Editar">
+                <ActionIcon
+                  onClick={() => navigate("/me")}
+                  size={35}
+                  color="grey"
+                  variant="light"
+                >
+                  <TbEdit size={20} />
+                </ActionIcon>
+              </Tooltip>
+            </Group>
+            <Group visibleFrom="lg">
+              <Button
+                onClick={() => navigate("/me")}
+                w={112}
+                color="grey"
+                variant="light"
+                leftSection={<TbEdit size={20} />}
+              >
+                Editar
+              </Button>
+            </Group>
+          </>
+        )}
       </Group>
       <Space h={80} />
       <Tabs variant="outline" defaultValue="collections" pb={100}>
@@ -109,11 +219,13 @@ export function ShowUser({ user }: { user: UserPublic }) {
           <Space mt="xl" />
           {user.collections && user.collections.length > 0 ? (
             <Stack gap="xl">
-              <Group justify="flex-start">
-                <Button variant="filled" onClick={addPoemModal}>
-                  Crear colección
-                </Button>
-              </Group>
+              {currentUser?.id === user.id && (
+                <Group justify="flex-start">
+                  <Button variant="filled" onClick={addPoemModal}>
+                    Crear colección
+                  </Button>
+                </Group>
+              )}
               <CollectionGrid collections={user.collections} />
             </Stack>
           ) : (
@@ -121,11 +233,13 @@ export function ShowUser({ user }: { user: UserPublic }) {
               <Title ta="center" mt={80} order={3} c="dimmed" fw="lighter">
                 Este usuario no tiene colecciones
               </Title>
-              <Group justify="center">
-                <Button mt="xl" variant="filled" onClick={addPoemModal}>
-                  Crear colección
-                </Button>
-              </Group>
+              {currentUser?.id === user.id && (
+                <Group justify="center">
+                  <Button mt="xl" variant="filled" onClick={addPoemModal}>
+                    Crear colección
+                  </Button>
+                </Group>
+              )}
             </>
           )}
         </Tabs.Panel>
