@@ -1,21 +1,15 @@
-import {
-  Text,
-  Menu,
-  Center,
-} from "@mantine/core";
+import { Text, Menu, Center, Box } from "@mantine/core";
 import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
-import {
-  TbLogout,
-  TbSettings,
-  TbUser,
-} from "react-icons/tb";
+import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
 import { modals } from "@mantine/modals";
-import { ProfileAvatar } from "../User/ProfileAvatar";
+import useUserMe from "../../hooks/useUserMe";
+import { PersonAvatar } from "../PersonAvatar";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { profilePicture } = useUserMe();
 
   const openModal = () =>
     modals.openConfirmModal({
@@ -31,14 +25,19 @@ export function ProfileMenu() {
   return (
     <Menu shadow="lg" width={250} position="bottom" trigger="hover">
       <Menu.Target>
-        <ProfileAvatar size={35} style={{cursor: "pointer"}} onClick={() => navigate(`/users/${user?.id}`)} />
+        <Box
+          style={{ cursor: "pointer", borderRadius: "xl" }}
+          onClick={() => navigate(`/users/${user?.id}`)}
+        >
+          <PersonAvatar picture={(profilePicture as Blob) ?? null} size={40} />
+        </Box>
       </Menu.Target>
       <Menu.Dropdown ta="left">
         <Text size="md" ta="center" m={10} fw="bold">
           {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          <ProfileAvatar size={70} />
+          <PersonAvatar picture={(profilePicture as Blob) ?? null} size={60} />
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item

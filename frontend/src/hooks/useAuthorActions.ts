@@ -52,7 +52,7 @@ const useAuthorActions = (authorId: string) => {
     }
   })
 
-  const {data: AuthorProfilePicture} = useQuery({
+  const {data: authorProfilePicture} = useQuery({
     queryKey: ['authors', authorId, 'profilePicture'],
     queryFn: async () => callService(authorsGetAuthorPicture, { path: { author_id: authorId } }),
     staleTime: 1000 * 60 * 60 * 24, // 24 hours
@@ -63,7 +63,7 @@ const useAuthorActions = (authorId: string) => {
     deleteAuthorMutation,
     editAuthorMutation,
     updateProfilePicture,
-    AuthorProfilePicture,
+    authorProfilePicture,
   }
 }
 

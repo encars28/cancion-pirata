@@ -1,16 +1,9 @@
-import { usersDeleteUserMe, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
+import { usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
 import { callService } from '../utils'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useNavigate } from 'react-router'
-import useAuth from './useAuth'
-import { notifications } from '@mantine/notifications'
-import { successNotification } from '../notifications'
 
 const useUserActions = (userId: string) => {
   const queryClient = useQueryClient()
-  const navigate = useNavigate()
-  const { logout } = useAuth()
-
   const { data: userProfilePicture } = useQuery({
     queryKey: ['users', userId, 'profilePicture'],
     queryFn: async () => {
@@ -20,38 +13,20 @@ const useUserActions = (userId: string) => {
     gcTime: 1000 * 60 * 60 * 48, // 48 hours
   })
 
-  const updateProfilePicture = useMutation({
+  const updateUserProfilePicture = useMutation({
     mutationFn: async (file: File) => {
-      return callService(usersUpdateUserProfilePicture, { body: { image: file } })
+        return callService(usersUpdateUserProfilePicture, { body: { image: file }, path: { user_id: userId! } })
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['users', userId] })
-      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+        queryClient.invalidateQueries({ queryKey: ['users', userId, 'profilePicture'] })
     },
-  })
+})
 
-  const deleteUserMeMutation = useMutation({
-    mutationFn: async () => callService(usersDeleteUserMe),
-    onSuccess: () => {
-      logout()
-      navigate('/')
-      notifications.show(successNotification({
-        title: "Cuenta eliminada",
-        description: "Tu cuenta ha sido eliminada correctamente. Lamentamos que te vayas."
-      }))
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['users'] })
-      queryClient.invalidateQueries({ queryKey: ['poems'] })
-      queryClient.invalidateQueries({ queryKey: ['authors'] })
-      queryClient.invalidateQueries({ queryKey: ['POD'] })
-    }
-  })
+
 
   return {
-    deleteUserMeMutation,
-    updateProfilePicture,
-    userProfilePicture
+    userProfilePicture,
+    updateUserProfilePicture
   }
 }
 

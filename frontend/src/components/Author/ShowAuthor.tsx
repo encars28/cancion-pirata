@@ -13,17 +13,17 @@ import {
   Button,
 } from "@mantine/core";
 import { TbBook, TbTrash, TbPointFilled, TbEdit } from "react-icons/tb";
-import useAuth, { isAdmin } from "../../hooks/useAuth";
+import { isAdmin } from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
-import { AuthorAvatar } from "./AuthorAvatar";
-import { UploadAuthorPicture } from "./UploadAuthorPicture/UploadAuthorPicture.module";
 import { EditAuthor } from "./EditAuthor";
+import { PersonAvatar } from "../PersonAvatar";
+import { UploadPicture } from "../User/UploadProfilePicture/UploadPicture";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
-  const { user: currentUser } = useAuth();
-  const { deleteAuthorMutation } = useAuthorActions(author.id);
+  const { deleteAuthorMutation, authorProfilePicture, updateProfilePicture } =
+    useAuthorActions(author.id);
 
   const deleteAuthor = () =>
     modals.openConfirmModal({
@@ -42,7 +42,11 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
   const editAuthor = () =>
     modals.open({
       title: "Editar autor",
-      children: <Container px="md"><EditAuthor author={author} /></Container>,
+      children: (
+        <Container px="md">
+          <EditAuthor author={author} />
+        </Container>
+      ),
     });
 
   return (
@@ -59,9 +63,16 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
           wrap="nowrap"
         >
           {isAdmin() ? (
-            <UploadAuthorPicture authorId={author.id} />
+            <UploadPicture
+              updatePicture={updateProfilePicture}
+              currentPicture={(authorProfilePicture as Blob) ?? null}
+              small
+            />
           ) : (
-            <AuthorAvatar size={140} authorId={author.id} />
+            <PersonAvatar
+              picture={(authorProfilePicture as Blob) ?? null}
+              size={120}
+            />
           )}
 
           <Stack>
@@ -88,7 +99,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
             </Group>
           </Stack>
         </Flex>
-        {currentUser?.is_superuser && (
+        {isAdmin() && (
           <>
             <Group hiddenFrom="lg">
               <Tooltip label="Editar">
@@ -103,7 +114,11 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
               </Tooltip>
             </Group>
             <Group visibleFrom="lg">
-              <Button onClick={editAuthor} w={112} leftSection={<TbEdit size={20} />}>
+              <Button
+                onClick={editAuthor}
+                w={112}
+                leftSection={<TbEdit size={20} />}
+              >
                 Editar
               </Button>
               <Button

@@ -17,10 +17,10 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
-import useUserActions from "../../hooks/useUserActions";
-import { UploadProfilePicture } from "./UploadProfilePicture/UploadProfilePicture";
 import { notifications } from "@mantine/notifications";
 import { successNotification } from "../../notifications";
+import useUserMe from "../../hooks/useUserMe";
+import { UploadPicture } from "./UploadProfilePicture/UploadPicture";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export function ProfileNavbar() {
     location.pathname.split("me/")[1] ?? "profile"
   );
   const { logout, user: currentUser } = useAuth();
-  const { deleteUserMeMutation } = useUserActions();
+  const { deleteUserMeMutation, updateProfilePicture, profilePicture } = useUserMe();
 
   const deleteMe = () =>
     modals.openConfirmModal({
@@ -61,7 +61,7 @@ export function ProfileNavbar() {
     <AppShell.Aside>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
-          <UploadProfilePicture />
+          <UploadPicture currentPicture={profilePicture as Blob ?? null} updatePicture={updateProfilePicture}/>
         </Stack>
       </AppShell.Section>
       <AppShell.Section px="xl" my="md">

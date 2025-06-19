@@ -3,7 +3,6 @@ import {
   Container,
   Group,
   Title,
-  Avatar,
   Flex,
   Space,
   Tabs,
@@ -11,23 +10,26 @@ import {
   Button,
   Text,
 } from "@mantine/core";
-import { TbBook, TbBooks, TbPointFilled } from "react-icons/tb";
+import { TbBook, TbBookmarks, TbPointFilled } from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/PoemGrid/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
 import { CollectionGrid } from "../Collection/CollectionGrid/CollectionGrid";
 import { modals } from "@mantine/modals";
 import { AddCollection } from "../Collection/AddCollection";
 import useUserActions from "../../hooks/useUserActions";
+import { isAdmin } from "../../hooks/useAuth";
+import { PersonAvatar } from "../PersonAvatar";
+import { UploadPicture } from "./UploadProfilePicture/UploadPicture";
+
 
 export function ShowUser({ user }: { user: UserPublic }) {
   let authorData = undefined;
-  const { userProfilePicture } = useUserActions(user.id);
-
   if (user.author_id) {
     const { data } = useAuthor(user.author_id);
     authorData = data;
   }
 
+  const { userProfilePicture, updateUserProfilePicture } = useUserActions(user.id);
   const author: AuthorPublicWithPoems | undefined = authorData;
 
   const addPoemModal = () =>
@@ -41,16 +43,12 @@ export function ShowUser({ user }: { user: UserPublic }) {
       mx={{ base: "xl", xs: 40, sm: 50, md: 60, lg: 80, xl: 100 }}
       fluid
     >
-      <Group justify="space-between" gap="xl">
-        <Flex justify="flex-start" direction="row" align="center" gap="xl">
-          {userProfilePicture ? (
-            <Avatar
-              src={URL.createObjectURL(userProfilePicture as Blob)}
-              size={100}
-              alt="Foto de perfil"
-            />
+      <Group justify="space-between" gap="xl" wrap="nowrap">
+        <Flex justify="flex-start" direction="row" align="center" gap="xl" wrap="nowrap">
+        {isAdmin() ? (
+            <UploadPicture currentPicture={userProfilePicture as Blob ?? null} updatePicture={updateUserProfilePicture} small/>
           ) : (
-            <Avatar size={100} alt="Foto de perfil" />
+            <PersonAvatar size={120} picture={userProfilePicture as Blob ?? null} />
           )}
           <Stack gap={2}>
             <Title order={1} textWrap="wrap">
@@ -95,7 +93,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
               Poemas
             </Tabs.Tab>
           )}
-          <Tabs.Tab value="collections" leftSection={<TbBooks size={18} />}>
+          <Tabs.Tab value="collections" leftSection={<TbBookmarks size={18} />}>
             Colecciones
           </Tabs.Tab>
         </Tabs.List>

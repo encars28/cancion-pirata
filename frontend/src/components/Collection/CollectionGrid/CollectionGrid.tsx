@@ -1,7 +1,8 @@
 import { CollectionPublic } from "../../../client";
-import { Text, Paper, Stack, Group, Grid, Image } from "@mantine/core";
+import { Text, Paper, Stack, Group, Grid } from "@mantine/core";
 import classes from "./CollectionGrid.module.css";
 import { useNavigate } from "react-router";
+import { TbBookmarksFilled } from "react-icons/tb";
 
 export function CollectionGrid({
   collections,
@@ -21,10 +22,9 @@ export function CollectionGrid({
             onClick={() => navigate(`/collections/${collection.id}`)}
           >
             <Stack h="100%" justify="space-around" gap={0}>
-              <Group gap="lg" wrap="nowrap">
-                {/* <TbBooks size={30} /> */}
-                <Image src="/src/assets/bookshelf.png" w={40} />
-                <Text lineClamp={1} fw="bold">
+              <Group gap="md" wrap="nowrap" >
+                <TbBookmarksFilled size={35} />
+                <Text lineClamp={1} size="lg" fw="bold">
                   {collection.name}
                 </Text>
               </Group>

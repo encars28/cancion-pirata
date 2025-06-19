@@ -14,6 +14,11 @@
     height: 180px;
 }
 
+.picture_small {
+    width: 120px;
+    height: 120px;
+}
+
 .overlay {
     border-radius: 50%;
     justify-content: center;
@@ -43,6 +48,12 @@
     border-radius: 50%;
     width: 180px;
     height: 180px;
+}
+
+.container_small {
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
 }
 
 .text {

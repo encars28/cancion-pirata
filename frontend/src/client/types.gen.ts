@@ -74,6 +74,10 @@ export type BodyLoginLoginAccessToken = {
     client_secret?: string | null;
 };
 
+export type BodyUsersUpdateUserMeProfilePicture = {
+    image: Blob | File;
+};
+
 export type BodyUsersUpdateUserProfilePicture = {
     image: Blob | File;
 };
@@ -472,33 +476,6 @@ export type LoginRecoverPasswordHtmlContentResponses = {
 
 export type LoginRecoverPasswordHtmlContentResponse = LoginRecoverPasswordHtmlContentResponses[keyof LoginRecoverPasswordHtmlContentResponses];
 
-export type LoginVerifyAccountData = {
-    body?: never;
-    path: {
-        email: string;
-    };
-    query?: never;
-    url: '/api/v1/verify-account/{email}';
-};
-
-export type LoginVerifyAccountErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type LoginVerifyAccountError = LoginVerifyAccountErrors[keyof LoginVerifyAccountErrors];
-
-export type LoginVerifyAccountResponses = {
-    /**
-     * Successful Response
-     */
-    200: Message;
-};
-
-export type LoginVerifyAccountResponse = LoginVerifyAccountResponses[keyof LoginVerifyAccountResponses];
-
 export type LoginActivateAccountData = {
     body: VerifyToken;
     path?: never;
@@ -673,30 +650,30 @@ export type UsersGetUserMeProfilePictureResponses = {
     200: unknown;
 };
 
-export type UsersUpdateUserProfilePictureData = {
-    body: BodyUsersUpdateUserProfilePicture;
+export type UsersUpdateUserMeProfilePictureData = {
+    body: BodyUsersUpdateUserMeProfilePicture;
     path?: never;
     query?: never;
     url: '/api/v1/users/me/profile_picture';
 };
 
-export type UsersUpdateUserProfilePictureErrors = {
+export type UsersUpdateUserMeProfilePictureErrors = {
     /**
      * Validation Error
      */
     422: HttpValidationError;
 };
 
-export type UsersUpdateUserProfilePictureError = UsersUpdateUserProfilePictureErrors[keyof UsersUpdateUserProfilePictureErrors];
+export type UsersUpdateUserMeProfilePictureError = UsersUpdateUserMeProfilePictureErrors[keyof UsersUpdateUserMeProfilePictureErrors];
 
-export type UsersUpdateUserProfilePictureResponses = {
+export type UsersUpdateUserMeProfilePictureResponses = {
     /**
      * Successful Response
      */
     200: Message;
 };
 
-export type UsersUpdateUserProfilePictureResponse = UsersUpdateUserProfilePictureResponses[keyof UsersUpdateUserProfilePictureResponses];
+export type UsersUpdateUserMeProfilePictureResponse = UsersUpdateUserMeProfilePictureResponses[keyof UsersUpdateUserMeProfilePictureResponses];
 
 export type UsersRegisterUserData = {
     body: UserRegister;
@@ -718,7 +695,7 @@ export type UsersRegisterUserResponses = {
     /**
      * Successful Response
      */
-    200: UserPublic;
+    200: Message;
 };
 
 export type UsersRegisterUserResponse = UsersRegisterUserResponses[keyof UsersRegisterUserResponses];
@@ -828,6 +805,33 @@ export type UsersGetUserProfilePictureResponses = {
      */
     200: unknown;
 };
+
+export type UsersUpdateUserProfilePictureData = {
+    body: BodyUsersUpdateUserProfilePicture;
+    path: {
+        user_id: string;
+    };
+    query?: never;
+    url: '/api/v1/users/{user_id}/profile_picture';
+};
+
+export type UsersUpdateUserProfilePictureErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUpdateUserProfilePictureError = UsersUpdateUserProfilePictureErrors[keyof UsersUpdateUserProfilePictureErrors];
+
+export type UsersUpdateUserProfilePictureResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type UsersUpdateUserProfilePictureResponse = UsersUpdateUserProfilePictureResponses[keyof UsersUpdateUserProfilePictureResponses];
 
 export type UtilsTestEmailData = {
     body?: never;
