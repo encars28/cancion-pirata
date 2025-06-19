@@ -134,7 +134,7 @@ def update_password_me(
     return Message(message="Password updated successfully")
 
 @router.post("/me/profile_picture", response_model=Message)
-def update_user_profile_picture(
+def update_user_me_profile_picture(
     session: SessionDep, image: UploadFile, current_user: CurrentUser
 ) -> Any:
     """
@@ -295,6 +295,45 @@ def get_user_profile_picture(user_id: uuid.UUID, session: SessionDep) -> Any:
         raise HTTPException(status_code=404, detail="Profile picture not found")
 
     return FileResponse(image_path)
+
+@router.post("/{user_id}/profile_picture", response_model=Message, dependencies=[Depends(get_current_active_superuser)])
+def update_user_profile_picture(
+    session: SessionDep, image: UploadFile, user_id: uuid.UUID
+) -> Any:
+    """
+    Update own profile picture.
+    """
+    if not image.content_type or "image" not in image.content_type:
+        raise HTTPException(
+            status_code=400, detail="File is not an image"
+        )
+        
+    user = user_crud.get_by_id(session, user_id)
+    if not user:
+        raise HTTPException(
+            status_code=404, detail="The user with this id does not exist in the system"
+        )
+        
+    if not user.image_path:
+        path = os.path.join(settings.IMAGES_DIR, "users", str(user.id))
+        try:
+            os.makedirs(path, exist_ok=True)
+        except OSError as e:
+            raise HTTPException(
+                status_code=500, detail=f"Failed to create image directory for user: {e}"
+            )
+            
+        user_crud.update_image_path(
+            db=session, obj_id=user.id, image_path=path
+        )
+        
+        with open(os.path.join(path, "profile.png"), "wb") as f:
+            f.write(image.file.read())
+    
+        return Message(message="Profile picture updated successfully")
+
+    with open(os.path.join(user.image_path, "profile.png"), "wb") as f:
+        f.write(image.file.read())
 
 @router.patch(
     "/{user_id}",

@@ -8,6 +8,7 @@ from app.core.config import settings
 import os
 from app.api.deps import (
     OptionalCurrentUser,
+    get_current_active_author,
     get_current_active_superuser,
     SessionDep,
     CurrentUser,
@@ -17,7 +18,6 @@ from app.schemas.common import Message
 from app.schemas.author import (
     AuthorCreate,
     AuthorPublic,
-    AuthorPublicBasic,
     AuthorPublicWithPoems,
     AuthorSearchParams,
     AuthorUpdate,
@@ -73,6 +73,29 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     author = author_crud.create(db=session, obj_create=author_in)
     return author
 
+@router.patch(
+    "/me",
+    response_model=AuthorPublic,
+    dependencies=[Depends(get_current_active_author)],
+)
+def update_author_me(
+    *,
+    session: SessionDep,
+    current_user: CurrentUser,
+    author_in: AuthorUpdateBasic,
+) -> Any:
+    """
+    Update own author.
+    """
+    author = author_crud.get_by_id(session, current_user.author_id)
+    if not author:
+        raise HTTPException(
+            status_code=404,
+            detail="The author with this id does not exist in the system",
+        )
+
+    author = author_crud.update(db=session, obj_id=author.id, obj_update=author_in)
+    return author
 
 @router.get("/{author_id}", response_model=AuthorPublicWithPoems)
 def read_author_by_id(
@@ -172,13 +195,13 @@ def upload_author_picture(
 @router.patch(
     "/{author_id}",
     response_model=AuthorPublic,
+    dependencies=[Depends(get_current_active_superuser)],
 )
 def update_author(
     *,
     session: SessionDep,
-    current_user: CurrentUser,
     author_id: uuid.UUID,
-    author_in: AuthorUpdate | AuthorUpdateBasic,
+    author_in: AuthorUpdate,
 ) -> Any:
     """
     Update an Author.
@@ -189,20 +212,6 @@ def update_author(
         raise HTTPException(
             status_code=404,
             detail="The author with this id does not exist in the system",
-        )
-
-    if not current_user.is_superuser and (
-        not current_user.author_id or not current_user.author_id == author_id
-    ):
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges",
-        )
-        
-    if not current_user.is_superuser and isinstance(author_in, AuthorUpdateBasic):
-        raise HTTPException(
-            status_code=403,
-            detail="The user doesn't have enough privileges to update this field",
         )
 
     if author_in.full_name:

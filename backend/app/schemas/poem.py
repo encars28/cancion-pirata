@@ -66,8 +66,8 @@ class PoemPublicBasic(BaseModel):
 class PoemPublic(PoemPublicBasic):
     description: Optional[str] = None
     language: Optional[str] = None
-    created_at: Optional[datetime] = Field(default=datetime.now())
-    updated_at: Optional[datetime] = Field(default=datetime.now())
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
     type: Optional[int] = None
     author_ids: List[uuid.UUID] = []
 
@@ -83,8 +83,8 @@ class PoemPublicWithAllTheInfo(PoemRandom):
 class PoemSchema(PoemBase):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    created_at: Optional[datetime] = Field(default=datetime.now())
-    updated_at: Optional[datetime] = Field(default=datetime.now())
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     author_ids: List[uuid.UUID] = []
     author_names: List[str] = []

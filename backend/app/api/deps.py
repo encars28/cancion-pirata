@@ -80,3 +80,10 @@ def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:
             status_code=403, detail="The user doesn't have enough privileges"
         )
     return current_user
+
+def get_current_active_author(current_user: CurrentUser) -> UserSchema:
+    if not current_user or not current_user.author_id:
+        raise HTTPException(
+            status_code=403, detail="The user doesn't have enough privileges"
+        )
+    return current_user

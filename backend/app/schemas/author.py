@@ -40,7 +40,7 @@ class AuthorCreate(AuthorBase):
     death_date: Optional[datetime] = None
 
 
-class AuthorUpdateBasic(AuthorBase):
+class AuthorUpdateBasic(BaseModel):
     birth_date: Optional[datetime] = None
 
 

@@ -65,7 +65,7 @@ class UpdatePassword(BaseModel):
 class UserPublic(UserBase):
     model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
-    created_at: Optional[datetime] = Field(default=datetime.now())
+    created_at: Optional[datetime]
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     collections: list[CollectionPublic] = []
@@ -75,7 +75,7 @@ class UserSchema(UserBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID = Field(default_factory=uuid.uuid4)
-    created_at: Optional[datetime] = Field(default=datetime.now())
+    created_at: Optional[datetime] = None
     author_id: Optional[uuid.UUID] = None
     author: Optional[AuthorPublic] = None
     hashed_password: str
