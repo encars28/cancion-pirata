@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { usersGetUserMeProfilePicture, usersUpdateUserMeProfilePicture, usersDeleteUserMe, AuthorUpdateBasic, authorsUpdateAuthorMe } from '../client'
+import { usersGetUserMeProfilePicture, usersUpdateUserMeProfilePicture, usersDeleteUserMe, AuthorUpdateBasic, authorsUpdateAuthorMe, EmailToken, usersUpdateEmailMe } from '../client'
 import { callService } from '../utils'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
@@ -53,7 +53,24 @@ const useUserMe = () => {
     }
   })
 
-  return { profilePicture, updateProfilePicture, deleteUserMeMutation, editAuthorMe }
+  const verifyEmailMutation = useMutation({
+    mutationFn: async (token: EmailToken) => callService(usersUpdateEmailMe, { body: token }),
+    onSuccess: () => {
+      notifications.clean()
+      notifications.show(successNotification({
+        title: "Correo verificado",
+        description: "Tu correo electrónico ha sido verificado correctamente."
+      }))
+
+      navigate('/')
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['currentUser'] })
+      queryClient.invalidateQueries({ queryKey: ['users'] })
+    }
+  })
+
+  return { profilePicture, updateProfilePicture, deleteUserMeMutation, editAuthorMe, verifyEmailMutation }
 }
 
 export default useUserMe

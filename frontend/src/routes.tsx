@@ -25,6 +25,11 @@ import { UserPage } from "./pages/userpage";
 import { CollectionPage } from "./pages/collectionpage";
 import { VerifyAccount } from "./components/Auth/VerifyAccount";
 import { LanguageHelp } from "./components/LanguageHelp/LanguageHelp";
+import { UpdateEmailForm } from "./components/User/UpdateEmail";
+import { notifications } from "@mantine/notifications";
+import { errorNotification } from "./notifications";
+import React from "react";
+import { VerifyEmail } from "./components/User/VerifyEmail";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -43,6 +48,16 @@ const ProtectedRoute = ({
 
   return children ? children : <Outlet />;
 };
+
+const VerifyRoute = ({children}: {children?: React.ReactNode}) => {
+  if (!isLoggedIn()) {
+    notifications.clean()
+    notifications.show(errorNotification({title: "Acceso denegado", description: "Debes iniciar sesión para verificar el email"}));
+    return <Navigate to="/login" replace />;
+  }
+
+  return children ? children : <Outlet />;
+}
 
 export default function AllRoutes() {
   return (
@@ -78,10 +93,15 @@ export default function AllRoutes() {
           <Route index element={<UpdateProfile />} />
           <Route path="profile" element={<UpdateProfile />} />
           <Route path="password" element={<UpdatePasswordForm />} />
+          <Route path="email" element={<UpdateEmailForm />} />
           <Route path="settings" element={<PageSettings />} />
           <Route path="*" element={<UpdateProfile />} />
         </Route>
       </Route>
+      
+      <Route element={<VerifyRoute />}>
+        <Route path="verify-email" element={<VerifyEmail />} />
+      </Route> 
 
       <Route element={<ProtectedRoute isAllowed={!isLoggedIn()} />}>
         <Route element={<BasePage />}>

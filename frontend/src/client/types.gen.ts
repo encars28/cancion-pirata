@@ -138,6 +138,10 @@ export type CollectionsPublic = {
     data: Array<CollectionPublicWithPoems>;
 };
 
+export type EmailToken = {
+    token: string;
+};
+
 export type HttpValidationError = {
     detail?: Array<ValidationError>;
 };
@@ -272,6 +276,11 @@ export type SearchResult = {
 export type Token = {
     access_token: string;
     token_type?: string;
+};
+
+export type UpdateEmail = {
+    current_password: string;
+    new_email: string;
 };
 
 export type UpdatePassword = {
@@ -448,33 +457,6 @@ export type LoginResetPasswordResponses = {
 
 export type LoginResetPasswordResponse = LoginResetPasswordResponses[keyof LoginResetPasswordResponses];
 
-export type LoginRecoverPasswordHtmlContentData = {
-    body?: never;
-    path: {
-        email: string;
-    };
-    query?: never;
-    url: '/api/v1/password-recovery-html-content/{email}';
-};
-
-export type LoginRecoverPasswordHtmlContentErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type LoginRecoverPasswordHtmlContentError = LoginRecoverPasswordHtmlContentErrors[keyof LoginRecoverPasswordHtmlContentErrors];
-
-export type LoginRecoverPasswordHtmlContentResponses = {
-    /**
-     * Successful Response
-     */
-    200: string;
-};
-
-export type LoginRecoverPasswordHtmlContentResponse = LoginRecoverPasswordHtmlContentResponses[keyof LoginRecoverPasswordHtmlContentResponses];
-
 export type LoginActivateAccountData = {
     body: VerifyToken;
     path?: never;
@@ -634,6 +616,56 @@ export type UsersUpdatePasswordMeResponses = {
 };
 
 export type UsersUpdatePasswordMeResponse = UsersUpdatePasswordMeResponses[keyof UsersUpdatePasswordMeResponses];
+
+export type UsersUpdateEmailMeData = {
+    body: EmailToken;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/email';
+};
+
+export type UsersUpdateEmailMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersUpdateEmailMeError = UsersUpdateEmailMeErrors[keyof UsersUpdateEmailMeErrors];
+
+export type UsersUpdateEmailMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type UsersUpdateEmailMeResponse = UsersUpdateEmailMeResponses[keyof UsersUpdateEmailMeResponses];
+
+export type UsersRequestUpdateEmailMeData = {
+    body: UpdateEmail;
+    path?: never;
+    query?: never;
+    url: '/api/v1/users/me/email';
+};
+
+export type UsersRequestUpdateEmailMeErrors = {
+    /**
+     * Validation Error
+     */
+    422: HttpValidationError;
+};
+
+export type UsersRequestUpdateEmailMeError = UsersRequestUpdateEmailMeErrors[keyof UsersRequestUpdateEmailMeErrors];
+
+export type UsersRequestUpdateEmailMeResponses = {
+    /**
+     * Successful Response
+     */
+    200: Message;
+};
+
+export type UsersRequestUpdateEmailMeResponse = UsersRequestUpdateEmailMeResponses[keyof UsersRequestUpdateEmailMeResponses];
 
 export type UsersGetUserMeProfilePictureData = {
     body?: never;

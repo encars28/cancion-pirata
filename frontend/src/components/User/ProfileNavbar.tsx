@@ -8,6 +8,7 @@ import {
   Text,
 } from "@mantine/core";
 import {
+  TbAt,
   TbLock,
   TbLogout,
   TbSettings,
@@ -115,6 +116,16 @@ export function ProfileNavbar() {
               navigate("/me/password");
             }}
             active={active === "password"}
+          />
+          <NavLink
+            px="xl"
+            label="Cambiar email"
+            leftSection={<TbAt size={16} />}
+            onClick={() => {
+              setActive("email");
+              navigate("/me/email");
+            }}
+            active={active === "email"}
           />
           <NavLink
             px="xl"
