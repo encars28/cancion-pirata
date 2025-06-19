@@ -26,7 +26,7 @@ import useSearch from "../hooks/useSearch";
 import { notifications } from "@mantine/notifications";
 import { errorNotification, successNotification } from "../notifications";
 import { Navigate } from "react-router";
-import { QueryError } from "../components/ErrorPages/QueryError";
+import { QueryError } from "../components/Error/QueryError";
 
 
 export function CollectionPage() {

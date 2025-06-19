@@ -1,5 +1,5 @@
 import { Flex, Stack, Text, Title } from '@mantine/core';
-import classes from './ErrorPages.module.css';
+import classes from './Error.module.css';
 import { Shell } from '../Shell/Shell';
 
 export function NothingFound() {

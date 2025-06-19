@@ -35,7 +35,7 @@ import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
 import { FetchError } from "../utils";
-import { QueryError } from "../components/ErrorPages/QueryError";
+import { QueryError } from "../components/Error/QueryError";
 
 enum PoemType {
   TRANSLATION = 0,

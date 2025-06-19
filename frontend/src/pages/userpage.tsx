@@ -5,7 +5,7 @@ import { callService, FetchError } from "../utils";
 import { UserPublic, usersReadUserById } from "../client";
 import { Loading } from "../components/Loading";
 import { ShowUser } from "../components/User/ShowUser";
-import { QueryError } from "../components/ErrorPages/QueryError";
+import { QueryError } from "../components/Error/QueryError";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
 

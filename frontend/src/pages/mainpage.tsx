@@ -1,4 +1,4 @@
-import { Hero } from "../components/Hero/Hero";
+import { Hero } from "../components/MainBanner/Hero";
 import { Shell } from "../components/Shell/Shell";
 import { Interweave } from "interweave";
 import { useQuery } from "@tanstack/react-query";

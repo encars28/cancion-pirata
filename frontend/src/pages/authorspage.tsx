@@ -6,7 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
 import { TbAdjustments } from "react-icons/tb";
 import { useEffect, useState } from "react";
-import { AuthorGrid } from "../components/Author/AuthorGrid";
+import { ShowAuthorGrid } from "../components/Author/ShowAuthorGrid";
 import { useSearchParams, useNavigate } from "react-router";
 import { AuthorSearchParams, SearchParams } from "../client";
 
@@ -85,7 +85,7 @@ export function AuthorsPage() {
           <TbAdjustments size={25} />
         </ActionIcon>
       </Group>
-      <AuthorGrid filter={filters} setPage={setPage} />
+      <ShowAuthorGrid filter={filters} setPage={setPage} />
       <Drawer
         offset={8}
         radius="md"

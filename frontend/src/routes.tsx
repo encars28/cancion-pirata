@@ -3,7 +3,7 @@ import { PoemsPage } from "./pages/poemspage";
 import { PoemPage } from "./pages/poempage";
 import { AuthorsPage } from "./pages/authorspage";
 import { AuthorPage } from "./pages/authorpage";
-import { NothingFound } from "./components/ErrorPages/NothingFound";
+import { NothingFound } from "./components/Error/NothingFound";
 import { isAdmin, isLoggedIn } from "./hooks/useAuth";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
