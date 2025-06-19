@@ -55,7 +55,7 @@ export function UpdateEmailForm() {
     try {
       await mutation.mutateAsync(values);
     } catch {
-      form.setErrors({ new_email: "Email inválido" });
+      form.setErrors({ new_email: "Email o contraseña inválidos", current_password: "Email o contraseña inválidos" });
     }
   };
 
@@ -63,7 +63,7 @@ export function UpdateEmailForm() {
     <Container size={550} h="100%" style={{ alignContent: "center" }}>
       <Paper withBorder shadow="md" p="xl" radius="lg">
         <Title ta="center" mb="xl">
-          Cambiar contraseña
+          Cambiar email
         </Title>
         <Form form={form} onSubmit={handleSubmit}>
           <Stack>
