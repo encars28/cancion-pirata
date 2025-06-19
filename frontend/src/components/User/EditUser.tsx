@@ -2,36 +2,18 @@ import { Stack, ActionIcon, TextInput, PasswordInput, Modal, Group, Button, Chec
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
 import { TbUser, TbAt, TbAbc, TbPencil } from "react-icons/tb";
 import { AuthorPublicBasic, UserUpdate } from '../../client/types.gen';
-import { callService } from '../../utils';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { usersUpdateUser } from '../../client';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic } from '../../client/types.gen';
-import { notifications } from '@mantine/notifications';
 import useSearch from '../../hooks/useSearch';
-import { successNotification } from '../../notifications';
+import useUserActions from '../../hooks/useUserActions';
 
 export function EditUser({ user }: { user: UserPublic }) {
   const [opened, { open, close }] = useDisclosure()
 
   const { data: authorsData } = useSearch({search_type: ['author']})
+  const { editUserMutation: mutation } = useUserActions(user.id)
   const authors = authorsData?.authors as AuthorPublicBasic[] ?? []
   const author_ids = authors.map(author => author.id) ?? []
-
-  const queryClient = useQueryClient()
-  const mutation = useMutation({
-    mutationFn: async (data: UserUpdate) =>
-      callService(usersUpdateUser, { path: { user_id: user.id }, body: data }),
-    onSuccess: () => {
-      notifications.clean()
-      notifications.show(successNotification({}))
-      close()
-    },
-
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
-    },
-  })
 
   const form = useForm<UserUpdate>({
     mode: 'uncontrolled',
@@ -61,6 +43,7 @@ export function EditUser({ user }: { user: UserPublic }) {
         await mutation.mutateAsync(values)
         form.resetDirty()
       }
+      close()
     } catch {
       // error is handled by mutation
       form.setErrors({ email: 'Correo o usuario incorrecto', username: 'Correo o usuario incorrecto' })

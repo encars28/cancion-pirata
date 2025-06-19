@@ -1,91 +1,91 @@
-import { Form, isEmail, isNotEmpty, useForm } from '@mantine/form'
-import { UserPublic, UserUpdateMe, usersUpdateUserMe } from '../../client';
-import { TextInput, Stack, Button, Group } from '@mantine/core';
-import { TbAbc, TbAt, TbUser } from 'react-icons/tb';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { callService } from '../../utils';
-
+import { Form, isEmail, isNotEmpty, useForm } from "@mantine/form";
+import { UserPublic, UserUpdateMe, usersUpdateUserMe } from "../../client";
+import { TextInput, Stack, Button, Group } from "@mantine/core";
+import { TbAbc, TbAt, TbUser } from "react-icons/tb";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { callService } from "../../utils";
 
 export function UpdateUserMe({ user }: { user: UserPublic }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: UserUpdateMe) =>
       callService(usersUpdateUserMe, { body: data }),
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] })
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     },
-  })
+  });
 
   const form = useForm<UserUpdateMe>({
-    mode: 'uncontrolled',
+    mode: "uncontrolled",
     initialValues: {
       ...user,
     },
     validate: {
-      email: isEmail('Correo inválido'),
-      username: isNotEmpty('Nombre de usuario no puede estar vacío'),
+      email: isEmail("Correo inválido"),
+      username: isNotEmpty("Nombre de usuario no puede estar vacío"),
     },
     enhanceGetInputProps: () => ({
       disabled: mutation.isPending,
     }),
   });
 
-
-
   const handleSubmit = async () => {
     try {
-      const values = form.getValues()
-      if (values.full_name === '') {
-        values.full_name = undefined
-      }
+      if (form.isDirty()) {
+        const values = form.getValues();
+        if (values.full_name === "") {
+          values.full_name = undefined;
+        }
 
-      await mutation.mutateAsync(values)
+        await mutation.mutateAsync(values);
+        form.resetDirty();
+      }
     } catch {
       // error is handled by mutation
-      form.setErrors({ email: 'email o username inválido', username: 'email o username inválido' })
+      form.setErrors({
+        email: "email o username inválido",
+        username: "email o username inválido",
+      });
     }
-  }
+  };
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack >
+      <Stack>
         <TextInput
-          name='email'
-          key={form.key('email')}
+          name="email"
+          key={form.key("email")}
           label="Correo"
           placeholder="Correo"
           type="email"
-          {...form.getInputProps('email')}
+          {...form.getInputProps("email")}
           leftSectionPointerEvents="none"
           leftSection={<TbAt size={15} />}
         />
         <TextInput
-          name='username'
-          key={form.key('username')}
+          name="username"
+          key={form.key("username")}
           label="Nombre de usuario"
           placeholder="Nombre de usuario"
-          {...form.getInputProps('username')}
+          {...form.getInputProps("username")}
           leftSectionPointerEvents="none"
           leftSection={<TbUser size={15} />}
         />
         <TextInput
-          name='full_name'
-          key={form.key('full_name')}
+          name="full_name"
+          key={form.key("full_name")}
           label="Nombre completo"
           placeholder="Nombre"
-          {...form.getInputProps('full_name')}
+          {...form.getInputProps("full_name")}
           leftSectionPointerEvents="none"
           leftSection={<TbAbc size={15} />}
         />
-        <Group
-          justify='flex-end'
-          mt="xl"
-        >
+        <Group justify="flex-end" mt="xl">
           <Button
             type="submit"
             loading={mutation.isPending}
-            loaderProps={{ type: 'dots' }}
+            loaderProps={{ type: "dots" }}
           >
             Guardar
           </Button>

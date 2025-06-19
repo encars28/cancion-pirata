@@ -4,6 +4,7 @@ import { DateInput } from "@mantine/dates";
 import { TbCake, TbGrave2 } from "react-icons/tb";
 import { AuthorUpdate, AuthorPublic } from "../../client/types.gen";
 import useAuthorActions from "../../hooks/useAuthorActions";
+import { modals } from "@mantine/modals";
 
 export function EditAuthor({ author }: { author: AuthorPublic }) {
   const { editAuthorMutation: mutation } = useAuthorActions(author.id);
@@ -28,6 +29,7 @@ export function EditAuthor({ author }: { author: AuthorPublic }) {
         await mutation.mutateAsync(values);
         form.resetDirty();
       }
+      modals.closeAll()
     } catch {
       // error is handled by mutation
       form.setErrors({ full_name: "Nombre repetido o incorrecto" });

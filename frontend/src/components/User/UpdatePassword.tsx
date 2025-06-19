@@ -51,7 +51,11 @@ export function UpdatePasswordForm() {
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      await mutation.mutateAsync(values)
+      if (form.isDirty()) {
+        await mutation.mutateAsync(values)
+        form.resetDirty()
+      }
+
     } catch {
       form.setErrors({ current_password: 'Contraseña incorrecta' })
      }

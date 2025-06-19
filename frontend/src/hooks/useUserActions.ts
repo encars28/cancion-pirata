@@ -26,7 +26,7 @@ const useUserActions = (userId: string) => {
   })
 
   const deleteUserMutation = useMutation({
-    mutationFn: async () => callService(usersDeleteUser, {path: { user_id: userId! }}),
+    mutationFn: async () => callService(usersDeleteUser, { path: { user_id: userId! } }),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users', userId] })
     },
@@ -34,27 +34,28 @@ const useUserActions = (userId: string) => {
       notifications.clean()
       notifications.show(successNotification({
         title: 'Usuario eliminado',
-        description: 'El usuario ha sido eliminado correctamente.'}))
+        description: 'El usuario ha sido eliminado correctamente.'
+      }))
     }
   })
 
   const editUserMutation = useMutation({
-      mutationFn: async (data: UserUpdate) =>
-        callService(usersUpdateUser, { path: { user_id: userId }, body: data }),
-      onSuccess: () => {
-        notifications.clean()
-        notifications.show(successNotification({title: 'Usuario actualizado', description: 'El usuario ha sido actualizado correctamente.'}))
-      },
-  
-      onSettled: () => {
-        queryClient.invalidateQueries({ queryKey: ["users"] })
-      },
-    })
+    mutationFn: async (data: UserUpdate) =>
+      callService(usersUpdateUser, { path: { user_id: userId }, body: data }),
+    onSuccess: () => {
+      notifications.clean()
+      notifications.show(successNotification({ title: 'Usuario actualizado', description: 'El usuario ha sido actualizado correctamente.' }))
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] })
+    },
+  })
 
 
   return {
     userProfilePicture,
-    updateUserProfilePicture, 
+    updateUserProfilePicture,
     deleteUserMutation,
     editUserMutation
   }

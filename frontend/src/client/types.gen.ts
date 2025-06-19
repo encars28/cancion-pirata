@@ -95,6 +95,7 @@ export type CollectionPublic = {
     id: string;
     username?: string | null;
     description?: string | null;
+    poem_ids?: Array<string>;
     created_at: Date | null;
     updated_at: Date | null;
 };
@@ -112,6 +113,7 @@ export type CollectionPublicWithPoems = {
     id: string;
     username?: string | null;
     description?: string | null;
+    poem_ids?: Array<string>;
     created_at: Date | null;
     updated_at: Date | null;
     poems?: Array<PoemPublic>;

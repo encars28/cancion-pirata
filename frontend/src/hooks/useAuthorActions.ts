@@ -37,7 +37,6 @@ const useAuthorActions = (authorId: string) => {
         title: 'Autor actualizado',
         description: 'El autor ha sido actualizado correctamente.',
       }))
-      close()
     },
 
     onSettled: () => {

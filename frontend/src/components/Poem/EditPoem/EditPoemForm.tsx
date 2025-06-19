@@ -52,7 +52,6 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
       callService(poemsUpdatePoem, { path: { poem_id: poem.id }, body: data }),
     onSuccess: () => {
       notifications.clean();
-      navigate(`/poems/${poem.id}`);
       notifications.show(successNotification({title: "Poema actualizado", description: "El poema se ha actualizado correctamente"}));
     },
 
@@ -132,6 +131,7 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
         await mutation.mutateAsync(values);
         form.resetDirty();
       }
+      navigate(`/poems/${poem.id}`);
     } catch {
       // error is handled by mutation
     }

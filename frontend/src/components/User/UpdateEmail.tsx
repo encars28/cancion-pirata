@@ -53,7 +53,10 @@ export function UpdateEmailForm() {
 
   const handleSubmit = async (values: typeof form.values) => {
     try {
-      await mutation.mutateAsync(values);
+      if (form.isDirty()) {
+        await mutation.mutateAsync(values)
+        form.resetDirty()
+      }
     } catch {
       form.setErrors({ new_email: "Email o contraseña inválidos", current_password: "Email o contraseña inválidos" });
     }

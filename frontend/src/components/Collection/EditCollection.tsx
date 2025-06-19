@@ -9,24 +9,30 @@ import {
   Switch,
 } from "@mantine/core";
 import { Form } from "@mantine/form";
-import usePoems from "..k/../hooks/usePoems";
 import { modals } from "@mantine/modals";
 import { TbLock, TbWorld } from "react-icons/tb";
-import { CollectionCreate, CollectionPublic } from "../../client";
+import {
+  CollectionCreate,
+  CollectionPublic,
+  PoemPublicBasic,
+} from "../../client";
 import { isNotEmpty } from "@mantine/form";
 import { useForm } from "@mantine/form";
 import useCollectionActions from "../../hooks/useCollectionActions";
+import useSearch from "../../hooks/useSearch";
+import { useNavigate } from "react-router";
 
 export function EditCollection({
   collection,
 }: {
   collection: CollectionPublic;
 }) {
-  // const { data: poemsData } = usePoems({});
-  const poemsData = []; // Placeholder for poems data, replace with actual data fetching logic
+  const { data: searchData } = useSearch({ search_type: ["poem"] });
+  const navigate = useNavigate();
+  const poemsData = searchData?.poems as PoemPublicBasic[];
 
   const poems_info = Object.fromEntries(
-    poemsData?.data?.map((poem) => [
+    poemsData?.map((poem) => [
       `${poem.title} ${
         poem.author_names && poem.author_names?.length > 0 ? " - " : ""
       } ${poem.author_names?.join(", ")}`,
@@ -58,22 +64,26 @@ export function EditCollection({
 
   const handleSubmit = async (values: CollectionCreate) => {
     try {
-      if (values.description === "") {
-        values.description = undefined;
-      }
+      if (form.isDirty()) {
+        if (values.description === "") {
+          values.description = undefined;
+        }
 
-      if (values.poem_ids && values.poem_ids?.length !== 0) {
-        values.poem_ids = values.poem_ids.map((poem) => poems_info[poem]);
-      }
+        if (values.poem_ids && values.poem_ids?.length !== 0) {
+          values.poem_ids = values.poem_ids.map((poem) => poems_info[poem]);
+        }
 
-      await editCollectionMutation.mutateAsync(values);
+        await editCollectionMutation.mutateAsync(values);
+        form.resetDirty();
+      } 
+      navigate(`/collections/${collection.id}`)
       modals.closeAll();
     } catch {}
   };
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="lg" p="lg" >
+      <Stack gap="lg" p="lg">
         <TextInput
           label="Nombre de la colección"
           placeholder="Mi colección"
@@ -93,7 +103,6 @@ export function EditCollection({
         <MultiSelect
           data={Object.keys(poems_info)}
           label="Poemas"
-          
           placeholder="Seleccione uno o más poemas"
           searchable
           nothingFoundMessage="No se encontraron poemas"
