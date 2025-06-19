@@ -1,3 +1,4 @@
+import email
 import uuid
 from typing import Any
 import os
@@ -16,6 +17,8 @@ from app.core.config import settings
 from app.core.security import verify_password
 from app.schemas.common import Message
 from app.schemas.user import (
+    EmailToken,
+    UpdateEmail,
     UserCreate,
     UserPublic,
     UserRegister,
@@ -26,9 +29,8 @@ from app.schemas.user import (
     UsersPublic,
 )
 
-from app.external.email import generate_new_account_email, send_email, generate_account_verification_email
-from app.utils import generate_temporary_token
-from PIL import Image
+from app.external.email import generate_email_verification_email, generate_new_account_email, send_email, generate_account_verification_email
+from app.utils import generate_email_token, generate_temporary_token, verify_email_token
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -133,6 +135,66 @@ def update_password_me(
     )  # type: ignore
     return Message(message="Password updated successfully")
 
+
+@router.post("/me/email", response_model=Message)
+def request_update_email_me(
+    *, body: UpdateEmail, current_user: CurrentUser, db: SessionDep
+) -> Any:
+    """
+    Update own email.
+    """
+    if not verify_password(body.current_password, current_user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect password")
+    
+    user = user_crud.get_by_email(db, email=body.new_email)
+    if user:
+        raise HTTPException(
+            status_code=400, detail="The user with this email already exists in the system"
+        )
+
+    email_token = generate_email_token(
+        sub=str(current_user.id), email=body.new_email
+    )
+    email_data = generate_email_verification_email(
+        email_to=body.new_email,
+        username=current_user.username,
+        token=email_token,
+    )
+    send_email(
+        email_to=body.new_email,
+        subject=email_data.subject,
+        html_content=email_data.html_content,
+    )
+    
+    return Message(message="Verification email sent")
+
+@router.patch("/me/email", response_model=Message)
+def update_email_me(
+    *, session: SessionDep, current_user: CurrentUser, token: EmailToken
+) -> Any:
+    """
+    Update own email.
+    """
+    res = verify_email_token(token=token.token)
+    if not res:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    
+    user_id, email = res
+    if str(current_user.id) != user_id:
+        raise HTTPException(
+            status_code=403, detail="You are not allowed to do this action"
+        )
+        
+    user = user_crud.get_by_email(session, email=email)
+    if user: 
+        raise HTTPException(
+            status_code=400, detail="The user with this email already exists in the system"
+        )
+        
+    current_user = user_crud.update(db=session, obj_id=current_user.id, obj_update=UserUpdate(email=email)) # type: ignore
+    return Message(message="Email updated successfully")
+
+
 @router.post("/me/profile_picture", response_model=Message)
 def update_user_me_profile_picture(
     session: SessionDep, image: UploadFile, current_user: CurrentUser
@@ -160,21 +222,11 @@ def update_user_me_profile_picture(
         
         with open(os.path.join(path, "profile.png"), "wb") as f:
             f.write(image.file.read())
-            
-        # resize_path = os.path.join(path, "profile_resize.png")
-        # i = Image.open(os.path.join(path, "profile.png"))
-        # i.thumbnail((400, 400))
-        # i.save(resize_path)
     
         return Message(message="Profile picture updated successfully")
 
     with open(os.path.join(current_user.image_path, "profile.png"), "wb") as f:
         f.write(image.file.read())
-        
-    # resize_path = os.path.join(current_user.image_path, "profile_resize.png")
-    # i = Image.open(os.path.join(current_user.image_path, "profile.png"))
-    # i.thumbnail((400, 400))
-    # i.save(resize_path)
 
     return Message(message="Profile picture updated successfully")
 
@@ -191,11 +243,6 @@ def get_user_me_profile_picture(current_user: CurrentUser) -> Any:
         raise HTTPException(status_code=404, detail="Profile picture not found")
 
     return FileResponse(image_path)
-    # resize_path = os.path.join(current_user.image_path, "profile_resize.png")
-    # if not os.path.exists(resize_path):
-    #     return FileResponse(image_path)
-    
-    # return FileResponse(resize_path)
 
 @router.get("/me", response_model=UserPublic)
 def read_user_me(current_user: CurrentUser) -> Any:

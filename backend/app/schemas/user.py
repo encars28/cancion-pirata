@@ -59,8 +59,15 @@ class UserUpdateMe(BaseModel):
 
 class UpdatePassword(BaseModel):
     current_password: str = Field(min_length=8, max_length=40)
-    new_password: str = Field(min_length=8, max_length=40)
+    new_password: EmailStr = Field(max_length=255)
 
+
+class UpdateEmail(BaseModel):
+    current_password: str = Field(min_length=8, max_length=40)
+    new_email: str = Field(min_length=8, max_length=40)
+
+class EmailToken(BaseModel): 
+    token: str
 
 class UserPublic(UserBase):
     model_config = ConfigDict(from_attributes=True)

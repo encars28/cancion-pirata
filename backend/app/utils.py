@@ -1,4 +1,6 @@
+from ast import Tuple
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 
 import jwt
 from jwt.exceptions import InvalidTokenError
@@ -14,6 +16,18 @@ def generate_temporary_token(sub: str, type: str) -> str:
     exp = expires.timestamp()
     encoded_jwt = jwt.encode(
         {"exp": exp, "nbf": now, "sub": sub, "type": type},
+        settings.SECRET_KEY,
+        algorithm=security.ALGORITHM,
+    )
+    return encoded_jwt
+
+def generate_email_token(sub: str, email: str) -> str:
+    delta = timedelta(hours=settings.EMAIL_RESET_TOKEN_EXPIRE_HOURS)
+    now = datetime.now(timezone.utc)
+    expires = now + delta
+    exp = expires.timestamp()
+    encoded_jwt = jwt.encode(
+        {"exp": exp, "nbf": now, "sub": sub, "type": "email_verification", "email": email},
         settings.SECRET_KEY,
         algorithm=security.ALGORITHM,
     )
@@ -41,5 +55,17 @@ def verify_account_token(token: str) -> str | None:
             return None
         
         return str(decoded_token["sub"])
+    except InvalidTokenError:
+        return None
+    
+def verify_email_token(token: str) -> Optional[tuple[str, str]]:
+    try:
+        decoded_token = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+        )
+        if decoded_token["type"] != "email_verification":
+            return None
+        
+        return str(decoded_token["sub"]), str(decoded_token["email"])
     except InvalidTokenError:
         return None

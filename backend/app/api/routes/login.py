@@ -118,32 +118,6 @@ def reset_password(session: SessionDep, body: NewPassword) -> Message:
     return Message(message="Password updated successfully")
 
 
-@router.post(
-    "/password-recovery-html-content/{email}",
-    dependencies=[Depends(get_current_active_superuser)],
-    response_class=HTMLResponse,
-)
-def recover_password_html_content(email: str, session: SessionDep) -> Any:
-    """
-    HTML Content for Password Recovery
-    """
-    user = user_crud.get_by_email(session, email)
-
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="The user with this username does not exist in the system.",
-        )
-    password_reset_token = generate_temporary_token(sub=str(user.id), type="password_reset")
-    email_data = generate_reset_password_email(
-        email_to=user.email, username=user.username, token=password_reset_token
-    )
-
-    return HTMLResponse(
-        content=email_data.html_content, headers={"subject:": email_data.subject}
-    )
-
-
 @router.post("/activate-account/")
 def activate_account(session: SessionDep, token: VerifyToken) -> Message:
     """

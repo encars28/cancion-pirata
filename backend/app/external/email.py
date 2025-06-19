@@ -112,3 +112,21 @@ def generate_account_verification_email(
         },
     )
     return EmailData(html_content=html_content, subject=subject)
+
+def generate_email_verification_email(
+    email_to: str, username: str, token: str
+) -> EmailData:
+    project_name = settings.PROJECT_NAME
+    subject = f"{project_name} - Verificación de email para usuario {username}"
+    link = f"{settings.FRONTEND_HOST}/verify-email?token={token}"
+    html_content = render_email_template(
+        template_name="email_verification.html",
+        context={
+            "project_name": settings.PROJECT_NAME,
+            "username": username,
+            "email": email_to,
+            "valid_hours": settings.EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS,
+            "link": link,
+        },
+    )
+    return EmailData(html_content=html_content, subject=subject)
