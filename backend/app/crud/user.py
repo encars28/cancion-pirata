@@ -114,25 +114,6 @@ class UserCRUD:
         db.refresh(db_obj)
 
         return UserSchema.model_validate(db_obj)
-
-    def update_image_path(
-        self, db: Session, obj_id: uuid.UUID, image_path: str
-    ) -> Optional[UserSchema]:
-        db_obj = db.get(User, obj_id)
-        if not db_obj:
-            return None
-
-        # Ensure the image path is valid and exists
-        if not os.path.exists(image_path):
-            return None
-
-        # Update the image path
-        db_obj.image_path = image_path
-
-        db.commit()
-        db.refresh(db_obj)
-
-        return UserSchema.model_validate(db_obj)
     
     def update(
         self, db: Session, obj_id: uuid.UUID, obj_update: UserUpdate | UserUpdateMe

@@ -5,6 +5,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from app.api.api import api_router
 from app.core.config import settings
+from fastapi.staticfiles import StaticFiles
 
 import uvicorn
 
@@ -21,6 +22,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     generate_unique_id_function=custom_generate_unique_id,
 )
+
+app.mount("/static", StaticFiles(directory=settings.IMAGES_DIR), name="static")
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:
