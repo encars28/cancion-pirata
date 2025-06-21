@@ -1,20 +1,10 @@
 import { Avatar, AvatarProps } from "@mantine/core";
 
 interface PersonAvatarProps extends AvatarProps {
-  picture?: Blob;
+  url: string;
+  time?: number
 }
 
-export function PersonAvatar({picture, ...props}: PersonAvatarProps) {
-  return picture ? (
-    <Avatar
-      src={URL.createObjectURL(picture)}
-      alt="Foto"
-      {...props}
-    />
-  ) : (
-    <Avatar
-      alt="Foto"
-      {...props}
-    />
-  );
+export function PersonAvatar({ url, time, ...props }: PersonAvatarProps) {
+  return <Avatar src={url} alt="Foto" {...props} />;
 }

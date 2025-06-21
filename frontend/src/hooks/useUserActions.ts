@@ -1,20 +1,12 @@
 import { notifications } from '@mantine/notifications'
-import { usersDeleteUser, usersUpdateUser, usersGetUserProfilePicture, usersUpdateUserProfilePicture } from '../client'
+import { usersDeleteUser, usersUpdateUser, usersUpdateUserProfilePicture } from '../client'
 import { callService } from '../utils'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { successNotification } from '../notifications'
 import { UserUpdate } from '../client/types.gen'
 
 const useUserActions = (userId: string) => {
   const queryClient = useQueryClient()
-  const { data: userProfilePicture } = useQuery({
-    queryKey: ['users', userId, 'profilePicture'],
-    queryFn: async () => {
-      return callService(usersGetUserProfilePicture, { path: { user_id: userId! } })
-    },
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 48, // 48 hours
-  })
 
   const updateUserProfilePicture = useMutation({
     mutationFn: async (file: File) => {
@@ -54,7 +46,6 @@ const useUserActions = (userId: string) => {
 
 
   return {
-    userProfilePicture,
     updateUserProfilePicture,
     deleteUserMutation,
     editUserMutation

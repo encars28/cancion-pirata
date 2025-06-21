@@ -40,9 +40,10 @@ export function ShowUser({ user }: { user: UserPublic }) {
   }
 
   const navigate = useNavigate();
-  const { userProfilePicture, updateUserProfilePicture, deleteUserMutation } =
+  const { updateUserProfilePicture, deleteUserMutation } =
     useUserActions(user.id);
   const { user: currentUser } = useAuth();
+  const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png"
 
   const author: AuthorPublicWithPoems | undefined = authorData;
 
@@ -91,14 +92,14 @@ export function ShowUser({ user }: { user: UserPublic }) {
         >
           {isAdmin() ? (
             <UploadPicture
-              currentPicture={(userProfilePicture as Blob) ?? null}
+              url={pictureUrl}
               updatePicture={updateUserProfilePicture}
               small
             />
           ) : (
             <PersonAvatar
               size={120}
-              picture={(userProfilePicture as Blob) ?? null}
+              url={pictureUrl}
             />
           )}
           <Stack gap={2}>

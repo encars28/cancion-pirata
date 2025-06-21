@@ -22,8 +22,9 @@ import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
-  const { deleteAuthorMutation, authorProfilePicture, updateProfilePicture } =
+  const { deleteAuthorMutation, updateProfilePicture } =
     useAuthorActions(author.id);
+    const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/authors/" + author.id + ".png"
 
   const deleteAuthor = () =>
     modals.openConfirmModal({
@@ -65,12 +66,12 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
           {isAdmin() ? (
             <UploadPicture
               updatePicture={updateProfilePicture}
-              currentPicture={(authorProfilePicture as Blob) ?? null}
+              url={pictureUrl}
               small
             />
           ) : (
             <PersonAvatar
-              picture={(authorProfilePicture as Blob) ?? null}
+              url={pictureUrl}
               size={120}
             />
           )}

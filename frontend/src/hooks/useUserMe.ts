@@ -1,5 +1,5 @@
-import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
-import { usersGetUserMeProfilePicture, usersUpdateUserMeProfilePicture, usersDeleteUserMe, AuthorUpdateBasic, authorsUpdateAuthorMe, EmailToken, usersUpdateEmailMe } from '../client'
+import { useQueryClient, useMutation } from '@tanstack/react-query'
+import { usersUpdateUserMeProfilePicture, usersDeleteUserMe, AuthorUpdateBasic, authorsUpdateAuthorMe, EmailToken, usersUpdateEmailMe } from '../client'
 import { callService } from '../utils'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
@@ -11,12 +11,7 @@ const useUserMe = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const { logout } = useAuth()
-  const { data: profilePicture } = useQuery({
-    queryKey: ['currentUser', 'profilePicture'],
-    queryFn: async () => callService(usersGetUserMeProfilePicture),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 48, // 48 hours
-  })
+
   const updateProfilePicture = useMutation({
     mutationFn: async (file: File) => {
       return callService(usersUpdateUserMeProfilePicture, { body: { image: file } })
@@ -70,7 +65,7 @@ const useUserMe = () => {
     }
   })
 
-  return { profilePicture, updateProfilePicture, deleteUserMeMutation, editAuthorMe, verifyEmailMutation }
+  return { updateProfilePicture, deleteUserMeMutation, editAuthorMe, verifyEmailMutation }
 }
 
 export default useUserMe

@@ -1,7 +1,12 @@
-import { Group, ActionIcon, Tooltip } from "@mantine/core";
-import { TbSearch, TbUser } from "react-icons/tb";
+import {
+  Group,
+  Button,
+  Text,
+  ActionIcon,
+  Tooltip,
+} from "@mantine/core";
+import { TbLogin, TbSearch, TbWritingSign } from "react-icons/tb";
 import { searchHandlers } from "../Search";
-import { TbWritingSign } from "react-icons/tb";
 import { useNavigate } from "react-router";
 import { isLoggedIn } from "../../hooks/useAuth";
 import { ProfileMenu } from "./ProfileMenu";
@@ -9,46 +14,49 @@ import { ProfileMenu } from "./ProfileMenu";
 export function HeaderMobile() {
   const navigate = useNavigate();
   return (
-    <Group>
-      <Tooltip label="Buscar">
-        <ActionIcon
-          variant="default"
-          size="lg"
-          onClick={searchHandlers.open}
-          c="dimmed"
-          radius="md"
-        >
-          <TbSearch size={20} />
-        </ActionIcon>
-      </Tooltip>
-      <Tooltip label="Nuevo poema">
-        <ActionIcon
-          size={35}
-          variant="light"
-          radius="md"
-          onClick={
-            isLoggedIn()
-              ? () => navigate("/poems/add")
-              : () => navigate("/login")
-          }
-        >
-          <TbWritingSign size={22} />
-        </ActionIcon>
-      </Tooltip>
-      {isLoggedIn() ? (
-        <ProfileMenu />
-      ) : (
-        <Tooltip label="Iniciar sesión">
+    <Group justify="space-between" w="100%" wrap="nowrap" gap={20}>
+      <Button
+        variant="default"
+        fullWidth
+        ta="left"
+        c="dimmed"
+        radius="md"
+        justify="space-between"
+        ml="sm"
+        onClick={searchHandlers.open}
+      >
+        <Group>
+          <TbSearch size={16} />
+          <Text size="sm">Buscar</Text>
+        </Group>
+      </Button>
+      <Group wrap="nowrap">
+        <Tooltip label="Nuevo poema">
           <ActionIcon
-            variant="filled"
-            size="lg"
+            size={35}
+            variant="light"
             radius="md"
-            onClick={() => navigate("/login")}
+            onClick={
+              isLoggedIn()
+                ? () => navigate("/poems/add")
+                : () => navigate("/login")
+            }
           >
-            <TbUser size={22} />
+            <TbWritingSign size={22} />
           </ActionIcon>
         </Tooltip>
-      )}
+        {isLoggedIn() ? (
+          <ProfileMenu />
+        ) : (
+          <Button
+            radius="md"
+            onClick={() => navigate("/login")}
+            leftSection={<TbLogin />}
+          >
+            Iniciar sesión
+          </Button>
+        )}
+      </Group>
     </Group>
   );
 }

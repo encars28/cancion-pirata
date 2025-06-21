@@ -1,0 +1,4 @@
+.vite
+node_modules
+bun.lockdb
+openapi.json

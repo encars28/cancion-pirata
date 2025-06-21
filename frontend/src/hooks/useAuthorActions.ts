@@ -1,6 +1,6 @@
-import { authorsDeleteAuthor, authorsGetAuthorPicture, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate } from '../client'
+import { authorsDeleteAuthor, authorsUpdateAuthor, authorsUploadAuthorPicture, AuthorUpdate } from '../client'
 import { callService } from '../utils'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
@@ -51,18 +51,10 @@ const useAuthorActions = (authorId: string) => {
     }
   })
 
-  const {data: authorProfilePicture} = useQuery({
-    queryKey: ['authors', authorId, 'profilePicture'],
-    queryFn: async () => callService(authorsGetAuthorPicture, { path: { author_id: authorId } }),
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
-    gcTime: 1000 * 60 * 60 * 48, // 48 hours
-  })
-
   return {
     deleteAuthorMutation,
     editAuthorMutation,
     updateProfilePicture,
-    authorProfilePicture,
   }
 }
 

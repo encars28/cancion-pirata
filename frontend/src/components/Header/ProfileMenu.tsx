@@ -3,13 +3,12 @@ import { useNavigate } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
 import { modals } from "@mantine/modals";
-import useUserMe from "../../hooks/useUserMe";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { profilePicture } = useUserMe();
+  const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png"
 
   const openModal = () =>
     modals.openConfirmModal({
@@ -29,7 +28,7 @@ export function ProfileMenu() {
           style={{ cursor: "pointer", borderRadius: "xl" }}
           onClick={() => navigate(`/users/${user?.id}`)}
         >
-          <PersonAvatar picture={(profilePicture as Blob) ?? null} size={40} />
+          <PersonAvatar url={pictureUrl} size={40} />
         </Box>
       </Menu.Target>
       <Menu.Dropdown ta="left">
@@ -37,7 +36,7 @@ export function ProfileMenu() {
           {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          <PersonAvatar picture={(profilePicture as Blob) ?? null} size={60} />
+          <PersonAvatar url={pictureUrl}  size={60} />
         </Center>
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item

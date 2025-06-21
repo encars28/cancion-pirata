@@ -92,8 +92,12 @@ export function Shell({
               </>
             )}
           </Group>
-
-          <Group hiddenFrom="xs" gap="md" wrap="nowrap">
+          <Group
+            justify="space-between"
+            hiddenFrom="xs"
+            w="100%"
+            wrap="nowrap"
+          >
             <HeaderMobile />
             {profileNavbar && (
               <>

@@ -12,7 +12,7 @@ export function AuthorGrid({ data }: { data: AuthorGridProps[] }) {
   const navigate = useNavigate()
   return (
     <SimpleGrid
-      cols={{ base: 3, md: 4, lg: 5, xl: 6 }}
+      cols={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
       spacing="sm"
       verticalSpacing="xl"  
       w="100%"

@@ -31,7 +31,8 @@ export function ProfileNavbar() {
     location.pathname.split("me/")[1] ?? "profile"
   );
   const { logout, user: currentUser } = useAuth();
-  const { deleteUserMeMutation, updateProfilePicture, profilePicture } = useUserMe();
+  const { deleteUserMeMutation, updateProfilePicture } = useUserMe();
+  const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/users/" + currentUser?.id + ".png"
 
   const deleteMe = () =>
     modals.openConfirmModal({
@@ -64,7 +65,7 @@ export function ProfileNavbar() {
       <ScrollArea>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
-          <UploadPicture currentPicture={profilePicture as Blob ?? null} updatePicture={updateProfilePicture}/>
+          <UploadPicture url={pictureUrl} updatePicture={updateProfilePicture}/>
         </Stack>
       </AppShell.Section>
       <AppShell.Section px="xl" my="md">

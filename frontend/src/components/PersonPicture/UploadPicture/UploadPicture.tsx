@@ -11,19 +11,21 @@ import { Message } from "../../../client";
 
 export function UploadPicture({
   updatePicture,
-  currentPicture,
+  url,
   small
 }: {
   updatePicture: UseMutationResult<Message | undefined, Error, File, unknown>;
-  currentPicture?: Blob;
+  url: string;
   small?: boolean;
 }) {
   const { hovered, ref } = useHover();
+
 
   const handleSubmit = async (picture: File | null) => {
     if (picture) {
       try {
         await updatePicture.mutateAsync(picture);
+        location.reload()
       } catch {}
     }
   };
@@ -49,7 +51,7 @@ export function UploadPicture({
         loaderProps={{ type: "dots" }}
       >
         <PersonAvatar
-          picture={(currentPicture as Blob) ?? null}
+          url={url}
           className={small ? classes.picture_small : classes.picture}
         />
         <>

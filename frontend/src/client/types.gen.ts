@@ -262,7 +262,6 @@ export type PoemsPublicWithAllTheInfo = {
 
 export type SearchParams = {
     search_type?: Array<'author' | 'poem' | 'collection' | 'user'>;
-    merge_author_user?: boolean;
     author_params?: AuthorSearchParams | null;
     poem_params?: PoemSearchParams | null;
     collection_params?: CollectionSearchParams | null;
@@ -671,25 +670,11 @@ export type UsersRequestUpdateEmailMeResponses = {
 
 export type UsersRequestUpdateEmailMeResponse = UsersRequestUpdateEmailMeResponses[keyof UsersRequestUpdateEmailMeResponses];
 
-export type UsersGetUserMeProfilePictureData = {
-    body?: never;
-    path?: never;
-    query?: never;
-    url: '/api/v1/users/me/profile_picture';
-};
-
-export type UsersGetUserMeProfilePictureResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
 export type UsersUpdateUserMeProfilePictureData = {
     body: BodyUsersUpdateUserMeProfilePicture;
     path?: never;
     query?: never;
-    url: '/api/v1/users/me/profile_picture';
+    url: '/api/v1/users/me/picture';
 };
 
 export type UsersUpdateUserMeProfilePictureErrors = {
@@ -816,38 +801,13 @@ export type UsersUpdateUserResponses = {
 
 export type UsersUpdateUserResponse = UsersUpdateUserResponses[keyof UsersUpdateUserResponses];
 
-export type UsersGetUserProfilePictureData = {
-    body?: never;
-    path: {
-        user_id: string;
-    };
-    query?: never;
-    url: '/api/v1/users/{user_id}/profile_picture';
-};
-
-export type UsersGetUserProfilePictureErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type UsersGetUserProfilePictureError = UsersGetUserProfilePictureErrors[keyof UsersGetUserProfilePictureErrors];
-
-export type UsersGetUserProfilePictureResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
-
 export type UsersUpdateUserProfilePictureData = {
     body: BodyUsersUpdateUserProfilePicture;
     path: {
         user_id: string;
     };
     query?: never;
-    url: '/api/v1/users/{user_id}/profile_picture';
+    url: '/api/v1/users/{user_id}/picture';
 };
 
 export type UsersUpdateUserProfilePictureErrors = {
@@ -1069,31 +1029,6 @@ export type AuthorsUpdateAuthorResponses = {
 };
 
 export type AuthorsUpdateAuthorResponse = AuthorsUpdateAuthorResponses[keyof AuthorsUpdateAuthorResponses];
-
-export type AuthorsGetAuthorPictureData = {
-    body?: never;
-    path: {
-        author_id: string;
-    };
-    query?: never;
-    url: '/api/v1/authors/{author_id}/picture';
-};
-
-export type AuthorsGetAuthorPictureErrors = {
-    /**
-     * Validation Error
-     */
-    422: HttpValidationError;
-};
-
-export type AuthorsGetAuthorPictureError = AuthorsGetAuthorPictureErrors[keyof AuthorsGetAuthorPictureErrors];
-
-export type AuthorsGetAuthorPictureResponses = {
-    /**
-     * Successful Response
-     */
-    200: unknown;
-};
 
 export type AuthorsUploadAuthorPictureData = {
     body: BodyAuthorsUploadAuthorPicture;
