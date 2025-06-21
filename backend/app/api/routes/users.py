@@ -330,12 +330,6 @@ def update_user_profile_picture(
             status_code=400, detail="File is not an image"
         )
 
-    if not os.path.exists(settings.IMAGES_DIR):
-        raise HTTPException(
-            status_code=500,
-            detail="Images directory does not exist.",
-        )
-
     file_path = os.path.join(
         settings.IMAGES_DIR, "users", f"{user_id}.png")
     try:

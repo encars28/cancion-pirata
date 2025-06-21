@@ -23,7 +23,7 @@ app = FastAPI(
     generate_unique_id_function=custom_generate_unique_id,
 )
 
-app.mount("/static", StaticFiles(directory=settings.IMAGES_DIR), name="static")
+app.mount("/static", StaticFiles(directory="images"), name="static")
 
 # Set all CORS enabled origins
 if settings.all_cors_origins:
