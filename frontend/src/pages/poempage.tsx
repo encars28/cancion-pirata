@@ -5,7 +5,7 @@ import { useNavigate, useParams, Navigate } from "react-router";
 import useAuth, { isLoggedIn } from "../hooks/useAuth";
 import {
   Title,
-  Container,
+  Divider,
   Stack,
   Text,
   Space,
@@ -17,6 +17,7 @@ import {
   HoverCard,
   Affix,
   Badge,
+  Flex,
 } from "@mantine/core";
 import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
@@ -165,7 +166,7 @@ export function PoemPage() {
               </HoverCard.Dropdown>
             </HoverCard>
           )}
-          <Stack gap="xl">
+          <Stack gap={30}>
             <Title ta="center" order={1}>
               {poem.title}
             </Title>
@@ -177,17 +178,18 @@ export function PoemPage() {
                 </Badge>
               </Stack>
             ) : (
-              <Stack justify="center" align="center" gap="md">
+              <Flex wrap="wrap" gap={5} justify="center" align="center">
                 {poem.author_ids?.map((author, index) => (
                   <AuthorBadge
-                    variant="default"
+                    variant="light"
                     color="grey"
+                    size="lg"
                     authorId={author}
                     authorName={poem.author_names![index]}
                     key={author}
                   />
                 ))}
-              </Stack>
+              </Flex>
             )}
           </Stack>
         </Group>
@@ -196,8 +198,6 @@ export function PoemPage() {
             {poem.description}
           </Text>
         )}
-
-        {/* <Divider w="100%" mt="xl" /> */}
         <Space h={30} />
         <Group grow justify="flex-end" p="xl" w={{base: "100%", sm:"80%", md: "60%", lg: "50%", xl: "40%"}}>
           <Interweave content={poem.content} />
