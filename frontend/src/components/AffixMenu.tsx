@@ -15,7 +15,7 @@ export function AffixMenu({
   admin = false,
 }: AffixMenuProps) {
   return (
-    <Menu transitionProps={{ transition: "pop" }} withArrow>
+    <Menu position="top" transitionProps={{ transition: "pop" }} withArrow>
       <Menu.Target>
         <ActionIcon
           variant="light"

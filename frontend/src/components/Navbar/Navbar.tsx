@@ -1,5 +1,5 @@
 import classes from "./Navbar.module.css";
-import { Tooltip, UnstyledButton, Stack, Divider, Container } from "@mantine/core";
+import { Tooltip, UnstyledButton, Stack, Divider } from "@mantine/core";
 import { IconType } from "react-icons/lib";
 import { useEffect, useState } from "react";
 import {
@@ -8,12 +8,8 @@ import {
   TbBrandSafari,
   TbHome,
   TbHomeFilled,
-  TbInfoCircle,
-  TbListSearch,
   TbSettings,
-  TbSignLeft,
   TbUserEdit,
-  TbWritingSign,
 } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router";
 import useAuth, { isLoggedIn } from "../../hooks/useAuth";
@@ -87,9 +83,10 @@ export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Stack justify="center" align="center" gap={10}>
-          <NavbarLink
-            icon={TbHomeFilled}
+        <Stack gap="xl">
+        <Stack justify="center" align="center">
+        <NavbarLink
+            icon={TbHome}
             label="Página principal"
             active={active === "main_page"}
             onClick={() => {
@@ -97,6 +94,8 @@ export function Navbar() {
               navigate("/");
             }}
           />
+        </Stack>
+        <Stack justify="center" align="center" gap={10}>
                     <NavbarLink
             icon={TbUserEdit}
             label="Explorar autores y usuarios"
@@ -130,6 +129,7 @@ export function Navbar() {
             onClick={handleCollectionsClick}
           />
 
+        </Stack>
         </Stack>
       </div>
       {isLoggedIn() && (
