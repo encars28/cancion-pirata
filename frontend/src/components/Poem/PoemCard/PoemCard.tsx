@@ -78,7 +78,7 @@ export function PoemCard({
       <Stack justify="space-around" h="100%">
         <Group justify="space-between" align="center" wrap="nowrap">
           <Group gap="lg" wrap="nowrap">
-            <Image src="/src/assets/scroll.png" w={40} mt="xl " />
+            <Image src="/public/scroll.png" w={40} mt="xl " />
             <Stack gap={0}>
               <Text fw="bold" lineClamp={1}>
                 {poem.title}

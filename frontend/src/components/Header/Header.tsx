@@ -1,10 +1,4 @@
-import {
-  Group,
-  Button,
-  Text,
-  ActionIcon,
-  Tooltip,
-} from "@mantine/core";
+import { Group, Title, Button, Text, ActionIcon, Tooltip } from "@mantine/core";
 import { TbLogin, TbSearch, TbWritingSign } from "react-icons/tb";
 import { searchHandlers } from "../Search";
 import { useNavigate } from "react-router";
@@ -14,7 +8,19 @@ import { ProfileMenu } from "./ProfileMenu";
 export function Header() {
   const navigate = useNavigate();
   return (
-    <Group justify="space-between" w="100%" wrap="nowrap" gap={100}>
+    <Group w="100%" wrap="nowrap" gap={40}>
+      <Title
+        c="dimmed"
+        fw="lighter"
+        textWrap="nowrap"
+        ml="xl"
+        order={3}
+        onClick={() => navigate("/")}
+        style={{ cursor: "pointer" }}
+        ta="center"
+      >
+        La canción del poeta
+      </Title>
       <Button
         variant="default"
         fullWidth
@@ -23,28 +29,13 @@ export function Header() {
         radius="md"
         justify="space-between"
         onClick={searchHandlers.open}
-        ml={100}
       >
         <Group>
           <TbSearch size={16} />
           <Text size="sm">Buscar</Text>
         </Group>
       </Button>
-      <Group wrap="nowrap">
-        <Tooltip label="Nuevo poema">
-          <ActionIcon
-            size={35}
-            variant="light"
-            radius="md"
-            onClick={
-              isLoggedIn()
-                ? () => navigate("/poems/add")
-                : () => navigate("/login")
-            }
-          >
-            <TbWritingSign size={22} />
-          </ActionIcon>
-        </Tooltip>
+      <Group wrap="nowrap" mr="xl">
         {isLoggedIn() ? (
           <ProfileMenu />
         ) : (

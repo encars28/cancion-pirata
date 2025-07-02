@@ -14,12 +14,18 @@ import {
   Group,
   Divider,
   LoadingOverlay,
+  Affix,
+  ActionIcon,
+  Tooltip,
+  Text,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
-import { TbUser } from "react-icons/tb";
+import { TbSearch, TbWritingSign, TbUser } from "react-icons/tb";
 import { AuthorBadge } from "../components/Author/AuthorBadge/AuthorBadge";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
+import { searchHandlers } from "../components/Search";
+import { isLoggedIn } from "../hooks/useAuth";
 
 export function MainPage() {
   const navigate = useNavigate();
@@ -59,6 +65,7 @@ export function MainPage() {
 
   const poem = data as PoemPublicWithAllTheInfo;
   return (
+    <>
     <Shell noPaddingTop>
       <Hero />
         { poem && (
@@ -83,7 +90,7 @@ export function MainPage() {
                       </Badge>
                     </Group>
                   ) : (
-                    <Group justify="center" gap="md">
+                    <Stack align="center" justify="center" gap="md">
                       {poem.author_ids?.map((author, index) => (
                         <AuthorBadge
                           authorId={author}
@@ -91,7 +98,7 @@ export function MainPage() {
                           key={author}
                         />
                       ))}
-                    </Group>
+                    </Stack>
                   )}
                 </Stack>
                 <Group justify="center" mt="lg">
@@ -122,5 +129,25 @@ export function MainPage() {
         </Title>
       )}
     </Shell>
+    <Affix>
+        <Tooltip label="Nuevo poema">
+        <ActionIcon
+          ml={20}
+          size={50}
+          variant="filled"
+          radius="xl"
+          bottom={30}
+          right={30}
+          onClick={
+            isLoggedIn()
+              ? () => navigate("/poems/add")
+              : () => navigate("/login")
+          }
+        >
+          <TbWritingSign size={25} />
+        </ActionIcon>
+      </Tooltip>
+    </Affix>
+    </>
   );
 }

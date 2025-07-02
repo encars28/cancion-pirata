@@ -1,4 +1,4 @@
-import { Badge } from "@mantine/core";
+import { Badge, BadgeProps } from "@mantine/core";
 import { TbUser } from "react-icons/tb";
 import classes from "./AuthorBadge.module.css";
 import { useNavigate } from "react-router";
@@ -6,20 +6,19 @@ import { useNavigate } from "react-router";
 export function AuthorBadge({
   authorId,
   authorName,
-  variant = "default",
+  ...props
 }: {
   authorId: string;
   authorName: string;
-  variant?: "default" | "light" | "filled" | "outline";
-}) {
+} & Partial<BadgeProps>) {
   const navigate = useNavigate();
 
   return (
     <Badge
       onClick={() => navigate(`/authors/${authorId}`)}
-      variant={variant}
       size="lg"
       className={classes.link}
+      {...props}
     >
       <TbUser />
       {" " + authorName}

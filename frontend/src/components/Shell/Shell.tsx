@@ -63,15 +63,15 @@ export function Shell({
       }}
     >
       <AppShell.Header
-        style={{ border: 0 }}
+        style={{ border: 0}}
         className={RemoveScroll.classNames.zeroRight}
       >
-        <Container className={classes.inner}>
+        {/* <Container className={classes.inner}> */}
           <Group
-            justify="space-between"
+            justify="flex-end"
             visibleFrom="xs"
-            gap={60}
             w="100%"
+            h="100%"
             wrap="nowrap"
           >
             <Header />
@@ -93,7 +93,7 @@ export function Shell({
             )}
           </Group>
           <Group
-            justify="space-between"
+            justify="flex-end"
             hiddenFrom="xs"
             w="100%"
             wrap="nowrap"
@@ -116,7 +116,7 @@ export function Shell({
               </>
             )}
           </Group>
-        </Container>
+        {/* </Container> */}
       </AppShell.Header>
 
       {profileNavbar && <ProfileNavbar />}

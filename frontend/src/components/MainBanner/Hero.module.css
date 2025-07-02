@@ -2,7 +2,7 @@
   position: relative;
   height: 550px;
   padding-top: 160px;
-  background-image: url(/src/assets/bookshelves.jpg);
+  background-image: url(/public/bookshelves.jpg);
   background-size: cover;
   background-position: center;
   padding-left: 100px;

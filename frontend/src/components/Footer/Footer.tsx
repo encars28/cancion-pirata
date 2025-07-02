@@ -6,7 +6,11 @@ import {
   TbArrowsShuffle,
   TbBook,
   TbBookmarks,
+  TbBrandSafari,
   TbHome,
+  TbHomeFilled,
+  TbListSearch,
+  TbUserEdit,
   TbUsersGroup,
 } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router";
@@ -31,7 +35,7 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
         className={classes.link}
         data-active={active || undefined}
       >
-        <Icon size={22} />
+        <Icon size={24} />
       </UnstyledButton>
     </Tooltip>
   );
@@ -44,8 +48,8 @@ export function Footer() {
   const { data: randomPoem, refetch } = useQuery({
     queryKey: ["randomPoem"],
     queryFn: async () => callService(poemsReadRandomPoem),
-    enabled: false
-  })
+    enabled: false,
+  });
 
   useEffect(() => {
     if (pathname === "/" || pathname === "") {
@@ -59,7 +63,7 @@ export function Footer() {
       setActive("explore_authors");
     } else if (pathname.startsWith("/collections")) {
       setActive("collections");
-    } 
+    }
   }, [pathname]);
 
   const navigate = useNavigate();
@@ -77,47 +81,47 @@ export function Footer() {
 
   return (
     <nav className={classes.navbar}>
-          <NavbarLink
-            icon={TbBook}
-            label="Explorar poemas"
-            active={active === "explore_poems"}
-            onClick={() => {
-              setActive("explore_poems");
-              navigate("/poems");
-            }}
-          />
-          <NavbarLink
-            icon={TbUsersGroup}
-            label="Explorar autores y usuarios"
-            active={active === "explore_authors"}
-            onClick={() => {
-              setActive("explore_authors");
-              navigate("/authors");
-            }}
-          />
-          <NavbarLink
-            icon={TbHome}
-            label="Página principal"
-            active={active === "main_page"}
-            onClick={() => {
-              setActive("main_page");
-              navigate("/");
-            }}
-          />
-          <NavbarLink
-            icon={TbBookmarks}
-            label="Colecciones"
-            active={active === "collections"}
-            onClick={handleCollectionsClick}
-          />
-          <NavbarLink
-            icon={TbArrowsShuffle}
-            label="Poema aleatorio"
-            onClick={() => {
-              refetch()
-              randomPoem ? navigate(`/poems/${randomPoem.id}`) : null;
-            }}
-          />
+      <NavbarLink
+        icon={TbHomeFilled}
+        label="Página principal"
+        active={active === "main_page"}
+        onClick={() => {
+          setActive("main_page");
+          navigate("/");
+        }}
+      />
+      <NavbarLink
+        icon={TbUserEdit}
+        label="Explorar autores y usuarios"
+        active={active === "explore_authors"}
+        onClick={() => {
+          setActive("explore_authors");
+          navigate("/authors");
+        }}
+      />
+      <NavbarLink
+        icon={TbBrandSafari}
+        label="Explorar poemas"
+        active={active === "explore_poems"}
+        onClick={() => {
+          setActive("explore_poems");
+          navigate("/poems");
+        }}
+      />
+      <NavbarLink
+        icon={TbArrowsShuffle}
+        label="Poema aleatorio"
+        onClick={() => {
+          refetch();
+          randomPoem ? navigate(`/poems/${randomPoem.id}`) : null;
+        }}
+      />
+      <NavbarLink
+        icon={TbBookmarks}
+        label="Colecciones"
+        active={active === "collections"}
+        onClick={handleCollectionsClick}
+      />
     </nav>
   );
 }

@@ -63,6 +63,7 @@ export function ShowAuthorGrid({
         key={author.full_name}
         color="initials"
         size="xl"
+        src={import.meta.env.VITE_IMAGES_DIR + "/authors/" + author?.id + ".png"}
       />
     ),
     description: (

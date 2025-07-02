@@ -1,15 +1,19 @@
 import classes from "./Navbar.module.css";
-import { Tooltip, UnstyledButton, Stack } from "@mantine/core";
+import { Tooltip, UnstyledButton, Stack, Divider, Container } from "@mantine/core";
 import { IconType } from "react-icons/lib";
 import { useEffect, useState } from "react";
 import {
   TbArrowsShuffle,
-  TbBook,
   TbBookmarks,
-  TbHelp,
+  TbBrandSafari,
   TbHome,
+  TbHomeFilled,
+  TbInfoCircle,
+  TbListSearch,
   TbSettings,
-  TbUsersGroup,
+  TbSignLeft,
+  TbUserEdit,
+  TbWritingSign,
 } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router";
 import useAuth, { isLoggedIn } from "../../hooks/useAuth";
@@ -22,18 +26,19 @@ interface NavbarLinkProps {
   icon: IconType;
   label: string;
   active?: boolean;
+  border?: boolean;
   onClick?: () => void;
 }
 
-function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
+function NavbarLink({ icon: Icon, label, active, onClick, border }: NavbarLinkProps) {
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
       <UnstyledButton
         onClick={onClick}
-        className={classes.link}
+        className={border? classes.link_border : classes.link}
         data-active={active || undefined}
       >
-        <Icon size={22} />
+        <Icon size={24} />
       </UnstyledButton>
     </Tooltip>
   );
@@ -46,8 +51,8 @@ export function Navbar() {
   const { data: randomPoem, refetch } = useQuery({
     queryKey: ["randomPoem"],
     queryFn: async () => callService(poemsReadRandomPoem),
-    enabled: false
-  })
+    enabled: false,
+  });
 
   useEffect(() => {
     if (pathname === "/" || pathname === "") {
@@ -61,8 +66,6 @@ export function Navbar() {
       setActive("explore_authors");
     } else if (pathname.startsWith("/collections")) {
       setActive("collections");
-    } else if (pathname.startsWith("/help")) {
-      setActive("help");
     } else if (pathname.startsWith("/me")) {
       setActive("settings");
     }
@@ -84,9 +87,9 @@ export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Stack justify="center" align="center" gap={0}>
+        <Stack justify="center" align="center" gap={10}>
           <NavbarLink
-            icon={TbHome}
+            icon={TbHomeFilled}
             label="Página principal"
             active={active === "main_page"}
             onClick={() => {
@@ -94,17 +97,8 @@ export function Navbar() {
               navigate("/");
             }}
           />
-          <NavbarLink
-            icon={TbBook}
-            label="Explorar poemas"
-            active={active === "explore_poems"}
-            onClick={() => {
-              setActive("explore_poems");
-              navigate("/poems");
-            }}
-          />
-          <NavbarLink
-            icon={TbUsersGroup}
+                    <NavbarLink
+            icon={TbUserEdit}
             label="Explorar autores y usuarios"
             active={active === "explore_authors"}
             onClick={() => {
@@ -113,23 +107,34 @@ export function Navbar() {
             }}
           />
           <NavbarLink
-            icon={TbBookmarks}
-            label="Colecciones"
-            active={active === "collections"}
-            onClick={handleCollectionsClick}
+            icon={TbBrandSafari}
+            label="Explorar poemas"
+            active={active === "explore_poems"}
+            onClick={() => {
+              setActive("explore_poems");
+              navigate("/poems");
+            }}
           />
           <NavbarLink
             icon={TbArrowsShuffle}
             label="Poema aleatorio"
             onClick={() => {
-              refetch()
+              refetch();
               randomPoem ? navigate(`/poems/${randomPoem.id}`) : null;
             }}
           />
+          <NavbarLink
+            icon={TbBookmarks}
+            label="Colecciones"
+            active={active === "collections"}
+            onClick={handleCollectionsClick}
+          />
+
         </Stack>
       </div>
       {isLoggedIn() && (
-        <Stack justify="center" align="center" gap={0} mb={20}>
+        <Stack justify="center" align="center" gap={0}>
+          <Divider size="sm" w={30} />
           <NavbarLink
             icon={TbSettings}
             label="Configuración"
@@ -137,15 +142,6 @@ export function Navbar() {
             onClick={() => {
               setActive("settings");
               navigate("/me");
-            }}
-          />
-          <NavbarLink
-            icon={TbHelp}
-            label="Ayuda para escritorse"
-            active={active === "help"}
-            onClick={() => {
-              setActive("help");
-              navigate("/help");
             }}
           />
         </Stack>
