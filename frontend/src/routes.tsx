@@ -13,7 +13,6 @@ import { TablePoems } from "./components/Tables/TablePoems";
 import { UpdateProfile } from "./components/User/UpdateProfile/UpdateProfile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 import { AddPoem } from "./components/Poem/AddPoem";
-import { PageSettings } from "./components/PageSettings";
 import { BasePage } from "./pages/base";
 import { RegisterForm } from "./components/Auth/RegisterForm/RegisterForm";
 import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";
@@ -94,7 +93,6 @@ export default function AllRoutes() {
           <Route path="profile" element={<UpdateProfile />} />
           <Route path="password" element={<UpdatePasswordForm />} />
           <Route path="email" element={<UpdateEmailForm />} />
-          <Route path="settings" element={<PageSettings />} />
           <Route path="*" element={<UpdateProfile />} />
         </Route>
       </Route>

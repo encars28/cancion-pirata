@@ -1,7 +1,6 @@
 import {
   AppShell,
   Burger,
-  Container,
   Group,
   RemoveScroll,
   useMantineTheme,
@@ -38,6 +37,7 @@ export function Shell({
   );
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
   const footerheight = isMobile ? 65 : 0;
+  console.log(asideDesktopOpened, asideMobileOpened)
   return (
     <AppShell
       header={{ height: 60 }}
@@ -63,63 +63,68 @@ export function Shell({
       }}
     >
       <AppShell.Header
-        style={{ border: 0}}
+        style={{ border: 0 }}
         className={RemoveScroll.classNames.zeroRight}
       >
-        {/* <Container className={classes.inner}> */}
-          <Group
-            justify="flex-end"
-            visibleFrom="xs"
-            w="100%"
-            h="100%"
-            wrap="nowrap"
-          >
-            <Header />
-            {profileNavbar && (
-              <>
-                <Burger
-                  opened={asideMobileOpened}
-                  onClick={toggleAsideMobile}
-                  hiddenFrom="md"
-                  size="md"
-                />
-                <Burger
-                  opened={asideDesktopOpened}
-                  onClick={toggleAsideDesktop}
-                  visibleFrom="md"
-                  size="md"
-                />
-              </>
-            )}
-          </Group>
-          <Group
-            justify="flex-end"
-            hiddenFrom="xs"
-            w="100%"
-            wrap="nowrap"
-          >
-            <HeaderMobile />
-            {profileNavbar && (
-              <>
-                <Burger
-                  opened={asideMobileOpened}
-                  onClick={toggleAsideMobile}
-                  hiddenFrom="md"
-                  size="md"
-                />
-                <Burger
-                  opened={asideDesktopOpened}
-                  onClick={toggleAsideDesktop}
-                  visibleFrom="md"
-                  size="md"
-                />
-              </>
-            )}
-          </Group>
-        {/* </Container> */}
+        <Group
+          justify="flex-end"
+          visibleFrom="md"
+          w="100%"
+          h="100%"
+          wrap="nowrap"
+          pr="xl"
+        >
+          <Header />
+          {profileNavbar && (
+            <>
+              <Burger
+                opened={asideMobileOpened}
+                onClick={toggleAsideMobile}
+                hiddenFrom="md"
+                size="md"
+              />
+              <Burger
+                opened={asideDesktopOpened}
+                onClick={toggleAsideDesktop}
+                visibleFrom="md"
+                size="md"
+              />
+            </>
+          )}
+        </Group>
+        <Group
+          justify="flex-end"
+          hiddenFrom="md"
+          w="100%"
+          h="100%"
+          wrap="nowrap"
+          pr="xl"
+        >
+          <HeaderMobile />
+          {profileNavbar && (
+            <>
+              <Burger
+                opened={asideMobileOpened}
+                onClick={toggleAsideMobile}
+                hiddenFrom="md"
+                size="md"
+              />
+              <Burger
+                opened={asideDesktopOpened}
+                onClick={toggleAsideDesktop}
+                visibleFrom="md"
+                size="md"
+              />
+            </>
+          )}
+        </Group>
       </AppShell.Header>
 
-      {profileNavbar && <ProfileNavbar />}
+      {profileNavbar && (
+        <AppShell.Aside>
+          <ProfileNavbar />
+        </AppShell.Aside>
+      )}
 
       <AppShell.Navbar p="sm">
         <Navbar />

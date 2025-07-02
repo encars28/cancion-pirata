@@ -5,7 +5,6 @@ import { useNavigate, useParams, Navigate } from "react-router";
 import useAuth, { isLoggedIn } from "../hooks/useAuth";
 import {
   Title,
-  Divider,
   Stack,
   Text,
   Space,
@@ -23,13 +22,9 @@ import usePoem from "../hooks/usePoem";
 import usePoemActions from "../hooks/usePoemActions";
 import { modals } from "@mantine/modals";
 import {
-  TbBookmark,
-  TbEdit,
   TbInfoCircle,
   TbMessageLanguage,
-  TbPlus,
   TbPointFilled,
-  TbTrash,
   TbUser,
   TbWritingSign,
 } from "react-icons/tb";
@@ -172,11 +167,11 @@ export function PoemPage() {
             </Title>
 
             {poem.author_names?.length === 0 || poem.show_author === false ? (
-              <Stack justify="center">
-                <Badge variant="light" size="lg">
+              <Flex wrap="wrap" gap={5} justify="center" align="center">
+                <Badge variant="light" size="lg" color="grey">
                   <TbUser /> Anónimo
                 </Badge>
-              </Stack>
+              </Flex>
             ) : (
               <Flex wrap="wrap" gap={5} justify="center" align="center">
                 {poem.author_ids?.map((author, index) => (

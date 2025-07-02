@@ -61,7 +61,6 @@ export function ProfileNavbar() {
     });
 
   return (
-    <AppShell.Aside>
       <ScrollArea>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
@@ -79,21 +78,6 @@ export function ProfileNavbar() {
         </Button>
       </AppShell.Section>
       <AppShell.Section grow>
-        <Container p={0} w="100%" mt="sm">
-          <Text mb="sm" px="lg" size="sm" c="dimmed">
-            Ajustes de la página
-          </Text>
-          <NavLink
-            px="xl"
-            label="Configuración de la página"
-            leftSection={<TbSettings size={16} />}
-            onClick={() => {
-              setActive("settings");
-              navigate("/me/settings");
-            }}
-            active={active === "settings"}
-          />
-        </Container>
         <Container p={0} w="100%" mt="xl">
           <Text mb="sm" px="lg" size="sm" c="dimmed">
             Ajustes de usuario
@@ -151,6 +135,5 @@ export function ProfileNavbar() {
         </Button>
       </AppShell.Section>
       </ScrollArea>
-    </AppShell.Aside>
   );
 }
