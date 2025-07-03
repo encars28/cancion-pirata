@@ -45,6 +45,9 @@ export function ProfileMenu() {
         >
           Página usuario
         </Menu.Item>
+        <Menu.Item onClick={() => navigate("/me")} leftSection={<TbSettings />}>
+          Ajustes perfil
+        </Menu.Item>
         <Menu.Divider />
         <Menu.Item onClick={openModal} color="red" leftSection={<TbLogout />}>
           Cerrar sesión

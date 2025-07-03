@@ -156,25 +156,6 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
             {...form.getInputProps("language")}
           />
 
-          {/* <Tabs variant="outline" defaultValue="editor">
-              <Tabs.List>
-                <Tabs.Tab value="richEditor">
-                  Editor de texto
-                </Tabs.Tab> 
-                <Tabs.Tab value="editor">
-                  Editor de lenguaje de marcado
-                </Tabs.Tab>
-              </Tabs.List> */}
-          {/* <Tabs.Panel value="richEditor">
-                <Input
-                  mt="lg"
-                  component={PoemTextEditor}
-                  content={poem.content}
-                  key={form.key('content')}
-                  {...form.getInputProps('content')}
-                />
-              </Tabs.Panel> */}
-          {/* <Tabs.Panel value="editor"> */}
           <Textarea
             autosize
             maxRows={15}
@@ -185,8 +166,6 @@ export function EditPoemForm({ poem }: { poem: PoemPublicWithAllTheInfo }) {
             {...form.getInputProps("content")}
           />
           <PoemHelp />
-          {/* </Tabs.Panel>
-            </Tabs> */}
 
           <Stack mt="md" gap={5}>
             <Group justify="space-between" mt="sm">

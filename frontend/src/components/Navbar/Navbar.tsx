@@ -7,6 +7,7 @@ import {
   TbBookmarks,
   TbBrandSafari,
   TbHome,
+  TbHomeFilled,
   TbSettings,
   TbUserEdit,
 } from "react-icons/tb";
@@ -82,10 +83,10 @@ export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Stack gap="xl">
+        <Stack gap="sm">
         <Stack justify="center" align="center">
         <NavbarLink
-            icon={TbHome}
+            icon={TbHomeFilled}
             label="Página principal"
             active={active === "main_page"}
             onClick={() => {

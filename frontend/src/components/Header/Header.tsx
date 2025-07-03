@@ -10,18 +10,16 @@ export function Header() {
   const navigate = useNavigate();
   return (
     <Group w="100%" m="xl" wrap="nowrap" gap={10} justify="space-between">
-      <Title
+      <Text
+        size="xl"
         c="dimmed"
-        fw="lighter"
-        textWrap="nowrap"
         ml="xl"
-        order={3}
         onClick={() => navigate("/")}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", textWrap: "nowrap" }}
         ta="center"
       >
         La canción del poeta
-      </Title>
+      </Text>
       <Group wrap="nowrap" w="100%" justify="flex-end">
         <ColorToggle />
         <Button

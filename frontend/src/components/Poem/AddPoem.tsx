@@ -148,26 +148,13 @@ export function AddPoem() {
             key={form.key("title")}
             {...form.getInputProps("title")}
           />
-
-          {/* <Tabs variant="outline" defaultValue="editor">
-              <Tabs.List>
-                {/* <Tabs.Tab value="richEditor">
-                  Editor de texto
-                </Tabs.Tab> 
-                <Tabs.Tab value="editor">
-                  Editor de lenguaje de marcado
-                </Tabs.Tab>
-              </Tabs.List> */}
-          {/* <Tabs.Panel value="richEditor">
-                <Input
-                  mt="lg"
-                  component={PoemTextEditor}
-                  content={poem.content}
-                  key={form.key('content')}
-                  {...form.getInputProps('content')}
-                />
-              </Tabs.Panel> */}
-          {/* <Tabs.Panel value="editor"> */}
+          <TextInput
+            name="language"
+            label="Idioma"
+            placeholder="es"
+            key={form.key("language")}
+            {...form.getInputProps("language")}
+          />
             <Textarea
               resize="vertical"
               w="100%"
@@ -183,8 +170,7 @@ export function AddPoem() {
             />
             <PoemHelp />
 
-          {/* </Tabs.Panel>
-            </Tabs> */}
+
           <Stack mt="sm" gap={5}>
             <Group justify="space-between" mt="sm">
               <Stack gap={2}>
