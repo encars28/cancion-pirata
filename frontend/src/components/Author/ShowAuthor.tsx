@@ -10,21 +10,33 @@ import {
   Tabs,
   ActionIcon,
   Tooltip,
-  Button,
+  Affix,
+  Menu,
 } from "@mantine/core";
-import { TbBook, TbTrash, TbPointFilled, TbEdit } from "react-icons/tb";
-import { isAdmin } from "../../hooks/useAuth";
+import {
+  TbBook,
+  TbTrash,
+  TbPointFilled,
+  TbEdit,
+  TbWritingSign,
+  TbDots
+} from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import useAuthorActions from "../../hooks/useAuthorActions";
 import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import { EditAuthor } from "./EditAuthor";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
+import { isLoggedIn, isAdmin } from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
-  const { deleteAuthorMutation, updateProfilePicture } =
-    useAuthorActions(author.id);
-    const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/authors/" + author.id + ".png"
+  const { deleteAuthorMutation, updateProfilePicture } = useAuthorActions(
+    author.id
+  );
+  const pictureUrl =
+    import.meta.env.VITE_IMAGES_DIR + "/authors/" + author.id + ".png";
+  const navigate = useNavigate();
 
   const deleteAuthor = () =>
     modals.openConfirmModal({
@@ -70,10 +82,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
               small
             />
           ) : (
-            <PersonAvatar
-              url={pictureUrl}
-              size={120}
-            />
+            <PersonAvatar url={pictureUrl} size={120} />
           )}
 
           <Stack>
@@ -100,38 +109,6 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
             </Group>
           </Stack>
         </Flex>
-        {isAdmin() && (
-          <>
-            <Group hiddenFrom="lg">
-              <Tooltip label="Editar">
-                <ActionIcon onClick={editAuthor} size={35}>
-                  <TbEdit size={20} />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label="Eliminar">
-                <ActionIcon color="red" size={35} onClick={deleteAuthor}>
-                  <TbTrash size={20} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-            <Group visibleFrom="lg">
-              <Button
-                onClick={editAuthor}
-                w={112}
-                leftSection={<TbEdit size={20} />}
-              >
-                Editar
-              </Button>
-              <Button
-                color="red"
-                onClick={deleteAuthor}
-                leftSection={<TbTrash size={20} />}
-              >
-                Eliminar
-              </Button>
-            </Group>
-          </>
-        )}
       </Group>
       <Space h={60} />
       <Tabs variant="outline" defaultValue="poems">
@@ -145,6 +122,58 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
           <ShowPoemGrid poems={author.poems ? author.poems : []} />
         </Tabs.Panel>
       </Tabs>
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+        <Stack align="center" justify="center" gap="md">
+          {isAdmin() && (
+            <Menu
+              position="top"
+              transitionProps={{ transition: "pop" }}
+              withArrow
+            >
+              <Menu.Target>
+                <ActionIcon
+                  variant="light"
+                  style={{ backgroundColor: "#d0ebff" }}
+                  size="lg"
+                  radius="xl"
+                >
+                  <TbDots size={16} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={<TbEdit size={16} />}
+                  onClick={editAuthor}
+                >
+                  Editar autor
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={<TbTrash size={16} />}
+                  color="red"
+                  onClick={deleteAuthor}
+                >
+                  Eliminar autor
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
+
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+        </Stack>
+      </Affix>
     </Container>
   );
 }

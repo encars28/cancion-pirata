@@ -11,6 +11,8 @@ import {
   Text,
   ActionIcon,
   Tooltip,
+  Affix,
+  Menu,
 } from "@mantine/core";
 import {
   TbBook,
@@ -18,6 +20,8 @@ import {
   TbEdit,
   TbPointFilled,
   TbTrash,
+  TbDots,
+  TbWritingSign,
 } from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
@@ -31,6 +35,7 @@ import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
 import { EditUser } from "./EditUser";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import { isLoggedIn } from "../../hooks/useAuth";
 
 export function ShowUser({ user }: { user: UserPublic }) {
   let authorData = undefined;
@@ -136,39 +141,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Group>
           </Stack>
         </Flex>
-        {isAdmin() && (
-          <>
-            <Group hiddenFrom="lg">
-              <Tooltip label="Editar">
-                <ActionIcon onClick={editUser} size={35}>
-                  <TbEdit size={20} />
-                </ActionIcon>
-              </Tooltip>
-              <Tooltip label="Eliminar">
-                <ActionIcon color="red" size={35} onClick={deleteUser}>
-                  <TbTrash size={20} />
-                </ActionIcon>
-              </Tooltip>
-            </Group>
-            <Group visibleFrom="lg">
-              <Button
-                onClick={editUser}
-                w={112}
-                leftSection={<TbEdit size={20} />}
-              >
-                Editar
-              </Button>
-              <Button
-                color="red"
-                onClick={deleteUser}
-                leftSection={<TbTrash size={20} />}
-              >
-                Eliminar
-              </Button>
-            </Group>
-          </>
-        )}
-        {currentUser?.id === user.id && (
+        {currentUser?.id === user.id && !isAdmin() (
           <>
             <Group hiddenFrom="lg">
               <Tooltip label="Editar">
@@ -245,6 +218,58 @@ export function ShowUser({ user }: { user: UserPublic }) {
           )}
         </Tabs.Panel>
       </Tabs>
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+        <Stack align="center" justify="center" gap="md">
+          {isAdmin() && (
+            <Menu
+              position="top"
+              transitionProps={{ transition: "pop" }}
+              withArrow
+            >
+              <Menu.Target>
+                <ActionIcon
+                  variant="light"
+                  style={{ backgroundColor: "#d0ebff" }}
+                  size="lg"
+                  radius="xl"
+                >
+                  <TbDots size={16} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item
+                  leftSection={<TbEdit size={16} />}
+                  onClick={editUser}
+                >
+                  Editar usuario
+                </Menu.Item>
+                <Menu.Item
+                  leftSection={<TbTrash size={16} />}
+                  color="red"
+                  onClick={deleteUser}
+                >
+                  Eliminar usuario
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
+
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+        </Stack>
+      </Affix>
     </Container>
   );
 }
