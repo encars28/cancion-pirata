@@ -61,21 +61,12 @@ export function ProfileNavbar() {
     });
 
   return (
-      <ScrollArea>
+      // <ScrollArea>
+      <>
       <AppShell.Section mt="md" px="xl">
         <Stack align="center" gap="xs" my="xl">
           <UploadPicture url={pictureUrl} updatePicture={updateProfilePicture}/>
         </Stack>
-      </AppShell.Section>
-      <AppShell.Section px="xl" my="md">
-        <Button
-          onClick={() => navigate(`/users/${currentUser?.id}`)}
-          mb="sm"
-          variant="default"
-          fullWidth
-        >
-          Ver página de usuario
-        </Button>
       </AppShell.Section>
       <AppShell.Section grow>
         <Container p={0} w="100%" mt="xl">
@@ -134,6 +125,7 @@ export function ProfileNavbar() {
           Cerrar sesión
         </Button>
       </AppShell.Section>
-      </ScrollArea>
+      {/* </ScrollArea> */}
+      </>
   );
 }
