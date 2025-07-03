@@ -9,7 +9,7 @@ import {
   Text,
   Tooltip,
 } from "@mantine/core";
-import { TbUser, TbX } from "react-icons/tb";
+import { TbBook, TbBookFilled, TbBooks, TbUser, TbX } from "react-icons/tb";
 import { PoemPublic } from "../../../client";
 import { useNavigate } from "react-router";
 import classes from "./PoemCard.module.css";
@@ -78,7 +78,8 @@ export function PoemCard({
       <Stack justify="space-around" h="100%">
         <Group justify="space-between" align="center" wrap="nowrap">
           <Group gap="lg" wrap="nowrap">
-            <Image src="/public/scroll.png" w={40} mt="xl " />
+            {/* <Image src="/public/scroll.png" w={40} mt="xl " /> */}
+            <TbBook size={40} />
             <Stack gap={0}>
               <Text fw="bold" lineClamp={1}>
                 {poem.title}

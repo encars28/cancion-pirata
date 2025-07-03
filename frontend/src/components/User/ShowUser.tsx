@@ -22,6 +22,7 @@ import {
   TbTrash,
   TbDots,
   TbWritingSign,
+  TbPlus,
 } from "react-icons/tb";
 import { ShowPoemGrid } from "../Poem/ShowPoemGrid";
 import useAuthor from "../../hooks/useAuthor";
@@ -195,7 +196,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             <Stack gap="xl">
               {currentUser?.id === user.id && (
                 <Group justify="flex-start">
-                  <Button variant="filled" onClick={addPoemModal}>
+                  <Button leftSection={<TbPlus />} variant="filled" onClick={addPoemModal}>
                     Crear colección
                   </Button>
                 </Group>
@@ -209,7 +210,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
               </Title>
               {currentUser?.id === user.id && (
                 <Group justify="center">
-                  <Button mt="xl" variant="filled" onClick={addPoemModal}>
+                  <Button mt="xl" leftSection={<TbPlus />} variant="filled" onClick={addPoemModal}>
                     Crear colección
                   </Button>
                 </Group>

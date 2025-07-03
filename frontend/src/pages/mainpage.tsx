@@ -93,7 +93,7 @@ export function MainPage() {
                       {poem.author_names?.length === 0 ||
                       poem.show_author === false ? (
                         <Group justify="center">
-                          <Badge variant="default" size="lg">
+                          <Badge variant="light" size="lg">
                             <TbUser /> Anónimo
                           </Badge>
                         </Group>
