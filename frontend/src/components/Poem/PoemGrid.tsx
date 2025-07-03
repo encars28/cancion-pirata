@@ -33,7 +33,7 @@ export function PoemGrid({
     notifications.clean()
     notifications.show(errorNotification({title: "Error cargando poemas", description: error.message}));
     return (
-      <Title order={3} fw="lighter" ta="center" c="dimmed" mt={100}>
+      <Title order={3} fw={250} ta="center" c="dimmed" mt={100}>
         No se pudieron cargar los poemas.<br/> Por favor, inténtalo de nuevo más tarde.
       </Title>
     )

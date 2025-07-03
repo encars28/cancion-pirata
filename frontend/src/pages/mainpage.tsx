@@ -131,7 +131,7 @@ export function MainPage() {
           </SimpleGrid>
         )}
         {isError && (
-          <Title ta="center" c="dimmed" fw="lighter" order={3} mt={100}>
+          <Title ta="center" c="dimmed" fw={250} order={3} mt={100}>
             No se pudo cargar el poema. Por favor, inténtalo de nuevo más tarde.
           </Title>
         )}

@@ -19,7 +19,7 @@ export function Hero() {
           </Text>
         </Title>
         <Text className={classes.description} >
-          Explora nuestra colección de poemas, donde podrás disfrutas poemas originales creados por nuestra comunidad.
+          Sumérgete en un universo de versos infinitos. En nuestra plataforma, puedes explorar una vasta colección de poemas originales creados por nuestra comunidad. Utiliza nuestro sistema de búsqueda y filtrado para encontrar precisamente lo que resuena contigo y crea tus propias colecciones personalizadas, organizando tus poemas favoritos. Da rienda suelta a tu creatividad escribiendo tus propios poemas con nuestro intuitivo lenguaje de marcado. Tu espacio para sentir, descubrir y crear poesía te espera.
         </Text>
       </Stack>
     </div>

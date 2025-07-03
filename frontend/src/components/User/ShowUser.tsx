@@ -114,7 +114,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Title>
             <Group>
               {user.full_name && (
-                <Text c="dimmed" fw="lighter">
+                <Text c="dimmed" fw={250}>
                   {user.full_name}
                 </Text>
               )}
@@ -123,7 +123,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
                 <>
                   {" "}
                   <TbPointFilled color="grey" size={6} />
-                  <Text c="dimmed" fw="lighter">
+                  <Text c="dimmed" fw={250}>
                     Fecha de nacimiento:{" "}
                     {author.birth_date.toLocaleDateString()}
                   </Text>
@@ -133,7 +133,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
                 <>
                   {" "}
                   <TbPointFilled color="grey" size={6} />
-                  <Text c="dimmed" fw="lighter">
+                  <Text c="dimmed" fw={250}>
                     Fecha de fallecimiento:{" "}
                     {author.death_date.toLocaleDateString()}
                   </Text>
@@ -205,7 +205,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Stack>
           ) : (
             <>
-              <Title ta="center" mt={80} order={3} c="dimmed" fw="lighter">
+              <Title ta="center" mt={80} order={3} c="dimmed" fw={250}>
                 Este usuario no tiene colecciones
               </Title>
               {currentUser?.id === user.id && (

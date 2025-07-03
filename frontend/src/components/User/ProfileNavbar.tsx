@@ -39,8 +39,8 @@ export function ProfileNavbar() {
       title: "Por favor confirme su acción",
       children: (
         <Text size="sm">
-          ¿Está seguro de que desea borrar este elemento? La acción es
-          irreversible
+          ¿Está seguro de que deseas borrar tu cuenta? La acción es {" "}
+          <b>irreversible</b>
         </Text>
       ),
       onConfirm: async () => deleteUserMeMutation.mutateAsync(),
@@ -76,7 +76,7 @@ export function ProfileNavbar() {
           <NavLink
             px="xl"
             label="Datos"
-            leftSection={<TbUser size={16} />}
+            leftSection={<TbSettings size={16} />}
             onClick={() => {
               setActive("profile");
               navigate("/me/profile");

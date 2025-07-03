@@ -37,6 +37,7 @@ export function PoemsPage() {
       updated_at: "",
       language: "",
       authors: "",
+      verses: "",
       desc: false,
     },
   });
@@ -69,6 +70,7 @@ export function PoemsPage() {
       poem_author: values.authors,
       poem_created_at: values.created_at,
       poem_updated_at: values.updated_at,
+      poem_language: values.language,
       poem_desc: values.desc,
       poem_skip: (page - 1) * POEMS_PER_PAGE,
       poem_limit: POEMS_PER_PAGE,

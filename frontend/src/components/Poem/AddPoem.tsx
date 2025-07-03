@@ -148,13 +148,6 @@ export function AddPoem() {
             key={form.key("title")}
             {...form.getInputProps("title")}
           />
-          <TextInput
-            name="language"
-            label="Idioma"
-            placeholder="es"
-            key={form.key("language")}
-            {...form.getInputProps("language")}
-          />
             <Textarea
               resize="vertical"
               w="100%"

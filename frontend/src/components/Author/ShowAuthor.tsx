@@ -92,7 +92,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
             <Group>
               {" "}
               {author && author.birth_date && (
-                <Text c="dimmed" fw="lighter">
+                <Text c="dimmed" fw={250}>
                   Fecha de nacimiento: {author.birth_date.toLocaleDateString()}
                 </Text>
               )}
@@ -100,7 +100,7 @@ export function ShowAuthor({ author }: { author: AuthorPublicWithPoems }) {
                 <Group wrap="nowrap">
                   {" "}
                   <TbPointFilled color="grey" size={6} />
-                  <Text c="dimmed" fw="lighter">
+                  <Text c="dimmed" fw={250}>
                     Fecha de fallecimiento:{" "}
                     {author.death_date.toLocaleDateString()}
                   </Text>

@@ -8,6 +8,7 @@ import '@mantine/dropzone/styles.css';
 
 import {
   MantineProvider,
+  px,
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 
@@ -18,6 +19,7 @@ import { isLoggedIn } from './hooks/useAuth';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { ModalsProvider } from '@mantine/modals';
+import { createTheme } from '@mantine/core';
 
 dayjs.extend(customParseFormat);
 
@@ -34,9 +36,19 @@ if (isLoggedIn()) {
   })
 }
 
+const theme = createTheme({
+  fontFamily: 'Inter, sans-serif',
+  other: {
+    fontWeights: {
+      light: 250,
+      lighter: 250,
+    }
+  }
+});
+
 function App() {
   return (
-    <MantineProvider>
+    <MantineProvider theme={theme}>
       {
         <>
           <AllRoutes />

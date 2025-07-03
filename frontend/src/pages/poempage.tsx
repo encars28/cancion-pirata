@@ -102,7 +102,7 @@ export function PoemPage() {
           <AddPoemToCollection poemId={poem.id} />
         ) : (
           <Stack p="lg" mt="md" justify="center">
-            <Title order={4} ta="center" c="dimmed" fw="lighter">
+            <Title order={4} ta="center" c="dimmed" fw={250}>
               No hay colecciones creadas.
             </Title>
             <Button variant="filled" mt="xl" onClick={addPoemModal}>
@@ -142,7 +142,7 @@ export function PoemPage() {
         </Stack>
 
         {poem.description && (
-          <Text mt="lg" ta="center" size="md" fw="lighter">
+          <Text mt="lg" ta="center" size="md" fw={250}>
             {poem.description}
           </Text>
         )}
@@ -157,7 +157,7 @@ export function PoemPage() {
         </Group>
         <Space h={50} />
         <Group c="dimmed" justify="center" gap="lg">
-          <Text size="sm">Idioma: {poem.language}</Text>
+          <Text size="sm">Idioma: {poem.language ?? "Desconocido"}</Text>
           <TbPointFilled size={6} />
           <Text size="sm">
             Fecha de publicación: {poem.created_at?.toLocaleDateString()}

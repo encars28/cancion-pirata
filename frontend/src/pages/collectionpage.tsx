@@ -166,7 +166,7 @@ export function CollectionPage() {
 
   return (
     <Shell>
-      <Stack mt={60} gap={50}>
+      <Stack gap={50}>
         <Stack gap="xs">
           <Title ta="center" order={1}>
             {collection.name}
@@ -184,11 +184,12 @@ export function CollectionPage() {
           <ShowPoemGrid
             poems={collection.poems}
             collectionId={collectionId}
-            removePoem
+            removePoem={(currentUser?.id === collection.user_id ||
+              currentUser?.is_superuser)}
             show_author
           />
         ) : (
-          <Title ta="center" order={3} mt={80} c="dimmed" fw="lighter">
+          <Title ta="center" order={3} mt={80} c="dimmed" fw={250}>
             Esta colección todavía no tiene poemas.
           </Title>
         )}
