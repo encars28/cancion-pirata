@@ -18,6 +18,7 @@ import {
   ActionIcon,
   Tooltip,
   Paper,
+  Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { TbWritingSign, TbUser } from "react-icons/tb";
@@ -69,18 +70,14 @@ export function MainPage() {
         {poem && (
           <SimpleGrid
             cols={{ base: 1, md: 2 }}
-            spacing="xl"
-            verticalSpacing={120}
-            h="100%"
-            w="100%"
           >
-            <Group gap={0} w="100%">
+            <Group gap={0} w="100%" wrap="nowrap">
               <Group
                 pb={120}
                 pt={100}
-                px={100}
                 wrap="nowrap"
                 h="100%"
+                w="100%"
                 justify="center"
                 style={{ backgroundColor: "var(--mantine-color-blue-1)" }}
               >
@@ -128,10 +125,9 @@ export function MainPage() {
                 style={{ height: "100%" }}
               />
             </Group>
-
-            <Container pb={120} pt={100} pr={50} w="100%" fluid>
-              <Interweave content={poem.content} />
-            </Container>
+              <Container pb={120} pt={100} px={80} w="100%" fluid>
+                <Interweave content={poem.content} />
+              </Container>
           </SimpleGrid>
         )}
         {isError && (
