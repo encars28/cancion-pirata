@@ -17,6 +17,7 @@ import {
   Affix,
   ActionIcon,
   Tooltip,
+  Paper,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { TbWritingSign, TbUser } from "react-icons/tb";
@@ -45,10 +46,9 @@ export function MainPage() {
           loaderProps={{ type: "dots" }}
           pos="relative"
           mt={100}
-        >    
-        </LoadingOverlay>
+        ></LoadingOverlay>
       </Shell>
-    )
+    );
   }
 
   if (isError) {
@@ -58,90 +58,103 @@ export function MainPage() {
         title: "Error al cargar el poema",
         description: error.message || "No se pudo cargar el poema aleatorio.",
       })
-    )
+    );
   }
 
   const poem = data as PoemPublicWithAllTheInfo;
   return (
     <>
-    <Shell noPaddingTop>
-      <Hero />
-        { poem && (
+      <Shell noPaddingTop>
+        <Hero />
+        {poem && (
           <SimpleGrid
             cols={{ base: 1, md: 2 }}
             spacing="xl"
             verticalSpacing={120}
-            mt={100}
-            mx={50}
+            h="100%"
+            w="100%"
           >
-            <Group wrap="nowrap" justify="center">
-              <Stack h="100%" justify="space-around">
-                <Stack gap="lg">
-                  <Title ta="center" order={2}>
-                    {poem.title}
-                  </Title>
-                  {poem.author_names?.length === 0 ||
-                  poem.show_author === false ? (
-                    <Group justify="center">
-                      <Badge variant="default" size="lg">
-                        <TbUser /> Anónimo
-                      </Badge>
-                    </Group>
-                  ) : (
-                    <Stack align="center" justify="center" gap="md">
-                      {poem.author_ids?.map((author, index) => (
-                        <AuthorBadge
-                          authorId={author}
-                          authorName={poem.author_names![index]}
-                          key={author}
-                        />
-                      ))}
+            <Group gap={0} w="100%">
+              <Group
+                pb={120}
+                pt={100}
+                px={100}
+                wrap="nowrap"
+                h="100%"
+                justify="center"
+                style={{ backgroundColor: "var(--mantine-color-blue-1)" }}
+              >
+                <Paper withBorder shadow="md" p="xl" radius="md">
+                  <Stack h="100%" justify="space-around">
+                    <Stack gap="lg">
+                      <Title ta="center" order={2}>
+                        {poem.title}
+                      </Title>
+                      {poem.author_names?.length === 0 ||
+                      poem.show_author === false ? (
+                        <Group justify="center">
+                          <Badge variant="default" size="lg">
+                            <TbUser /> Anónimo
+                          </Badge>
+                        </Group>
+                      ) : (
+                        <Stack align="center" justify="center" gap="xs">
+                          {poem.author_ids?.map((author, index) => (
+                            <AuthorBadge
+                              variant="light"
+                              authorId={author}
+                              authorName={poem.author_names![index]}
+                              key={author}
+                            />
+                          ))}
+                        </Stack>
+                      )}
                     </Stack>
-                  )}
-                </Stack>
-                <Group justify="center" mt="lg">
-                  <Button
-                    variant="outline"
-                    w={250}
-                    onClick={() => navigate(`/poems/${poem.id}`)}
-                  >
-                    Ir al poema...
-                  </Button>
-                </Group>
-              </Stack>
+                    <Group justify="center" mt="lg">
+                      <Button
+                        variant="default"
+                        w={250}
+                        onClick={() => navigate(`/poems/${poem.id}`)}
+                      >
+                        Ir al poema...
+                      </Button>
+                    </Group>
+                  </Stack>
+                </Paper>
+              </Group>
               <Divider
-                visibleFrom="md"
                 orientation="vertical"
-                ml="xl"
-                size="sm"
+                size="md"
+                style={{ height: "100%" }}
               />
             </Group>
-            <Container mx={30} w="100%" fluid>
+
+            <Container pb={120} pt={100} pr={50} w="100%" fluid>
               <Interweave content={poem.content} />
             </Container>
           </SimpleGrid>
         )}
-      {isError && (
-        <Title ta="center" c="dimmed" fw="lighter" order={3} mt={100}>
-          No se pudo cargar el poema. Por favor, inténtalo de nuevo más tarde.
-        </Title>
-      )}
-    </Shell>
-    <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
-          <Tooltip label="Nuevo poema">
-            <ActionIcon
-              size={50}
-              variant="filled"
-              radius="xl"
-              onClick={
-                isLoggedIn()
-                  ? () => navigate("/poems/add")
-                  : () => navigate("/login")
-              }
-            >
-              <TbWritingSign size={25} />
-            </ActionIcon>
-          </Tooltip>
+        {isError && (
+          <Title ta="center" c="dimmed" fw="lighter" order={3} mt={100}>
+            No se pudo cargar el poema. Por favor, inténtalo de nuevo más tarde.
+          </Title>
+        )}
+      </Shell>
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+        <Tooltip label="Nuevo poema">
+          <ActionIcon
+            size={50}
+            variant="filled"
+            radius="xl"
+            onClick={
+              isLoggedIn()
+                ? () => navigate("/poems/add")
+                : () => navigate("/login")
+            }
+          >
+            <TbWritingSign size={25} />
+          </ActionIcon>
+        </Tooltip>
       </Affix>
     </>
   );

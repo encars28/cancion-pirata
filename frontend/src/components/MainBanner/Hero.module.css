@@ -6,6 +6,7 @@
   background-size: cover;
   background-position: center;
   padding-left: 100px;
+  padding-right: 100px;
 
   @media (max-width: $mantine-breakpoint-xs) {
     padding-top: 120px;
@@ -31,7 +32,7 @@
 .inner {
   position: relative;
   z-index: 1;
-  width: 50%;
+  width: 100%;
 
   @media (max-width: $mantine-breakpoint-sm) {
     width: 100%;

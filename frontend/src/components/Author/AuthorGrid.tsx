@@ -14,7 +14,7 @@ export function AuthorGrid({ data }: { data: AuthorGridProps[] }) {
     <SimpleGrid
       cols={{ base: 2, sm: 3, md: 4, lg: 5, xl: 6 }}
       spacing="sm"
-      verticalSpacing="xl"  
+      verticalSpacing="xl" 
       w="100%"
       px={{base: "xl", lg: 60}}
     >
@@ -22,6 +22,7 @@ export function AuthorGrid({ data }: { data: AuthorGridProps[] }) {
         <Card
           padding="xs"
           radius="md"
+          style={{backgroundColor: "transparent", cursor: "pointer"}}
           onClick={() => navigate(card.path)}
           key={card.path}
           ta="center"
