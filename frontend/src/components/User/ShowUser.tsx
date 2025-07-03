@@ -141,7 +141,7 @@ export function ShowUser({ user }: { user: UserPublic }) {
             </Group>
           </Stack>
         </Flex>
-        {currentUser?.id === user.id && !isAdmin() (
+        {currentUser?.id === user.id && !isAdmin() && (
           <>
             <Group hiddenFrom="lg">
               <Tooltip label="Editar">

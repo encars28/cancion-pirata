@@ -1,6 +1,6 @@
-import { Stack, ActionIcon, TextInput, PasswordInput, Modal, Group, Button, Checkbox, Select } from '@mantine/core';
+import { Stack, Text, TextInput, PasswordInput, Switch, Group, Button, Checkbox, Select } from '@mantine/core';
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
-import { TbUser, TbAt, TbAbc, TbPencil } from "react-icons/tb";
+import { TbUser, TbAt, TbAbc, TbPencil, TbCrown } from "react-icons/tb";
 import { AuthorPublicBasic, UserUpdate } from '../../client/types.gen';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic } from '../../client/types.gen';
@@ -16,7 +16,7 @@ export function EditUser({ user }: { user: UserPublic }) {
   const author_ids = authors.map(author => author.id) ?? []
 
   const form = useForm<UserUpdate>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     initialValues: {
       ...user,
     },
@@ -51,19 +51,6 @@ export function EditUser({ user }: { user: UserPublic }) {
   }
 
   return (
-    <>
-      <ActionIcon variant="filled" onClick={open}>
-        <TbPencil />
-      </ActionIcon>
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Modificar usuario"
-        overlayProps={{
-          blur: 3,
-        }}
-        closeOnClickOutside={false}
-        centered>
         <Form form={form} onSubmit={handleSubmit}>
           <Stack gap="lg"  m="md" p="sm">
             <TextInput
@@ -110,34 +97,44 @@ export function EditUser({ user }: { user: UserPublic }) {
               data={author_ids}
               {...form.getInputProps('author_id')}
             />
-            <Checkbox
-              defaultChecked={user.is_superuser}
-              key={form.key('is_superuser')}
-              {...form.getInputProps('is_superuser')}
-              label="Administrador"
+        <Group justify="space-between" mt="sm">
+          <Stack gap={2}>
+            <Text size="sm">Tipo de usuario</Text>
+            <Text size="sm" c="dimmed">
+              {form.values.is_superuser ? "Administrador" : "Usuario normal"}
+            </Text>
+          </Stack>
+          <Group>
+            <Switch
+              checked={form.values.is_superuser}
+              labelPosition="left"
+              size="md"
+              key={form.key("is_superuser")}
+              thumbIcon={
+                form.values.is_superuser ? (
+                  <TbCrown
+                    size={15}
+                    color="var(--mantine-primary-color-filled)"
+                  />
+                ) : (
+                  <TbUser size={15} color="black" />
+                )
+              }
+              {...form.getInputProps("is_superuser")}
             />
-            <Group
-              justify='flex-end'
-              pt="lg"
-            >
-              <Button
-                onClick={close}
-                variant='outline'
-              >
-                Cancelar
-              </Button>
+          </Group>
+        </Group>
               <Button
                 variant='filled'
                 type='submit'
                 loading={mutation.isPending}
                 loaderProps={{ type: 'dots' }}
+                mt="lg"
+                fullWidth
               >
                 Guardar
               </Button>
-            </Group>
           </Stack>
         </Form>
-      </Modal>
-    </>
   )
 }
