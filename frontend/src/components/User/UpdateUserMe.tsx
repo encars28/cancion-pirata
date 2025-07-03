@@ -81,11 +81,12 @@ export function UpdateUserMe({ user }: { user: UserPublic }) {
           leftSectionPointerEvents="none"
           leftSection={<TbAbc size={15} />}
         />
-        <Group justify="flex-end" mt="xl">
+        <Group justify="flex-end" mt="lg">
           <Button
             type="submit"
             loading={mutation.isPending}
             loaderProps={{ type: "dots" }}
+            fullWidth
           >
             Guardar
           </Button>

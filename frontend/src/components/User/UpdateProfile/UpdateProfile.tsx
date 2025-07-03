@@ -57,39 +57,25 @@ export function UpdateProfile() {
   const user: UserPublic = data!;
 
   return (
-    <ScrollArea h="100%" type="always">
-      <Stack p={100} gap={100}>
-        <Container className={classes.container}>
-          <Paper withBorder shadow="md" p="xl" radius="lg">
-            <Title ta="center" order={1} mb="xl">
-              Datos de usuario
+    <Container className={classes.container}>
+      <Paper withBorder shadow="md" p="xl" radius="lg">
+        <Stack gap={60}>
+          <Stack>
+            <Title order={5} c="dimmed" fw="normal">
+              Información de la cuenta
             </Title>
             <UpdateUserMe user={user} />
-          </Paper>
-        </Container>
-        {currentUser?.author && (
-          <Container className={classes.container} >
-            <Paper withBorder shadow="md" p="xl" radius="lg">
-              <Title ta="center" order={1} mb="xl">
-                Datos de autor
+          </Stack>
+          {currentUser?.author && (
+            <Stack>
+              <Title order={5} c="dimmed" fw="normal">
+                Información adicional
               </Title>
               <EditAuthorMe author={currentUser?.author!} />
-            </Paper>
-          </Container>
-        )}
-      </Stack>
-      {/* <Affix position={{ bottom: 20, right: 20 }}>
-        <ActionIcon
-          onClick={() =>
-            scrollIntoView({
-              alignment: "center",
-            })
-          }
-          radius="xl"
-        >
-          <TbArrowDown size={20} />
-        </ActionIcon>
-      </Affix> */}
-    </ScrollArea>
+            </Stack>
+          )}
+        </Stack>
+      </Paper>
+    </Container>
   );
 }

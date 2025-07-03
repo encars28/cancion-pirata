@@ -32,7 +32,7 @@ export function EditAuthorMe({ author }: { author: AuthorPublic }) {
 
   return (
     <Form form={form} onSubmit={handleSubmit}>
-      <Stack gap="lg" m="md" pb="md">
+      <Stack >
         <DateInput
           clearable
           name="birth_date"
@@ -50,6 +50,7 @@ export function EditAuthorMe({ author }: { author: AuthorPublic }) {
             type="submit"
             loading={mutation.isPending}
             loaderProps={{ type: "dots" }}
+            fullWidth
           >
             Guardar
           </Button>
