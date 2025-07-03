@@ -13,16 +13,16 @@ import {
   Text,
   Stack,
   Container,
-  Group,
   Tooltip,
   ActionIcon,
   MultiSelect,
   Button,
+  Menu,
 } from "@mantine/core";
 import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
-import { TbEdit, TbPlus, TbTrash, TbWritingSign } from "react-icons/tb";
+import { TbBook, TbEdit, TbTrash, TbWritingSign, TbDots } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import { EditCollection } from "../components/Collection/EditCollection";
@@ -179,36 +179,6 @@ export function CollectionPage() {
         <Text ta="center" size="md">
           {collection.description ?? ""}
         </Text>
-        {(currentUser?.id === collection.user_id ||
-          currentUser?.is_superuser) && (
-          <Group mt="sm" justify="center">
-            <Tooltip position="bottom" label="Añadir poema">
-              <ActionIcon
-                variant="filled"
-                size="lg"
-                color="green"
-                onClick={selectPoem}
-              >
-                <TbPlus size={20} />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip position="bottom" label="Editar">
-              <ActionIcon variant="filled" size="lg" onClick={editCollection}>
-                <TbEdit size={20} />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip position="bottom" label="Eliminar">
-              <ActionIcon
-                variant="filled"
-                color="red"
-                size="lg"
-                onClick={deleteCollection}
-              >
-                <TbTrash size={20} />
-              </ActionIcon>
-            </Tooltip>
-          </Group>
-        )}
       </Stack>
       <Container mx={{ base: "xl", lg: 50 }} mb="xl" mt={60} fluid>
         {collection.poems && collection.poems?.length > 0 ? (
@@ -224,22 +194,59 @@ export function CollectionPage() {
           </Title>
         )}
       </Container>
-            <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
-                <Tooltip label="Nuevo poema">
-                  <ActionIcon
-                    size={50}
-                    variant="filled"
-                    radius="xl"
-                    onClick={
-                      isLoggedIn()
-                        ? () => navigate("/poems/add")
-                        : () => navigate("/login")
-                    }
-                  >
-                    <TbWritingSign size={25} />
-                  </ActionIcon>
-                </Tooltip>
-            </Affix>
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+        <Stack align="center" justify="center" gap="md">
+          {(currentUser?.id === collection.user_id ||
+          currentUser?.is_superuser) && (
+    <Menu position="top" transitionProps={{ transition: "pop" }} withArrow>
+      <Menu.Target>
+        <ActionIcon
+          variant="light"
+          style={{ backgroundColor: "#d0ebff" }}
+          size="lg"
+          radius="xl"
+        >
+          <TbDots size={16} />
+        </ActionIcon>
+      </Menu.Target>
+      <Menu.Dropdown>
+        <Menu.Item
+          leftSection={<TbBook size={16} />}
+          onClick={selectPoem}
+        >
+          Añadir poema
+        </Menu.Item>
+
+            <Menu.Item leftSection={<TbEdit size={16} />} onClick={editCollection}>
+              Editar colección
+            </Menu.Item>
+            <Menu.Item
+              leftSection={<TbTrash size={16} />}
+              color="red"
+              onClick={deleteCollection}
+            >
+              Eliminar colección
+            </Menu.Item>
+      </Menu.Dropdown>
+    </Menu>
+          )}
+
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+        </Stack>
+      </Affix>
     </Shell>
   );
 }
