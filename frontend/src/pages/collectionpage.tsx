@@ -148,7 +148,6 @@ export function CollectionPage() {
           <Button
             type="submit"
             variant="filled"
-            color="green"
             mt="xl"
             fullWidth
             loading={addPoemToCollection.isPending}

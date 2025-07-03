@@ -4,7 +4,7 @@
     transition: border-color 150ms ease;
   
     &[data-checked] {
-      border-color: var(--mantine-color-green-filled);
+      border-color: var(--mantine-primary-color-filled);
     }
   
     @mixin hover {

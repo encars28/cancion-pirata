@@ -94,7 +94,7 @@ export function AddPoemToCollection({ poemId }: { poemId: string }) {
                   key={item}
                 >
                   <Group wrap="nowrap" align="flex-start">
-                    <Radio.Indicator color="green" />
+                    <Radio.Indicator />
                     <Text className={classes.label}>{item}</Text>
                   </Group>
                 </Radio.Card>
@@ -107,7 +107,6 @@ export function AddPoemToCollection({ poemId }: { poemId: string }) {
           type="submit"
           fullWidth
           mt="md"
-          color="green"
           loading={addPoemToCollection.isPending}
           loaderProps={{ type: "dots" }}
         >
