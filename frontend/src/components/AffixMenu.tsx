@@ -1,4 +1,4 @@
-import { ActionIcon, Affix, Menu } from "@mantine/core";
+import { ActionIcon, Menu } from "@mantine/core";
 import { TbBookmarks, TbDots, TbEdit, TbTrash } from "react-icons/tb";
 
 interface AffixMenuProps {

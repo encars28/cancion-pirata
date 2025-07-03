@@ -7,7 +7,6 @@ import {
   TbBookmarks,
   TbBrandSafari,
   TbHome,
-  TbHomeFilled,
   TbSettings,
   TbUserEdit,
 } from "react-icons/tb";

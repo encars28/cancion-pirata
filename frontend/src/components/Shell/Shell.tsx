@@ -63,7 +63,6 @@ export function Shell({
       }}
     >
       <AppShell.Header
-        style={{ border: 0 }}
         className={RemoveScroll.classNames.zeroRight}
       >
         <Group
