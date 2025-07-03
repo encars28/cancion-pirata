@@ -1,4 +1,4 @@
-import { Navigate, useParams } from "react-router";
+import { Navigate, useNavigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, FetchError } from "../utils";
@@ -8,10 +8,14 @@ import { ShowUser } from "../components/User/ShowUser";
 import { QueryError } from "../components/Error/QueryError";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
+import { isLoggedIn } from "../hooks/useAuth";
+import { Affix, ActionIcon, Tooltip } from "@mantine/core";
+import { TbWritingSign } from "react-icons/tb";
 
 export function UserPage() {
   const params = useParams();
   const userId = params.id;
+  const navigate = useNavigate()
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["users", userId],
@@ -42,6 +46,22 @@ export function UserPage() {
   return (
     <Shell>
       <ShowUser user={user} />
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+      </Affix>
     </Shell>
   );
 }

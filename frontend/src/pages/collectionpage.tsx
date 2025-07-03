@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, FetchError } from "../utils";
@@ -22,7 +22,7 @@ import {
 import useCollectionActions from "../hooks/useCollectionActions";
 import { modals } from "@mantine/modals";
 import useAuth from "../hooks/useAuth";
-import { TbEdit, TbPlus, TbTrash } from "react-icons/tb";
+import { TbEdit, TbPlus, TbTrash, TbWritingSign } from "react-icons/tb";
 import { ShowPoemGrid } from "../components/Poem/ShowPoemGrid";
 import { Form, useForm } from "@mantine/form";
 import { EditCollection } from "../components/Collection/EditCollection";
@@ -31,6 +31,8 @@ import { notifications } from "@mantine/notifications";
 import { errorNotification, successNotification } from "../notifications";
 import { Navigate } from "react-router";
 import { QueryError } from "../components/Error/QueryError";
+import { isLoggedIn } from "../hooks/useAuth";
+import { Affix } from "@mantine/core";
 
 export function CollectionPage() {
   const params = useParams();
@@ -38,6 +40,7 @@ export function CollectionPage() {
   const { deleteCollectionMutation, addPoemToCollection } =
     useCollectionActions(collectionId!);
   const { user: currentUser } = useAuth();
+  const navigate = useNavigate()
 
   const form = useForm({
     mode: "uncontrolled",
@@ -221,6 +224,22 @@ export function CollectionPage() {
           </Title>
         )}
       </Container>
+            <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+                <Tooltip label="Nuevo poema">
+                  <ActionIcon
+                    size={50}
+                    variant="filled"
+                    radius="xl"
+                    onClick={
+                      isLoggedIn()
+                        ? () => navigate("/poems/add")
+                        : () => navigate("/login")
+                    }
+                  >
+                    <TbWritingSign size={25} />
+                  </ActionIcon>
+                </Tooltip>
+            </Affix>
     </Shell>
   );
 }

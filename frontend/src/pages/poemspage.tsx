@@ -1,15 +1,16 @@
 import { Shell } from "../components/Shell/Shell";
-import { ActionIcon, Title } from "@mantine/core";
+import { ActionIcon, Title, Affix, Tooltip } from "@mantine/core";
 import { FilterPoem, PoemFilters } from "../components/Poem/FilterPoem";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { PoemGrid } from "../components/Poem/PoemGrid";
-import { TbAdjustments } from "react-icons/tb";
+import { TbAdjustments, TbWritingSign } from "react-icons/tb";
 import { Container, Drawer, Group } from "@mantine/core";
 import { useSearchParams, useNavigate } from "react-router";
 import { PoemSearchParams, SearchParams } from "../client";
+import { isLoggedIn } from "../hooks/useAuth";
 
 export const POEMS_PER_PAGE = 10;
 
@@ -115,6 +116,22 @@ export function PoemsPage() {
       >
         <FilterPoem form={form} handleSubmit={handleSubmit} />
       </Drawer>
+      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+      </Affix>
     </Shell>
   );
 }

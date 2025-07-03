@@ -1,14 +1,15 @@
 import { Shell } from "../components/Shell/Shell";
-import { ActionIcon, Drawer, Group, Title } from "@mantine/core";
+import { ActionIcon, Drawer, Group, Title, Affix, Tooltip } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
 import { FilterAuthor, AuthorFilters } from "../components/Author/FilterAuthor";
-import { TbAdjustments } from "react-icons/tb";
+import { TbAdjustments, TbWritingSign } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import { ShowAuthorGrid } from "../components/Author/ShowAuthorGrid";
 import { useSearchParams, useNavigate } from "react-router";
 import { AuthorSearchParams, SearchParams } from "../client";
+import { isLoggedIn } from "../hooks/useAuth";
 
 
 export const AUTHORS_PER_PAGE = 36;
@@ -98,6 +99,22 @@ export function AuthorsPage() {
       >
         <FilterAuthor form={form} handleSubmit={handleSubmit} />
       </Drawer>
+            <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+                <Tooltip label="Nuevo poema">
+                  <ActionIcon
+                    size={50}
+                    variant="filled"
+                    radius="xl"
+                    onClick={
+                      isLoggedIn()
+                        ? () => navigate("/poems/add")
+                        : () => navigate("/login")
+                    }
+                  >
+                    <TbWritingSign size={25} />
+                  </ActionIcon>
+                </Tooltip>
+            </Affix>
     </Shell>
   );
 }

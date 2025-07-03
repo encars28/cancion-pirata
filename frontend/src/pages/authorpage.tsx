@@ -8,10 +8,15 @@ import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
 import { FetchError } from "../utils";
 import { QueryError } from "../components/Error/QueryError";
+import { isLoggedIn } from "../hooks/useAuth";
+import { Affix, ActionIcon, Tooltip } from "@mantine/core";
+import { TbWritingSign } from "react-icons/tb";
+import { useNavigate } from "react-router";
 
 export function AuthorPage() {
   const params = useParams()
   const authorId = params.id;
+  const navigate = useNavigate();
 
   const { data, error, isPending, isError} = useAuthor(authorId!);
 
@@ -39,6 +44,22 @@ export function AuthorPage() {
   return (
     <Shell>
       <ShowAuthor author={author} />
+            <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+                <Tooltip label="Nuevo poema">
+                  <ActionIcon
+                    size={50}
+                    variant="filled"
+                    radius="xl"
+                    onClick={
+                      isLoggedIn()
+                        ? () => navigate("/poems/add")
+                        : () => navigate("/login")
+                    }
+                  >
+                    <TbWritingSign size={25} />
+                  </ActionIcon>
+                </Tooltip>
+            </Affix>
     </Shell>
   );
 }
