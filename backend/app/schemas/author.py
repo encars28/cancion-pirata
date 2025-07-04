@@ -32,7 +32,6 @@ class AuthorSchema(AuthorBase):
 
     poems: List["PoemPublic"] = []
     user_id: Optional[uuid.UUID] = None
-    image_path: Optional[str] = Field(default=None, max_length=255)
 
 
 class AuthorCreate(AuthorBase):

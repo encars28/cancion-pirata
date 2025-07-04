@@ -15,7 +15,6 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    restart: always
     env_file:
       - .env 
     environment:
@@ -24,6 +23,17 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONTEND_PORT}:4173"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    depends_on:
+      - backend
 
 volumes:
   db_data:

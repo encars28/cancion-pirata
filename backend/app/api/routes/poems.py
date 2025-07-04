@@ -1,5 +1,6 @@
 import uuid
 from typing import Any, Annotated
+from app.schemas.user import UserUpdate
 from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.api.deps import (
@@ -23,6 +24,7 @@ from app.schemas.common import Message
 
 from app.crud.poem import poem_crud
 from app.crud.author import author_crud
+from app.crud.user import user_crud
 
 router = APIRouter(prefix="/poems", tags=["poems"])
 
@@ -155,6 +157,7 @@ def create_poem(
         if not current_user.author_id:
             author_in = AuthorCreate(full_name=current_user.username)
             author = author_crud.create(db=session, obj_create=author_in)
+            user_crud.update(db=session, obj_id=current_user.id, obj_update=UserUpdate(author_id=author.id))
 
         else:
             author = author_crud.get_by_id(session, current_user.author_id)
