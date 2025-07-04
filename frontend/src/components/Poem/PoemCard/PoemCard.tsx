@@ -3,13 +3,12 @@ import {
   Badge,
   Divider,
   Group,
-  Image,
   Paper,
   Stack,
   Text,
   Tooltip,
 } from "@mantine/core";
-import { TbBook, TbBookFilled, TbBooks, TbUser, TbX } from "react-icons/tb";
+import { TbBook, TbUser, TbX } from "react-icons/tb";
 import { PoemPublic } from "../../../client";
 import { useNavigate } from "react-router";
 import classes from "./PoemCard.module.css";

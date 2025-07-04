@@ -8,18 +8,12 @@ import {
   Container,
   Paper,
   Stack,
-  ScrollArea,
-  Affix,
-  Transition,
-  ActionIcon,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../../../notifications";
 import { EditAuthorMe } from "../../Author/EditAuthorMe";
 import useAuth from "../../../hooks/useAuth";
 import classes from "./UpdateProfile.module.css";
-import { TbArrowDown } from "react-icons/tb";
-import { useScrollIntoView } from "@mantine/hooks";
 
 export function UpdateProfile() {
   const { user: currentUser } = useAuth();

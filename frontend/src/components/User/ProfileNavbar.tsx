@@ -3,7 +3,6 @@ import {
   Button,
   Container,
   NavLink,
-  ScrollArea,
   Stack,
   Text,
 } from "@mantine/core";
@@ -13,7 +12,6 @@ import {
   TbLogout,
   TbSettings,
   TbTrash,
-  TbUser,
 } from "react-icons/tb";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router";

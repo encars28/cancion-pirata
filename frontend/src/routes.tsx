@@ -12,7 +12,6 @@ import { TableUsers } from "./components/Tables/TableUsers";
 import { TablePoems } from "./components/Tables/TablePoems";
 import { UpdateProfile } from "./components/User/UpdateProfile/UpdateProfile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
-import { AddPoem } from "./components/Poem/AddPoem";
 import { BasePage } from "./pages/base";
 import { RegisterForm } from "./components/Auth/RegisterForm/RegisterForm";
 import { PasswordForm } from "./components/Auth/PasswordForm/PasswordForm";

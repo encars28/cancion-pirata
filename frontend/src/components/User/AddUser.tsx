@@ -5,12 +5,11 @@ import {
   Modal,
   Group,
   Button,
-  Checkbox,
   Switch,
   Text,
 } from "@mantine/core";
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from "@mantine/form";
-import { TbUser, TbAt, TbAbc, TbCrown, TbLock, TbLockCheck, TbX } from "react-icons/tb";
+import { TbUser, TbAt, TbAbc, TbCrown, TbLockCheck, TbX } from "react-icons/tb";
 import { UserCreate } from "../../client/types.gen";
 import { callService } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";

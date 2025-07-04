@@ -6,7 +6,6 @@ import {
   TbArrowsShuffle,
   TbBookmarks,
   TbBrandSafari,
-  TbHome,
   TbHomeFilled,
   TbSettings,
   TbUserEdit,

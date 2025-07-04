@@ -8,7 +8,6 @@ import '@mantine/dropzone/styles.css';
 
 import {
   MantineProvider,
-  px,
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 

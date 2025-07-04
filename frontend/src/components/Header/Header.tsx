@@ -1,4 +1,4 @@
-import { Group, Title, Button, Text } from "@mantine/core";
+import { Group, Button, Text } from "@mantine/core";
 import { TbLogin, TbSearch } from "react-icons/tb";
 import { searchHandlers } from "../Search";
 import { useNavigate } from "react-router";

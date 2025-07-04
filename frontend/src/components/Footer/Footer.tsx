@@ -1,17 +1,13 @@
 import classes from "./Footer.module.css";
-import { Tooltip, UnstyledButton, Group } from "@mantine/core";
+import { Tooltip, UnstyledButton } from "@mantine/core";
 import { IconType } from "react-icons/lib";
 import { useEffect, useState } from "react";
 import {
   TbArrowsShuffle,
-  TbBook,
   TbBookmarks,
   TbBrandSafari,
-  TbHome,
   TbHomeFilled,
-  TbListSearch,
   TbUserEdit,
-  TbUsersGroup,
 } from "react-icons/tb";
 import { useLocation, useNavigate } from "react-router";
 import useAuth, { isLoggedIn } from "../../hooks/useAuth";

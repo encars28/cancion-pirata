@@ -1,6 +1,6 @@
-import { Stack, Text, TextInput, PasswordInput, Switch, Group, Button, Checkbox, Select } from '@mantine/core';
+import { Stack, Text, TextInput, PasswordInput, Switch, Group, Button, Select } from '@mantine/core';
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from '@mantine/form';
-import { TbUser, TbAt, TbAbc, TbPencil, TbCrown } from "react-icons/tb";
+import { TbUser, TbAt, TbAbc, TbCrown } from "react-icons/tb";
 import { AuthorPublicBasic, UserUpdate } from '../../client/types.gen';
 import { useDisclosure } from '@mantine/hooks';
 import { UserPublic } from '../../client/types.gen';
@@ -8,7 +8,7 @@ import useSearch from '../../hooks/useSearch';
 import useUserActions from '../../hooks/useUserActions';
 
 export function EditUser({ user }: { user: UserPublic }) {
-  const [opened, { open, close }] = useDisclosure()
+  const [, { close }] = useDisclosure()
 
   const { data: authorsData } = useSearch({search_type: ['author']})
   const { editUserMutation: mutation } = useUserActions(user.id)

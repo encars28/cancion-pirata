@@ -18,7 +18,6 @@ import {
   ActionIcon,
   Tooltip,
   Paper,
-  Center,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 import { TbWritingSign, TbUser } from "react-icons/tb";

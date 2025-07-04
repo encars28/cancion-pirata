@@ -1,4 +1,4 @@
-import { Navigate, useNavigate, useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { Shell } from "../components/Shell/Shell";
 import { useQuery } from "@tanstack/react-query";
 import { callService, FetchError } from "../utils";
@@ -8,14 +8,10 @@ import { ShowUser } from "../components/User/ShowUser";
 import { QueryError } from "../components/Error/QueryError";
 import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
-import { isLoggedIn } from "../hooks/useAuth";
-import { Affix, ActionIcon, Tooltip } from "@mantine/core";
-import { TbWritingSign } from "react-icons/tb";
 
 export function UserPage() {
   const params = useParams();
   const userId = params.id;
-  const navigate = useNavigate()
 
   const { data, isPending, isError, error } = useQuery({
     queryKey: ["users", userId],

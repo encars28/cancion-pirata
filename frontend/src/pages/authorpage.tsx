@@ -8,15 +8,10 @@ import { notifications } from "@mantine/notifications";
 import { errorNotification } from "../notifications";
 import { FetchError } from "../utils";
 import { QueryError } from "../components/Error/QueryError";
-import { isLoggedIn } from "../hooks/useAuth";
-import { Affix, ActionIcon, Tooltip } from "@mantine/core";
-import { TbWritingSign } from "react-icons/tb";
-import { useNavigate } from "react-router";
 
 export function AuthorPage() {
   const params = useParams()
   const authorId = params.id;
-  const navigate = useNavigate();
 
   const { data, error, isPending, isError} = useAuthor(authorId!);
 
