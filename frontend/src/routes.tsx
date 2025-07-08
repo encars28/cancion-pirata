@@ -28,7 +28,7 @@ import { notifications } from "@mantine/notifications";
 import { errorNotification } from "./notifications";
 import React from "react";
 import { VerifyEmail } from "./components/User/VerifyEmail";
-import { AddPoemPage } from "./pages/addpoempage";
+import { AddPoem } from "./components/Poem/AddPoem";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -80,7 +80,7 @@ export default function AllRoutes() {
           <ProtectedRoute isAllowed={isLoggedIn()} redirectPath="/login" />
         }
       >
-        <Route path="poems/add" element={<AddPoemPage />} />
+        <Route path="poems/add" element={<AddPoem />} />
 
         <Route path="poems/edit/:id" element={<BasePage />}>
           <Route index element={<EditPoem />} />

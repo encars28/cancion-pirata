@@ -1,9 +1,7 @@
-from email.mime import image
 import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
-from fastapi.responses import FileResponse
 from app.core.config import settings
 import os
 from app.api.deps import (
@@ -73,6 +71,7 @@ def create_author(*, session: SessionDep, author_in: AuthorCreate) -> Any:
     author = author_crud.create(db=session, obj_create=author_in)
     return author
 
+
 @router.patch(
     "/me",
     response_model=AuthorPublic,
@@ -94,8 +93,10 @@ def update_author_me(
             detail="The author with this id does not exist in the system",
         )
 
-    author = author_crud.update(db=session, obj_id=author.id, obj_update=author_in)
+    author = author_crud.update(
+        db=session, obj_id=author.id, obj_update=author_in)
     return author
+
 
 @router.get("/{author_id}", response_model=AuthorPublicWithPoems)
 def read_author_by_id(
@@ -122,6 +123,7 @@ def read_author_by_id(
 
     return author
 
+
 @router.post("/{author_id}/picture", response_model=Message, dependencies=[Depends(get_current_active_superuser)])
 def upload_author_picture(
     author_id: uuid.UUID,
@@ -143,9 +145,10 @@ def upload_author_picture(
             status_code=400,
             detail="File is not an image.",
         )
-        
-    file_path = os.path.join(settings.IMAGES_DIR, "authors", f"{author_id}.png")
-    try: 
+
+    file_path = os.path.join(
+        settings.IMAGES_DIR, "authors", f"{author_id}.png")
+    try:
         with open(file_path, "wb") as f:
             f.write(file.file.read())
     except OSError:
@@ -186,7 +189,8 @@ def update_author(
                 status_code=409, detail="Author with this name already exists"
             )
 
-    author = author_crud.update(db=session, obj_id=author.id, obj_update=author_in)
+    author = author_crud.update(
+        db=session, obj_id=author.id, obj_update=author_in)
     return author
 
 

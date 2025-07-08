@@ -1,5 +1,12 @@
 import { Shell } from "../components/Shell/Shell";
-import { ActionIcon, Drawer, Group, Title, Affix, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Drawer,
+  Group,
+  Title,
+  Affix,
+  Tooltip,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
@@ -11,7 +18,6 @@ import { useSearchParams, useNavigate } from "react-router";
 import { AuthorSearchParams, SearchParams } from "../client";
 import { isLoggedIn } from "../hooks/useAuth";
 
-
 export const AUTHORS_PER_PAGE = 36;
 
 export function AuthorsPage() {
@@ -19,7 +25,11 @@ export function AuthorsPage() {
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState<SearchParams>({
     search_type: ["author"],
-    author_params: { author_skip: 0, author_limit: AUTHORS_PER_PAGE, author_basic: false },
+    author_params: {
+      author_skip: 0,
+      author_limit: AUTHORS_PER_PAGE,
+      author_basic: false,
+    },
   });
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -73,7 +83,7 @@ export function AuthorsPage() {
       author_limit: AUTHORS_PER_PAGE,
     };
 
-    setFilters({...filters, author_params: updatedFilters});
+    setFilters({ ...filters, author_params: updatedFilters });
   };
 
   return (
@@ -99,22 +109,24 @@ export function AuthorsPage() {
       >
         <FilterAuthor form={form} handleSubmit={handleSubmit} />
       </Drawer>
-            <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
-                <Tooltip label="Nuevo poema">
-                  <ActionIcon
-                    size={50}
-                    variant="filled"
-                    radius="xl"
-                    onClick={
-                      isLoggedIn()
-                        ? () => navigate("/poems/add")
-                        : () => navigate("/login")
-                    }
-                  >
-                    <TbWritingSign size={25} />
-                  </ActionIcon>
-                </Tooltip>
-            </Affix>
+      {!opened && (
+        <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+          <Tooltip label="Nuevo poema">
+            <ActionIcon
+              size={50}
+              variant="filled"
+              radius="xl"
+              onClick={
+                isLoggedIn()
+                  ? () => navigate("/poems/add")
+                  : () => navigate("/login")
+              }
+            >
+              <TbWritingSign size={25} />
+            </ActionIcon>
+          </Tooltip>
+        </Affix>
+      )}
     </Shell>
   );
 }

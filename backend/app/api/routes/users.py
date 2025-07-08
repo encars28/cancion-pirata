@@ -216,16 +216,31 @@ def update_user_me_profile_picture(
             detail="Images directory does not exist.",
         )
 
+    # Read the image content once
+    image_content = image.file.read()
+    
     file_path = os.path.join(
         settings.IMAGES_DIR, "users", f"{current_user.id}.png")
     try:
         with open(file_path, "wb") as f:
-            f.write(image.file.read())
+            f.write(image_content)
     except OSError:
         raise HTTPException(
             status_code=500,
             detail=f"Failed to save image",
         )
+        
+    if current_user.author_id: 
+        file_path = os.path.join(
+            settings.IMAGES_DIR, "authors", f"{current_user.author_id}.png")
+        try:
+            with open(file_path, "wb") as f:
+                f.write(image_content)
+        except OSError:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to save image",
+            )
 
     return Message(message="Profile picture updated successfully")
 

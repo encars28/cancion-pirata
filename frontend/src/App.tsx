@@ -24,7 +24,7 @@ dayjs.extend(customParseFormat);
 
 // configure internal service client
 client.setConfig({
-  baseUrl: 'http://localhost:8000',
+  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:8000',
 });
 
 if (isLoggedIn()) {

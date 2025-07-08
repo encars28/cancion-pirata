@@ -20,7 +20,11 @@ export function PoemsPage() {
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState<SearchParams>({
     search_type: ["poem"],
-    poem_params: { poem_skip: 0, poem_limit: POEMS_PER_PAGE, poem_basic: false },
+    poem_params: {
+      poem_skip: 0,
+      poem_limit: POEMS_PER_PAGE,
+      poem_basic: false,
+    },
   });
   const [searchParams] = useSearchParams();
 
@@ -51,10 +55,11 @@ export function PoemsPage() {
     setFilters({
       ...filters,
       poem_params: {
-      ...filters.poem_params,
-      poem_skip: (page - 1) * POEMS_PER_PAGE,
-      poem_limit: POEMS_PER_PAGE,
-    }});
+        ...filters.poem_params,
+        poem_skip: (page - 1) * POEMS_PER_PAGE,
+        poem_limit: POEMS_PER_PAGE,
+      },
+    });
   };
 
   const handleSubmit = async (values: typeof form.values) => {
@@ -89,7 +94,7 @@ export function PoemsPage() {
           : "",
     };
 
-    setFilters({...filters, poem_params: updatedFilters});
+    setFilters({ ...filters, poem_params: updatedFilters });
   };
 
   return (
@@ -118,7 +123,8 @@ export function PoemsPage() {
       >
         <FilterPoem form={form} handleSubmit={handleSubmit} />
       </Drawer>
-      <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
+      {!opened && (
+        <Affix bottom={{ base: 100, xs: 60 }} right={{ base: 30, xs: 70 }}>
           <Tooltip label="Nuevo poema">
             <ActionIcon
               size={50}
@@ -133,7 +139,8 @@ export function PoemsPage() {
               <TbWritingSign size={25} />
             </ActionIcon>
           </Tooltip>
-      </Affix>
+        </Affix>
+      )}
     </Shell>
   );
 }
