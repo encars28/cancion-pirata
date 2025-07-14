@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
-import { BodyLoginLoginAccessToken as AccessToken, Token, VerifyToken } from "../client/types.gen"
+import { BodyLoginLoginAccessToken as AccessToken, VerifyToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
 import { callService } from "../utils"
 import { client } from "../client/client.gen"
@@ -61,7 +61,6 @@ const useAuth = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
-      // location.reload()
       navigate("/")
     },
   })
@@ -69,25 +68,22 @@ const useAuth = () => {
   const logout = () => {
     localStorage.removeItem("access_token")
     client.setConfig({ headers: { "Authorization": "" } })
-    location.reload()
     navigate("/login")
     notifications.clean()
-    notifications.show({
+    notifications.show(successNotification({
       title: "Sesión cerrada",
-      message: "Has cerrado sesión correctamente.",
-      color: "green",
-    })
+      description: "La sesión se ha cerrado correctamente.",
+    }))
   }
 
   const activateAccountMutation = useMutation({
     mutationFn: async (token: VerifyToken) => callService(loginActivateAccount, { body: token }),
     onSuccess: () => {
       notifications.clean()
-      notifications.show({
+      notifications.show(successNotification({
         title: "Cuenta activada",
-        message: "Tu cuenta ha sido activada correctamente. Ya puedes iniciar sesión.",
-        color: "green",
-      })
+        description: "Tu cuenta ha sido activada correctamente. Ya puedes iniciar sesión.",
+      }))
 
       navigate("/login")
     }
