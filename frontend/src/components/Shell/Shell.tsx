@@ -37,7 +37,6 @@ export function Shell({
   );
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.xs})`);
   const footerheight = isMobile ? 65 : 0;
-  console.log(asideDesktopOpened, asideMobileOpened)
   return (
     <AppShell
       header={{ height: 60 }}

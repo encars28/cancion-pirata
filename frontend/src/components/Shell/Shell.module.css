@@ -5,7 +5,7 @@
 }
 
 .main_filled {
-  background-color: var(--mantine-color-blue-1);
+  background-color: light-dark(var(--mantine-color-blue-1), rgb(52, 75, 93));
   height: 100%;
   padding-bottom: 60px;
 }

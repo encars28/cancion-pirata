@@ -78,7 +78,7 @@ export function MainPage() {
                 h="100%"
                 w="100%"
                 justify="center"
-                style={{ backgroundColor: "var(--mantine-color-blue-1)" }}
+                style={{ backgroundColor: "light-dark(var(--mantine-color-blue-1), rgb(52, 75, 93))" }}
               >
                 <Paper withBorder shadow="md" p="xl" radius="md">
                   <Stack h="100%" justify="space-around">
