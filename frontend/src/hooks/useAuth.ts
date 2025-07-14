@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
-import { BodyLoginLoginAccessToken as AccessToken, VerifyToken } from "../client/types.gen"
+import { BodyLoginLoginAccessToken as AccessToken, Token, VerifyToken } from "../client/types.gen"
 import { UserRegister} from "../client/types.gen"
 import { callService } from "../utils"
 import { client } from "../client/client.gen"
@@ -45,18 +45,15 @@ const useAuth = () => {
   })
 
   const login = async (login_data: AccessToken) => {
-    const response = await loginLoginAccessToken({ body: login_data })
-    if (response.error) {
-      throw response.error
-    }
+    const token = await callService(loginLoginAccessToken, { body: login_data })
 
     client.setConfig({
       headers: {
-        "Authorization": `Bearer ${response.data.access_token}`
+        "Authorization": `Bearer ${token?.access_token}`
       }
     })
-    localStorage.setItem("access_token", response.data.access_token)
-    return response.data
+    localStorage.setItem("access_token", `${token?.access_token}`)
+    return token
   }
 
   const loginMutation = useMutation({
@@ -64,7 +61,7 @@ const useAuth = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
-      location.reload()
+      // location.reload()
       navigate("/")
     },
   })

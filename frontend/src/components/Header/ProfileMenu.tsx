@@ -5,11 +5,16 @@ import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import usePicture from "../../hooks/usePicture";
+import { useEffect } from "react";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { userProfilePicture: pictureUrl } = usePicture()
+  const { userProfilePicture: pictureUrl, setUserProfilePicture } = usePicture()
+
+  useEffect(() => {
+    setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png" + "?" + new Date().getTime());
+  }, [user?.id]);
 
   const openModal = () =>
     modals.openConfirmModal({
