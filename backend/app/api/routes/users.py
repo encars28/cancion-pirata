@@ -326,7 +326,7 @@ def read_user_by_id(
     return user
 
 
-@router.post("/{user_id}/picture", response_model=Message, dependencies=[Depends(get_current_active_superuser)])
+@router.post("/{user_id}/picture", response_model=Message)
 def update_user_profile_picture(
     session: SessionDep, image: UploadFile, user_id: uuid.UUID
 ) -> Any:
@@ -345,16 +345,30 @@ def update_user_profile_picture(
             status_code=400, detail="File is not an image"
         )
 
+    image_content = image.file.read()
+    
     file_path = os.path.join(
-        settings.IMAGES_DIR, "users", f"{user_id}.png")
+        settings.IMAGES_DIR, "users", f"{user.id}.png")
     try:
         with open(file_path, "wb") as f:
-            f.write(image.file.read())
+            f.write(image_content)
     except OSError:
         raise HTTPException(
             status_code=500,
             detail=f"Failed to save image",
         )
+        
+    if user.author_id: 
+        file_path = os.path.join(
+            settings.IMAGES_DIR, "authors", f"{user.author_id}.png")
+        try:
+            with open(file_path, "wb") as f:
+                f.write(image_content)
+        except OSError:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to save image",
+            )
 
     return Message(message="Profile picture updated successfully")
 

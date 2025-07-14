@@ -80,7 +80,9 @@ export default function AllRoutes() {
           <ProtectedRoute isAllowed={isLoggedIn()} redirectPath="/login" />
         }
       >
-        <Route path="poems/add" element={<AddPoem />} />
+        <Route path="poems/add" element={<BasePage />}>
+          <Route index element={<AddPoem />} />
+        </Route>
 
         <Route path="poems/edit/:id" element={<BasePage />}>
           <Route index element={<EditPoem />} />

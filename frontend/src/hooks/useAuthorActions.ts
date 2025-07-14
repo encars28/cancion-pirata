@@ -51,10 +51,13 @@ const useAuthorActions = (authorId: string) => {
     }
   })
 
+  const authorProfilePicture = import.meta.env.VITE_IMAGES_DIR + "/authors/" + authorId + ".png"
+
   return {
     deleteAuthorMutation,
     editAuthorMutation,
     updateProfilePicture,
+    authorProfilePicture
   }
 }
 

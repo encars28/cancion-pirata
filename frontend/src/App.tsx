@@ -19,6 +19,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { ModalsProvider } from '@mantine/modals';
 import { createTheme } from '@mantine/core';
+import { PictureProvider } from './context/PictureContext';
 
 dayjs.extend(customParseFormat);
 
@@ -50,10 +51,12 @@ function App() {
     <MantineProvider theme={theme}>
       {
         <>
+          <PictureProvider>
           <AllRoutes />
           <Search />
           <Notifications />
           <ModalsProvider labels={{ confirm: 'Continuar', cancel: 'Cancelar' }} />
+          </PictureProvider>
         </>
       }
     </MantineProvider>

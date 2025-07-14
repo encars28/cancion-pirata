@@ -4,11 +4,12 @@ import useAuth from "../../hooks/useAuth";
 import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
+import usePicture from "../../hooks/usePicture";
 
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png"
+  const { userProfilePicture: pictureUrl } = usePicture()
 
   const openModal = () =>
     modals.openConfirmModal({

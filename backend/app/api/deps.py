@@ -69,9 +69,13 @@ def get_current_user(required: bool) -> Callable[[SessionDep, TokenDep], Optiona
     return _get_current_user
 
 
-CurrentUser = Annotated[UserSchema, Depends(get_current_user(required=True))]
-OptionalCurrentUser = Annotated[Optional[UserSchema], Depends(
-    get_current_user(required=False))]
+CurrentUser = Annotated[
+    UserSchema, Depends(get_current_user(required=True))
+]
+OptionalCurrentUser = Annotated[
+    Optional[UserSchema], 
+    Depends(get_current_user(required=False))
+]
 
 
 def get_current_active_superuser(current_user: CurrentUser) -> UserSchema:

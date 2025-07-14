@@ -4,9 +4,11 @@ import { callService } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { successNotification } from '../notifications'
 import { UserUpdate } from '../client/types.gen'
+import usePicture from './usePicture'
 
 const useUserActions = (userId: string) => {
   const queryClient = useQueryClient()
+  const { setUserProfilePicture } = usePicture()
 
   const updateUserProfilePicture = useMutation({
     mutationFn: async (file: File) => {
@@ -14,6 +16,7 @@ const useUserActions = (userId: string) => {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['users', userId, 'profilePicture'] })
+      setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + userId + ".png" + "?" + new Date().getTime())
     },
   })
 
@@ -48,7 +51,7 @@ const useUserActions = (userId: string) => {
   return {
     updateUserProfilePicture,
     deleteUserMutation,
-    editUserMutation
+    editUserMutation,
   }
 }
 

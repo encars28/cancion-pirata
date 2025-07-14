@@ -20,12 +20,10 @@ export function UploadPicture({
 }) {
   const { hovered, ref } = useHover();
 
-
   const handleSubmit = async (picture: File | null) => {
     if (picture) {
       try {
         await updatePicture.mutateAsync(picture);
-        location.reload()
       } catch {}
     }
   };

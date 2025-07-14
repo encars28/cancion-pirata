@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
 import { successNotification } from '../notifications'
+import useUserActions from './useUserActions'
 
 
 const useUserMe = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
+  const { userProfilePicture } = useUserActions(user?.id!)
 
   const updateProfilePicture = useMutation({
     mutationFn: async (file: File) => {
@@ -19,7 +21,16 @@ const useUserMe = () => {
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['currentUser'] })
     },
+    onSuccess: () => {
+      notifications.clean()
+      notifications.show(successNotification({
+        title: "Foto de perfil actualizada",
+        description: "Tu foto de perfil ha sido actualizada correctamente."
+      }))
+      // setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id! + ".png" )
+    }
   })
+  
   const deleteUserMeMutation = useMutation({
     mutationFn: async () => callService(usersDeleteUserMe),
     onSuccess: () => {
@@ -65,7 +76,7 @@ const useUserMe = () => {
     }
   })
 
-  return { updateProfilePicture, deleteUserMeMutation, editAuthorMe, verifyEmailMutation }
+  return { updateProfilePicture, deleteUserMeMutation, editAuthorMe, verifyEmailMutation, userProfilePicture }
 }
 
 export default useUserMe

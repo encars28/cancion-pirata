@@ -13,7 +13,7 @@ import {
   TbSettings,
   TbTrash,
 } from "react-icons/tb";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router";
 import useAuth from "../../hooks/useAuth";
 import { modals } from "@mantine/modals";
@@ -21,6 +21,8 @@ import { notifications } from "@mantine/notifications";
 import { successNotification } from "../../notifications";
 import useUserMe from "../../hooks/useUserMe";
 import { UploadPicture } from "../PersonPicture/UploadPicture/UploadPicture";
+import useUserActions from "../../hooks/useUserActions";
+import usePicture from "../../hooks/usePicture";
 
 export function ProfileNavbar() {
   const navigate = useNavigate();
@@ -28,9 +30,14 @@ export function ProfileNavbar() {
   const [active, setActive] = useState(
     location.pathname.split("me/")[1] ?? "profile"
   );
-  const { logout, user: currentUser } = useAuth();
-  const { deleteUserMeMutation, updateProfilePicture } = useUserMe();
-  const pictureUrl = import.meta.env.VITE_IMAGES_DIR + "/users/" + currentUser?.id + ".png"
+  const { logout, user} = useAuth();
+  const { deleteUserMeMutation } = useUserMe();
+  const { updateUserProfilePicture: updateProfilePicture } = useUserActions(user?.id!);
+  const { userProfilePicture: pictureUrl, setUserProfilePicture } = usePicture()
+  
+  useEffect(() => {
+    setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png" + "?" + new Date().getTime());
+  }, [user?.id]);
 
   const deleteMe = () =>
     modals.openConfirmModal({
