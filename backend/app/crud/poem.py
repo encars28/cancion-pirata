@@ -50,6 +50,7 @@ class PoemCRUD:
 
         stmt = title_filter.intersect(
             type_filter,
+            title_filter,
             created_at_filter,
             updated_at_filter,
             language_filter,
@@ -88,6 +89,7 @@ class PoemCRUD:
 
         stmt = title_filter.intersect(
             type_filter,
+            title_filter,
             created_at_filter,
             updated_at_filter,
             language_filter,
@@ -104,6 +106,8 @@ class PoemCRUD:
         return count if count else 0
 
     def filter_by_language(self, query: PoemSearchParams) -> Select:
+        if query.poem_language == "":
+            return select(Poem)
         return select(Poem).where(Poem.language.icontains(query.poem_language))
 
     def filter_dates(self, date: str, col: str) -> Select:
@@ -140,6 +144,8 @@ class PoemCRUD:
         return s
 
     def filter_by_title(self, query: PoemSearchParams) -> Select:
+        if query.poem_title == "":
+            return select(Poem)
         return select(Poem).where(Poem.title.icontains(query.poem_title))
 
     def filter_by_num_verses(self, query: PoemSearchParams, db: Session) -> Select:
@@ -201,6 +207,9 @@ class PoemCRUD:
                 return select(Poem)
             
     def filter_by_author(self, db:Session, author_name: str) -> Select:
+        if author_name == "":
+            return select(Poem)
+        
         authors = db.scalars(
             select(Author).where(Author.full_name.icontains(author_name))
         ).all()

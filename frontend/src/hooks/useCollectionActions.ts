@@ -18,7 +18,6 @@ const useCollectionActions = (collectionId: string) => {
     onSuccess: () => {
       notifications.clean()
       notifications.show(successNotification({ title: "Colección actualizada", description: "La colección se ha actualizado correctamente." }))
-      navigate(`/collections/${collectionId}`)
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['collections'] })

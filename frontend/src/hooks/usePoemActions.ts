@@ -2,14 +2,12 @@ import { callService } from '../utils'
 import { poemsDeletePoem } from '../client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
 import { successNotification } from '../notifications'
 
 const usePoemActions = (poemId: string) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const {user: currentUser} = useAuth()
 
   const deletePoemMutation = useMutation({
     mutationFn: async () => callService(poemsDeletePoem, { path: { poem_id: poemId } }),
@@ -18,12 +16,7 @@ const usePoemActions = (poemId: string) => {
         title: "Poema eliminado",
         description: "El poema se ha eliminado correctamente."
       }))
-      if (currentUser?.is_superuser) {
-        navigate('/admin')
-      }
-      else {
-        navigate('/my')
-      }
+      navigate('/me')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })

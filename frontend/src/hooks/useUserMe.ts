@@ -27,7 +27,6 @@ const useUserMe = () => {
         title: "Foto de perfil actualizada",
         description: "Tu foto de perfil ha sido actualizada correctamente."
       }))
-      // setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id! + ".png" )
     }
   })
   

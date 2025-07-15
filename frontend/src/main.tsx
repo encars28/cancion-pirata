@@ -10,7 +10,7 @@ import {
 import { BrowserRouter } from "react-router";
 import { FetchError, handleFetchError } from "./utils.ts";
 import { notifications } from "@mantine/notifications";
-import { errorNotification, successNotification } from "./notifications.ts";
+import { errorNotification } from "./notifications.ts";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,11 +44,6 @@ const queryClient = new QueryClient({
       } else {
         notifications.show(errorNotification({}))
       }
-
-    },
-    onSuccess: () => {
-      notifications.clean();
-      notifications.show(successNotification({}))
     },
   }),
 });

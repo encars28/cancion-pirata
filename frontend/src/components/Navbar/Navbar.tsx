@@ -16,6 +16,7 @@ import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { callService } from "../../utils";
 import { poemsReadRandomPoem } from "../../client";
+import { errorNotification } from "../../notifications";
 
 interface NavbarLinkProps {
   icon: IconType;
@@ -72,10 +73,11 @@ export function Navbar() {
     if (isLoggedIn()) {
       navigate(`/users/${user?.id}`);
     } else {
-      notifications.show({
+      navigate("/login");
+      notifications.show(errorNotification({
         title: "Acción no permitida",
-        message: "Debes iniciar sesión para poder crear colecciones.",
-      });
+        description: "Debes iniciar sesión para acceder a las colecciones.",
+      }));
     }
   };
 

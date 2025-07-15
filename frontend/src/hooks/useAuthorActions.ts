@@ -2,25 +2,18 @@ import { authorsDeleteAuthor, authorsUpdateAuthor, authorsUploadAuthorPicture, A
 import { callService } from '../utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
 import { successNotification } from '../notifications'
 
 const useAuthorActions = (authorId: string) => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { user: currentUser } = useAuth()
 
   const deleteAuthorMutation = useMutation({
     mutationFn: async () => callService(authorsDeleteAuthor, { path: { author_id: authorId } }),
     onSuccess: () => {
       notifications.show(successNotification({ title: 'Autor eliminado', description: 'El autor ha sido eliminado correctamente.' }))
-      if (currentUser?.is_superuser) {
-        navigate('/admin')
-      }
-      else {
-        navigate('/my')
-      }
+      navigate('/')
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poems'] })
@@ -48,6 +41,10 @@ const useAuthorActions = (authorId: string) => {
     mutationFn: async (file: File) => callService(authorsUploadAuthorPicture, {path: { author_id: authorId }, body: { file: file }}),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['authors', authorId] })
+      notifications.show(successNotification({
+        title: 'Foto de perfil actualizada',
+        description: 'La foto de perfil del autor ha sido actualizada correctamente.',
+      }))
     }
   })
 
