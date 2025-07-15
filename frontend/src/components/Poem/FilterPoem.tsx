@@ -125,7 +125,7 @@ export function FilterPoem({
           radius="md"
           styles={{ input: { color: "grey" } }}
           key={form.key("language")}
-          {...form.getInputProps("langeuage")}
+          {...form.getInputProps("language")}
         />
         <Space h="sm" />
         <Select

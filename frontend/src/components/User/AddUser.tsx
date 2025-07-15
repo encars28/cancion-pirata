@@ -2,11 +2,13 @@ import {
   Stack,
   TextInput,
   PasswordInput,
-  Modal,
+  Title,
   Group,
   Button,
   Switch,
   Text,
+  Container,
+  Paper,
 } from "@mantine/core";
 import { Form, hasLength, isEmail, isNotEmpty, useForm } from "@mantine/form";
 import { TbUser, TbAt, TbAbc, TbCrown, TbLockCheck, TbX } from "react-icons/tb";
@@ -14,13 +16,10 @@ import { UserCreate } from "../../client/types.gen";
 import { callService } from "../../utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { usersCreateUser } from "../../client";
-import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { successNotification } from "../../notifications";
 
 export function AddUser() {
-  const [opened, { open, close }] = useDisclosure();
-
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (data: UserCreate) =>
@@ -81,133 +80,122 @@ export function AddUser() {
   };
 
   return (
-    <>
-      <Button variant="filled" onClick={open}>
-        Añadir usuario
-      </Button>
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Añadir usuario"
-        overlayProps={{
-          blur: 3,
-        }}
-        closeOnClickOutside={false}
-        centered
-      >
-        <Form form={form} onSubmit={handleSubmit}>
-          <Stack gap="lg" m="md" p="sm">
-            <TextInput
-              name="email"
-              key={form.key("email")}
-              label="Email"
-              placeholder="ejemplo@ejemplo.com"
-              leftSectionPointerEvents="none"
-              leftSection={<TbAt size={15} />}
-              {...form.getInputProps("email")}
-              required
-            />
-            <PasswordInput
-              name="password"
-              key={form.key("password")}
-              label="Contraseña"
-              placeholder="Tu contraseña"
-              {...form.getInputProps("password")}
-              required
-            />
-            <TextInput
-              name="username"
-              key={form.key("username")}
-              label="Nombre de usuario"
-              placeholder="Tu nombre de usuario"
-              leftSectionPointerEvents="none"
-              leftSection={<TbUser size={15} />}
-              {...form.getInputProps("username")}
-              required
-            />
-            <TextInput
-              name="full_name"
-              key={form.key("full_name")}
-              label="Nombre completo"
-              placeholder="Nombre completo"
-              leftSectionPointerEvents="none"
-              leftSection={<TbAbc size={15} />}
-              {...form.getInputProps("full_name")}
-            />
-            <Group justify="space-between" mt="sm">
-              <Stack gap={2}>
-                <Text size="sm">Estado de la cuenta</Text>
-                <Text size="sm" c="dimmed">
-                  {form.values.is_verified
-                    ? "Verificada"
-                    : "No verificada"}
-                </Text>
-              </Stack>
-              <Group>
-                <Switch
-                  checked={form.values.is_verified}
-                  labelPosition="left"
-                  size="md"
-                  key={form.key("is_verified")}
-                  thumbIcon={
-                    form.values.is_verified ? (
-                      <TbLockCheck
-                        size={15}
-                        color="var(--mantine-primary-color-filled)"
-                      />
-                    ) : (
-                      <TbX size={15} color="black" />
-                    )
-                  }
-                  {...form.getInputProps("is_verified")}
-                />
+    <Container size={500}>
+      <Paper withBorder p="lg" radius="md">
+        <Stack>
+          <Title order={2} ta="center" mb="sm" mt="sm">
+            Añadir usuario
+          </Title>
+          <Form form={form} onSubmit={handleSubmit}>
+            <Stack gap="lg" m="md" p="sm">
+              <TextInput
+                name="email"
+                key={form.key("email")}
+                label="Email"
+                placeholder="ejemplo@ejemplo.com"
+                leftSectionPointerEvents="none"
+                leftSection={<TbAt size={15} />}
+                {...form.getInputProps("email")}
+                required
+              />
+              <PasswordInput
+                name="password"
+                key={form.key("password")}
+                label="Contraseña"
+                placeholder="Tu contraseña"
+                {...form.getInputProps("password")}
+                required
+              />
+              <TextInput
+                name="username"
+                key={form.key("username")}
+                label="Nombre de usuario"
+                placeholder="Tu nombre de usuario"
+                leftSectionPointerEvents="none"
+                leftSection={<TbUser size={15} />}
+                {...form.getInputProps("username")}
+                required
+              />
+              <TextInput
+                name="full_name"
+                key={form.key("full_name")}
+                label="Nombre completo"
+                placeholder="Nombre completo"
+                leftSectionPointerEvents="none"
+                leftSection={<TbAbc size={15} />}
+                {...form.getInputProps("full_name")}
+              />
+              <Group justify="space-between" mt="sm">
+                <Stack gap={2}>
+                  <Text size="sm">Estado de la cuenta</Text>
+                  <Text size="sm" c="dimmed">
+                    {form.values.is_verified ? "Verificada" : "No verificada"}
+                  </Text>
+                </Stack>
+                <Group>
+                  <Switch
+                    checked={form.values.is_verified}
+                    labelPosition="left"
+                    size="md"
+                    key={form.key("is_verified")}
+                    thumbIcon={
+                      form.values.is_verified ? (
+                        <TbLockCheck
+                          size={15}
+                          color="var(--mantine-primary-color-filled)"
+                        />
+                      ) : (
+                        <TbX size={15} color="black" />
+                      )
+                    }
+                    {...form.getInputProps("is_verified")}
+                  />
+                </Group>
               </Group>
-            </Group>
-            <Group justify="space-between" mt="sm">
-              <Stack gap={2}>
-                <Text size="sm">Tipo de usuario</Text>
-                <Text size="sm" c="dimmed">
-                  {form.values.is_superuser
-                    ? "Administrador"
-                    : "Usuario normal"}
-                </Text>
-              </Stack>
-              <Group>
-                <Switch
-                  checked={form.values.is_superuser}
-                  labelPosition="left"
-                  size="md"
-                  key={form.key("is_superuser")}
-                  thumbIcon={
-                    form.values.is_superuser ? (
-                      <TbCrown
-                        size={15}
-                        color="var(--mantine-primary-color-filled)"
-                      />
-                    ) : (
-                      <TbUser size={15} color="black" />
-                    )
-                  }
-                  {...form.getInputProps("is_superuser")}
-                />
+              <Group justify="space-between" mt="sm">
+                <Stack gap={2}>
+                  <Text size="sm">Tipo de usuario</Text>
+                  <Text size="sm" c="dimmed">
+                    {form.values.is_superuser
+                      ? "Administrador"
+                      : "Usuario normal"}
+                  </Text>
+                </Stack>
+                <Group>
+                  <Switch
+                    checked={form.values.is_superuser}
+                    labelPosition="left"
+                    size="md"
+                    key={form.key("is_superuser")}
+                    thumbIcon={
+                      form.values.is_superuser ? (
+                        <TbCrown
+                          size={15}
+                          color="var(--mantine-primary-color-filled)"
+                        />
+                      ) : (
+                        <TbUser size={15} color="black" />
+                      )
+                    }
+                    {...form.getInputProps("is_superuser")}
+                  />
+                </Group>
               </Group>
-            </Group>
-            <Group justify="flex-end" pt="lg">
-              <Button onClick={close} variant="outline">
-                Cancelar
-              </Button>
-              <Button
-                variant="filled"
-                type="submit"
-                loading={mutation.isPending}
-                loaderProps={{ type: "dots" }}
-              >
-                Guardar
-              </Button>
-            </Group>
-          </Stack>
-        </Form>
-      </Modal>
-    </>
+              <Group justify="flex-end" pt="lg">
+                <Button
+                  variant="filled"
+                  type="submit"
+                  fullWidth
+                  loading={mutation.isPending}
+                  loaderProps={{ type: "dots" }}
+                >
+                  Guardar
+                </Button>
+              </Group>
+            </Stack>
+          </Form>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }

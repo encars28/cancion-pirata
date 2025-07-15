@@ -28,7 +28,15 @@ export function RegisterForm() {
     validate: {
       email: isEmail('Correo inválido'),
       password: hasLength({ min: 8 }, 'La contraseña debe tener al menos 6 caracteres'),
-      username: isNotEmpty('El nombre de usuario no es válido'),
+      username: (value) => {
+        if (isNotEmpty('El nombre de usuario no es válido')(value)) {
+          return 'El nombre de usuario no es válido';
+        }
+        if (isEmail()(value) === null) {
+          return 'El nombre de usuario no puede ser un correo electrónico';
+        }
+        return null;
+      },
     },
     initialValues: {
       email: '',

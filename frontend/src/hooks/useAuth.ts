@@ -61,14 +61,16 @@ const useAuth = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currentUser"] })
       notifications.clean()
-      navigate("/")
+      location.reload()
+      location.href = "/"
     },
   })
 
   const logout = () => {
     localStorage.removeItem("access_token")
     client.setConfig({ headers: { "Authorization": "" } })
-    navigate("/login")
+    location.reload()
+    location.href = "/login"
     notifications.clean()
     notifications.show(successNotification({
       title: "Sesión cerrada",

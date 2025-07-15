@@ -7,9 +7,6 @@ import { NothingFound } from "./components/Error/NothingFound";
 import { isAdmin, isLoggedIn } from "./hooks/useAuth";
 import { MePage } from "./pages/mepage";
 import { AdminPage } from "./pages/adminpage";
-import { TableAuthors } from "./components/Tables/TableAuthors";
-import { TableUsers } from "./components/Tables/TableUsers";
-import { TablePoems } from "./components/Tables/TablePoems";
 import { UpdateProfile } from "./components/User/UpdateProfile/UpdateProfile";
 import { UpdatePasswordForm } from "./components/User/UpdatePassword";
 import { BasePage } from "./pages/base";
@@ -29,6 +26,8 @@ import { errorNotification } from "./notifications";
 import React from "react";
 import { VerifyEmail } from "./components/User/VerifyEmail";
 import { AddPoem } from "./components/Poem/AddPoem";
+import { AddUser } from "./components/User/AddUser";
+import { AddAuthor } from "./components/Author/AddAuthor";
 
 type ProtectedRouteProps = {
   isAllowed: boolean;
@@ -111,10 +110,9 @@ export default function AllRoutes() {
 
       <Route element={<ProtectedRoute isAllowed={isAdmin()} />}>
         <Route path="admin" element={<AdminPage />}>
-          <Route index element={<TableUsers />} />
-          <Route path="authors" element={<TableAuthors />} />
-          <Route path="users" element={<TableUsers />} />
-          <Route path="poems" element={<TablePoems />} />
+          <Route index element={<Navigate to="users" replace />} />
+          <Route path="users" element={<AddUser />} />
+          <Route path="authors" element={<AddAuthor />} />
           <Route path="*" element={<NothingFound />} />
         </Route>
       </Route>
