@@ -6,6 +6,7 @@ venv
 .gitignore
 .pytest_cache
 .pytest_cache/*
+.vscode
 __pycache__
 __pycache__/*
 htmlcov

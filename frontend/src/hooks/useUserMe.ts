@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router'
 import useAuth from './useAuth'
 import { notifications } from '@mantine/notifications'
 import { successNotification } from '../notifications'
-import useUserActions from './useUserActions'
+import usePicture from './usePicture'
 
 
 const useUserMe = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
-  const { logout, user } = useAuth()
-  const { userProfilePicture } = useUserActions(user?.id!)
+  const { logout } = useAuth()
+  const { userProfilePicture } = usePicture()
 
   const updateProfilePicture = useMutation({
     mutationFn: async (file: File) => {

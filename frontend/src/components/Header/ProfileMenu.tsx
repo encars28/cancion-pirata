@@ -1,7 +1,7 @@
 import { Text, Menu, Center, Box } from "@mantine/core";
 import { useNavigate } from "react-router";
-import useAuth from "../../hooks/useAuth";
-import { TbLogout, TbSettings, TbUser } from "react-icons/tb";
+import useAuth, { isAdmin } from "../../hooks/useAuth";
+import { TbLogout, TbSettings, TbUser, TbUserShield } from "react-icons/tb";
 import { modals } from "@mantine/modals";
 import { PersonAvatar } from "../PersonPicture/PersonAvatar";
 import usePicture from "../../hooks/usePicture";
@@ -10,10 +10,18 @@ import { useEffect } from "react";
 export function ProfileMenu() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const { userProfilePicture: pictureUrl, setUserProfilePicture } = usePicture()
+  const { userProfilePicture: pictureUrl, setUserProfilePicture } =
+    usePicture();
 
   useEffect(() => {
-    setUserProfilePicture(import.meta.env.VITE_IMAGES_DIR + "/users/" + user?.id + ".png" + "?" + new Date().getTime());
+    setUserProfilePicture(
+      import.meta.env.VITE_IMAGES_DIR +
+        "/users/" +
+        user?.id +
+        ".png" +
+        "?" +
+        new Date().getTime()
+    );
   }, [user?.id]);
 
   const openModal = () =>
@@ -42,8 +50,19 @@ export function ProfileMenu() {
           {"¡Bienvenido, " + user?.username + "!"}
         </Text>
         <Center mb="md" mt="sm">
-          <PersonAvatar url={pictureUrl}  size={60} />
+          <PersonAvatar url={pictureUrl} size={60} />
         </Center>
+        {isAdmin() && (
+          <>
+            <Menu.Label>Admin</Menu.Label>
+            <Menu.Item
+              onClick={() => navigate("/admin")}
+              leftSection={<TbUserShield />}
+            >
+              Página administrador
+            </Menu.Item>
+          </>
+        )}
         <Menu.Label>Usuario</Menu.Label>
         <Menu.Item
           onClick={() => navigate(`/users/${user?.id}`)}
@@ -54,6 +73,7 @@ export function ProfileMenu() {
         <Menu.Item onClick={() => navigate("/me")} leftSection={<TbSettings />}>
           Ajustes perfil
         </Menu.Item>
+
         <Menu.Divider />
         <Menu.Item onClick={openModal} color="red" leftSection={<TbLogout />}>
           Cerrar sesión
